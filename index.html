@@ -30,11 +30,16 @@
   --bg-badge-neutral: rgba(255,255,255,0.1);
   --text-badge-neutral: #e0e0e0;
   --bg-header-gradient: linear-gradient(to right, #111, #000);
+  --bg-badge-red: rgba(220, 38, 38, 0.2);
+  --text-badge-red: #fca5a5;
+  --bg-badge-yellow: rgba(254, 240, 138, 0.2);
+  --text-badge-yellow: #fde047;
 }
 
 body[data-theme='light'] {
   color-scheme: light;
   --bg-app: #FAF9F6;
+  --bg-dark: #F3F1EC;
   --bg-card: #FFFFFF;
   --bg-input: #F3F1EC;
   --bg-surface: rgba(255,255,255,0.95);
@@ -54,6 +59,10 @@ body[data-theme='light'] {
   --bg-badge-neutral: #F0F0F0;
   --text-badge-neutral: #333333;
   --bg-header-gradient: linear-gradient(to right, #F3F1EC, #FFFFFF);
+  --bg-badge-red: #FEE2E2;
+  --text-badge-red: #B91C1C;
+  --bg-badge-yellow: #FEF9C3;
+  --text-badge-yellow: #854D0E;
 }
 
 body {
@@ -2072,8 +2081,8 @@ function InputForm({onSubmit,lang,setLang}){
               </div>
               {errs.gender&&<p style={{color:'#EF4444',fontSize:11,marginTop:4}}>{errs.gender}</p>}
             </div>
-            <button type="submit" disabled={loading} className="lux-btn" style={{width:'100%',padding:'16px'}}>
-              {loading?t('computing',lang):t('generate',lang)}
+            <button type="submit" disabled={loading} className="lux-btn" style={{width:'100%',padding:'16px',background:'var(--accent-gold)',color:'#000',border:'none'}}>
+              <strong style={{letterSpacing:1}}>{loading?t('computing',lang):t('generate',lang)}</strong>
             </button>
             {loading&&<div style={{marginTop:16}}>
               <div style={{width:'100%',height:3,background:'var(--border-light)',borderRadius:2,overflow:'hidden'}}>
@@ -2204,9 +2213,9 @@ function ForecastSection({K,lang='en'}){
           title={FC.today}
           period={`${fmtD(now)} · ${vara_en}`}
           chips={<>
-            <Chip label={FC.monthLabel} val={`${hinduMonth} — ${todayPan.tithi}`} bg='#FFFBEB' clr='#B45309'/>
-            <Chip label={FC.transitMoon} val={`${tMoonName} · ${todayNak}`} bg='#EDE9FE' clr='#7C3AED'/>
-            <Chip label={PR.yogaLabel} val={todayPan.yoga} bg='#F0FDF4' clr='#15803D'/>
+            <Chip label={FC.monthLabel} val={`${hinduMonth} — ${todayPan.tithi}`} bg='var(--bg-badge-orange)' clr='var(--text-badge-orange)'/>
+            <Chip label={FC.transitMoon} val={`${tMoonName} · ${todayNak}`} bg='var(--bg-badge-purple)' clr='var(--text-badge-purple)'/>
+            <Chip label={PR.yogaLabel} val={todayPan.yoga} bg='var(--bg-badge-green)' clr='var(--text-badge-green)'/>
           </>}
           body={moonBodyText}
           extra={mahaText+(moonQ==='good'?FC.oppLabel+': '+DASHA_M[curMaha?.planet]||'':'')}
@@ -2217,9 +2226,9 @@ function ForecastSection({K,lang='en'}){
           title={FC.week}
           period={`${fmtD(weekStart)} – ${fmtD(weekEnd)}`}
           chips={<>
-            <Chip label={PR.sunIn} val={tSunName} bg='#FFF7ED' clr='#D97706'/>
-            <Chip label={PR.saturnIn} val={tSatName} bg='#F1F5F9' clr='#475569'/>
-            <Chip label={FC.transitMoon} val={tMoonName} bg='#EDE9FE' clr='#7C3AED'/>
+            <Chip label={PR.sunIn} val={tSunName} bg='var(--bg-badge-orange)' clr='var(--text-badge-orange)'/>
+            <Chip label={PR.saturnIn} val={tSatName} bg='var(--bg-badge-neutral)' clr='var(--text-badge-neutral)'/>
+            <Chip label={FC.transitMoon} val={tMoonName} bg='var(--bg-badge-purple)' clr='var(--text-badge-purple)'/>
           </>}
           body={sadePh||kantaka?sadeText:jupText}
           extra={`${mahaText}${FC.week}: ${DASHA_M[curAntar?.planet]||DASHA_M[curMaha?.planet]||''}`}
@@ -2362,11 +2371,11 @@ function PredictionsTab({K,lang='en'}){
 
         <Card style={{marginBottom:14}} left="#7C3AED">
           <h4 style={{margin:'0 0 10px',fontSize:13,color:'var(--accent-gold)',fontWeight:700}}>{PR.dashaTitle}</h4>
-          <Chip label={PR.mahadasha} val={mahaName} bg='#F5F0FF' clr='#7C3AED'/>
-          <Chip label={PR.antardasha} val={antarName} bg='#FFF7ED' clr='#D97706'/>
-          <Chip label={PR.duration} val={`${cur?.startStr} – ${cur?.endStr}`} bg='#F5F0FF' clr='#7C3AED'/>
-          <Chip label={PR.mahaPlanet} val={`${RASHI_N[mahaPlanet?.rashi]} (H${mahaPlanet?.house})`} bg='#F5F0FF' clr='#7C3AED'/>
-          {antarPlanet&&<Chip label={PR.antarPlanet} val={`${RASHI_N[antarPlanet?.rashi]} (H${antarPlanet?.house})`} bg='#FFF7ED' clr='#D97706'/>}
+          <Chip label={PR.mahadasha} val={mahaName} bg='var(--bg-badge-purple)' clr='var(--text-badge-purple)'/>
+          <Chip label={PR.antardasha} val={antarName} bg='var(--bg-badge-orange)' clr='var(--text-badge-orange)'/>
+          <Chip label={PR.duration} val={`${cur?.startStr} – ${cur?.endStr}`} bg='var(--bg-badge-purple)' clr='var(--text-badge-purple)'/>
+          <Chip label={PR.mahaPlanet} val={`${RASHI_N[mahaPlanet?.rashi]} (H${mahaPlanet?.house})`} bg='var(--bg-badge-purple)' clr='var(--text-badge-purple)'/>
+          {antarPlanet&&<Chip label={PR.antarPlanet} val={`${RASHI_N[antarPlanet?.rashi]} (H${antarPlanet?.house})`} bg='var(--bg-badge-orange)' clr='var(--text-badge-orange)'/>}
           <p style={{margin:'12px 0 0',fontSize:12.5,color:'var(--text-main)',lineHeight:1.85}}>
             {XP.dasha(mahaName, RASHI_N[mahaPlanet?.rashi]||'', mahaPlanet?.house||'', mahaPlanet?.exalted?'exalted':mahaPlanet?.debil?'debilitated':'placed')}{' '}
             {mahaPlanet?XP.drules(housesRuled(cur?.planet,natLagna.rashi).join(', ')):''}{' '}
@@ -2493,7 +2502,7 @@ function PlanetsTab({K,lang='en'}){
   const HNAMES=(L_HNAMES[lang]||L_HNAMES.en);
   return(
     <div style={{animation:'slideIn 0.2s ease'}}>
-      <div style={{background:'linear-gradient(135deg,#F5F0FF,#FFF7ED)',border:'1px solid var(--border-light)',borderRadius:10,padding:'12px 18px',marginBottom:14,display:'flex',gap:20,flexWrap:'wrap',fontSize:13}}>
+      <div style={{background:'var(--bg-card)',border:'1px solid var(--border-light)',borderRadius:10,padding:'12px 18px',marginBottom:14,display:'flex',gap:20,flexWrap:'wrap',fontSize:13}}>
         {[[t('pl.lagnaLabel',lang),`${(L_RASHI[lang]||L_RASHI.en)[lagna.rashi]}`,lagna.degFmt],[t('pl.lagnaLord',lang),(L_GRAHA[lang]||L_GRAHA.en)[RASHI_LORD[lagna.rashi]]||RASHI_LORD[lagna.rashi],'']].map(([k,v,s])=>(
           <div key={k}><span style={{fontSize:10,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:0.5,display:'block'}}>{k}</span><span style={{fontSize:16,fontWeight:700,color:'var(--accent-gold)'}}>{v}</span>{s&&<span style={{fontSize:12,color:'var(--text-muted)'}}> · {s}</span>}</div>
         ))}
@@ -2521,7 +2530,7 @@ function PlanetsTab({K,lang='en'}){
                   {p.combust&&<Badge t={(L_STATUS[lang]||L_STATUS.en).combust} bg="#FEF3C7" clr="#D97706"/>}
                   {p.exalted&&<Badge t={'↑ '+((L_STATUS[lang]||L_STATUS.en).exalted)} bg="#DCFCE7" clr="#16A34A"/>}
                   {p.debil&&<Badge t={'↓ '+((L_STATUS[lang]||L_STATUS.en).debilitated)} bg="#FEE2E2" clr="#DC2626"/>}
-                  {p.vargottama&&<Badge t={(L_STATUS[lang]||L_STATUS.en).vargottama} bg="#F5F0FF" clr="#7C3AED"/>}
+                  {p.vargottama&&<Badge t={(L_STATUS[lang]||L_STATUS.en).vargottama} bg="var(--bg-badge-purple)" clr="var(--text-badge-purple)"/>}
                   {!p.retro&&!p.combust&&!p.exalted&&!p.debil&&!p.vargottama&&<span style={{color:'var(--text-muted)'}}>—</span>}
                 </td>
               </tr>
@@ -2582,7 +2591,7 @@ function DashaTab({K,lang='en'}){
             {exp===i&&<div style={{borderTop:'1px solid var(--border-light)',background:'#FAFAF8'}}>
               <div style={{padding:'8px 16px',fontSize:10,color:'var(--text-muted)',fontWeight:600,textTransform:'uppercase',letterSpacing:0.5}}>{t('da.antars',lang)}</div>
               {(m.antars||[]).map((a,ai)=>(
-                <div key={ai} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 16px 8px 30px',borderBottom:'1px solid var(--border-light)',background:a.isCurrent?'#F5F0FF':'transparent'}}>
+                <div key={ai} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 16px 8px 30px',borderBottom:'1px solid var(--border-light)',background:a.isCurrent?'var(--bg-badge-purple)':'transparent'}}>
                   <div style={{display:'flex',alignItems:'center',gap:7}}>
                     <div style={{width:7,height:7,borderRadius:'50%',background:PCOLOR[a.planet]||'#9CA3AF'}}/>
                     <span style={{fontSize:13,fontWeight:a.isCurrent?700:400,color:a.isCurrent?'#7C3AED':'#4B5563'}}>{(L_GRAHA[lang]||L_GRAHA.en)[m.planet]||m.planet}/{(L_GRAHA[lang]||L_GRAHA.en)[a.planet]||a.planet}</span>
@@ -2608,7 +2617,7 @@ function YogaTab({K,lang='en'}){
     <div style={{background:'var(--bg-card)',border:`1px solid ${y.type==='dosha'?'#FECDD3':'#E5D5C0'}`,borderRadius:10,padding:18,borderLeft:`4px solid ${y.type==='dosha'?'#EF4444':y.type==='dhana'?'#10B981':'#7C3AED'}`}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:7}}>
         <h4 style={{margin:0,fontSize:14,fontWeight:700,color:y.type==='dosha'?'#DC2626':'#1E3A5F'}}>{ly.name}</h4>
-        <span style={{fontSize:10,padding:'2px 9px',borderRadius:10,fontWeight:700,textTransform:'uppercase',background:y.type==='dosha'?'#FEE2E2':y.type==='dhana'?'#DCFCE7':'#F5F0FF',color:y.type==='dosha'?'#DC2626':y.type==='dhana'?'#16A34A':'#7C3AED'}}>{y.type==='dosha'?t('yo.doshaLabel',lang):y.type==='dhana'?t('yo.dhanaYoga',lang):t('yo.rajaYoga',lang)}</span>
+        <span style={{fontSize:10,padding:'2px 9px',borderRadius:10,fontWeight:700,textTransform:'uppercase',background:y.type==='dosha'?'var(--bg-badge-red)':y.type==='dhana'?'var(--bg-badge-green)':'var(--bg-badge-purple)',color:y.type==='dosha'?'var(--text-badge-red)':y.type==='dhana'?'var(--text-badge-green)':'var(--text-badge-purple)'}}>{y.type==='dosha'?t('yo.doshaLabel',lang):y.type==='dhana'?t('yo.dhanaYoga',lang):t('yo.rajaYoga',lang)}</span>
       </div>
       {y.planets&&<p style={{margin:'0 0 7px',fontSize:11,color:'var(--text-muted)'}}>{t('yo.formedBy',lang)}: {localizeYogaPlanets(y.planets,lang)}</p>}
       <p style={{margin:0,fontSize:13,color:'var(--text-main)',lineHeight:1.75}}>{ly.effect}</p>
@@ -2685,8 +2694,8 @@ function AshtakavargaTab({K,lang='en'}){
   const{ashtakavarga:{BAV,SAV}}=K;
   const PKS=['sun','moon','mars','mercury','jupiter','venus','saturn'];
   const PDN=(L_GRAHA[lang]||L_GRAHA.en);
-  const cc=v=>v>=5?{bg:'#DCFCE7',c:'#16A34A'}:v>=4?{bg:'#FEF9C3',c:'#854D0E'}:v>=3?{bg:'#F5F0FF',c:'#7C3AED'}:v>=2?{bg:'#FEF3C7',c:'#D97706'}:{bg:'#FEE2E2',c:'#DC2626'};
-  const sc=v=>v>=30?{bg:'#DCFCE7',c:'#16A34A'}:v>=22?{bg:'#F5F0FF',c:'#7C3AED'}:{bg:'#FEE2E2',c:'#DC2626'};
+  const cc=v=>v>=5?{bg:'var(--bg-badge-green)',c:'var(--text-badge-green)'}:v>=4?{bg:'var(--bg-badge-yellow)',c:'var(--text-badge-yellow)'}:v>=3?{bg:'var(--bg-badge-purple)',c:'var(--text-badge-purple)'}:v>=2?{bg:'var(--bg-badge-orange)',c:'var(--text-badge-orange)'}:{bg:'var(--bg-badge-red)',c:'var(--text-badge-red)'};
+  const sc=v=>v>=30?{bg:'var(--bg-badge-green)',c:'var(--text-badge-green)'}:v>=22?{bg:'var(--bg-badge-purple)',c:'var(--text-badge-purple)'}:{bg:'var(--bg-badge-red)',c:'var(--text-badge-red)'};
   return(
     <div style={{animation:'slideIn 0.2s ease'}}>
       <h3 style={{margin:'0 0 6px',fontSize:15,color:'var(--text-main)',fontWeight:700}}>{t('av.title',lang)} — {t('av.bindu',lang)}</h3>
@@ -2694,7 +2703,7 @@ function AshtakavargaTab({K,lang='en'}){
       {PKS.map(p=>{
         const row=BAV[p]||new Array(12).fill(0),tot=row.reduce((a,b)=>a+b,0);
         return<div key={p} style={{background:'var(--bg-card)',border:'1px solid var(--border-light)',borderRadius:10,overflow:'hidden',marginBottom:12}}>
-          <div style={{display:'flex',alignItems:'center',gap:8,padding:'9px 14px',borderBottom:'1px solid var(--border-light)',background:'#FAFAF8'}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,padding:'9px 14px',borderBottom:'1px solid var(--border-light)',background:'var(--bg-input)'}}>
             <span style={{width:9,height:9,borderRadius:'50%',background:PCOLOR[p],display:'inline-block'}}/>
             <h4 style={{margin:0,fontSize:12,fontWeight:700,color:'var(--text-main)'}}>{PDN[p]} {t('av.bav',lang)}</h4>
             <span style={{marginLeft:'auto',fontSize:11,color:'var(--text-muted)'}}>{t('ashtakavarga.total',lang)}: <strong style={{color:'var(--accent-gold)'}}>{tot}</strong></span>
@@ -3017,7 +3026,7 @@ function ResultsPage({K,onBack,lang,setLang}){
         </div>
       </div>
       {/* Tab bar */}
-      <div className="no-print" style={{background:'rgba(7,7,7,0.9)',backdropFilter:'blur(10px)',borderBottom:'1px solid var(--border-light)',position:'sticky',top:74,zIndex:15,boxShadow:'0 10px 30px rgba(0,0,0,0.8)'}}>
+      <div className="no-print" style={{background:'var(--bg-surface)',borderBottom:'1px solid var(--border-light)',position:'sticky',top:74,zIndex:15,boxShadow:'0 10px 30px rgba(0,0,0,0.8)'}}>
         <div style={{maxWidth:1100,margin:'0 auto',display:'flex',padding:'0 24px',overflowX:'auto',whiteSpace:'nowrap',scrollbarWidth:'none'}}>
           {TABS_DEF.map(tb=><button key={tb.id} onClick={()=>setTab(tb.id)} className={`lux-tab ${tab===tb.id?'active':''}`}><span style={{fontSize:14,marginRight:6}}>{tb.icon}</span>{t(`tabs.${tb.id}`,lang)}</button>)}
         </div>
@@ -3115,7 +3124,7 @@ function App(){
   function handleLang(c){setLang(c);localStorage.setItem('jd_lang',c)}
   function handleBack(){setScreen('input');history.replaceState({},'',location.pathname)}
 
-  if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FFF7ED',fontFamily:'serif'}}><div style={{background:'white',borderRadius:12,padding:28,maxWidth:400,border:'1px solid #FDE68A',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'#92400E',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'#7C3AED',color:'white',cursor:'pointer',fontFamily:'inherit',fontSize:14}}>{t('tryAgain',lang)}</button></div></div>;
+  if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily:'serif'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
   
     const goBack = () => { setScreen('input'); history.replaceState({},'',location.pathname); };
     return (
