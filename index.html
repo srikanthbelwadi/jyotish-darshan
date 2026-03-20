@@ -9,6 +9,7 @@
 <style>
 
 :root {
+  color-scheme: dark;
   --bg-app: #0a0a0a;
   --bg-card: #15110a;
   --bg-input: #1f1a14;
@@ -31,6 +32,7 @@
 }
 
 body[data-theme='light'] {
+  color-scheme: light;
   --bg-app: #FAF9F6;
   --bg-card: #FFFFFF;
   --bg-input: #F3F1EC;
@@ -126,7 +128,7 @@ table{border-collapse:collapse}
 .lux-input:focus {
   border-color: var(--accent-gold);
   box-shadow: 0 0 10px var(--accent-glow);
-  background: #111;
+  background: var(--bg-card); /* fixed accessibility */
 }
 
 .lux-btn {
@@ -151,7 +153,7 @@ table{border-collapse:collapse}
   box-shadow: 0 0 20px var(--accent-glow);
 }
 .lux-btn:disabled {
-  border-color: #333; color: #555; cursor: not-allowed; background: #111;
+  border-color: #333; color: #555; cursor: not-allowed; background: var(--bg-card); /* fixed accessibility */
 }
 
 .lux-tab {
@@ -1950,10 +1952,15 @@ function InputForm({onSubmit,lang,setLang}){
       const abhijit=abhijitMuhurta(sunSet.rise,sunSet.set);
       const tMoon=K.planets.find(p=>p.key==='moon');
       const tSun=K.planets.find(p=>p.key==='sun');
-      const moonNak=nakshatra(tMoon.lon);
+      const moonNakRaw=nakshatra(tMoon.lon);
+      const L_NN = L_PANCHANG[lang]?.nakNames || {};
+      const moonNak = { ...moonNakRaw, name: L_NN[moonNakRaw.name] || moonNakRaw.name };
       const pMatch=K.panchang.tithi.match(/\((.*?)\)/);
-      const paksha=pMatch?pMatch[1]:'';
-      const tithiOnly=K.panchang.tithi.split(' (')[0];
+      const pakshaRaw = pMatch?pMatch[1]:'';
+      const tithiRaw = K.panchang.tithi.split(' (')[0];
+      const L_TN = L_PANCHANG[lang]?.tithiNames || {};
+      const tithiOnly = L_TN[tithiRaw] || tithiRaw;
+      const paksha = pakshaRaw.includes('Shukla') ? t_astro('shukla', lang) : pakshaRaw.includes('Krishna') ? t_astro('krishna', lang) : pakshaRaw;
       return{K,utcOff,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek,jd,hasLoc:!!location,year};
     },[location]);
 
@@ -1967,10 +1974,10 @@ function InputForm({onSubmit,lang,setLang}){
         <strong style={{color:'var(--accent-gold)'}}>☽ {(LP.title||'Today').toUpperCase()} ({dateStr}) </strong>
         <span style={{color:'var(--border-light)'}}>|</span>
         <span style={{display:'flex', gap:10, flexWrap:'wrap', alignItems:'center'}}>
-           <span>{LP.tithi||'Tithi'}: <strong style={{color:'var(--text-main)'}}>{tithiOnly} {paksha&&`(${paksha})`}</strong></span>
-           <span>{LP.nakshatra||'Nak'}: <strong style={{color:'var(--text-main)'}}>{moonNak.name}</strong></span>
-           <span>{LP.yoga||'Yoga'}: <strong style={{color:'var(--text-main)'}}>{lp.yoga}</strong></span>
-           <span>{LP.karana||'Karana'}: <strong style={{color:'var(--text-main)'}}>{lp.karana}</strong></span>
+           <span>{t_astro("tithi", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.tithi}</strong></span>
+           <span>{t_astro("nak", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.nakshatra}</strong></span>
+           <span>{t_astro("yoga", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.yoga}</strong></span>
+           <span>{t_astro("kar", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.karana}</strong></span>
            <strong style={{color:'var(--border-light)', marginLeft:4, marginRight:4}}>•</strong>
            <span>Moon: <strong style={{color:'var(--text-main)'}}>{RASHI_N[tMoon.rashi]}</strong></span>
            <span>Sun: <strong style={{color:'var(--text-main)'}}>{RASHI_N[tSun.rashi]}</strong></span>
@@ -3038,6 +3045,18 @@ function ResultsPage({K,onBack,lang,setLang}){
 // ════════════════════════════════════════════════════════════════
 // ROOT APP
 // ════════════════════════════════════════════════════════════════
+const ASTRO_DICT = {
+    hi: { moon:'चंद्र', sun:'सूर्य', rahu:'राहु', yama:'यम', vs:'वि.सं', tithi:'तिथि', nak:'नक्षत्र', yoga:'योग', kar:'करण', shukla:'शुक्ल पक्ष', krishna:'कृष्ण पक्ष' },
+    kn: { moon:'ಚಂದ್ರ', sun:'ಸೂರ್ಯ', rahu:'ರಾಹು', yama:'ಯಮ', vs:'ವಿ.ಸಂ', tithi:'ತಿಥಿ', nak:'ನಕ್ಷತ್ರ', yoga:'ಯೋಗ', kar:'ಕರಣ', shukla:'ಶುಕ್ಲ ಪಕ್ಷ', krishna:'ಕೃಷ್ಣ ಪಕ್ಷ' },
+    te: { moon:'చంద్ర', sun:'సూర్య', rahu:'రాహు', yama:'యమ', vs:'వి.సం', tithi:'తిథి', nak:'నక్షత్రం', yoga:'యోగం', kar:'కరణం', shukla:'శుక్ల పక్షం', krishna:'కృష్ణ పక్షం' },
+    ta: { moon:'சந்திரன்', sun:'சூரியன்', rahu:'ராகு', yama:'எமகண்டம்', vs:'வி.சம்', tithi:'திதி', nak:'நட்சத்திரம்', yoga:'யோகம்', kar:'கரணம்', shukla:'சுக்ல பட்சம்', krishna:'கிருஷ்ண பட்சம்' }
+};
+function t_astro(key, lang) {
+    if(ASTRO_DICT[lang] && ASTRO_DICT[lang][key]) return ASTRO_DICT[lang][key];
+    const enDict = { moon:'Moon', sun:'Sun', rahu:'Rahu', yama:'Yama', vs:'VS', tithi:'Tithi', nak:'Nak', yoga:'Yoga', kar:'Karana', shukla:'Shukla Paksha', krishna:'Krishna Paksha' };
+    return enDict[key] || key;
+}
+
 function App(){
   const[screen,setScreen]=React.useState('input');
   const[kundali,setKundali]=React.useState(null);
