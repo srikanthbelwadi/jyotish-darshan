@@ -2958,6 +2958,22 @@ function ResultsPage({K,onBack,lang,setLang}){
   const{input,lagna,panchang:pan,ayanamsaDMS,planets}=K;
   const lpan=localizePanchang(pan,lang);
   const formattedDate=new Date(input.year,input.month-1,input.day).toLocaleDateString(lang==='en'?'en-IN':lang==='hi'?'hi-IN':lang==='kn'?'kn-IN':lang==='te'?'te-IN':lang==='ta'?'ta-IN':lang==='mr'?'mr-IN':lang==='gu'?'gu-IN':lang==='bn'?'bn-IN':lang==='ml'?'ml-IN':'en-IN',{day:'numeric',month:'long',year:'numeric'});
+  
+  async function handleShare() {
+    if (navigator.share) {
+      try {
+        const moonRashi = planets.find(p=>p.name==='Moon')?.rashi ?? 0;
+        await navigator.share({
+          title: `Vedic Birth Chart - ${input.city}`,
+          text: `Kundali for ${formattedDate} at ${input.tob}.\nLagna: ${(L_RASHI[lang]||L_RASHI.en)[lagna.rashi]} | Moon Sign: ${(L_RASHI[lang]||L_RASHI.en)[moonRashi]}`,
+          url: window.location.href,
+        });
+      } catch (err) { console.error('Error sharing', err); }
+    } else {
+      share();
+    }
+  }
+
   function share(){
     try{
       const d={y:input.year,mo:input.month,d:input.day,h:input.hour,mi:input.minute,ut:input.utcOffset,la:input.lat,ln:input.lng,ci:input.city,co:input.country,tz:input.timezone,ge:input.gender};
@@ -2967,7 +2983,20 @@ function ResultsPage({K,onBack,lang,setLang}){
   }
   return(
     <div style={{minHeight:'100vh',background:'var(--bg-dark)'}}>
-      {/* Header */}
+      {/* Action Bar */}
+      <div className="no-print" style={{maxWidth:1100,margin:'0 auto',padding:'24px 40px 0',display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,flexWrap:'wrap'}}>
+        <button onClick={onBack} className="lux-btn" style={{padding:'8px 16px',background:'transparent',border:'1px solid var(--border-light)',color:'var(--text-main)',boxShadow:'none'}}>
+          ← {t('back',lang)}
+        </button>
+        <div style={{display:'flex', gap:10}}>
+          <button onClick={handleShare} className="lux-btn" style={{padding:'8px 16px'}}>
+            ⇧ {t('share',lang)}
+          </button>
+          <button onClick={()=>downloadPDF(K,lang)} className="lux-btn" style={{padding:'8px 16px',background:'var(--accent-gold)',color:'#000'}}>
+            ↓ {t('download',lang)}
+          </button>
+        </div>
+      </div>
       {/* Banner */}
       <div style={{background:'linear-gradient(to right, #111, #000)',borderBottom:'1px solid var(--border-light)',padding:'30px 40px'}}>
         <div style={{maxWidth:1100,margin:'0 auto'}}>
