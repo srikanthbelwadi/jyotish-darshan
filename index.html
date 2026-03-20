@@ -1448,9 +1448,18 @@ function InputForm({onSubmit,lang,setLang}){
     {name:'Sydney',country:'Australia',lat:-33.8688,lng:151.2093,tz:'Australia/Sydney',disp:'Sydney, Australia'},
     {name:'Toronto',country:'Canada',lat:43.6532,lng:-79.3832,tz:'America/Toronto',disp:'Toronto, Canada'},
   ];
-
-  function getOffset(tz){try{const d=new Date(),u=d.getTime(),t=new Date(d.toLocaleString('en-US',{timeZone:tz})).getTime();return(t-u)/3600000}catch{return 5.5}}
-
+  function getOffset(tz){
+    try {
+      const d=new Date();
+      const str=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric',hour12:false}).format(d);
+      const[dp,tp]=str.split(', ');const[m,day,y]=dp.split('/');let[h,min,s]=tp.split(':');if(h==='24')h='00';
+      const localTime=new Date(Date.UTC(Number(y),Number(m)-1,Number(day),Number(h),Number(min),Number(s)));
+      const utcTime=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),d.getUTCHours(),d.getUTCMinutes(),d.getUTCSeconds()));
+      return (localTime.getTime()-utcTime.getTime())/3600000;
+    } catch {
+      return 5.5;
+    }
+  }
   function searchCity(q){
     const r=FALLBACK.filter(c=>c.name.toLowerCase().includes(q.toLowerCase())||c.disp.toLowerCase().includes(q.toLowerCase()));
     setSuggs(r.slice(0,6));
