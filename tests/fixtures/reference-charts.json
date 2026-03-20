@@ -1,0 +1,99 @@
+[
+  {
+    "id": "ref_baseline",
+    "description": "Midday equatorial baseline for ephemeris comparison",
+    "input": {
+      "name": "Baseline Test",
+      "year": 2000, "month": 1, "day": 1,
+      "hour": 12, "minute": 0,
+      "lat": 0.0, "lng": 0.0,
+      "utcOffset": 0, "timezone": "UTC",
+      "city": "Gulf of Guinea", "country": "International", "gender": "male"
+    },
+    "expected": {
+      "ayanamsa": { "value": 23.85, "tolerance": 0.05 },
+      "lagna": { "rashiMin": 0, "rashiMax": 11, "note": "any valid sign" },
+      "planets": {
+        "sun": { "rashi": 8, "degApprox": 15.0, "tolerance": 2.0 },
+        "moon": { "rashiRange": [0, 11], "note": "verify non-null" }
+      },
+      "dasha": { "totalYears": 120 }
+    }
+  },
+  {
+    "id": "ref_bangalore",
+    "description": "Typical South Indian birth — Bengaluru morning",
+    "input": {
+      "name": "Bangalore Test",
+      "year": 1990, "month": 7, "day": 15,
+      "hour": 6, "minute": 30,
+      "lat": 12.9716, "lng": 77.5946,
+      "utcOffset": 5.5, "timezone": "Asia/Kolkata",
+      "city": "Bengaluru", "country": "India", "gender": "male"
+    },
+    "expected": {
+      "ayanamsa": { "value": 23.72, "tolerance": 0.1 },
+      "lagna": { "rashiApprox": 3, "tolerance": 1, "note": "Cancer region at 6:30 AM IST" },
+      "planets": {
+        "sun": { "rashi": 2, "degApprox": 28.0, "tolerance": 2.0, "note": "Gemini" },
+        "moon": { "rashi": 11, "degApprox": 15.0, "tolerance": 3.0, "note": "Pisces region" }
+      },
+      "dasha": { "totalYears": 120 }
+    }
+  },
+  {
+    "id": "ref_midnight_edge",
+    "description": "Midnight birth — date boundary edge case",
+    "input": {
+      "name": "Midnight Test",
+      "year": 2024, "month": 12, "day": 31,
+      "hour": 0, "minute": 0,
+      "lat": 28.6139, "lng": 77.2090,
+      "utcOffset": 5.5, "timezone": "Asia/Kolkata",
+      "city": "New Delhi", "country": "India", "gender": "female"
+    },
+    "expected": {
+      "lagna": { "rashiRange": [0, 11], "note": "must be valid, not NaN" },
+      "planets": {
+        "sun": { "rashi": 8, "note": "Sagittarius region in late December" }
+      },
+      "dasha": { "totalYears": 120 }
+    }
+  },
+  {
+    "id": "ref_southern_hemi",
+    "description": "Southern hemisphere — Auckland, New Zealand",
+    "input": {
+      "name": "Auckland Test",
+      "year": 1985, "month": 3, "day": 20,
+      "hour": 14, "minute": 30,
+      "lat": -36.8485, "lng": 174.7633,
+      "utcOffset": 13, "timezone": "Pacific/Auckland",
+      "city": "Auckland", "country": "New Zealand", "gender": "male"
+    },
+    "expected": {
+      "lagna": { "rashiRange": [0, 11], "note": "must handle negative latitude" },
+      "dasha": { "totalYears": 120 }
+    }
+  },
+  {
+    "id": "ref_historical",
+    "description": "Indian Independence — midnight Aug 15 1947",
+    "input": {
+      "name": "Independence Test",
+      "year": 1947, "month": 8, "day": 15,
+      "hour": 0, "minute": 0,
+      "lat": 28.6139, "lng": 77.2090,
+      "utcOffset": 5.5, "timezone": "Asia/Kolkata",
+      "city": "New Delhi", "country": "India", "gender": "male"
+    },
+    "expected": {
+      "ayanamsa": { "value": 23.06, "tolerance": 0.1 },
+      "lagna": { "rashiApprox": 1, "tolerance": 1, "note": "Taurus region" },
+      "planets": {
+        "sun": { "rashi": 3, "degApprox": 28.0, "tolerance": 2.0, "note": "Cancer late degrees" }
+      },
+      "dasha": { "totalYears": 120 }
+    }
+  }
+]
