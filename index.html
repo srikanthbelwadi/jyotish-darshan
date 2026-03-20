@@ -7,10 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+Kannada:wght@400;600&display=swap" rel="stylesheet">
 <style>
+
 :root {
-  --bg-dark: #070707;
-  --bg-card: #121212;
-  --bg-input: #1a1a1a;
+  --bg-app: #0a0a0a;
+  --bg-card: #15110a;
+  --bg-input: #1f1a14;
+  --bg-surface: rgba(15,12,8,0.92);
   --accent-gold: #D4AF37;
   --accent-gold-dim: rgba(212, 175, 55, 0.15);
   --accent-glow: rgba(212, 175, 55, 0.3);
@@ -18,16 +20,71 @@
   --text-muted: #9CA3AF;
   --border-light: rgba(212, 175, 55, 0.2);
   --border-glow: rgba(212, 175, 55, 0.4);
+  --bg-badge-orange: rgba(212, 140, 50, 0.2);
+  --text-badge-orange: #ffcca3;
+  --bg-badge-purple: rgba(140, 100, 255, 0.2);
+  --text-badge-purple: #d4c4ff;
+  --bg-badge-green: rgba(50, 200, 100, 0.2);
+  --text-badge-green: #b1ffce;
+  --bg-badge-neutral: rgba(255,255,255,0.1);
+  --text-badge-neutral: #e0e0e0;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:'Inter', sans-serif;
-  background:var(--bg-dark);
-  color:var(--text-main);
-  background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, var(--bg-dark) 60%);
-  background-attachment: fixed;
+
+body[data-theme='light'] {
+  --bg-app: #FAF9F6;
+  --bg-card: #FFFFFF;
+  --bg-input: #F3F1EC;
+  --bg-surface: rgba(255,255,255,0.95);
+  --accent-gold: #B8860B; 
+  --accent-gold-dim: rgba(184, 134, 11, 0.1);
+  --accent-glow: rgba(184, 134, 11, 0.15);
+  --text-main: #1A1A10;
+  --text-muted: #555555;
+  --border-light: rgba(184, 134, 11, 0.3);
+  --border-glow: rgba(184, 134, 11, 0.5);
+  --bg-badge-orange: #FFEADB;
+  --text-badge-orange: #A04A00;
+  --bg-badge-purple: #F3E8FF;
+  --text-badge-purple: #551A8B;
+  --bg-badge-green: #E8F5E9;
+  --text-badge-green: #1B5E20;
+  --bg-badge-neutral: #F0F0F0;
+  --text-badge-neutral: #333333;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-app);
+  color: var(--text-main);
+  transition: background 0.4s ease, color 0.4s ease;
   min-height: 100vh;
 }
+
+.lux-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Lighter shadow for both themes */
+  backdrop-filter: blur(10px);
+  transition: transform 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+}
+
+.badge-base {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+.badge-orange { background: var(--bg-badge-orange); color: var(--text-badge-orange); }
+.badge-purple { background: var(--bg-badge-purple); color: var(--text-badge-purple); }
+.badge-green {  background: var(--bg-badge-green); color: var(--text-badge-green); }
+.badge-neutral { background: var(--bg-badge-neutral); color: var(--text-badge-neutral); }
+
 h1,h2,h3,h4,h5,.serif{
   font-family:'Playfair Display', 'Noto Serif', serif;
 }
@@ -1894,80 +1951,65 @@ function InputForm({onSubmit,lang,setLang}){
       const tMoon=K.planets.find(p=>p.key==='moon');
       const tSun=K.planets.find(p=>p.key==='sun');
       const moonNak=nakshatra(tMoon.lon);
-      
       const pMatch=K.panchang.tithi.match(/\((.*?)\)/);
       const paksha=pMatch?pMatch[1]:'';
       const tithiOnly=K.panchang.tithi.split(' (')[0];
-
       return{K,utcOff,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek,jd,hasLoc:!!location,year};
     },[location]);
 
     if(!dailyPan)return null;
     const{K,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,hasLoc,year}=dailyPan;
     const lp = localizePanchang(K.panchang,lang);
-    const dateStr = now.toLocaleDateString(lang==='en'?'en-US':lang, {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    const dateStr = now.toLocaleDateString(lang==='en'?'en-US':lang, {weekday:'short', month:'short', day:'numeric'});
 
     return (
-      <div style={{background:'rgba(21,17,10,0.95)', borderBottom:'1px solid var(--border-light)', padding:'20px 40px', fontSize:14, color:'var(--text-muted)', display:'flex', flexDirection:'column', gap:'16px', letterSpacing:0.5, backdropFilter:'blur(10px)'}}>
-        
-        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom:'1px solid rgba(212, 175, 55, 0.2)', paddingBottom:'12px'}}>
-           <div>
-              <strong style={{color:'var(--accent-gold)', fontSize:18, letterSpacing:1}}>☽ {(LP.title||'Panchang for Today').toUpperCase()}</strong>
-              <div style={{color:'var(--text-main)', opacity:0.9, marginTop:4}}>{dateStr}</div>
-           </div>
-           {hasLoc && (
-             <div style={{textAlign:'right'}}>
-               <div style={{color:'var(--accent-gold)', fontWeight:500}}>Local User Location</div>
-               <div style={{fontSize:13, opacity:0.8}}>Sunrise: {fmtTime(sunSet.rise)} &nbsp;|&nbsp; Sunset: {fmtTime(sunSet.set)}</div>
-             </div>
-           )}
-        </div>
-
-        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:'20px 40px', lineHeight:'1.8'}}>
-           
-           <div>
-              <div style={{fontWeight:600, color:'var(--accent-gold)', marginBottom:6, textTransform:'uppercase', fontSize:12, letterSpacing:2}}>Core Elements</div>
-              <div><span style={{color:'var(--text-muted)', display:'inline-block', width:90}}>{LP.tithi||'Tithi'}:</span> <strong style={{color:'var(--text-main)'}}>{tithiOnly}</strong> {paksha && <span style={{fontSize:12, opacity:0.7}}>({paksha})</span>}</div>
-              <div><span style={{color:'var(--text-muted)', display:'inline-block', width:90}}>{LP.nakshatra||'Nakshatra'}:</span> <strong style={{color:'var(--text-main)'}}>{moonNak.name}</strong></div>
-              <div><span style={{color:'var(--text-muted)', display:'inline-block', width:90}}>{LP.yoga||'Yoga'}:</span> <strong style={{color:'var(--text-main)'}}>{lp.yoga}</strong></div>
-              <div><span style={{color:'var(--text-muted)', display:'inline-block', width:90}}>{LP.karana||'Karana'}:</span> <strong style={{color:'var(--text-main)'}}>{lp.karana}</strong></div>
-           </div>
-
-           <div>
-              <div style={{fontWeight:600, color:'var(--accent-gold)', marginBottom:6, textTransform:'uppercase', fontSize:12, letterSpacing:2}}>Astrological Signs</div>
-              <div><span style={{color:'var(--text-muted)', display:'inline-block', width:100}}>Moon Sign:</span> <strong style={{color:'var(--text-main)'}}>{RASHI_N[tMoon.rashi]}</strong></div>
-              <div><span style={{color:'var(--text-muted)', display:'inline-block', width:100}}>Sun Sign:</span> <strong style={{color:'var(--text-main)'}}>{RASHI_N[tSun.rashi]}</strong></div>
-              <div><span style={{color:'var(--text-muted)', display:'inline-block', width:100}}>Vikram Samvat:</span> <strong style={{color:'var(--text-main)'}}>{year + 57}</strong></div>
-              <div><span style={{color:'var(--text-muted)', display:'inline-block', width:100}}>Shaka Samvat:</span> <strong style={{color:'var(--text-main)'}}>{year - 78}</strong></div>
-           </div>
-
-           {hasLoc && (
-           <div>
-              <div style={{fontWeight:600, color:'var(--accent-gold)', marginBottom:6, textTransform:'uppercase', fontSize:12, letterSpacing:2}}>Muhurta (Timings)</div>
-              <div><span style={{color:'var(--status-rx)', display:'inline-block', width:110}}>Rahu Kala:</span> <strong style={{color:'var(--text-main)'}}>{inaus.rahuKala.str}</strong></div>
-              <div><span style={{color:'var(--status-rx)', display:'inline-block', width:110}}>Yamaganda:</span> <strong style={{color:'var(--text-main)'}}>{inaus.yamaghanda.str}</strong></div>
-              <div><span style={{color:'var(--status-rx)', display:'inline-block', width:110}}>Gulika Kala:</span> <strong style={{color:'var(--text-main)'}}>{inaus.gulikaKala.str}</strong></div>
-              <div><span style={{color:'var(--status-dt)', display:'inline-block', width:110}}>Abhijit Muhurta:</span> <strong style={{color:'var(--text-main)'}}>{abhijit.str}</strong></div>
-           </div>
-           )}
-        </div>
-
+      <div style={{background:'var(--bg-card)', borderBottom:'1px solid var(--border-light)', padding:'8px 24px', fontSize:11, color:'var(--text-muted)', display:'flex', flexWrap:'wrap', gap:'8px 16px', alignItems:'center', justifyContent:'center', letterSpacing:0.5}}>
+        <strong style={{color:'var(--accent-gold)'}}>☽ {(LP.title||'Today').toUpperCase()} ({dateStr}) </strong>
+        <span style={{color:'var(--border-light)'}}>|</span>
+        <span style={{display:'flex', gap:10, flexWrap:'wrap', alignItems:'center'}}>
+           <span>{LP.tithi||'Tithi'}: <strong style={{color:'var(--text-main)'}}>{tithiOnly} {paksha&&`(${paksha})`}</strong></span>
+           <span>{LP.nakshatra||'Nak'}: <strong style={{color:'var(--text-main)'}}>{moonNak.name}</strong></span>
+           <span>{LP.yoga||'Yoga'}: <strong style={{color:'var(--text-main)'}}>{lp.yoga}</strong></span>
+           <span>{LP.karana||'Karana'}: <strong style={{color:'var(--text-main)'}}>{lp.karana}</strong></span>
+           <strong style={{color:'var(--border-light)', marginLeft:4, marginRight:4}}>•</strong>
+           <span>Moon: <strong style={{color:'var(--text-main)'}}>{RASHI_N[tMoon.rashi]}</strong></span>
+           <span>Sun: <strong style={{color:'var(--text-main)'}}>{RASHI_N[tSun.rashi]}</strong></span>
+           <span>VS: <strong style={{color:'var(--text-main)'}}>{year+57}</strong></span>
+        </span>
+        {hasLoc && (
+           <React.Fragment>
+              <span style={{color:'var(--border-light)'}}>|</span>
+              <span style={{display:'flex', gap:10, flexWrap:'wrap', alignItems:'center'}}>
+                 <span>Sun: <strong style={{color:'var(--text-main)'}}>{fmtTime(sunSet.rise)} - {fmtTime(sunSet.set)}</strong></span>
+                 <strong style={{color:'var(--border-light)', marginLeft:4, marginRight:4}}>•</strong>
+                 <span>Rahu: <strong style={{color:'var(--text-main)'}}>{inaus.rahuKala.str}</strong></span>
+                 <span>Yama: <strong style={{color:'var(--text-main)'}}>{inaus.yamaghanda.str}</strong></span>
+              </span>
+           </React.Fragment>
+        )}
       </div>
     );
   }
 
   return(
     <div style={{minHeight:'100vh',display:'flex',flexDirection:'column'}}>
-      <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'16px 32px',borderBottom:'1px solid var(--border-light)',background:'rgba(7,7,7,0.8)',backdropFilter:'blur(12px)',position:'sticky',top:0,zIndex:20}}>
+      <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 32px',borderBottom:'1px solid var(--border-light)',background:'var(--bg-surface)',backdropFilter:'blur(12px)',position:'sticky',top:0,zIndex:20}}>
         <div style={{display:'flex',alignItems:'center',gap:14}}>
-          <div style={{width:44,height:44,background:'transparent',border:'1px solid var(--accent-gold)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 16px var(--accent-glow)'}}>
-            <span style={{color:'var(--accent-gold)',fontSize:22}}>☀</span>
+          <div style={{width:40,height:40,background:'transparent',border:'1px solid var(--accent-gold)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 12px var(--accent-glow)'}}>
+            <span style={{color:'var(--accent-gold)',fontSize:20}}>☀</span>
           </div>
-          <div><h1 className="serif" style={{margin:0,fontSize:22,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase'}}>{t('tagline',lang)}</p></div>
+          <div><h1 className="serif" style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase'}}>{t('tagline',lang)}</p></div>
         </div>
-        <select value={lang} onChange={e=>setLang(e.target.value)} className="lux-input" style={{width:'auto',padding:'8px 12px',background:'transparent',border:'1px solid var(--border-light)'}}>
-          {LANGS.map(l=><option key={l.code} value={l.code} style={{background:'var(--bg-input)'}}>{l.label}</option>)}
-        </select>
+        <div style={{display:'flex', gap:12}}>
+          
+          <button type="button" onClick={()=>document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light')} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
+            <span style={{fontSize:16}}>☾</span>
+          </button>
+
+          <select value={lang} onChange={e=>setLang(e.target.value)} className="lux-input" style={{width:'auto',padding:'6px 10px',background:'transparent',border:'1px solid var(--border-light)'}}>
+            {LANGS.map(l=><option key={l.code} value={l.code} style={{background:'var(--bg-input)'}}>{l.label}</option>)}
+          </select>
+        </div>
       </header>
       <DailyPanchang/>
       <div style={{textAlign:'center',padding:'50px 24px 20px'}}>
@@ -2918,6 +2960,7 @@ const TABS_DEF=[
 ];
 
 function ResultsPage({K,onBack,lang,setLang}){
+    React.useEffect(() => { window.scrollTo({top: 0, behavior: 'smooth'}); }, []);
   const[tab,setTab]=React.useState('overview');
   const[fmt,setFmt]=React.useState('south');
   const[copied,setCopied]=React.useState(false);
