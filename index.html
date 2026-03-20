@@ -1839,6 +1839,82 @@ function NorthChart({planets,lagnaR,size=320,small=false,title,lang='en'}){
 // INPUT FORM
 // ════════════════════════════════════════════════════════════════
 
+function DailyPanchang({ lang }){
+    const[location,setLocation]=React.useState(null);
+    const GRAHA=L_GRAHA[lang]||L_GRAHA.en;
+    const RASHI_N=L_RASHI[lang]||L_RASHI.en;
+    const LP=L_PANCHANG[lang]||L_PANCHANG.en;
+
+    React.useEffect(()=>{
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(pos=>{
+          setLocation({lat:pos.coords.latitude,lng:pos.coords.longitude});
+        },()=>{});
+      }
+    },[]);
+
+    const dailyPan=React.useMemo(()=>{
+      const now=new Date();
+      const year=now.getFullYear();
+      const utcH=now.getUTCHours(),utcM=now.getUTCMinutes();
+      const utcOff=now.getTimezoneOffset()/-60;
+      const lat=location?location.lat:28.6139; // Loc fallback
+      const lng=location?location.lng:77.2090;
+      const jd=toJD(now.getUTCFullYear(),now.getUTCMonth()+1,now.getUTCDate(),utcH,utcM,0);
+      const K=computeKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng});
+      const sunSet=sunRiseSet(jd,lat,lng,utcOff);
+      const dayOfWeek=now.getDay();
+      const inaus=inauspiciousPeriods(sunSet.rise,sunSet.set,dayOfWeek);
+      const abhijit=abhijitMuhurta(sunSet.rise,sunSet.set);
+      const tMoon=K.planets.find(p=>p.key==='moon');
+      const tSun=K.planets.find(p=>p.key==='sun');
+      const moonNakRaw=nakshatra(tMoon.lon);
+      const L_NN = L_PANCHANG[lang]?.nakNames || {};
+      const moonNak = { ...moonNakRaw, name: L_NN[moonNakRaw.name] || moonNakRaw.name };
+      const pMatch=K.panchang.tithi.match(/\((.*?)\)/);
+      const pakshaRaw = pMatch?pMatch[1]:'';
+      const tithiRaw = K.panchang.tithi.split(' (')[0];
+      const L_TN = L_PANCHANG[lang]?.tithiNames || {};
+      const tithiOnly = L_TN[tithiRaw] || tithiRaw;
+      const paksha = pakshaRaw.includes('Shukla') ? t_astro('shukla', lang) : pakshaRaw.includes('Krishna') ? t_astro('krishna', lang) : pakshaRaw;
+      return{K,utcOff,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek,jd,hasLoc:!!location,year};
+    },[location]);
+
+    if(!dailyPan)return null;
+    const{K,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,hasLoc,year}=dailyPan;
+    const lp = localizePanchang(K.panchang,lang);
+    const dateStr = now.toLocaleDateString(lang==='en'?'en-US':lang, {weekday:'short', month:'short', day:'numeric'});
+
+    return (
+      <div style={{background:'var(--bg-card)', borderBottom:'1px solid var(--border-light)', padding:'8px 24px', fontSize:11, color:'var(--text-muted)', display:'flex', flexWrap:'wrap', gap:'8px 16px', alignItems:'center', justifyContent:'center', letterSpacing:0.5}}>
+        <strong style={{color:'var(--accent-gold)'}}>☽ {(LP.title||'Today').toUpperCase()} ({dateStr}) </strong>
+        <span style={{color:'var(--border-light)'}}>|</span>
+        <span style={{display:'flex', gap:10, flexWrap:'wrap', alignItems:'center'}}>
+           <span>{t_astro("tithi", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.tithi}</strong></span>
+           <span>{t_astro("nak", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.nakshatra}</strong></span>
+           <span>{t_astro("yoga", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.yoga}</strong></span>
+           <span>{t_astro("kar", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.karana}</strong></span>
+           <strong style={{color:'var(--border-light)', marginLeft:4, marginRight:4}}>•</strong>
+           <span>{t_astro("moon", lang)}: <strong style={{color:'var(--text-main)'}}>{RASHI_N[tMoon.rashi]}</strong></span>
+           <span>{t_astro("sun", lang)}: <strong style={{color:'var(--text-main)'}}>{RASHI_N[tSun.rashi]}</strong></span>
+           <span>{t_astro("vs", lang)}: <strong style={{color:'var(--text-main)'}}>{year+57}</strong></span>
+        </span>
+        {hasLoc && (
+           <React.Fragment>
+              <span style={{color:'var(--border-light)'}}>|</span>
+              <span style={{display:'flex', gap:10, flexWrap:'wrap', alignItems:'center'}}>
+                 <span>{t_astro("sun", lang)}: <strong style={{color:'var(--text-main)'}}>{fmtTime(sunSet.rise, lang)} - {fmtTime(sunSet.set, lang)}</strong></span>
+                 <strong style={{color:'var(--border-light)', marginLeft:4, marginRight:4}}>•</strong>
+                 <span>{t_astro("rahu", lang)}: <strong style={{color:'var(--text-main)'}}>{inaus.rahuKala.str}</strong></span>
+                 <span>{t_astro("yama", lang)}: <strong style={{color:'var(--text-main)'}}>{inaus.yamaghanda.str}</strong></span>
+              </span>
+           </React.Fragment>
+        )}
+      </div>
+    );
+  }
+
+
 function InputForm({onSubmit,lang,setLang}){
   const[form,setForm]=React.useState({dob:'',tob:'',city:'',country:'India',gender:'',lat:null,lng:null,utcOffset:5.5,timezone:'Asia/Kolkata'});
   const[cityQ,setCityQ]=React.useState('');
@@ -1923,102 +1999,10 @@ function InputForm({onSubmit,lang,setLang}){
   const IS={};
   const LS={display:'block',fontSize:11,fontWeight:600,color:'var(--text-muted)',marginBottom:6,textTransform:'uppercase',letterSpacing:1.5};
 
-  function DailyPanchang(){
-    const[location,setLocation]=React.useState(null);
-    const GRAHA=L_GRAHA[lang]||L_GRAHA.en;
-    const RASHI_N=L_RASHI[lang]||L_RASHI.en;
-    const LP=L_PANCHANG[lang]||L_PANCHANG.en;
-
-    React.useEffect(()=>{
-      if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(pos=>{
-          setLocation({lat:pos.coords.latitude,lng:pos.coords.longitude});
-        },()=>{});
-      }
-    },[]);
-
-    const dailyPan=React.useMemo(()=>{
-      const now=new Date();
-      const year=now.getFullYear();
-      const utcH=now.getUTCHours(),utcM=now.getUTCMinutes();
-      const utcOff=now.getTimezoneOffset()/-60;
-      const lat=location?location.lat:28.6139; // Loc fallback
-      const lng=location?location.lng:77.2090;
-      const jd=toJD(now.getUTCFullYear(),now.getUTCMonth()+1,now.getUTCDate(),utcH,utcM,0);
-      const K=computeKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng});
-      const sunSet=sunRiseSet(jd,lat,lng,utcOff);
-      const dayOfWeek=now.getDay();
-      const inaus=inauspiciousPeriods(sunSet.rise,sunSet.set,dayOfWeek);
-      const abhijit=abhijitMuhurta(sunSet.rise,sunSet.set);
-      const tMoon=K.planets.find(p=>p.key==='moon');
-      const tSun=K.planets.find(p=>p.key==='sun');
-      const moonNakRaw=nakshatra(tMoon.lon);
-      const L_NN = L_PANCHANG[lang]?.nakNames || {};
-      const moonNak = { ...moonNakRaw, name: L_NN[moonNakRaw.name] || moonNakRaw.name };
-      const pMatch=K.panchang.tithi.match(/\((.*?)\)/);
-      const pakshaRaw = pMatch?pMatch[1]:'';
-      const tithiRaw = K.panchang.tithi.split(' (')[0];
-      const L_TN = L_PANCHANG[lang]?.tithiNames || {};
-      const tithiOnly = L_TN[tithiRaw] || tithiRaw;
-      const paksha = pakshaRaw.includes('Shukla') ? t_astro('shukla', lang) : pakshaRaw.includes('Krishna') ? t_astro('krishna', lang) : pakshaRaw;
-      return{K,utcOff,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek,jd,hasLoc:!!location,year};
-    },[location]);
-
-    if(!dailyPan)return null;
-    const{K,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,hasLoc,year}=dailyPan;
-    const lp = localizePanchang(K.panchang,lang);
-    const dateStr = now.toLocaleDateString(lang==='en'?'en-US':lang, {weekday:'short', month:'short', day:'numeric'});
-
-    return (
-      <div style={{background:'var(--bg-card)', borderBottom:'1px solid var(--border-light)', padding:'8px 24px', fontSize:11, color:'var(--text-muted)', display:'flex', flexWrap:'wrap', gap:'8px 16px', alignItems:'center', justifyContent:'center', letterSpacing:0.5}}>
-        <strong style={{color:'var(--accent-gold)'}}>☽ {(LP.title||'Today').toUpperCase()} ({dateStr}) </strong>
-        <span style={{color:'var(--border-light)'}}>|</span>
-        <span style={{display:'flex', gap:10, flexWrap:'wrap', alignItems:'center'}}>
-           <span>{t_astro("tithi", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.tithi}</strong></span>
-           <span>{t_astro("nak", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.nakshatra}</strong></span>
-           <span>{t_astro("yoga", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.yoga}</strong></span>
-           <span>{t_astro("kar", lang)}: <strong style={{color:'var(--text-main)'}}>{lp.karana}</strong></span>
-           <strong style={{color:'var(--border-light)', marginLeft:4, marginRight:4}}>•</strong>
-           <span>Moon: <strong style={{color:'var(--text-main)'}}>{RASHI_N[tMoon.rashi]}</strong></span>
-           <span>Sun: <strong style={{color:'var(--text-main)'}}>{RASHI_N[tSun.rashi]}</strong></span>
-           <span>VS: <strong style={{color:'var(--text-main)'}}>{year+57}</strong></span>
-        </span>
-        {hasLoc && (
-           <React.Fragment>
-              <span style={{color:'var(--border-light)'}}>|</span>
-              <span style={{display:'flex', gap:10, flexWrap:'wrap', alignItems:'center'}}>
-                 <span>Sun: <strong style={{color:'var(--text-main)'}}>{fmtTime(sunSet.rise)} - {fmtTime(sunSet.set)}</strong></span>
-                 <strong style={{color:'var(--border-light)', marginLeft:4, marginRight:4}}>•</strong>
-                 <span>Rahu: <strong style={{color:'var(--text-main)'}}>{inaus.rahuKala.str}</strong></span>
-                 <span>Yama: <strong style={{color:'var(--text-main)'}}>{inaus.yamaghanda.str}</strong></span>
-              </span>
-           </React.Fragment>
-        )}
-      </div>
-    );
-  }
-
+  
   return(
     <div style={{minHeight:'100vh',display:'flex',flexDirection:'column'}}>
-      <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 32px',borderBottom:'1px solid var(--border-light)',background:'var(--bg-surface)',backdropFilter:'blur(12px)',position:'sticky',top:0,zIndex:20}}>
-        <div style={{display:'flex',alignItems:'center',gap:14}}>
-          <div style={{width:40,height:40,background:'transparent',border:'1px solid var(--accent-gold)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 12px var(--accent-glow)'}}>
-            <span style={{color:'var(--accent-gold)',fontSize:20}}>☀</span>
-          </div>
-          <div><h1 className="serif" style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase'}}>{t('tagline',lang)}</p></div>
-        </div>
-        <div style={{display:'flex', gap:12}}>
-          
-          <button type="button" onClick={()=>document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light')} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
-            <span style={{fontSize:16}}>☾</span>
-          </button>
-
-          <select value={lang} onChange={e=>setLang(e.target.value)} className="lux-input" style={{width:'auto',padding:'6px 10px',background:'transparent',border:'1px solid var(--border-light)'}}>
-            {LANGS.map(l=><option key={l.code} value={l.code} style={{background:'var(--bg-input)'}}>{l.label}</option>)}
-          </select>
-        </div>
-      </header>
-      <DailyPanchang/>
+      
       <div style={{textAlign:'center',padding:'50px 24px 20px'}}>
         
         <h2 className="serif" style={{margin:'0 0 10px',fontSize:32,color:'var(--text-main)',letterSpacing:1}}>{t('inputTitle',lang)}</h2>
@@ -2984,22 +2968,6 @@ function ResultsPage({K,onBack,lang,setLang}){
   return(
     <div style={{minHeight:'100vh',background:'var(--bg-dark)'}}>
       {/* Header */}
-      <header className="no-print" style={{background:'rgba(7,7,7,0.8)',backdropFilter:'blur(12px)',borderBottom:'1px solid var(--border-light)',padding:'16px 30px',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,zIndex:20}}>
-        <div style={{display:'flex',alignItems:'center',gap:16}}>
-          <button onClick={onBack} className="lux-tab" style={{margin:0,padding:'8px 14px',border:'1px solid var(--border-light)',borderRadius:6}}>{t('back',lang)}</button>
-          <div style={{display:'flex',alignItems:'center',gap:12}}>
-            <div style={{width:36,height:36,border:'1px solid var(--accent-gold)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 12px var(--accent-glow)'}}><span style={{color:'var(--accent-gold)',fontSize:18}}>☀</span></div>
-            <span className="serif" style={{fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase'}}>Jyotish Darshan</span>
-          </div>
-        </div>
-        <div style={{display:'flex',gap:12,alignItems:'center'}}>
-          <select value={lang} onChange={e=>setLang(e.target.value)} className="lux-input" style={{width:'auto',padding:'8px 10px',background:'transparent',border:'1px solid var(--border-light)'}}>
-            {LANGS.map(l=><option key={l.code} value={l.code} style={{background:'var(--bg-input)'}}>{l.label}</option>)}
-          </select>
-          <button onClick={share} className="lux-tab" style={{margin:0,border:'1px solid var(--border-light)',padding:'8px 14px',borderRadius:6,color:copied?'#10B981':'var(--text-muted)'}}>{copied?t('copied',lang):t('share',lang)}</button>
-          <button onClick={()=>downloadPDF(K,lang)} className="lux-btn" style={{padding:'10px 18px',fontSize:11}}>{t('download',lang)}</button>
-        </div>
-      </header>
       {/* Banner */}
       <div style={{background:'linear-gradient(to right, #111, #000)',borderBottom:'1px solid var(--border-light)',padding:'30px 40px'}}>
         <div style={{maxWidth:1100,margin:'0 auto'}}>
@@ -3053,8 +3021,48 @@ const ASTRO_DICT = {
 };
 function t_astro(key, lang) {
     if(ASTRO_DICT[lang] && ASTRO_DICT[lang][key]) return ASTRO_DICT[lang][key];
-    const enDict = { moon:'Moon', sun:'Sun', rahu:'Rahu', yama:'Yama', vs:'VS', tithi:'Tithi', nak:'Nak', yoga:'Yoga', kar:'Karana', shukla:'Shukla Paksha', krishna:'Krishna Paksha' };
+    const enDict = { moon:'Moon', sun:'Sun', rahu:'Rahu', yama:'Yama', vs:'VS', tithi:'Tithi', nak:'Nak', yoga:'Yoga', kar:'Karana', shukla:'Shukla Paksha', krishna:'Krishna Paksha' }
+function t_meridiem(meridiem, lang) {
+    const dict = {
+        hi: { AM:'पूर्वाह्न', PM:'अपराह्न' },
+        kn: { AM:'ಬೆಳಿಗ್ಗೆ', PM:'ಸಂಜೆ' }, // roughly
+        te: { AM:'ఉదయం', PM:'సాయంత్రం' },
+        ta: { AM:'காலை', PM:'மாலை' },
+        sa: { AM:'पूर्वाह्नम्', PM:'अपराह्नम्' },
+        mr: { AM:'सकाळ', PM:'संध्याकाळ' },
+        bn: { AM:'পূর্বাহ্ন', PM:'অপরাহ্ন' },
+        ml: { AM:'രാവിലെ', PM:'വൈകുന്നേരം' },
+        gu: { AM:'સવાર', PM:'સાંજ' },
+        en: { AM:'AM', PM:'PM' }
+    };
+    meridiem = meridiem.toUpperCase();
+    if(dict[lang] && dict[lang][meridiem]) return dict[lang][meridiem];
+    return meridiem;
+};
     return enDict[key] || key;
+}
+
+
+function AppHeader({ lang, setLang }) {
+  const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
+  return (
+      <header className="app-header" style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 32px',borderBottom:'1px solid var(--border-light)',background:'var(--bg-surface)',backdropFilter:'blur(12px)',position:'sticky',top:0,zIndex:20}}>
+        <div style={{display:'flex',alignItems:'center',gap:14}}>
+          <div style={{width:40,height:40,background:'transparent',border:'1px solid var(--accent-gold)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 12px var(--accent-glow)'}}>
+            <span style={{color:'var(--accent-gold)',fontSize:20}}>☀</span>
+          </div>
+          <div><h1 className="serif" style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase'}}>{t('tagline',lang)}</p></div>
+        </div>
+        <div style={{display:'flex', gap:12}}>
+          <button type="button" onClick={()=>document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light')} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
+            <span style={{fontSize:16}}>☾</span>
+          </button>
+          <select value={lang} onChange={e=>setLang(e.target.value)} className="lux-input" style={{width:'auto',padding:'6px 10px',background:'transparent',border:'1px solid var(--border-light)'}}>
+            {LANGS.map(l=><option key={l.code} value={l.code} style={{background:'var(--bg-input)',color:'var(--text-main)'}}>{l.label}</option>)}
+          </select>
+        </div>
+      </header>
+  );
 }
 
 function App(){
@@ -3077,9 +3085,16 @@ function App(){
   function handleBack(){setScreen('input');history.replaceState({},'',location.pathname)}
 
   if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FFF7ED',fontFamily:'serif'}}><div style={{background:'white',borderRadius:12,padding:28,maxWidth:400,border:'1px solid #FDE68A',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'#92400E',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'#7C3AED',color:'white',cursor:'pointer',fontFamily:'inherit',fontSize:14}}>{t('tryAgain',lang)}</button></div></div>;
-  if(screen==='results'&&kundali)return<ResultsPage K={kundali} onBack={handleBack} lang={lang} setLang={handleLang}/>;
-  return<InputForm onSubmit={handleSubmit} lang={lang} setLang={handleLang}/>;
-}
+  
+    const goBack = () => { setScreen('input'); history.replaceState({},'',location.pathname); };
+    return (
+      <div style={{minHeight:'100vh',display:'flex',flexDirection:'column'}}>
+        <AppHeader lang={lang} setLang={handleLang} />
+        <DailyPanchang lang={lang} />
+        {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
+      </div>
+    );
+  }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
