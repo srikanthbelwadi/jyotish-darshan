@@ -29,6 +29,7 @@
   --text-badge-green: #b1ffce;
   --bg-badge-neutral: rgba(255,255,255,0.1);
   --text-badge-neutral: #e0e0e0;
+  --bg-header-gradient: linear-gradient(to right, #111, #000);
 }
 
 body[data-theme='light'] {
@@ -52,6 +53,7 @@ body[data-theme='light'] {
   --text-badge-green: #1B5E20;
   --bg-badge-neutral: #F0F0F0;
   --text-badge-neutral: #333333;
+  --bg-header-gradient: linear-gradient(to right, #F3F1EC, #FFFFFF);
 }
 
 body {
@@ -1783,7 +1785,7 @@ function SouthChart({planets,lagnaR,size=320,small=false,title,lang='en'}){
                 const cx=cols===2?pi%2:0,cy=cols===2?Math.floor(pi/2):pi;
                 return(
                   <text key={pi} x={x+4+cx*(cell/2-3)} y={y+(small?18:24)+cy*(small?11:16)} fontSize={pfs} fill={p.retro?'#EF4444':'var(--text-main)'} fontWeight="700">
-                    {(L_ABBR[lang]||L_ABBR.en)[p.key]||ABBR[p.key]}{p.retro?'℞':''}{p.exalted?'↑':''}{p.debil?'↓':''}
+                    {(L_ABBR[lang]||L_ABBR.en)[p.key]||ABBR[p.key]}{p.retro?'(R)':''}{p.exalted?'↑':''}{p.debil?'↓':''}
                   </text>
                 );
               })}
@@ -1824,7 +1826,7 @@ function NorthChart({planets,lagnaR,size=320,small=false,title,lang='en'}){
               {isL&&<text x={lx} y={ly+14} textAnchor="middle" fontSize={small?9:12} fill="var(--accent-gold)" fontWeight="bold">{t('ch.asc',lang)}</text>}
               {ps.map((p,pi)=>(
                 <text key={pi} x={lx} y={ly+(isL?28:14)+pi*(small?10:13)} textAnchor="middle" fontSize={small?10:14} fill="var(--text-main)" fontWeight="700">
-                  {(L_ABBR[lang]||L_ABBR.en)[p.key]||ABBR[p.key]}{p.retro?'℞':''}
+                  {(L_ABBR[lang]||L_ABBR.en)[p.key]||ABBR[p.key]}{p.retro?'(R)':''}
                 </text>
               ))}
             </g>
@@ -2425,9 +2427,9 @@ function OverviewTab({K,fmt,lang='en'}){
       <Card>
         <h3 style={{margin:'0 0 12px',fontSize:14,color:'var(--text-main)',fontWeight:700}}>{t('ov.curDasha',lang)}</h3>
         <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12}}>
-          {[{lbl:t('ov.maha',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet,period:`${cur?.startStr}–${cur?.endStr}`,bg:'#F5F0FF',clr:'#7C3AED'},
-            {lbl:t('ov.antar',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[curA?.planet]||curA?.planet,period:`${curA?.startStr}–${curA?.endStr}`,bg:'#FFF7ED',clr:'#D97706'},
-            {lbl:t('ov.birth',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[dasha.nakLord]||dasha.nakLord,period:`${t('ov.nakshatra',lang)}: ${(L_NAKS[lang]||L_NAKS.en)[K.planets.find(p=>p.key==='moon')?.nIdx]||dasha.nakName}`,bg:'#FFF1F2',clr:'#E11D48'}].map(({lbl,p,period,bg,clr})=>(
+          {[{lbl:t('ov.maha',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet,period:`${cur?.startStr}–${cur?.endStr}`,bg:'var(--bg-badge-purple)',clr:'var(--text-badge-purple)'},
+            {lbl:t('ov.antar',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[curA?.planet]||curA?.planet,period:`${curA?.startStr}–${curA?.endStr}`,bg:'var(--bg-badge-orange)',clr:'var(--text-badge-orange)'},
+            {lbl:t('ov.birth',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[dasha.nakLord]||dasha.nakLord,period:`${t('ov.nakshatra',lang)}: ${(L_NAKS[lang]||L_NAKS.en)[K.planets.find(p=>p.key==='moon')?.nIdx]||dasha.nakName}`,bg:'var(--bg-badge-green)',clr:'var(--text-badge-green)'}].map(({lbl,p,period,bg,clr})=>(
             <div key={lbl} style={{background:bg,borderRadius:10,padding:12,textAlign:'center'}}>
               <p style={{margin:'0 0 3px',fontSize:10,color:clr,textTransform:'uppercase',letterSpacing:1,fontWeight:600}}>{lbl}</p>
               <p style={{margin:'0 0 3px',fontSize:18,fontWeight:700,color:'var(--text-main)',textTransform:'capitalize'}}>{p||'—'}</p>
@@ -2450,7 +2452,7 @@ function ChartsTab({K,fmt,setFmt,lang='en'}){
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
         <h3 style={{margin:0,fontSize:15,color:'var(--text-main)',fontWeight:700}}>{t('tabs.charts',lang)} — {t('ch.shodasha',lang)}</h3>
         <div style={{display:'flex',gap:3,background:'var(--bg-input)',borderRadius:7,padding:3}}>
-          {['south','north'].map(f=><button key={f} onClick={()=>setFmt(f)} style={{padding:'5px 12px',borderRadius:5,border:'none',background:fmt===f?'white':'transparent',boxShadow:fmt===f?'0 1px 3px rgba(0,0,0,0.1)':'none',cursor:'pointer',fontSize:12,fontFamily:'inherit',fontWeight:fmt===f?700:400,color:'var(--text-main)'}}>{f==='south'?t('ch.south',lang):t('ch.north',lang)}</button>)}
+          {['south','north'].map(f=><button key={f} onClick={()=>setFmt(f)} style={{padding:'5px 12px',borderRadius:5,border:'none',background:fmt===f?'var(--text-main)':'transparent',boxShadow:fmt===f?'0 1px 3px rgba(0,0,0,0.1)':'none',cursor:'pointer',fontSize:12,fontFamily:'inherit',fontWeight:fmt===f?700:400,color:fmt===f?'var(--bg-card)':'var(--text-main)'}}>{f==='south'?t('ch.south',lang):t('ch.north',lang)}</button>)}
         </div>
       </div>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:20}}>
@@ -2515,7 +2517,7 @@ function PlanetsTab({K,lang='en'}){
                 <td style={{padding:'10px 10px',color:'var(--text-main)'}}>{(L_GRAHA[lang]||L_GRAHA.en)[RASHI_LORD[p.rashi]]||RASHI_LORD[p.rashi]}</td>
                 <td style={{padding:'10px 10px',textAlign:'center',fontWeight:600}}>{p.house}</td>
                 <td style={{padding:'10px 10px'}}>
-                  {p.retro&&<Badge t={'℞ '+((L_STATUS[lang]||L_STATUS.en).retrograde)} bg="#FEE2E2" clr="#DC2626"/>}
+                  {p.retro&&<Badge t={'(R) '+((L_STATUS[lang]||L_STATUS.en).retrograde)} bg="#FEE2E2" clr="#DC2626"/>}
                   {p.combust&&<Badge t={(L_STATUS[lang]||L_STATUS.en).combust} bg="#FEF3C7" clr="#D97706"/>}
                   {p.exalted&&<Badge t={'↑ '+((L_STATUS[lang]||L_STATUS.en).exalted)} bg="#DCFCE7" clr="#16A34A"/>}
                   {p.debil&&<Badge t={'↓ '+((L_STATUS[lang]||L_STATUS.en).debilitated)} bg="#FEE2E2" clr="#DC2626"/>}
@@ -2840,7 +2842,7 @@ function makeSVGChart(planets,lagnaR,size,lang='en'){
     s+=`<text x="${x+3}" y="${y+11}" font-size="9" fill="var(--text-muted)" font-family="Georgia,serif">${ri+1}</text>`;
     if(isL)s+=`<text x="${x+cell-4}" y="${y+11}" font-size="9" fill="#7C3AED" text-anchor="end" font-weight="bold" font-family="Georgia,serif">${(STRINGS[lang]||STRINGS.en)['ch.asc']||'Lg'}</text>`;
     ps.forEach((p,pi)=>{
-      const ab=(ABBR2[p.key]||ABBR2[p.key]||p.key.slice(0,2)),fl=(p.retro?'℞':'')+(p.exalted?'↑':p.debil?'↓':''),clr=PCLR2[p.key]||'#1E3A5F';
+      const ab=(ABBR2[p.key]||ABBR2[p.key]||p.key.slice(0,2)),fl=(p.retro?'(R)':'')+(p.exalted?'↑':p.debil?'↓':''),clr=PCLR2[p.key]||'#1E3A5F';
       s+=`<text x="${x+4}" y="${y+22+pi*13}" font-size="11" fill="${clr}" font-weight="600" font-family="Georgia,serif">${ab}${fl}</text>`;
     });
   });
@@ -2998,7 +3000,7 @@ function ResultsPage({K,onBack,lang,setLang}){
         </div>
       </div>
       {/* Banner */}
-      <div style={{background:'linear-gradient(to right, #111, #000)',borderBottom:'1px solid var(--border-light)',padding:'30px 40px'}}>
+      <div style={{background:'var(--bg-header-gradient)',borderBottom:'1px solid var(--border-light)',padding:'30px 40px'}}>
         <div style={{maxWidth:1100,margin:'0 auto'}}>
           <h2 className="serif" style={{margin:'0 0 12px',fontSize:24,fontWeight:400,color:'var(--accent-gold)',letterSpacing:1.5}}>{t('inputTitle',lang)} — {input.city}, {input.country}</h2>
           <div style={{display:'flex',flexWrap:'wrap',gap:'14px 28px',fontSize:13,color:'var(--text-secondary)',marginBottom:16}}>
