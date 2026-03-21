@@ -22,9 +22,17 @@ export function calculateMatch(k1, k2) {
   const isM2 = [1, 4, 7, 8, 12].includes(m2);
 
   let manglikStatus = "";
-  if (isM1 && isM2) manglikStatus = "Both are Manglik. Manglik Dosha is cancelled, allowing for excellent marital harmony.";
-  else if (!isM1 && !isM2) manglikStatus = "Neither is Manglik. No Manglik Dosha present.";
-  else manglikStatus = "Manglik Dosha Present! One partner is Manglik while the other is not. This can cause significant friction in marriage unless specific astrological remedies are performed.";
+  let manglikKey = "";
+  if (isM1 && isM2) {
+    manglikStatus = "Both are Manglik. Manglik Dosha is cancelled, allowing for excellent marital harmony.";
+    manglikKey = "manBoth";
+  } else if (!isM1 && !isM2) {
+    manglikStatus = "Neither is Manglik. No Manglik Dosha present.";
+    manglikKey = "manNeither";
+  } else {
+    manglikStatus = "Manglik Dosha Present! One partner is Manglik while the other is not. This can cause significant friction in marriage unless specific astrological remedies are performed.";
+    manglikKey = "manPresent";
+  }
 
   const NAK_NAMES = ['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishta','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
   const RASHI_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
@@ -63,9 +71,17 @@ export function calculateMatch(k1, k2) {
   const totalScore = varnaScore + vashyaScore + taraScore + yoniScore + grahaScore + ganaScore + bhakootScore + nadiScore;
 
   let summary = "";
-  if (totalScore >= 26) summary = "A Highly Excellent Match. Exceptional alignment across mental, physical, and spiritual dimensions.";
-  else if (totalScore >= 18) summary = "A Good, Stable Match. Solid foundation, with typical relationship adjustments required.";
-  else summary = "A Challenging Match. Requires immense patience, understanding, and conscious effort to sustain harmony.";
+  let summaryKey = "";
+  if (totalScore >= 26) {
+    summary = "A Highly Excellent Match. Exceptional alignment across mental, physical, and spiritual dimensions.";
+    summaryKey = "sumHigh";
+  } else if (totalScore >= 18) {
+    summary = "A Good, Stable Match. Solid foundation, with typical relationship adjustments required.";
+    summaryKey = "sumMed";
+  } else {
+    summary = "A Challenging Match. Requires immense patience, understanding, and conscious effort to sustain harmony.";
+    summaryKey = "sumLow";
+  }
 
   return {
     p1: { name: p1.name, rashi: RASHI_NAMES[p1.rashi], nakshatra: NAK_NAMES[p1.nakshatra], isManglik: isM1 },
@@ -73,16 +89,18 @@ export function calculateMatch(k1, k2) {
     totalScore,
     maxScore: 36,
     summary,
+    summaryKey,
     manglikStatus,
+    manglikKey,
     elements: [
-      { name: 'Varna (Work Ethic)', score: varnaScore, max: 1, desc: varnaDesc },
-      { name: 'Vashya (Attraction)', score: vashyaScore, max: 2, desc: vashyaDesc },
-      { name: 'Tara (Destiny)', score: taraScore, max: 3, desc: taraDesc },
-      { name: 'Yoni (Intimacy)', score: yoniScore, max: 4, desc: yoniDesc },
-      { name: 'Graha Maitri (Friendship)', score: grahaScore, max: 5, desc: grahaDesc },
-      { name: 'Gana (Temperament)', score: ganaScore, max: 6, desc: ganaDesc },
-      { name: 'Bhakoot (Growth)', score: bhakootScore, max: 7, desc: bhakootDesc },
-      { name: 'Nadi (Genetics)', score: nadiScore, max: 8, desc: nadiDesc },
+      { key: 'varna', name: 'Varna (Work Ethic)', score: varnaScore, max: 1, descKey: varnaScore === 1.0 ? 'varnaHigh' : 'varnaLow', desc: varnaDesc },
+      { key: 'vashya', name: 'Vashya (Attraction)', score: vashyaScore, max: 2, descKey: vashyaScore === 2.0 ? 'vashyaHigh' : 'vashyaLow', desc: vashyaDesc },
+      { key: 'tara', name: 'Tara (Destiny)', score: taraScore, max: 3, descKey: taraScore === 3.0 ? 'taraHigh' : 'taraLow', desc: taraDesc },
+      { key: 'yoni', name: 'Yoni (Intimacy)', score: yoniScore, max: 4, descKey: yoniScore === 4.0 ? 'yoniHigh' : 'yoniLow', desc: yoniDesc },
+      { key: 'graha', name: 'Graha Maitri (Friendship)', score: grahaScore, max: 5, descKey: grahaScore === 5.0 ? 'grahaHigh' : 'grahaLow', desc: grahaDesc },
+      { key: 'gana', name: 'Gana (Temperament)', score: ganaScore, max: 6, descKey: ganaScore === 6.0 ? 'ganaHigh' : 'ganaLow', desc: ganaDesc },
+      { key: 'bhakoot', name: 'Bhakoot (Growth)', score: bhakootScore, max: 7, descKey: bhakootScore === 7.0 ? 'bhakootHigh' : 'bhakootLow', desc: bhakootDesc },
+      { key: 'nadi', name: 'Nadi (Genetics)', score: nadiScore, max: 8, descKey: nadiScore === 8.0 ? 'nadiHigh' : 'nadiLow', desc: nadiDesc },
     ]
   };
 }
