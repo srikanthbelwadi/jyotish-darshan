@@ -1,8 +1,16 @@
 import React from 'react';
 import { calculateMatch } from '../engine/matchmaking.js';
+import { L_NAKS } from '../App.jsx';
 
 export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(x)=>x, lang }) {
   const match = calculateMatch(primaryKundali, partnerKundali);
+  
+  const englishNakshatras = L_NAKS.en;
+  const translatedNakshatras = L_NAKS[lang] || L_NAKS.en;
+  const p1NakIndex = englishNakshatras.indexOf(match.p1.nakshatra);
+  const p2NakIndex = englishNakshatras.indexOf(match.p2.nakshatra);
+  const p1NakTranslated = p1NakIndex !== -1 ? translatedNakshatras[p1NakIndex] : match.p1.nakshatra;
+  const p2NakTranslated = p2NakIndex !== -1 ? translatedNakshatras[p2NakIndex] : match.p2.nakshatra;
 
   return (
     <div style={{
@@ -24,13 +32,13 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
         <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', textAlign: 'center' }}>
           <h4 style={{ margin: '0 0 8px', color: 'var(--text-main)', fontSize: '18px' }}>{match.p1.name === 'User' ? t('comp.user',lang) : match.p1.name}</h4>
           <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.moonR',lang)}: <span style={{color:'var(--accent-gold)'}}>{match.p1.rashi}</span></div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.nak',lang)}: <span style={{color:'var(--accent-gold)'}}>{match.p1.nakshatra}</span></div>
+          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.nak',lang)}: <span style={{color:'var(--accent-gold)'}}>{p1NakTranslated}</span></div>
           <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>{t('comp.manglik',lang)}: <span style={{color: match.p1.isManglik ? '#EF4444' : '#10B981'}}>{match.p1.isManglik ? t('comp.yes',lang) : t('comp.no',lang)}</span></div>
         </div>
         <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', textAlign: 'center' }}>
           <h4 style={{ margin: '0 0 8px', color: 'var(--text-main)', fontSize: '18px' }}>{match.p2.name === 'Partner' ? t('comp.partner',lang) : match.p2.name}</h4>
           <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.moonR',lang)}: <span style={{color:'var(--accent-gold)'}}>{match.p2.rashi}</span></div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.nak',lang)}: <span style={{color:'var(--accent-gold)'}}>{match.p2.nakshatra}</span></div>
+          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.nak',lang)}: <span style={{color:'var(--accent-gold)'}}>{p2NakTranslated}</span></div>
           <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>{t('comp.manglik',lang)}: <span style={{color: match.p2.isManglik ? '#EF4444' : '#10B981'}}>{match.p2.isManglik ? t('comp.yes',lang) : t('comp.no',lang)}</span></div>
         </div>
       </div>

@@ -386,7 +386,7 @@ bn:{sun:'সূ',moon:'চ',mars:'মং',mercury:'বু',jupiter:'বৃ',venu
 ml:{sun:'സൂ',moon:'ചന്',mars:'ചൊ',mercury:'ബു',jupiter:'വ്യാ',venus:'ശു',saturn:'ශ',rahu:'രാ',ketu:'കേ'}
 };
 
-const L_NAKS={
+export const L_NAKS={
 en:['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishtha','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'],
 hi:['अश्विनी','भरणी','कृत्तिका','रोहिणी','मृगशिरा','आर्द्रा','पुनर्वसु','पुष्य','आश्लेषा','मघा','पूर्व फाल्गुनी','उत्तर फाल्गुनी','हस्त','चित्रा','स्वाति','विशाखा','अनुराधा','ज्येष्ठा','मूल','पूर्व आषाढ','उत्तर आषाढ','श्रवण','धनिष्ठा','शतभिषा','पूर्व भाद्रपद','उत्तर भाद्रपद','रेवती'],
 kn:['ಅಶ್ವಿನಿ','ಭರಣಿ','ಕೃತ್ತಿಕಾ','ರೋಹಿಣಿ','ಮೃಗಶಿರಾ','ಆರ್ದ್ರಾ','ಪುನರ್ವಸು','ಪುಷ್ಯ','ಆಶ್ಲೇಷಾ','ಮಘಾ','ಪೂರ್ವ ಫಾಲ್ಗುನಿ','ಉತ್ತರ ಫಾಲ್ಗುನಿ','ಹಸ್ತ','ಚಿತ್ರಾ','ಸ್ವಾತಿ','ವಿಶಾಖಾ','ಅನುರಾಧಾ','ಜ್ಯೇಷ್ಠಾ','ಮೂಲ','ಪೂರ್ವ ಆಷಾಢ','ಉತ್ತರ ಆಷಾಢ','ಶ್ರವಣ','ಧನಿಷ್ಠಾ','ಶತಭಿಷಾ','ಪೂರ್ವ ಭಾದ್ರಪದ','ಉತ್ತರ ಭಾದ್ರಪದ','ರೇವತಿ'],
