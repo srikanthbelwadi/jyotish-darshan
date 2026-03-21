@@ -2860,7 +2860,17 @@ function ResultsPage({K,onBack,lang,setLang}){
           </div>
           
           {showPartnerForm && (
-            <CompatibilityInputForm onGeneratePartner={(pk) => { setPartnerKundali(pk); setShowPartnerForm(false); }} onCancel={() => setShowPartnerForm(false)} lang={lang} />
+            <CompatibilityInputForm onGeneratePartner={(inputParams) => { 
+            try { 
+              const pk = computeKundali(inputParams); 
+              pk.name = inputParams.name;
+              setPartnerKundali(pk); 
+              setShowPartnerForm(false); 
+            } catch(e) { 
+              alert("Error computing astrological chart. Please verify the birth details."); 
+              setShowPartnerForm(false);
+            } 
+          }} onCancel={() => setShowPartnerForm(false)} lang={lang} />
           )}
           {partnerKundali && (
             <CompatibilityMatch primaryKundali={K} partnerKundali={partnerKundali} lang={lang} />
