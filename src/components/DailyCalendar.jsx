@@ -7,7 +7,9 @@ export default function DailyCalendar({ kundali, lang, t=(k)=>k, rashiNames }) {
   // 1. Calculate Today's Moon Position (Transit/Gochar)
   const transitData = useMemo(() => {
     try {
-      if (!kundali || !kundali.moon || kundali.moon.rashiIndex === undefined) return null;
+      if (!kundali || !kundali.planets) return null;
+      const natalMoon = kundali.planets.find(p => p.key === 'moon');
+      if (!natalMoon || natalMoon.rashi === undefined) return null;
       
       const offset = -today.getTimezoneOffset() / 60;
       const jd = toJulianDay(
@@ -19,7 +21,7 @@ export default function DailyCalendar({ kundali, lang, t=(k)=>k, rashiNames }) {
       const transitMoonLon = sidereal.moon.longitude;
       const transitRashiIndex = Math.floor(transitMoonLon / 30);
       
-      const natalRashiIndex = kundali.moon.rashiIndex;
+      const natalRashiIndex = natalMoon.rashi;
       
       // Calculate house distance (1 to 12)
       const houseFromMoon = (transitRashiIndex - natalRashiIndex + 12) % 12 + 1;
