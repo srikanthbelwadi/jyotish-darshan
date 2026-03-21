@@ -2148,9 +2148,9 @@ function PredictionsTab({K,lang='en'}){
 
         <Card style={{marginBottom:14}} left="#8B5CF6">
           <h4 style={{margin:'0 0 10px',fontSize:13,color:'#8B5CF6',fontWeight:700}}>{PR.moonTitle}</h4>
-          <Chip label={PR.transitMoon} val={`${tMoonName} (House ${moonFromNat})`} bg='#EDE9FE' clr='#8B5CF6'/>
-          <Chip label={PR.natalMoon} val={`${natMoonName} (House ${natMoon.house})`} bg='#F5F0FF' clr='#7C3AED'/>
-          <Chip label={PR.moonHouseThemes} val={HT[moonFromNat]||'Lunar Transit'} bg='#F0FDF4' clr='#15803D'/>
+          <Chip label={PR.transitMoon} val={`${tMoonName} (House ${moonFromNat})`} bg='var(--bg-badge-purple)' clr='var(--text-badge-purple)'/>
+          <Chip label={PR.natalMoon} val={`${natMoonName} (House ${natMoon.house})`} bg='var(--bg-badge-purple)' clr='var(--text-badge-purple)'/>
+          <Chip label={PR.moonHouseThemes} val={HT[moonFromNat]||'Lunar Transit'} bg='var(--bg-badge-green)' clr='var(--text-badge-green)'/>
           <p style={{margin:'12px 0 0',fontSize:12.5,color:'var(--text-main)',lineHeight:1.85}}>
             {XP.moonDesc(tMoonName, HT[moonFromNat]||'', natMoonName, natMoon.house)}
             {' '}{moonFromNat===1?XP.m2_1:moonFromNat===6?XP.m2_6:moonFromNat===7?XP.m2_7:moonFromNat===10?XP.m2_10:XP.m2_def}
@@ -2160,10 +2160,10 @@ function PredictionsTab({K,lang='en'}){
 
         <Card style={{marginBottom:14}} left="#F59E0B">
           <h4 style={{margin:'0 0 10px',fontSize:13,color:'#F59E0B',fontWeight:700}}>{PR.jupTitle}</h4>
-          <Chip label={PR.jupNow} val={tJupName} bg='#FFFBEB' clr='#B45309'/>
-          <Chip label={PR.fromLagna} val={`House ${jupFromLagna}`} bg='#FEF3C7' clr='#D97706'/>
-          <Chip label={PR.jupNatal} val={`${RASHI_N[natJup.rashi]} (House ${natJup.house})`} bg='#FEF3C7' clr='#D97706'/>
-          <Chip label={PR.jupLords} val={`Houses ${jupRulesH.join(', ')}`} bg='#FEF3C7' clr='#D97706'/>
+          <Chip label={PR.jupNow} val={tJupName} bg='var(--bg-badge-orange)' clr='var(--text-badge-orange)'/>
+          <Chip label={PR.fromLagna} val={`House ${jupFromLagna}`} bg='var(--bg-badge-orange)' clr='var(--text-badge-orange)'/>
+          <Chip label={PR.jupNatal} val={`${RASHI_N[natJup.rashi]} (House ${natJup.house})`} bg='var(--bg-badge-orange)' clr='var(--text-badge-orange)'/>
+          <Chip label={PR.jupLords} val={`Houses ${jupRulesH.join(', ')}`} bg='var(--bg-badge-orange)' clr='var(--text-badge-orange)'/>
           <p style={{margin:'12px 0 0',fontSize:12.5,color:'var(--text-main)',lineHeight:1.85}}>
             {XP.jupDesc(tJupName,jupFromLagna,RASHI_N[natJup.rashi]||'',natJup.house)}{' '}
             {natJup.rashi===tJup.rashi?XP.j_ret:XP.j_nret}
@@ -2178,11 +2178,11 @@ function PredictionsTab({K,lang='en'}){
 
         <Card style={{marginBottom:14}} left="#475569">
           <h4 style={{margin:'0 0 10px',fontSize:13,color:'#475569',fontWeight:700}}>{PR.satTitle}</h4>
-          <Chip label={PR.satNow} val={tSatName} bg='#F1F5F9' clr='#475569'/>
-          <Chip label={PR.fromNatMoon} val={`${satFromMoon} houses`} bg='#F1F5F9' clr='#475569'/>
-          <Chip label={PR.satNatal} val={`${RASHI_N[natSat.rashi]} (House ${natSat.house})`} bg='#F1F5F9' clr='#475569'/>
-          {sadePh&&<><Chip label={PR.sadeSatiPhase} val={sadePh.charAt(0).toUpperCase()+sadePh.slice(1)} bg='#FEE2E2' clr='#DC2626'/></>}
-          {kantaka&&<><Chip label={PR.kantakaShani} val="Active — Saturn 8th from Moon" bg='#FEE2E2' clr='#DC2626'/></>}
+          <Chip label={PR.satNow} val={tSatName} bg='var(--bg-badge-neutral)' clr='var(--text-badge-neutral)'/>
+          <Chip label={PR.fromNatMoon} val={`${satFromMoon} houses`} bg='var(--bg-badge-neutral)' clr='var(--text-badge-neutral)'/>
+          <Chip label={PR.satNatal} val={`${RASHI_N[natSat.rashi]} (House ${natSat.house})`} bg='var(--bg-badge-neutral)' clr='var(--text-badge-neutral)'/>
+          {sadePh&&<><Chip label={PR.sadeSatiPhase} val={sadePh.charAt(0).toUpperCase()+sadePh.slice(1)} bg='var(--bg-badge-red)' clr='var(--text-badge-red)'/></>}
+          {kantaka&&<><Chip label={PR.kantakaShani} val="Active — Saturn 8th from Moon" bg='var(--bg-badge-red)' clr='var(--text-badge-red)'/></>}
           <p style={{margin:'12px 0 0',fontSize:12.5,color:'var(--text-main)',lineHeight:1.85}}>
             {XP.satDesc(tSatName)}{' '}
             {sadePh?(sadePh==='rising'?XP.s_sade_r:sadePh==='peak'?XP.s_sade_p:XP.s_sade_s):
