@@ -8,15 +8,15 @@ import { test, expect } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { getLahiriAyanamsa, toJulianDay, computeAscendant, computePlanetPositions } from '../src/engine/astronomy.js';
+import { nakshatraFromLongitude, rashiFromLongitude, computeVimshottariDasha, computePanchang } from '../src/engine/vedic.js';
+import { DASHA_PERIODS as DASHA_YRS, EXALTATION as EXALT, DEBILITATION as DEBIL } from '../src/engine/constants.js';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const referenceCharts = JSON.parse(readFileSync(join(__dirname, 'fixtures/reference-charts.json'), 'utf8'));
 
-const APP_URL = '/index.html';
-
-// Helper: load the app and get access to computation functions
-async function getComputeFns(page) {
-  await page.goto(APP_URL);
-  await page.waitForTimeout(3000); // Wait for Babel to compile
+function norm(lon) {
+  return ((lon % 360) + 360) % 360;
 }
 
 // ────────────────────────────────────────────────────────────
@@ -30,12 +30,10 @@ test.describe('ACC-03: Lahiri Ayanamsa', () => {
   ];
 
   for (const { date, expected, tol, label } of KNOWN_AYANAMSA) {
-    test(`Ayanamsa for ${label} ≈ ${expected}° (±${tol}°)`, async ({ page }) => {
-      await getComputeFns(page);
-      const aya = await page.evaluate(([y, m, d, h, mi, utc]) => {
-        const jd = toJD(y, m, d, h, mi, utc);
-        return lahiri(jd);
-      }, date);
+    test(`Ayanamsa for ${label} ≈ ${expected}° (±${tol}°)`, async () => {
+      const [y, m, d, h, mi, utc] = date;
+      const jd = toJulianDay(y, m, d, h, mi, utc);
+      const aya = getLahiriAyanamsa(jd);
 
       expect(aya).toBeCloseTo(expected, 1);
       expect(Math.abs(aya - expected)).toBeLessThanOrEqual(tol);
@@ -56,14 +54,10 @@ test.describe('ACC-04: Nakshatra and Pada', () => {
   ];
 
   for (const { lon, nak, name, pada, label } of CASES) {
-    test(`Nakshatra at ${label}`, async ({ page }) => {
-      await getComputeFns(page);
-      const result = await page.evaluate((longitude) => {
-        return nakshatra(longitude);
-      }, lon);
-
-      expect(result.idx).toBe(nak);
-      expect(result.name).toBe(name);
+    test(`Nakshatra at ${label}`, async () => {
+      const result = nakshatraFromLongitude(lon);
+      expect(result.index).toBe(nak);
+      expect(result.nakshatra.name).toBe(name);
       expect(result.pada).toBe(pada);
     });
   }
@@ -83,9 +77,8 @@ test.describe('ACC-05: Rashi Assignment', () => {
   ];
 
   for (const { lon, expected, label } of CASES) {
-    test(`Rashi: ${label}`, async ({ page }) => {
-      await getComputeFns(page);
-      const result = await page.evaluate((longitude) => rashi(longitude), lon);
+    test(`Rashi: ${label}`, async () => {
+      const result = rashiFromLongitude(lon);
       expect(result).toBe(expected);
     });
   }
@@ -96,17 +89,13 @@ test.describe('ACC-05: Rashi Assignment', () => {
 // ────────────────────────────────────────────────────────────
 test.describe('ACC-06: Dasha Period Totals', () => {
   for (const chart of referenceCharts) {
-    test(`Dasha total = 120 years for ${chart.id}`, async ({ page }) => {
-      await getComputeFns(page);
-      const total = await page.evaluate((inp) => {
-        const jd = toJD(inp.year, inp.month, inp.day, inp.hour, inp.minute, inp.utcOffset);
-        const { sid } = allPlanets(jd);
-        const moonLon = sid.moon.lon;
-        const dasha = dasha_calc(moonLon, jd);
-        // Sum the standard dasha years (not the partial first period)
-        return dasha.mahadashas.reduce((sum, m) => sum + (DASHA_YRS[m.planet] || 0), 0);
-      }, chart.input);
-
+    test(`Dasha total = 120 years for ${chart.id}`, async () => {
+      const inp = chart.input;
+      const jd = toJulianDay(inp.year, inp.month, inp.day, inp.hour, inp.minute, inp.utcOffset);
+      const { sidereal } = computePlanetPositions(jd);
+      const moonLon = sidereal.moon.longitude;
+      const dasha = computeVimshottariDasha(moonLon, jd);
+      const total = dasha.mahadashas.reduce((sum, m) => sum + (DASHA_YRS[m.planet] || 0), 0);
       expect(total).toBe(120);
     });
   }
@@ -117,28 +106,26 @@ test.describe('ACC-06: Dasha Period Totals', () => {
 // ────────────────────────────────────────────────────────────
 test.describe('ACC-01/02: Planetary Positions', () => {
   for (const chart of referenceCharts) {
-    test(`Planets computed for ${chart.id} — all valid`, async ({ page }) => {
-      await getComputeFns(page);
-      const result = await page.evaluate((inp) => {
-        const jd = toJD(inp.year, inp.month, inp.day, inp.hour, inp.minute, inp.utcOffset);
-        const { sid, ay } = allPlanets(jd);
-        const asc = computeAsc(jd, inp.lat, inp.lng);
-        const sidAsc = norm(asc - ay);
-        return {
-          ayanamsa: ay,
-          ascLon: sidAsc,
-          ascRashi: Math.floor(sidAsc / 30),
-          planets: Object.fromEntries(
-            Object.entries(sid).map(([k, v]) => [k, {
-              lon: v.lon,
-              rashi: Math.floor(v.lon / 30),
-              retro: v.retro || false,
-            }])
-          ),
-        };
-      }, chart.input);
+    test(`Planets computed for ${chart.id} — all valid`, async () => {
+      const inp = chart.input;
+      const jd = toJulianDay(inp.year, inp.month, inp.day, inp.hour, inp.minute, inp.utcOffset);
+      const { sidereal, ayanamsa } = computePlanetPositions(jd);
+      const asc = computeAscendant(jd, inp.lat, inp.lng);
+      const sidAsc = norm(asc - ayanamsa);
+      
+      const result = {
+        ayanamsa: ayanamsa,
+        ascLon: sidAsc,
+        ascRashi: Math.floor(sidAsc / 30),
+        planets: Object.fromEntries(
+          Object.entries(sidereal).map(([k, v]) => [k, {
+            lon: v.longitude,
+            rashi: Math.floor(v.longitude / 30),
+            retro: v.isRetrograde || false,
+          }])
+        ),
+      };
 
-      // Verify all planets have valid longitudes (0–360)
       for (const [planet, data] of Object.entries(result.planets)) {
         expect(data.lon, `${planet} longitude`).toBeGreaterThanOrEqual(0);
         expect(data.lon, `${planet} longitude`).toBeLessThan(360);
@@ -146,11 +133,9 @@ test.describe('ACC-01/02: Planetary Positions', () => {
         expect(data.rashi, `${planet} rashi`).toBeLessThanOrEqual(11);
       }
 
-      // Verify Lagna is valid
       expect(result.ascRashi).toBeGreaterThanOrEqual(0);
       expect(result.ascRashi).toBeLessThanOrEqual(11);
 
-      // Check specific expected values if provided
       if (chart.expected.ayanamsa) {
         expect(Math.abs(result.ayanamsa - chart.expected.ayanamsa.value))
           .toBeLessThanOrEqual(chart.expected.ayanamsa.tolerance);
@@ -159,8 +144,7 @@ test.describe('ACC-01/02: Planetary Positions', () => {
       if (chart.expected.planets) {
         for (const [planet, exp] of Object.entries(chart.expected.planets)) {
           if (exp.rashi !== undefined) {
-            expect(result.planets[planet].rashi, `${planet} rashi`)
-              .toBe(exp.rashi);
+            expect(result.planets[planet].rashi, `${planet} rashi`).toBe(exp.rashi);
           }
         }
       }
@@ -172,35 +156,18 @@ test.describe('ACC-01/02: Planetary Positions', () => {
 // ACC-07: Combustion Detection
 // ────────────────────────────────────────────────────────────
 test.describe('ACC-07: Combustion Detection', () => {
-  test('Mercury within 13° of Sun is combust', async ({ page }) => {
-    await getComputeFns(page);
-    const result = await page.evaluate(() => {
-      // Simulate: Sun at 100°, Mercury at 110° (10° away, within 13° threshold)
-      const sid = {
-        sun: { lon: 100, spd: 1 },
-        mercury: { lon: 110, spd: 1 },
-      };
-      const thresh = { mercury: 13 };
-      let d = Math.abs(sid.mercury.lon - sid.sun.lon);
-      if (d > 180) d = 360 - d;
-      return { distance: d, isCombust: d < thresh.mercury };
-    });
-    expect(result.isCombust).toBe(true);
+  test('Mercury within 13° of Sun is combust', async () => {
+    const sid = { sun: { lon: 100 }, mercury: { lon: 110 } };
+    let d = Math.abs(sid.mercury.lon - sid.sun.lon);
+    if (d > 180) d = 360 - d;
+    expect(d < 13).toBe(true);
   });
 
-  test('Mercury beyond 13° of Sun is NOT combust', async ({ page }) => {
-    await getComputeFns(page);
-    const result = await page.evaluate(() => {
-      const sid = {
-        sun: { lon: 100, spd: 1 },
-        mercury: { lon: 115, spd: 1 },
-      };
-      const thresh = { mercury: 13 };
-      let d = Math.abs(sid.mercury.lon - sid.sun.lon);
-      if (d > 180) d = 360 - d;
-      return { distance: d, isCombust: d < thresh.mercury };
-    });
-    expect(result.isCombust).toBe(false);
+  test('Mercury beyond 13° of Sun is NOT combust', async () => {
+    const sid = { sun: { lon: 100 }, mercury: { lon: 115 } };
+    let d = Math.abs(sid.mercury.lon - sid.sun.lon);
+    if (d > 180) d = 360 - d;
+    expect(d < 13).toBe(false);
   });
 });
 
@@ -208,7 +175,6 @@ test.describe('ACC-07: Combustion Detection', () => {
 // ACC-08: Exaltation and Debilitation
 // ────────────────────────────────────────────────────────────
 test.describe('ACC-08: Exaltation/Debilitation', () => {
-  // EXALT map from the app
   const EXALT_MAP = {
     sun: 0, moon: 1, mars: 9, mercury: 5,
     jupiter: 3, venus: 11, saturn: 6, rahu: 2, ketu: 8,
@@ -219,22 +185,18 @@ test.describe('ACC-08: Exaltation/Debilitation', () => {
   };
 
   for (const [planet, sign] of Object.entries(EXALT_MAP)) {
-    test(`${planet} exalted in sign ${sign}`, async ({ page }) => {
-      await getComputeFns(page);
-      const result = await page.evaluate(({ planet, sign }) => {
-        return EXALT[planet] === sign;
-      }, { planet, sign });
-      expect(result).toBe(true);
+    test(`${planet} exalted in sign ${sign}`, async () => {
+      expect(EXALT[planet].rashi).toBe(sign);
     });
   }
 
   for (const [planet, sign] of Object.entries(DEBIL_MAP)) {
-    test(`${planet} debilitated in sign ${sign}`, async ({ page }) => {
-      await getComputeFns(page);
-      const result = await page.evaluate(({ planet, sign }) => {
-        return DEBIL[planet] === sign;
-      }, { planet, sign });
-      expect(result).toBe(true);
+    test(`${planet} debilitated in sign ${sign}`, async () => {
+      if (DEBIL[planet]) {
+        expect(DEBIL[planet].rashi).toBe(sign);
+      } else {
+        expect(false).toBe(true); // Should not reach here for keys in DEBIL_MAP
+      }
     });
   }
 });
@@ -243,21 +205,17 @@ test.describe('ACC-08: Exaltation/Debilitation', () => {
 // ACC-13: Panchang Basic Validity
 // ────────────────────────────────────────────────────────────
 test.describe('ACC-13: Panchang', () => {
-  test('Panchang fields are all non-empty', async ({ page }) => {
-    await getComputeFns(page);
-    const result = await page.evaluate(() => {
-      const jd = toJD(2000, 1, 1, 12, 0, 0);
-      const { sid } = allPlanets(jd);
-      const panchang = typeof computePanchang !== 'undefined' ? computePanchang(sid.sun.lon, sid.moon.lon, jd) : null;
-      return panchang;
-    });
+  test('Panchang fields are all non-empty', async () => {
+    const jd = toJulianDay(2000, 1, 1, 12, 0, 0);
+    const { sidereal } = computePlanetPositions(jd);
+    const panchang = computePanchang(sidereal.sun.longitude, sidereal.moon.longitude, jd);
 
-    if (result) {
-      expect(result.tithi).toBeTruthy();
-      expect(result.vara).toBeTruthy();
-      expect(result.nakshatra).toBeTruthy();
-      expect(result.yoga).toBeTruthy();
-      expect(result.karana).toBeTruthy();
+    if (panchang) {
+      expect(panchang.tithi).toBeTruthy();
+      expect(panchang.vara).toBeTruthy();
+      expect(panchang.nakshatra).toBeTruthy();
+      expect(panchang.yoga).toBeTruthy();
+      expect(panchang.karana).toBeTruthy();
     }
   });
 });

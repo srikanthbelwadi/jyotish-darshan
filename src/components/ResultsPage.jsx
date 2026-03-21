@@ -9,9 +9,11 @@ import YogaTab from './tabs/YogaTab.jsx';
 import ShadbalaTab from './tabs/ShadbalaTab.jsx';
 import AshtakavargaTab from './tabs/AshtakavargaTab.jsx';
 import ExpertReadingTab from './tabs/ExpertReadingTab.jsx';
+import LifeDimensionsCard from './LifeDimensionsCard.jsx';
 
 const TABS = [
   { id: 'overview',  label: 'Overview',       icon: '☀' },
+  { id: 'dimensions',label: 'Life Dimensions', icon: '🌟' },
   { id: 'charts',    label: 'Charts',          icon: '⊞' },
   { id: 'planets',   label: 'Graha Sthiti',    icon: '♃' },
   { id: 'dasha',     label: 'Dasha',           icon: '⏳' },
@@ -137,6 +139,7 @@ export default function ResultsPage({ kundali, onBack, lang, onLangChange }) {
       {/* ── Tab Content ── */}
       <div ref={resultsRef} style={{ maxWidth: 1000, margin: '0 auto', padding: '24px 20px 48px' }}>
         {tab === 'overview' && <OverviewTab kundali={kundali} chartFormat={chartFormat} lang={lang} />}
+        {tab === 'dimensions' && <LifeDimensionsCard kundali={kundali} />}
         {tab === 'charts'  && <ChartsTab   kundali={kundali} chartFormat={chartFormat} onFormatChange={setChartFormat} lang={lang} />}
         {tab === 'planets' && <PlanetsTab  kundali={kundali} />}
         {tab === 'dasha'   && <DashaTab    kundali={kundali} />}
