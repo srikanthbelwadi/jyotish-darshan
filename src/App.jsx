@@ -347,7 +347,7 @@ function t(path,lang){
 // ════════════════════════════════════════════════════════════════
 // CONTENT LOCALIZATION (Rashi, Graha, Nakshatra, etc.)
 // ════════════════════════════════════════════════════════════════
-const L_RASHI={
+export const L_RASHI={
 en:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'],
 hi:['मेष','वृषभ','मिथुन','कर्क','सिंह','कन्या','तुला','वृश्चिक','धनु','मकर','कुम्भ','मीन'],
 kn:['ಮೇಷ','ವೃಷಭ','ಮಿಥುನ','ಕರ್ಕಾಟಕ','ಸಿಂಹ','ಕನ್ಯಾ','ತುಲಾ','ವೃಶ್ಚಿಕ','ಧನು','ಮಕರ','ಕುಂಭ','ಮೀನ'],

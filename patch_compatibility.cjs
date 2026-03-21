@@ -270,9 +270,9 @@ for (const lang of Object.keys(translations)) {
   }
   
   // We need to replace the comp.* block inside the lang block
-  const langRegex = new RegExp(`(${lang}:\\s*{[\\s\\S]*?)('comp\\.sumHigh'[\\s\\S]*?'comp\\.nadiLow':'[^']*')(,\\s*?'ov\\.)`, 'g');
-  content = content.replace(langRegex, (m, p1, p2, p3) => {
-    return p1 + replaceStr.trim().replace(/,$/, '') + p3;
+  const langRegex = new RegExp(`(${lang}:\\s*{[\\s\\S]*?)('comp\\.sumHigh'[\\s\\S]*?'comp\\.nadiLow':'[^']*')`, 'g');
+  content = content.replace(langRegex, (m, p1, p2) => {
+    return p1 + replaceStr.trim().replace(/,$/, '');
   });
 }
 
