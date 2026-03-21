@@ -1,5 +1,15 @@
 export const DYNAMIC_STRINGS = {
   en: {
+    'ov.mantraDesc_mix': 'Om Dum Durgayei Namah',
+    'ov.avoidDesc_mix': 'Extreme changes, hasty decisions',
+    'ov.favorableDesc_mix': 'Routine tasks, learning, organizing',
+    'ov.mantraDesc_unf': 'Om Namah Shivaya',
+    'ov.avoidDesc_unf': 'Major arguments, risky investments, travel',
+    'ov.favorableDesc_unf': 'Spiritual practices, resting, research',
+    'ov.mantraDesc_fav': 'Om Som Somaya Namah',
+    'ov.avoidDesc_fav': 'Overconfidence, ignoring details',
+    'ov.favorableDesc_fav': 'Starting new ventures, financial planning, socializing',
+    'ov.transitRationale': 'Transit Moon in {rashi} ({house}th from Janma Rashi)',
     'comp.addPartner': '+ ADD PARTNER', 'comp.cancel': 'CANCEL', 'comp.match': 'FIND MATCH', 
 
     'comp.milan':'Milan (Match)', 'comp.user':'User', 'comp.partner':'Partner', 'comp.moonR':'Moon Rashi', 'comp.nak':'Nakshatra', 'comp.manglik':'Manglik Status', 'comp.verdict':'Verdict', 'comp.kuja':'Kuja Dosha (Manglik)', 'comp.breakdown':'Detailed Setup Breakdown', 
@@ -70,6 +80,16 @@ export const DYNAMIC_STRINGS = {
     'ld.int.str.2': 'highly intuitive, creative, and drawn magnetically toward abstract thinking, spiritual learning, or artistic expression'
   },
   hi: {
+    'ov.mantraDesc_mix': 'ॐ दुं दुर्गायै नमः',
+    'ov.avoidDesc_mix': 'अत्यधिक परिवर्तन, जल्दबाजी में निर्णय',
+    'ov.favorableDesc_mix': 'दैनिक कार्य, सीखना, आयोजन',
+    'ov.mantraDesc_unf': 'ॐ नमः शिवाय',
+    'ov.avoidDesc_unf': 'बड़े विवाद, जोखिम भरे निवेश, यात्रा',
+    'ov.favorableDesc_unf': 'आध्यात्मिक अभ्यास, विश्राम, शोध',
+    'ov.mantraDesc_fav': 'ॐ सों सोमाय नमः',
+    'ov.avoidDesc_fav': 'अति आत्मविश्वास, विवरणों की अनदेखी',
+    'ov.favorableDesc_fav': 'नए कार्य, वित्तीय योजना, सामाजिकता',
+    'ov.transitRationale': '{rashi} में गोचर चंद्रमा (जन्म राशि से {house} वां)',
     'comp.addPartner': '+ साथी जोड़ें', 'comp.cancel': 'रद्द करें', 'comp.match': 'मिलान करें', 
 
     'comp.milan':'मिलान (गुण)', 'comp.user':'उपयोगकर्ता', 'comp.partner':'साथी', 'comp.moonR':'चंद्र राशि', 'comp.nak':'नक्षत्र', 'comp.manglik':'मांगलिक स्थिति', 'comp.verdict':'निर्णय', 'comp.kuja':'कुजा दोष (मांगलिक)', 'comp.breakdown':'विस्तृत सेटअप विवरणिका', 
@@ -140,6 +160,16 @@ export const DYNAMIC_STRINGS = {
     'ld.int.str.2': 'अत्यधिक सहज, रचनात्मक, और अमूर्त सोच, आध्यात्मिक शिक्षा, या कलात्मक अभिव्यक्ति की ओर आकर्षित'
   },
   kn: {
+    'ov.mantraDesc_mix': 'ಓಂ ದುಂ ದುರ್ಗಾಯೈ ನಮಃ',
+    'ov.avoidDesc_mix': 'ಹಠಾತ್ ಬದಲಾವಣೆ, ಆತುರದ ನಿರ್ಧಾರ',
+    'ov.favorableDesc_mix': 'ದೈನಂದಿನ ಕಾರ್ಯ, ಕಲಿಯುವಿಕೆ, ಆಯೋಜನೆ',
+    'ov.mantraDesc_unf': 'ಓಂ ನಮಃ ಶಿವಾಯ',
+    'ov.avoidDesc_unf': 'ದೊಡ್ಡ ವಾದಗಳು, ಅಪಾಯಕಾರಿ ಹೂಡಿಕೆ, ಪ್ರಯಾಣ',
+    'ov.favorableDesc_unf': 'ಆಧ್ಯಾತ್ಮಿಕ ಅಭ್ಯಾಸ, ವಿಶ್ರಾಂತಿ, ಸಂಶೋಧನೆ',
+    'ov.mantraDesc_fav': 'ಓಂ ಸೋಂ ಸೋಮಾಯ ನಮಃ',
+    'ov.avoidDesc_fav': 'ಅತಿಯಾದ ಆತ್ಮವಿಶ್ವಾಸ, ವಿವರಗಳ ನಿರ್ಲಕ್ಷ್ಯ',
+    'ov.favorableDesc_fav': 'ಹೊಸ ಉದ್ಯಮಗಳು, ಆರ್ಥಿಕ ಯೋಜನೆ, ಸಾಮಾಜಿಕತೆ',
+    'ov.transitRationale': '{rashi} ದಲ್ಲಿ ಗೋಚರ ಚಂದ್ರ (ಜನ್ಮ ರಾಶಿಯಿಂದ {house} ನೇ)',
     'comp.addPartner': '+ ಪಾಲುದಾರ ಸೇರಿಸಿ', 'comp.cancel': 'ರದ್ದುಮಾಡು', 'comp.match': 'ಹೊಂದಾಣಿಕೆ ನೋಡಿ', 
 
     'comp.milan':'ಮಿಲನ್ (ಹೊಂದಾಣಿಕೆ)', 'comp.user':'ಬಳಕೆದಾರ', 'comp.partner':'ಪಾಲುದಾರ', 'comp.moonR':'ಚಂದ್ರ ರಾಶಿ', 'comp.nak':'ನಕ್ಷತ್ರ', 'comp.manglik':'ಮಾಂಗಲಿಕ ಸ್ಥಿತಿ', 'comp.verdict':'ತೀರ್ಪು', 'comp.kuja':'ಕುಜ ದೋಷ (ಮಾಂಗಲಿಕ)', 'comp.breakdown':'ವಿವರವಾದ ಸೆಟಪ್ ಸ್ಥಿತಿ', 
@@ -210,6 +240,16 @@ export const DYNAMIC_STRINGS = {
     'ld.int.str.2': 'ಹೆಚ್ಚು ಅರ್ಥಗರ್ಭಿತ, ಸೃಜನಶೀಲ, ಮತ್ತು ಅಮೂರ್ತ ಚಿಂತನೆ, ಆಧ್ಯಾತ್ಮಿಕ ಕಲಿಕೆ ಅಥವಾ ಕಲಾತ್ಮಕ ಅಭಿವ್ಯಕ್ತಿಯ ಕಡೆಗೆ ಆಕರ್ಷಿತವಾಗಿದೆ'
   },
   te: {
+    'ov.mantraDesc_mix': 'ఓం దుం దుర్గాయై నమః',
+    'ov.avoidDesc_mix': 'తీవ్ర మార్పులు, హడావిడి నిర్ణయాలు',
+    'ov.favorableDesc_mix': 'దైనందిన పనులు, నేర్చుకోవడం, నిర్వహణ',
+    'ov.mantraDesc_unf': 'ఓం నమః శివాయ',
+    'ov.avoidDesc_unf': 'పెద్ద వివాదాలు, ప్రమాదకర పెట్టుబడులు, ప్రయాణం',
+    'ov.favorableDesc_unf': 'ఆధ్యాత్మిక సాధన, విశ్రాంతి, పరిశోధన',
+    'ov.mantraDesc_fav': 'ఓం సోం సోమాయ నమః',
+    'ov.avoidDesc_fav': 'అతివిశ్వాసం, వివరాలను విస్మరించడం',
+    'ov.favorableDesc_fav': 'కొత్త పనులు, ఆర్థిక ప్రణాళిక, సామాజికత',
+    'ov.transitRationale': 'గోచార చంద్రుడు {rashi} లో (జన్మ రాశి నుండి {house} వ)',
     'comp.addPartner': '+ భాగస్వామి జోడించు', 'comp.cancel': 'రద్దు చేయి', 'comp.match': 'పొంతన చూడండి', 
 
     'comp.milan':'మిలన్ (పొంతన)', 'comp.user':'వాడుకరి', 'comp.partner':'భాగస్వామి', 'comp.moonR':'చంద్ర రాశి', 'comp.nak':'నక్షత్రం', 'comp.manglik':'మాంగ్లిక్ స్థితి', 'comp.verdict':'తీర్పు', 'comp.kuja':'కుజ దోషం (మాంగ్లిక్)', 'comp.breakdown':'వివరణాత్మక బ్రేకప్ స్థితి', 
@@ -268,6 +308,16 @@ export const DYNAMIC_STRINGS = {
     'ld.int.str.2': 'అధికమైన సహజసిద్ధమైన, సృజనాత్మకమైనది మరియు నైరూప్య ఆలోచన లేదా కళాత్మక వ్యక్తీకరణ వైపు ఆకర్శితమైనది'
   },
   ta: {
+    'ov.mantraDesc_mix': 'ஓம் தும் துர்காயை நமஹ',
+    'ov.avoidDesc_mix': 'திடீர் மாற்றங்கள், அவசர முடிவுகள்',
+    'ov.favorableDesc_mix': 'அன்றாடப் பணிகள், கற்றல், ஒழுங்கமைத்தல்',
+    'ov.mantraDesc_unf': 'ஓம் நம சிவாய',
+    'ov.avoidDesc_unf': 'பெரிய விவாதங்கள், ஆபத்தான முதலீடுகள், பயணம்',
+    'ov.favorableDesc_unf': 'ஆன்மீகப் பயிற்சிகள், ஓய்வு, ஆராய்ச்சி',
+    'ov.mantraDesc_fav': 'ஓம் சோம் சோமாய நமஹ',
+    'ov.avoidDesc_fav': 'அதிக தன்னம்பிக்கை, விவரங்களை புறக்கணித்தல்',
+    'ov.favorableDesc_fav': 'புதிய முயற்சிகள், நிதி திட்டமிடல், சமூக தொடர்பு',
+    'ov.transitRationale': 'கோசார சந்திரன் {rashi} இல் (ஜென்ம ராசியிலிருந்து {house} ஆவது)',
     'comp.addPartner': '+ பங்குதாரர் சேர்க்க', 'comp.cancel': 'ரத்து செய்', 'comp.match': 'பொருத்தம் பார்க்க', 
 
     'comp.milan':'பொருத்தம்', 'comp.user':'பயனர்', 'comp.partner':'பங்குதாரர்', 'comp.moonR':'சந்திர ராசி', 'comp.nak':'நட்சத்திரம்', 'comp.manglik':'மாங்கலிக் நிலை', 'comp.verdict':'தீர்ப்பு', 'comp.kuja':'குஜ தோஷம் (மாங்கலிக்)', 'comp.breakdown':'விரிவான நிலை அறிக்கை', 
@@ -500,6 +550,16 @@ export const DYNAMIC_STRINGS = {
     'ld.int.str.2': 'ആത്മീയ വിദ്യകൾക്കും കലകൾക്കും അനുയോജ്യമായതും സാങ്കൽപ്പിക ചിന്താശക്തിയുള്ളതുമായ മനസ്സ്'
   },
   sa: {
+    'ov.mantraDesc_mix': 'ॐ दुं दुर्गायै नमः',
+    'ov.avoidDesc_mix': 'अकस्मात् परिवर्तनानि, शीघ्रनिर्णयाः',
+    'ov.favorableDesc_mix': 'दैनिककार्याणि, अध्ययनम्, व्यवस्थापनम्',
+    'ov.mantraDesc_unf': 'ॐ नमः शिवाय',
+    'ov.avoidDesc_unf': 'महाविवादाः, जोखिमपूर्णनिवेशः, यात्रा',
+    'ov.favorableDesc_unf': 'आध्यात्मिकसाधना, विश्रामः, अन्वेषणम्',
+    'ov.mantraDesc_fav': 'ॐ सों सोमाय नमः',
+    'ov.avoidDesc_fav': 'अतिविश्वासः, सूक्ष्मविषयाणाम् उपेक्षा',
+    'ov.favorableDesc_fav': 'नूतनकार्यारम्भः, आर्थिकयोजना, सामाजिकसम्पर्कः',
+    'ov.transitRationale': '{rashi} राशौ गोचरचन्द्रः (जन्मराशेः {house} तमः)',
     'comp.addPartner': '+ सखा योजयतु', 'comp.cancel': 'रद्दं करोतु', 'comp.match': 'मेलनं पश्यतु', 
 
     'comp.milan':'मेलनम्', 'comp.user':'उपयोक्ता', 'comp.partner':'सखा', 'comp.moonR':'चन्द्रराशिः', 'comp.nak':'नक्षत्रम्', 'comp.manglik':'मङ्गलदोषावस्था', 'comp.verdict':'निर्णयः', 'comp.kuja':'कुजदोषः (माङ्गलिकः)', 'comp.breakdown':'विस्तृतविवरणम्', 
@@ -558,6 +618,16 @@ export const DYNAMIC_STRINGS = {
     'ld.int.str.2': 'अत्यन्तम् अन्तर्ज्ञानयुक्तं, सृजनात्मकं, तथा आध्यात्मिककलायाः चिन्तने आकृष्टम्'
   },
   bn: {
+    'ov.mantraDesc_mix': 'ওঁ দুং দুর্গাযৈ নমঃ',
+    'ov.avoidDesc_mix': 'হঠাৎ পরিবর্তন, তাড়াহুড়ো সিদ্ধান্ত',
+    'ov.favorableDesc_mix': 'নৈমিত্তিক কাজ, লার্নিং, আয়োজন',
+    'ov.mantraDesc_unf': 'ওঁ নমঃ শিবায়',
+    'ov.avoidDesc_unf': 'বড় বিবাদ, ঝুঁকিপূর্ণ বিনিয়োগ, ভ্রমণ',
+    'ov.favorableDesc_unf': 'আধ্যাত্মিক সাধনা, বিশ্রাম, গবেষণা',
+    'ov.mantraDesc_fav': 'ওঁ সোং সোমায় নমঃ',
+    'ov.avoidDesc_fav': 'অতিরিক্ত আত্মবিশ্বাস, বিবরণ উপেক্ষা',
+    'ov.favorableDesc_fav': 'নতুন উদ্যোগ, আর্থিক পরিকল্পনা, সামাজিকতা',
+    'ov.transitRationale': '{rashi} রাশিতে গোচর চন্দ্র (জন্ম রাশি থেকে {house} তম)',
     'comp.addPartner': '+ সঙ্গী যোগ করুন', 'comp.cancel': 'বাতিল করুন', 'comp.match': 'মিলন দেখুন', 
 
     'comp.milan':'মিলন (সামঞ্জস্য)', 'comp.user':'ব্যবহারকারী', 'comp.partner':'সঙ্গী', 'comp.moonR':'চন্দ্র রাশি', 'comp.nak':'নক্ষত্র', 'comp.manglik':'মাঙ্গলিক অবস্থা', 'comp.verdict':'রায়', 'comp.kuja':'কুজা দোষ (মাঙ্গলিক)', 'comp.breakdown':'বিস্তারিত স্থিতি', 
