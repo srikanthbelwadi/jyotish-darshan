@@ -3,8 +3,8 @@ export function calculateMatch(k1, k2) {
     const moon = k.planets? k.planets.find(p => p.key === 'moon') : { rashi: 1, nIdx: 1 };
     return {
       name: k.name || (k.input && k.input.name) || 'User',
-      rashi: moon.rashi - 1,
-      nakshatra: moon.nIdx - 1
+      rashi: moon.rashi,
+      nakshatra: moon.nIdx
     };
   };
 

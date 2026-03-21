@@ -1,7 +1,9 @@
 import React from 'react';
 
-export default function CompatibilityInputForm({ onGeneratePartner, onCancel, lang }) {
-  const [date, setDate] = React.useState('');
+export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=(x)=>x, lang }) {
+  const [day, setDay] = React.useState('');
+  const [month, setMonth] = React.useState('');
+  const [year, setYear] = React.useState('');
   const [time, setTime] = React.useState('');
   const [cityQ, setCityQ] = React.useState('');
   const [suggs, setSuggs] = React.useState([]);
@@ -29,13 +31,15 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, la
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!date || !time || !selectedCity) {
+    if (!day || !month || !year || !time || !selectedCity) {
       alert("Please fill date, time and select a valid city from the dropdown.");
       return;
     }
     
     setLoading(true);
-    const [y, m, d] = date.split('-');
+    const y = Number(year);
+    const m = Number(month);
+    const d = Number(day);
     const [h, min_] = time.split(':');
     
     let offset = 5.5;
@@ -67,9 +71,24 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, la
 
   return (
     <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '24px', marginTop: '20px' }}>
-      <h3 style={{ margin: '0 0 16px', color: 'var(--accent-gold)' }}>Add Partner Details</h3>
-      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '16px', gridTemplateColumns: '1fr 1fr' }}>
-        <input type="date" value={date} onChange={e=>setDate(e.target.value)} className="lux-input" required />
+      <h3 style={{ margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('comp.addP',lang)}</h3>
+      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '16px', gridTemplateColumns: '1.5fr 1fr' }}>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr', gap: '6px' }}>
+          <select required value={day} onChange={e=>setDay(e.target.value)} className="lux-input" style={{padding:'11px 8px'}}>
+            <option value="" disabled>Day</option>
+            {Array.from({length:31},(_,i)=>i+1).map(val=><option key={val} value={val}>{val}</option>)}
+          </select>
+          <select required value={month} onChange={e=>setMonth(e.target.value)} className="lux-input" style={{padding:'11px 8px'}}>
+            <option value="" disabled>Month</option>
+            {['January','February','March','April','May','June','July','August','September','October','November','December'].map((mName,i)=><option key={mName} value={i+1}>{mName}</option>)}
+          </select>
+          <select required value={year} onChange={e=>setYear(e.target.value)} className="lux-input" style={{padding:'11px 8px'}}>
+            <option value="" disabled>Year</option>
+            {Array.from({length:125},(_,i)=>new Date().getFullYear()-i).map(val=><option key={val} value={val}>{val}</option>)}
+         </select>
+        </div>
+
         <input type="time" value={time} onChange={e=>setTime(e.target.value)} className="lux-input" required />
         
         <div style={{ gridColumn: '1 / -1', position: 'relative' }}>
@@ -86,9 +105,9 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, la
         </div>
 
         <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
-          <button type="button" onClick={onCancel} className="lux-btn" style={{ background: 'transparent', border: '1px solid var(--border-light)', color: 'var(--text-main)' }}>Cancel</button>
+          <button type="button" onClick={onCancel} className="lux-btn" style={{ background: 'transparent', border: '1px solid var(--border-light)', color: 'var(--text-main)' }}>{t('comp.cancel',lang)}</button>
           <button type="submit" disabled={loading} className="lux-btn" style={{ background: 'var(--accent-gold)', color: '#000', opacity: loading ? 0.7 : 1 }}>
-            {loading ? 'Matching...' : 'Match Charts'}
+            {loading ? 'Matching...' : t('comp.match',lang)}
           </button>
         </div>
       </form>

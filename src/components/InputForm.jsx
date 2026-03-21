@@ -15,7 +15,7 @@ const LABEL_STYLE = {
 
 export default function InputForm({ onSubmit, lang, onLangChange }) {
   const [form, setForm] = useState({
-    dob: '', tob: '', city: '', country: 'India', gender: '',
+    day: '', month: '', year: '', tob: '', city: '', country: 'India', gender: '',
     lat: null, lng: null, timezone: null, utcOffset: null,
   });
   const [loading, setLoading] = useState(false);
@@ -118,11 +118,7 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
 
   const validate = () => {
     const e = {};
-    if (!form.dob) e.dob = 'Date of birth is required';
-    else {
-      const yr = parseInt(form.dob.split('-')[0]);
-      if (yr < 1900 || yr > new Date().getFullYear()) e.dob = 'Year must be between 1900 and today';
-    }
+    if (!form.day || !form.month || !form.year) e.dob = 'Complete date of birth is required';
     if (!form.tob) e.tob = 'Time of birth is required';
     if (!form.lat) e.city = 'Please select a city from the dropdown';
     if (!form.gender) e.gender = 'Please select a gender';
@@ -134,11 +130,14 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    const [year, month, day] = form.dob.split('-').map(Number);
+    const year = Number(form.year);
+    const month = Number(form.month);
+    const day = Number(form.day);
+    const dob = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
     const [hour, minute] = form.tob.split(':').map(Number);
     const preciseOffset = getUTCOffset(form.timezone, year, month, day, hour, minute);
     setTimeout(() => {
-      onSubmit({ year, month, day, hour, minute, utcOffset: preciseOffset, lat: form.lat, lng: form.lng, city: form.city, country: form.country, timezone: form.timezone, gender: form.gender, dob: form.dob, tob: form.tob });
+      onSubmit({ year, month, day, hour, minute, utcOffset: preciseOffset, lat: form.lat, lng: form.lng, city: form.city, country: form.country, timezone: form.timezone, gender: form.gender, dob, tob: form.tob });
     }, 800);
   };
 
@@ -189,13 +188,24 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
           </div>
 
           <form onSubmit={handleSubmit} style={{ padding: '24px 28px' }}>
-            {/* DOB + TOB */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 18 }}>
+            {/* ROW 1: DATE & TIME */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14, marginBottom: 18 }}>
               <div>
                 <label style={LABEL_STYLE}>Date of Birth</label>
-                <input type="date" required value={form.dob} max={new Date().toISOString().split('T')[0]} min="1900-01-01"
-                  onChange={e => { setForm(f => ({...f, dob: e.target.value})); setErrors(er => ({...er, dob: null})); }}
-                  style={{ ...INPUT_STYLE, borderColor: errors.dob ? '#EF4444' : '#D4B896' }} />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr', gap: 6 }}>
+                  <select required value={form.day} onChange={e=>{setForm(f=>({...f, day: e.target.value}));setErrors(er=>({...er, dob: null}))}} style={{...INPUT_STYLE, padding:'11px 8px', borderColor: errors.dob ? '#EF4444' : '#D4B896'}}>
+                    <option value="" disabled>Day</option>
+                    {Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={d}>{d}</option>)}
+                  </select>
+                  <select required value={form.month} onChange={e=>{setForm(f=>({...f, month: e.target.value}));setErrors(er=>({...er, dob: null}))}} style={{...INPUT_STYLE, padding:'11px 8px', borderColor: errors.dob ? '#EF4444' : '#D4B896'}}>
+                    <option value="" disabled>Month</option>
+                    {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m,i)=><option key={m} value={i+1}>{m}</option>)}
+                  </select>
+                  <select required value={form.year} onChange={e=>{setForm(f=>({...f, year: e.target.value}));setErrors(er=>({...er, dob: null}))}} style={{...INPUT_STYLE, padding:'11px 8px', borderColor: errors.dob ? '#EF4444' : '#D4B896'}}>
+                    <option value="" disabled>Year</option>
+                    {Array.from({length:125},(_,i)=>new Date().getFullYear()-i).map(y=><option key={y} value={y}>{y}</option>)}
+                  </select>
+                </div>
                 {errors.dob && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.dob}</p>}
               </div>
               <div>
@@ -203,7 +213,7 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
                 <input type="time" required value={form.tob}
                   onChange={e => { setForm(f => ({...f, tob: e.target.value})); setErrors(er => ({...er, tob: null})); }}
                   style={{ ...INPUT_STYLE, borderColor: errors.tob ? '#EF4444' : '#D4B896' }} />
-                {errors.tob && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.tob}</p>}
+                {errors.tob && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3, gridColumn:'1 / -1' }}>{errors.tob}</p>}
               </div>
             </div>
             <p style={{ margin: '-10px 0 16px', fontSize: 11, color: '#9CA3AF' }}>⚠ Birth time accuracy is critical — even 15 minutes can shift the Ascendant</p>
