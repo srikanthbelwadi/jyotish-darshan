@@ -1,6 +1,10 @@
 import React from 'react';
 import './index.css';
 import LifeDimensionsCard from './components/LifeDimensionsCard.jsx';
+import DailyCalendar from './components/DailyCalendar.jsx';
+import CompatibilityMatch from './components/CompatibilityMatch.jsx';
+import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
+
 // ════════════════════════════════════════════════════════════════
 // ASTRONOMY ENGINE
 // ════════════════════════════════════════════════════════════════
@@ -2755,9 +2759,6 @@ ${strong.length>0?`<div class="reading-section"><div class="reading-label">${S.r
 // RESULTS PAGE
 // ════════════════════════════════════════════════════════════════
 const TABS_DEF=[
-  {id:'overview',label:'Overview',icon:'☀'},
-  {id:'dimensions',label:'Life Dimensions',icon:'🌟'},
-  {id:'predictions',label:'Predictions',icon:'🔮'},
   {id:'charts',label:'Charts',icon:'⊞'},
   {id:'planets',label:'Graha Sthiti',icon:'♃'},
   {id:'dasha',label:'Dasha',icon:'⏳'},
@@ -2769,9 +2770,12 @@ const TABS_DEF=[
 
 function ResultsPage({K,onBack,lang,setLang}){
     React.useEffect(() => { window.scrollTo({top: 0, behavior: 'smooth'}); }, []);
-  const[tab,setTab]=React.useState('overview');
+  const[tab,setTab]=React.useState('charts');
   const[fmt,setFmt]=React.useState('south');
   const[copied,setCopied]=React.useState(false);
+  const[partnerKundali, setPartnerKundali]=React.useState(null);
+  const[showPartnerForm, setShowPartnerForm]=React.useState(false);
+
   const{input,lagna,panchang:pan,ayanamsaDMS,planets}=K;
   const lpan=localizePanchang(pan,lang);
   const formattedDate=new Date(input.year,input.month-1,input.day).toLocaleDateString(lang==='en'?'en-IN':lang==='hi'?'hi-IN':lang==='kn'?'kn-IN':lang==='te'?'te-IN':lang==='ta'?'ta-IN':lang==='mr'?'mr-IN':lang==='gu'?'gu-IN':lang==='bn'?'bn-IN':lang==='ml'?'ml-IN':'en-IN',{day:'numeric',month:'long',year:'numeric'});
@@ -2798,6 +2802,7 @@ function ResultsPage({K,onBack,lang,setLang}){
       navigator.clipboard.writeText(url).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2200)});
     }catch(e){}
   }
+
   return(
     <div style={{minHeight:'100vh',background:'var(--bg-dark)'}}>
       {/* Action Bar */}
@@ -2820,7 +2825,7 @@ function ResultsPage({K,onBack,lang,setLang}){
           <h2 className="serif" style={{margin:'0 0 12px',fontSize:24,fontWeight:400,color:'var(--accent-gold)',letterSpacing:1.5}}>{t('inputTitle',lang)} — {input.city}, {input.country}</h2>
           <div style={{display:'flex',flexWrap:'wrap',gap:'14px 28px',fontSize:13,color:'var(--text-secondary)',marginBottom:16}}>
             <span>📅 {formattedDate}, {input.tob}</span>
-            <span>📍 {input.lat?.toFixed(3)}°N, {input.lng?.toFixed(3)}°E</span>
+            <span>�� {input.lat?.toFixed(3)}°N, {input.lng?.toFixed(3)}°E</span>
             <span>🔷 {t('ov.ayanamsa',lang)}: {ayanamsaDMS}</span>
             <span>♑ {t('ov.lagna',lang)}: {(L_RASHI[lang]||L_RASHI.en)[lagna.rashi]} {lagna.degFmt}</span>
           </div>
@@ -2831,24 +2836,58 @@ function ResultsPage({K,onBack,lang,setLang}){
           </div>
         </div>
       </div>
-      {/* Tab bar */}
-      <div className="no-print" style={{background:'var(--bg-surface)',borderBottom:'1px solid var(--border-light)',position:'sticky',top:74,zIndex:15,boxShadow:'0 10px 30px rgba(0,0,0,0.8)'}}>
-        <div style={{maxWidth:1100,margin:'0 auto',display:'flex',padding:'0 24px',overflowX:'auto',whiteSpace:'nowrap',scrollbarWidth:'none'}}>
-          {TABS_DEF.map(tb=><button key={tb.id} onClick={()=>setTab(tb.id)} className={`lux-tab ${tab===tb.id?'active':''}`}><span style={{fontSize:14,marginRight:6}}>{tb.icon}</span>{t(`tabs.${tb.id}`,lang)}</button>)}
+
+      <div style={{maxWidth:1100,margin:'0 auto',padding:'40px 24px 80px'}}>
+        
+        {/* Layer 1: My Insights */}
+        <div style={{ marginBottom: 60 }}>
+          <h2 className="serif" style={{color:'var(--accent-gold)', borderBottom:'1px solid var(--border-light)', paddingBottom:'12px', marginBottom: '24px'}}>✧ My Insights</h2>
+          <DailyCalendar kundali={K} lang={lang} />
+          <OverviewTab K={K} fmt={fmt} lang={lang}/>
+          <LifeDimensionsCard kundali={K} />
+          <PredictionsTab K={K} lang={lang}/>
         </div>
-      </div>
-      {/* Content */}
-      <div style={{maxWidth:1100,margin:'0 auto',padding:'30px 24px 80px'}}>
-        {tab==='overview'&&<OverviewTab K={K} fmt={fmt} lang={lang}/>}
-        {tab==='dimensions'&&<LifeDimensionsCard kundali={K} />}
-        {tab==='predictions'&&<PredictionsTab K={K} lang={lang}/>}
-        {tab==='charts'&&<ChartsTab K={K} fmt={fmt} setFmt={setFmt} lang={lang}/>}
-        {tab==='planets'&&<PlanetsTab K={K} lang={lang}/>}
-        {tab==='dasha'&&<DashaTab K={K} lang={lang}/>}
-        {tab==='yoga'&&<YogaTab K={K} lang={lang}/>}
-        {tab==='shadbala'&&<ShadbalaTab K={K} lang={lang}/>}
-        {tab==='avarga'&&<AshtakavargaTab K={K} lang={lang}/>}
-        {tab==='reading'&&<ExpertReadingTab K={K} lang={lang}/>}
+
+        {/* Layer 2: Relational (Add Partner) */}
+        <div style={{ marginBottom: 60, padding: '24px', background: 'var(--bg-surface)', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2 className="serif" style={{color:'var(--text-main)', margin: 0}}>💞 Relationship Compatibility</h2>
+            {!partnerKundali && !showPartnerForm && (
+              <button onClick={() => setShowPartnerForm(true)} className="lux-btn" style={{ background: 'var(--accent-gold)', color: '#000', padding: '8px 24px', fontSize: '14px' }}>
+                ＋ Add Partner
+              </button>
+            )}
+          </div>
+          
+          {showPartnerForm && (
+            <CompatibilityInputForm onGeneratePartner={(pk) => { setPartnerKundali(pk); setShowPartnerForm(false); }} onCancel={() => setShowPartnerForm(false)} lang={lang} />
+          )}
+          {partnerKundali && (
+            <CompatibilityMatch primaryKundali={K} partnerKundali={partnerKundali} lang={lang} />
+          )}
+        </div>
+
+        {/* Layer 3: Jyotish Desk (Technical Charts) */}
+        <div>
+          <h2 className="serif" style={{color:'var(--text-main)', borderBottom:'1px solid var(--border-light)', paddingBottom:'12px', marginBottom: '24px'}}>⌬ Jyotish Desk (Technical Area)</h2>
+          
+          <div className="no-print" style={{background:'var(--bg-surface)',border:'1px solid var(--border-light)', borderRadius: '8px', marginBottom: '24px', overflow:'hidden'}}>
+            <div style={{display:'flex',overflowX:'auto',whiteSpace:'nowrap',scrollbarWidth:'none', padding: '0 8px'}}>
+              {TABS_DEF.map(tb=><button key={tb.id} onClick={()=>setTab(tb.id)} className={`lux-tab ${tab===tb.id?'active':''}`}><span style={{fontSize:14,marginRight:6}}>{tb.icon}</span>{t(`tabs.${tb.id}`,lang)}</button>)}
+            </div>
+          </div>
+          
+          <div style={{ background: 'var(--bg-surface)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
+            {tab==='charts'&&<ChartsTab K={K} fmt={fmt} setFmt={setFmt} lang={lang}/>}
+            {tab==='planets'&&<PlanetsTab K={K} lang={lang}/>}
+            {tab==='dasha'&&<DashaTab K={K} lang={lang}/>}
+            {tab==='yoga'&&<YogaTab K={K} lang={lang}/>}
+            {tab==='shadbala'&&<ShadbalaTab K={K} lang={lang}/>}
+            {tab==='avarga'&&<AshtakavargaTab K={K} lang={lang}/>}
+            {tab==='reading'&&<ExpertReadingTab K={K} lang={lang}/>}
+          </div>
+        </div>
+
       </div>
       <footer className="no-print" style={{textAlign:'center',padding:'24px',borderTop:'1px solid var(--border-light)',background:'var(--bg-dark)'}}>
         <p style={{margin:0,fontSize:12,color:'var(--text-muted)'}}>{t('footer',lang)}</p>
