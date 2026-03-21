@@ -2891,6 +2891,18 @@ function t_meridiem(meridiem, lang) {
 
 
 function AppHeader({ lang, setLang }) {
+  const [theme, setTheme] = React.useState('dark');
+
+  React.useEffect(() => {
+    setTheme(document.body.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    document.body.setAttribute('data-theme', newTheme);
+    setTheme(newTheme);
+  };
+
   const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
   return (
       <header className="app-header" style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 32px',borderBottom:'1px solid var(--border-light)',background:'var(--bg-surface)',backdropFilter:'blur(12px)',position:'sticky',top:0,zIndex:20}}>
@@ -2901,8 +2913,8 @@ function AppHeader({ lang, setLang }) {
           <div><h1 className="serif" style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase'}}>{t('tagline',lang)}</p></div>
         </div>
         <div style={{display:'flex', gap:12}}>
-          <button type="button" onClick={()=>document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light')} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
-            <span style={{fontSize:16}}>☾</span>
+          <button type="button" onClick={toggleTheme} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
+            <span style={{fontSize:16}}>{theme === 'light' ? '☾' : '☀'}</span>
           </button>
           <select value={lang} onChange={e=>setLang(e.target.value)} className="lux-input" style={{width:'auto',padding:'6px 10px',background:'transparent',border:'1px solid var(--border-light)'}}>
             {LANGS.map(l=><option key={l.code} value={l.code} style={{background:'var(--bg-input)',color:'var(--text-main)'}}>{l.label}</option>)}
