@@ -197,21 +197,98 @@ function yogas(pm,lagnaR){
   const res=[];
   const p=pm;
   // Gaj Kesari
-  if(p.moon&&p.jupiter){const d=Math.abs(p.moon.house-p.jupiter.house);if([0,3,6,9].includes(d)||[0,3,6,9].includes(12-d))res.push({name:'Gaja Kesari',type:'raja',effect:'Bestows wisdom, fame, and lasting prosperity. The native commands respect and possesses magnetic charisma.',planets:'Moon-Jupiter in Kendra relationship'});}
+  if(p.moon&&p.jupiter){
+    const d=Math.abs(p.moon.house-p.jupiter.house);
+    if([0,3,6,9].includes(d)||[0,3,6,9].includes(12-d)) {
+      res.push({
+        key: 'gajKesari', type: 'raja',
+        vars: { p1: 'moon', p2: 'jupiter', rel: d===0?'conjunct':'kendra' }
+      });
+    }
+  }
   // Budhaditya
-  if(p.sun&&p.mercury&&p.sun.rashi===p.mercury.rashi)res.push({name:'Budhaditya',type:'raja',effect:'Grants sharp intellect, eloquent speech, success in analytical and communicative pursuits.',planets:'Sun conjunct Mercury'});
+  if(p.sun&&p.mercury&&p.sun.rashi===p.mercury.rashi){
+    res.push({
+      key: 'budhaditya', type: 'raja',
+      vars: { p1: 'sun', p2: 'mercury', rashi: p.sun.rashi }
+    });
+  }
   // Chandra-Mangal
-  if(p.moon&&p.mars&&p.moon.rashi===p.mars.rashi)res.push({name:'Chandra-Mangal',type:'dhana',effect:'Confers financial acumen, bold initiative, and commercial success.',planets:'Moon conjunct Mars'});
+  if(p.moon&&p.mars&&p.moon.rashi===p.mars.rashi){
+    res.push({
+      key: 'chandraMangal', type: 'dhana',
+      vars: { p1: 'moon', p2: 'mars', rashi: p.moon.rashi }
+    });
+  }
   // Pancha Mahapurusha - Sasa
-  if(p.saturn){const h=p.saturn.house;if([1,4,7,10].includes(h)&&(p.saturn.rashi===6||p.saturn.rashi===9||p.saturn.rashi===10))res.push({name:'Sasa',type:'raja',effect:'Confers authority, discipline, longevity, and material success through persistent effort.',planets:'Saturn in Kendra in own/exalted sign'});}
+  if(p.saturn){
+    const h=p.saturn.house;
+    if([1,4,7,10].includes(h)&&(p.saturn.rashi===6||p.saturn.rashi===9||p.saturn.rashi===10)){
+      res.push({
+        key: 'sasa', type: 'raja',
+        vars: { p1: 'saturn', house: h, rashi: p.saturn.rashi, state: p.saturn.rashi===6?'exalted':'own' }
+      });
+    }
+  }
   // Hamsa
-  if(p.jupiter){const h=p.jupiter.house;if([1,4,7,10].includes(h)&&(p.jupiter.rashi===3||p.jupiter.rashi===8||p.jupiter.rashi===11))res.push({name:'Hamsa',type:'raja',effect:'Grants wisdom, spiritual authority, noble character, and philanthropic nature.',planets:'Jupiter in Kendra in own/exalted sign'});}
+  if(p.jupiter){
+    const h=p.jupiter.house;
+    if([1,4,7,10].includes(h)&&(p.jupiter.rashi===3||p.jupiter.rashi===8||p.jupiter.rashi===11)){
+      res.push({
+        key: 'hamsa', type: 'raja',
+        vars: { p1: 'jupiter', house: h, rashi: p.jupiter.rashi, state: p.jupiter.rashi===3?'exalted':'own' }
+      });
+    }
+  }
   // Ruchaka
-  if(p.mars){const h=p.mars.house;if([1,4,7,10].includes(h)&&(p.mars.rashi===9||p.mars.rashi===0||p.mars.rashi===7))res.push({name:'Ruchaka',type:'raja',effect:'Exceptional courage, physical strength, and commanding authority.',planets:'Mars in Kendra in own/exalted sign'});}
-  // Mangal Dosha
-  if(p.mars&&[1,4,7,8,12].includes(p.mars.house))res.push({name:'Mangal Dosha',type:'dosha',effect:'Indicates challenges in marital harmony. Mangal Shanti Puja and matching with another Manglik native are recommended.',planets:`Mars in ${p.mars.house}th house`});
+  if(p.mars){
+    const h=p.mars.house;
+    if([1,4,7,10].includes(h)&&(p.mars.rashi===9||p.mars.rashi===0||p.mars.rashi===7)){
+      res.push({
+        key: 'ruchaka', type: 'raja',
+        vars: { p1: 'mars', house: h, rashi: p.mars.rashi, state: p.mars.rashi===9?'exalted':'own' }
+      });
+    }
+  }
+  // Mangal Dosha (aligned with rigorous compatibility logic: Lagna, Moon, Venus + cancellations)
+  if(p.mars){
+    const fL=p.mars.house;
+    const fM=p.moon?((p.mars.rashi-p.moon.rashi+12)%12+1):0;
+    const fV=p.venus?((p.mars.rashi-p.venus.rashi+12)%12+1):0;
+    const isL=[1,4,7,8,12].includes(fL);
+    const isM=[1,4,7,8,12].includes(fM);
+    const isV=[1,4,7,8,12].includes(fV);
+    const isMan=isL||isM||isV;
+    let cancel=false;
+    let cancelReason='';
+    if(isMan){
+      if(p.mars.rashi===0&&fL===1) { cancel=true; cancelReason='Aries Lagna'; }
+      if(p.mars.rashi===7&&fL===4) { cancel=true; cancelReason='Scorpio in 4th'; }
+      if(p.mars.rashi===9&&fL===7) { cancel=true; cancelReason='Capricorn in 7th'; }
+      if(p.mars.rashi===3&&fL===8) { cancel=true; cancelReason='Gemini in 8th'; }
+    }
+    if(isMan&&!cancel){
+      const primarySource = isL ? 'Lagna' : (isM ? 'Moon' : 'Venus');
+      const primaryHouse = isL ? fL : (isM ? fM : fV);
+      res.push({
+        key: 'mangal', type: 'dosha',
+        vars: { p1: 'mars', house: primaryHouse, source: primarySource }
+      });
+    }
+  }
   // Kaal Sarp
-  if(p.rahu&&p.ketu){const ra=p.rahu.lon,ke=p.ketu.lon;const mn=Math.min(ra,ke),mx=Math.max(ra,ke);const all=['sun','moon','mars','mercury','jupiter','venus','saturn'];const trapped=all.every(k=>p[k]&&((p[k].lon>=mn&&p[k].lon<=mx)||(p[k].lon>=mx&&p[k].lon<=mn+360)));if(trapped)res.push({name:'Kaal Sarpa',type:'dosha',effect:'All planets hemmed between Rahu-Ketu axis. Karmic delays possible. Naga Devata worship advised.',planets:'All planets between Rahu-Ketu'});}
+  if(p.rahu&&p.ketu){
+    const ra=p.rahu.lon,ke=p.ketu.lon;
+    const mn=Math.min(ra,ke),mx=Math.max(ra,ke);
+    const all=['sun','moon','mars','mercury','jupiter','venus','saturn'];
+    const trapped=all.every(k=>p[k]&&((p[k].lon>=mn&&p[k].lon<=mx)||(p[k].lon>=mx&&p[k].lon<=mn+360)));
+    if(trapped){
+      res.push({
+        key: 'kaalSarp', type: 'dosha',
+        vars: {}
+      });
+    }
+  }
   return res;
 }
 
@@ -2568,16 +2645,43 @@ function DashaTab({K,lang='en'}){
 function YogaTab({K,lang='en'}){
   const{yogas:ys}=K;
   const raja=ys.filter(y=>y.type==='raja'),dhana=ys.filter(y=>y.type==='dhana'),dosha=ys.filter(y=>y.type==='dosha');
-  const YCard=({y})=>{const ly=(L_YOGA[lang]||L_YOGA.en)[y.name]||{name:y.name,effect:y.effect};return(
-    <div style={{background:'var(--bg-card)',border:`1px solid ${y.type==='dosha'?'#FECDD3':'#E5D5C0'}`,borderRadius:10,padding:18,borderLeft:`4px solid ${y.type==='dosha'?'#EF4444':y.type==='dhana'?'#10B981':'#7C3AED'}`}}>
+  
+  const getTranslatedVars = (vars) => {
+    const res = {};
+    for (const [k, v] of Object.entries(vars || {})) {
+      if (['p1', 'p2'].includes(k)) res[k] = t(`pl.${v}`, lang) || v;
+      else if (k === 'rashi') res[k] = t(`yo.rashi.${v}`, lang) || v;
+      else res[k] = t(`yo.val.${v}`, lang) || v;
+    }
+    return res;
+  };
+
+  const YCard=({y})=>{
+    const tVars = getTranslatedVars(y.vars);
+    let calcStr = t(`yo.calc.${y.key}`, lang) || '';
+    for (const [k, v] of Object.entries(tVars)) {
+      calcStr = calcStr.replace(`{${k}}`, v);
+    }
+    return(
+    <div style={{background:'var(--bg-card)',border:`1px solid var(--border-color)`,borderRadius:10,padding:18,borderLeft:`4px solid ${y.type==='dosha'?'var(--text-badge-red)':y.type==='dhana'?'var(--text-badge-green)':'var(--text-badge-purple)'}`}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:7}}>
-        <h4 style={{margin:0,fontSize:14,fontWeight:700,color:y.type==='dosha'?'#DC2626':'#1E3A5F'}}>{ly.name}</h4>
+        <h4 style={{margin:0,fontSize:14,fontWeight:700,color:y.type==='dosha'?'var(--text-badge-red)':'var(--text-main)'}}>{t(`yo.name.${y.key}`, lang)}</h4>
         <span style={{fontSize:10,padding:'2px 9px',borderRadius:10,fontWeight:700,textTransform:'uppercase',background:y.type==='dosha'?'var(--bg-badge-red)':y.type==='dhana'?'var(--bg-badge-green)':'var(--bg-badge-purple)',color:y.type==='dosha'?'var(--text-badge-red)':y.type==='dhana'?'var(--text-badge-green)':'var(--text-badge-purple)'}}>{y.type==='dosha'?t('yo.doshaLabel',lang):y.type==='dhana'?t('yo.dhanaYoga',lang):t('yo.rajaYoga',lang)}</span>
       </div>
-      {y.planets&&<p style={{margin:'0 0 7px',fontSize:11,color:'var(--text-muted)'}}>{t('yo.formedBy',lang)}: {localizeYogaPlanets(y.planets,lang)}</p>}
-      <p style={{margin:0,fontSize:13,color:'var(--text-main)',lineHeight:1.75}}>{ly.effect}</p>
+      <p style={{margin:'0 0 7px',fontSize:12,color:'var(--accent-gold)'}}>
+        {t('yo.formedBy',lang)}: <span style={{color:'var(--text-muted)'}}>{calcStr}</span>
+      </p>
+      <p style={{margin:0,fontSize:13,color:'var(--text-main)',lineHeight:1.75}}>{t(`yo.eff.${y.key}`, lang)}</p>
+      {y.type === 'dosha' && (
+        <div style={{ marginTop: 12, padding: 12, background: 'var(--bg-badge-red)', borderRadius: 6, border: '1px dashed var(--text-badge-red)' }}>
+          <strong style={{ color: 'var(--text-badge-red)', fontSize: 12 }}>{t('yo.remedyLabel', lang) || 'Remedies'}:</strong>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-main)', lineHeight: 1.5 }}>
+            {t(`yo.rem.${y.key}`, lang)}
+          </p>
+        </div>
+      )}
     </div>
-  );};
+  )};
   const Sec=({title,items,empty,icon})=>(
     <div style={{marginBottom:20}}>
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
@@ -2591,10 +2695,9 @@ function YogaTab({K,lang='en'}){
   return(
     <div style={{animation:'slideIn 0.2s ease'}}>
       {ys.length===0&&<div style={{background:'rgba(217, 119, 6, 0.05)',borderRadius:10,padding:16,border:'1px solid #FDE68A',marginBottom:14,color:'#92400E',fontSize:13}}>{t('yo.noYogaMsg',lang)}</div>}
-      <Sec title={`${t('yo.raja',lang)} & ${t('yo.panchaMaha',lang)}`} items={raja} empty={t('yo.noRaja',lang).replace('{raja}',t('yo.raja',lang))} icon="👑"/>
-      <Sec title={`${t('yo.dhana',lang)} (${t('yo.wealth',lang)})`} items={dhana} empty={t('yo.noDhana',lang).replace('{dhana}',t('yo.dhana',lang))} icon="💰"/>
-      <Sec title={`${t('yo.dosha',lang)} (${t('yo.afflictions',lang)})`} items={dosha} empty={t('yo.noDosha',lang)} icon="⚠️"/>
-      {dosha.length>0&&<div style={{background:'rgba(217, 119, 6, 0.05)',borderRadius:8,padding:'12px 16px',border:'1px solid #FDE68A',fontSize:12,color:'#92400E'}}>{t('yo.remedies',lang)}</div>}
+      <Sec title={`${t('yo.rajaYoga',lang)} & ${t('yo.panchaMaha',lang)}`} items={raja} empty={t('yo.noRaja',lang).replace('{raja}',t('yo.rajaYoga',lang))} icon="👑"/>
+      <Sec title={`${t('yo.dhanaYoga',lang)} (${t('yo.wealth',lang)})`} items={dhana} empty={t('yo.noDhana',lang).replace('{dhana}',t('yo.dhanaYoga',lang))} icon="💰"/>
+      <Sec title={`${t('yo.doshaLabel',lang)} (${t('yo.afflictions',lang)})`} items={dosha} empty={t('yo.noDosha',lang)} icon="⚠️"/>
     </div>
   );
 }

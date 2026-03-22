@@ -26,12 +26,12 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
       boxShadow: '0 8px 32px rgba(212, 175, 55, 0.1)'
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-light)', paddingBottom: '16px', marginBottom: '24px' }}>
-        <h3 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '22px' }}>💞 {t('comp.milan',lang)}</h3>
+        <h3 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '22px' }}>💞 {t('comp.milan',lang) || 'Compatibility'}</h3>
         <div style={{
           padding: '8px 16px', borderRadius: '20px', border: '2px solid var(--accent-gold)',
           fontSize: '20px', fontWeight: 'bold', color: 'var(--accent-gold)', background: 'var(--bg-dark)'
         }}>
-          {match.totalScore} / 36
+          {match.ashtaKuta.totalScore} / 36
         </div>
       </div>
 
@@ -40,29 +40,38 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
           <h4 style={{ margin: '0 0 8px', color: 'var(--text-main)', fontSize: '18px' }}>{match.p1.name === 'User' ? t('comp.user',lang) : match.p1.name}</h4>
           <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.moonR',lang)}: <span style={{color:'var(--accent-gold)'}}>{p1RashiTranslated}</span></div>
           <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.nak',lang)}: <span style={{color:'var(--accent-gold)'}}>{p1NakTranslated}</span></div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>{t('comp.manglik',lang)}: <span style={{color: match.p1.isManglik ? '#EF4444' : '#10B981'}}>{match.p1.isManglik ? t('comp.yes',lang) : t('comp.no',lang)}</span></div>
+          <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>{t('comp.manglik',lang)}: <span style={{color: match.mangalDosha.p1Manglik ? '#EF4444' : '#10B981'}}>{match.mangalDosha.p1Manglik ? t('comp.yes',lang) : t('comp.no',lang)}</span></div>
         </div>
         <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', textAlign: 'center' }}>
           <h4 style={{ margin: '0 0 8px', color: 'var(--text-main)', fontSize: '18px' }}>{match.p2.name === 'Partner' ? t('comp.partner',lang) : match.p2.name}</h4>
           <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.moonR',lang)}: <span style={{color:'var(--accent-gold)'}}>{p2RashiTranslated}</span></div>
           <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.nak',lang)}: <span style={{color:'var(--accent-gold)'}}>{p2NakTranslated}</span></div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>{t('comp.manglik',lang)}: <span style={{color: match.p2.isManglik ? '#EF4444' : '#10B981'}}>{match.p2.isManglik ? t('comp.yes',lang) : t('comp.no',lang)}</span></div>
+          <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>{t('comp.manglik',lang)}: <span style={{color: match.mangalDosha.p2Manglik ? '#EF4444' : '#10B981'}}>{match.mangalDosha.p2Manglik ? t('comp.yes',lang) : t('comp.no',lang)}</span></div>
         </div>
       </div>
 
       <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', borderLeft: '4px solid var(--accent-gold)', marginBottom: '16px' }}>
-        <h4 style={{ margin: '0 0 8px', color: 'var(--accent-gold)' }}>{t('comp.verdict',lang)}</h4>
-        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6' }}>{t(`comp.${match.summaryKey}`, lang) || match.summary}</p>
+        <h4 style={{ margin: '0 0 8px', color: 'var(--accent-gold)' }}>Phase 1: Ashta Kuta Verdict</h4>
+        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6' }}>{t(`comp.${match.ashtaKuta.summaryKey}`, lang) || match.ashtaKuta.summary}</p>
       </div>
 
-      <div style={{ background: 'var(--bg-dark)', padding: '16px', borderRadius: '8px', borderLeft: match.manglikStatus.includes('Present!') ? '4px solid #EF4444' : '4px solid #10B981', marginBottom: '32px' }}>
-        <h4 style={{ margin: '0 0 8px', color: match.manglikStatus.includes('Present!') ? '#EF4444' : '#10B981' }}>{t('comp.kuja',lang)}</h4>
-        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', color: 'var(--text-main)' }}>{t(`comp.${match.manglikKey}`, lang) || match.manglikStatus}</p>
+      <div style={{ background: 'var(--bg-dark)', padding: '16px', borderRadius: '8px', borderLeft: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '4px solid #EF4444' : '4px solid #10B981', marginBottom: '16px' }}>
+        <h4 style={{ margin: '0 0 8px', color: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '#EF4444' : '#10B981' }}>Phase 2: {t('comp.kuja',lang) || 'Mangal Dosha Analysis'}</h4>
+        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', color: 'var(--text-main)' }}>{t(`comp.${match.mangalDosha.manglikKey}`, lang) || match.mangalDosha.manglikStatus}</p>
       </div>
 
-      <h4 style={{ margin: '0 0 16px', fontSize: '18px', color: 'var(--text-main)' }}>{t('comp.breakdown',lang)}</h4>
-      <div style={{ display: 'grid', gap: '16px' }}>
-        {match.elements.map((el, i) => (
+      <div style={{ background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(245, 158, 11, 0.05))', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', marginBottom: '32px' }}>
+        <h4 style={{ margin: '0 0 8px', color: '#7C3AED' }}>{t('comp.phase34', lang) || 'Phase 3 & 4: Structural Chart & Dasha Synthesis'}</h4>
+        <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text-main)' }}>
+          {(t(match.structural.synthesis.lordsPart.key, lang) || '').replace('{0}', t(`pl.${match.structural.synthesis.lordsPart.vars.lord1}`, lang) || match.structural.synthesis.lordsPart.vars.lord1).replace('{1}', match.structural.synthesis.lordsPart.vars.p1).replace('{2}', t(`pl.${match.structural.synthesis.lordsPart.vars.lord2}`, lang) || match.structural.synthesis.lordsPart.vars.lord2).replace('{3}', match.structural.synthesis.lordsPart.vars.p2)}
+          {' '}{(t(match.structural.synthesis.venusPart.key, lang) || '')}
+          {' '}{(t(match.structural.synthesis.dashaPart.key, lang) || '')}
+        </p>
+      </div>
+
+      <h4 style={{ margin: '0 0 16px', fontSize: '18px', color: 'var(--text-main)' }}>{t('comp.breakdown',lang) || '8-Koota Breakdown'}</h4>
+      <div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+        {match.ashtaKuta.elements.map((el, i) => (
           <div key={i} style={{ background: 'var(--bg-dark)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--accent-gold)' }}>{t(`comp.${el.key}`, lang) || el.name}</span>
@@ -70,7 +79,7 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
                 {el.score} / {el.max}
               </span>
             </div>
-            <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{t(`comp.${el.descKey}`, lang) || el.desc}</p>
+            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{t(`comp.${el.descKey}`, lang) || el.desc}</p>
           </div>
         ))}
       </div>

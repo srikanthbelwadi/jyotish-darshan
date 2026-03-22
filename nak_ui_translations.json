@@ -1,0 +1,102 @@
+{
+  "en": {
+    "nak_ruling_planet": "Ruling Planet",
+    "nak_deity": "Ruling Deity",
+    "nak_symbol": "Symbol",
+    "nak_gana": "Gana (Type)",
+    "nak_nature": "Nature (Quality)",
+    "nak_animal": "Animal (Yoni)",
+    "nak_goal": "Goal (Purushartha)",
+    "nak_guna": "Guna"
+  },
+  "hi": {
+    "nak_ruling_planet": "शासक ग्रह",
+    "nak_deity": "शासक देवता",
+    "nak_symbol": "प्रतीक",
+    "nak_gana": "गण (प्रकार)",
+    "nak_nature": "प्रकृति (गुणवत्ता)",
+    "nak_animal": "पशु (योनि)",
+    "nak_goal": "लक्ष्य (पुरुषार्थ)",
+    "nak_guna": "गुना"
+  },
+  "kn": {
+    "nak_ruling_planet": "ಆಡಳಿತ ಗ್ರಹ",
+    "nak_deity": "ಆಳುವ ದೇವತೆ",
+    "nak_symbol": "ಚಿಹ್ನೆ",
+    "nak_gana": "ಗಣ (ಪ್ರಕಾರ)",
+    "nak_nature": "ಪ್ರಕೃತಿ (ಗುಣಮಟ್ಟ)",
+    "nak_animal": "ಪ್ರಾಣಿ (ಯೋನಿ)",
+    "nak_goal": "ಗುರಿ (ಪುರುಷಾರ್ಥ)",
+    "nak_guna": "ಗುಣ"
+  },
+  "te": {
+    "nak_ruling_planet": "రూలింగ్ ప్లానెట్",
+    "nak_deity": "పాలించే దేవత",
+    "nak_symbol": "చిహ్నం",
+    "nak_gana": "గణ (రకం)",
+    "nak_nature": "ప్రకృతి (నాణ్యత)",
+    "nak_animal": "జంతువు (యోని)",
+    "nak_goal": "లక్ష్యం (పురుషార్థ)",
+    "nak_guna": "గుణ"
+  },
+  "ta": {
+    "nak_ruling_planet": "ஆளும் கிரகம்",
+    "nak_deity": "ஆளும் தெய்வம்",
+    "nak_symbol": "சின்னம்",
+    "nak_gana": "கானா (வகை)",
+    "nak_nature": "இயற்கை (தரம்)",
+    "nak_animal": "விலங்கு (யோனி)",
+    "nak_goal": "இலக்கு (புருஷார்த்தம்)",
+    "nak_guna": "குணா"
+  },
+  "mr": {
+    "nak_ruling_planet": "सत्ताधारी ग्रह",
+    "nak_deity": "सत्ताधारी देवता",
+    "nak_symbol": "प्रतीक",
+    "nak_gana": "गण (प्रकार)",
+    "nak_nature": "निसर्ग (गुणवत्ता)",
+    "nak_animal": "प्राणी (योनी)",
+    "nak_goal": "ध्येय (पुरुषार्थ)",
+    "nak_guna": "गुण"
+  },
+  "gu": {
+    "nak_ruling_planet": "શાસક ગ્રહ",
+    "nak_deity": "શાસક દેવતા",
+    "nak_symbol": "પ્રતીક",
+    "nak_gana": "ગણ (પ્રકાર)",
+    "nak_nature": "પ્રકૃતિ (ગુણવત્તા)",
+    "nak_animal": "પ્રાણી (યોની)",
+    "nak_goal": "ધ્યેય (પુરુષાર્થ)",
+    "nak_guna": "ગુણ"
+  },
+  "bn": {
+    "nak_ruling_planet": "শাসক গ্রহ",
+    "nak_deity": "শাসক দেবতা",
+    "nak_symbol": "প্রতীক",
+    "nak_gana": "গণ (প্রকার)",
+    "nak_nature": "প্রকৃতি (গুণ)",
+    "nak_animal": "প্রাণী (ইয়োনি)",
+    "nak_goal": "লক্ষ্য (পুরুষার্থ)",
+    "nak_guna": "গুনা"
+  },
+  "ml": {
+    "nak_ruling_planet": "ഭരിക്കുന്ന ഗ്രഹം",
+    "nak_deity": "ഭരിക്കുന്ന ദേവത",
+    "nak_symbol": "ചിഹ്നം",
+    "nak_gana": "ഗണ (തരം)",
+    "nak_nature": "പ്രകൃതി (ഗുണനിലവാരം)",
+    "nak_animal": "മൃഗം (യോനി)",
+    "nak_goal": "ലക്ഷ്യം (പുരുഷാർത്ഥ)",
+    "nak_guna": "ഗുണ"
+  },
+  "sa": {
+    "nak_ruling_planet": "Ruling Planet",
+    "nak_deity": "Ruling Deity",
+    "nak_symbol": "Symbol",
+    "nak_gana": "Gana (Type)",
+    "nak_nature": "Nature (Quality)",
+    "nak_animal": "Animal (Yoni)",
+    "nak_goal": "Goal (Purushartha)",
+    "nak_guna": "Guna"
+  }
+}
