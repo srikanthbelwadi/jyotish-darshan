@@ -2,6 +2,8 @@ import SouthIndianChart from '../charts/SouthIndianChart.jsx';
 import NorthIndianChart from '../charts/NorthIndianChart.jsx';
 import { RASHIS, PLANET_COLORS } from '../../engine/constants.js';
 
+import { NAKSHATRA_LORE } from '../../data/nakshatra_lore.js';
+
 const Card = ({ children, style }) => (
   <div style={{ background: 'white', border: '1px solid #E5D5C0', borderRadius: 10, padding: 16, ...style }}>
     {children}
@@ -16,13 +18,6 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
 
   const currentMaha = dasha.mahadashas.find(m => m.isCurrent) || dasha.mahadashas[0];
   const currentAntar = currentMaha?.antardashas?.find(a => a.isCurrent) || currentMaha?.antardashas?.[0];
-  const currentPratyantar = currentAntar ? (() => {
-    const mahaYears = 16; // Jupiter fallback
-    const antarStart = new Date(currentAntar.startDate);
-    const antarEnd = new Date(currentAntar.endDate);
-    const total = antarEnd - anterStart;
-    return null;
-  })() : null;
 
   // Build D9 planets for Navamsa display
   const navamsaPlanets = planets.map(p => ({
@@ -31,6 +26,9 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
   }));
 
   const ChartComponent = chartFormat === 'south' ? SouthIndianChart : NorthIndianChart;
+  
+  // Get Nakshatra Lore for the Moon
+  const moonNakLore = NAKSHATRA_LORE[moonPlanet.nIdx] || null;
 
   return (
     <div style={{ animation: 'slideIn 0.25s ease' }}>
@@ -88,6 +86,43 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
           <p style={{ margin: 0, fontSize: 12, color: '#6B7280' }}>{sunPlanet.nakshatraName} · Pada {sunPlanet.pada}</p>
         </Card>
       </div>
+
+      {/* Nakshatra Deep Dive */}
+      {moonNakLore && (
+        <Card style={{ marginBottom: 20, background: 'linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%)', color: 'white', border: 'none' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <h3 style={{ margin: 0, fontSize: 16, color: '#E5D5C0', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>✨</span>
+              Janma Nakshatra: {moonNakLore.name}
+            </h3>
+            <span style={{ fontSize: 12, background: 'rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: 20, color: '#FCD34D' }}>
+              Moon's Constellation
+            </span>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 16 }}>
+            <div>
+              <p style={{ fontSize: 13, lineHeight: 1.5, color: '#CBD5E1', margin: '0 0 12px' }}>
+                {moonNakLore.myth}
+              </p>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: 12, borderRadius: 8 }}>
+                <div style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Ruling Deity</div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: '#FDE68A' }}>{moonNakLore.deity}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+               <div style={{ background: 'rgba(255,255,255,0.05)', padding: 12, borderRadius: 8 }}>
+                <div style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Symbol</div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: '#FDE68A' }}>{moonNakLore.symbol}</div>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: 12, borderRadius: 8, flex: 1 }}>
+                <div style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Famous Personalities</div>
+                <div style={{ fontSize: 13, color: '#E2E8F0', lineHeight: 1.4 }}>{moonNakLore.famous}</div>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Current Dasha */}
       <Card>

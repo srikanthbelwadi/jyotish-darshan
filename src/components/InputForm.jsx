@@ -23,6 +23,8 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
   const [cityQuery, setCityQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [errors, setErrors] = useState({});
+  const [err, setErr] = useState('');
+  const [name, setName] = useState('');
   const debounceRef = useRef(null);
 
   // Geocode city via GeoNames
@@ -118,6 +120,7 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
 
   const validate = () => {
     const e = {};
+    if (!name.trim()) e.name = 'Name is required';
     if (!form.day || !form.month || !form.year) e.dob = 'Complete date of birth is required';
     if (!form.tob) e.tob = 'Time of birth is required';
     if (!form.lat) e.city = 'Please select a city from the dropdown';
@@ -137,7 +140,7 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
     const [hour, minute] = form.tob.split(':').map(Number);
     const preciseOffset = getUTCOffset(form.timezone, year, month, day, hour, minute);
     setTimeout(() => {
-      onSubmit({ year, month, day, hour, minute, utcOffset: preciseOffset, lat: form.lat, lng: form.lng, city: form.city, country: form.country, timezone: form.timezone, gender: form.gender, dob, tob: form.tob });
+      onSubmit({ name: name.trim() || 'Anonymous', year, month, day, hour, minute, utcOffset: preciseOffset, lat: form.lat, lng: form.lng, city: form.city, country: form.country, timezone: form.timezone, gender: form.gender, dob, tob: form.tob });
     }, 800);
   };
 
@@ -188,6 +191,13 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
           </div>
 
           <form onSubmit={handleSubmit} style={{ padding: '24px 28px' }}>
+            {/* ROW 0: Name (New Phase 3) */}
+            <div style={{ marginBottom: 18 }}>
+              <label style={LABEL_STYLE}>Full Name</label>
+              <input type="text" value={name} onChange={e=>{setName(e.target.value); setErrors(er=>({...er, name: null}))}} placeholder="Enter name (e.g. Rahul)..." style={{...INPUT_STYLE, borderColor: errors.name ? '#EF4444' : '#D4B896'}} required />
+              {errors.name && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.name}</p>}
+            </div>
+
             {/* ROW 1: DATE & TIME */}
             <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14, marginBottom: 18 }}>
               <div>

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { LANGUAGES } from '../i18n/astroTerms.js';
 import { encodeShareLink } from '../export/shareLink.js';
 import OverviewTab from './tabs/OverviewTab.jsx';
@@ -23,12 +23,20 @@ const TABS = [
   { id: 'reading',   label: 'Expert Reading',  icon: '📜' },
 ];
 
-export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDownloadPDF }) {
+export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDownloadPDF, onSwitchProfile }) {
   const [tab, setTab] = useState('overview');
   const [chartFormat, setChartFormat] = useState('south');
   const [copied, setCopied] = useState(false);
   const [printing, setPrinting] = useState(false);
+  const [savedProfiles, setSavedProfiles] = useState([]);
   const resultsRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      const p = localStorage.getItem('jd_profiles');
+      if (p) setSavedProfiles(JSON.parse(p));
+    } catch(e){}
+  }, [kundali.input.name]);
 
   const { input, lagna, panchang, ayanamsaDMS, planets } = kundali;
   const moon = planets.find(p => p.key === 'moon');
@@ -73,14 +81,18 @@ export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDow
       {/* ── Header ── */}
       <header className="no-print" style={{ background: 'white', borderBottom: '1px solid #E5D5C0', padding: '11px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 20, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={onBack} style={{ background: 'none', border: '1px solid #E5D5C0', cursor: 'pointer', fontSize: 16, color: '#7C3AED', padding: '6px 10px', borderRadius: 8, fontFamily: 'inherit', transition: 'all 0.15s' }}
-            title="Back to input form">← Back</button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 30, height: 30, background: 'linear-gradient(135deg, #7C3AED, #F59E0B)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: 'white', fontSize: 15 }}>☀</span>
-            </div>
-            <span style={{ fontSize: 16, color: '#1E3A5F', fontWeight: 700 }}>Jyotish Darshan</span>
-          </div>
+          <button onClick={onBack} style={{ background: 'none', border: '1px solid #E5D5C0', cursor: 'pointer', fontSize: 13, color: '#7C3AED', padding: '6px 12px', borderRadius: 8, fontFamily: 'inherit', transition: 'all 0.15s', fontWeight: 600 }}
+            title="Create new chart">➕ New Chart</button>
+          {savedProfiles.length > 1 && (
+            <select onChange={e => {
+              const idx = parseInt(e.target.value);
+              if(idx !== 0 && onSwitchProfile) onSwitchProfile(savedProfiles[idx]);
+            }} value={0} style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid #E5D5C0', background: 'white', fontFamily: 'inherit', fontSize: 13, color: '#1E3A5F', cursor: 'pointer', fontWeight: 600 }}>
+              {savedProfiles.map((p, i) => (
+                <option key={i} value={i}>{i === 0 ? `👤 ${p.name || 'Current'}` : p.name || `Profile ${i+1}`}</option>
+              ))}
+            </select>
+          )}
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <select value={lang} onChange={e => onLangChange(e.target.value)}
