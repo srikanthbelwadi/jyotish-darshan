@@ -1,5 +1,6 @@
 import React from 'react';
 import { RASHIS } from '../../engine/constants.js';
+import { DYNAMIC_STRINGS } from '../../i18n/dynamicTranslations.js';
 
 function DrawChart({ data, title }) {
   const cellStyle = {
@@ -62,6 +63,7 @@ function DrawChart({ data, title }) {
 
 function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
   if (!K) return null;
+  const t = (k) => (DYNAMIC_STRINGS[lang] || DYNAMIC_STRINGS.en)[k] || DYNAMIC_STRINGS.en[k] || '';
 
   try {
     const { input, lagna, panchang, ayanamsaDMS, planets, dasha, formattedData, divCharts, yogas, shadbala, ashtakavarga } = K;
@@ -151,7 +153,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
                 <p><strong>Lagna (Ascendant):</strong> {lagna ? getRashiName(lagna.rashi) : ''} {lagna?.degreeFormatted || ''}</p>
                 <p><strong>Sun Sign:</strong> {getSunName(planets)}</p>
                 <p><strong>Moon Sign (Rashi):</strong> {getMoonName(planets)}</p>
-                <p><strong>Janma Nakshatra:</strong> {getMoonNaks(planets)}</p>
+                <p><strong>{t('ov.janmaNak')}:</strong> {getMoonNaks(planets)}</p>
              </div>
              <div>
                 <p><strong>Tithi:</strong> {panchang?.tithi || ''}</p>

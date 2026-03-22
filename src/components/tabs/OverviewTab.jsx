@@ -3,6 +3,7 @@ import NorthIndianChart from '../charts/NorthIndianChart.jsx';
 import { RASHIS, PLANET_COLORS } from '../../engine/constants.js';
 
 import { NAKSHATRA_LORE } from '../../data/nakshatra_lore.js';
+import { DYNAMIC_STRINGS } from '../../i18n/dynamicTranslations.js';
 
 const Card = ({ children, style }) => (
   <div style={{ background: 'white', border: '1px solid #E5D5C0', borderRadius: 10, padding: 16, ...style }}>
@@ -11,6 +12,7 @@ const Card = ({ children, style }) => (
 );
 
 export default function OverviewTab({ kundali, chartFormat, lang }) {
+  const t = (key) => (DYNAMIC_STRINGS[lang] || DYNAMIC_STRINGS.en)[key] || DYNAMIC_STRINGS.en[key] || key;
   const { lagna, planets, dasha, panchang, sunrise, sunset, lst, ayanamsa, ayanamsaDMS } = kundali;
   const moonPlanet = planets.find(p => p.key === 'moon');
   const sunPlanet = planets.find(p => p.key === 'sun');
@@ -32,26 +34,7 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
 
   return (
     <div style={{ animation: 'slideIn 0.25s ease' }}>
-      {/* Birth Summary */}
-      <Card style={{ marginBottom: 16, borderLeft: '4px solid #7C3AED' }}>
-        <h3 style={{ margin: '0 0 12px', fontSize: 14, color: '#7C3AED', fontWeight: 700 }}>Janma Vivaranam (Birth Summary)</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '8px 16px', fontSize: 13 }}>
-          {[
-            ['Sunrise', sunrise], ['Sunset', sunset],
-            ['Local Sidereal Time', lst],
-            ['Ayanamsa (Lahiri)', ayanamsaDMS],
-            ['Tithi', panchang.tithi], ['Vara', panchang.vara],
-            ['Janma Nakshatra', panchang.nakshatra], ['Yoga', panchang.yoga],
-            ['Karana', panchang.karana],
-          ].map(([k, v]) => (
-            <div key={k} style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>{k}</span>
-              <span style={{ color: '#1E3A5F', fontWeight: 500, marginTop: 2 }}>{v}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
-
+      {/* Birth Summary Removed (Shown in Header) */}
       {/* Charts Row */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
         <div>
@@ -93,33 +76,33 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <h3 style={{ margin: 0, fontSize: 16, color: '#E5D5C0', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
               <span>✨</span>
-              Janma Nakshatra: {moonNakLore.name}
+              {t('ov.janmaNak')}: {moonNakLore.name}
             </h3>
             <span style={{ fontSize: 12, background: 'rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: 20, color: '#FCD34D' }}>
-              Moon's Constellation
+              {t('ov.moonsConst')}
             </span>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 16 }}>
-            <div>
-              <p style={{ fontSize: 13, lineHeight: 1.5, color: '#CBD5E1', margin: '0 0 12px' }}>
-                {moonNakLore.myth}
-              </p>
-              <div style={{ background: 'rgba(255,255,255,0.05)', padding: 12, borderRadius: 8 }}>
-                <div style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Ruling Deity</div>
-                <div style={{ fontSize: 14, fontWeight: 500, color: '#FDE68A' }}>{moonNakLore.deity}</div>
+          <p style={{ fontSize: 13, lineHeight: 1.5, color: '#CBD5E1', margin: '0 0 16px' }}>
+            {moonNakLore.myth}
+          </p>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 10 }}>
+            {[
+              [t('nak_ruling_planet', lang) || 'Ruling Planet', moonNakLore.planet],
+              [t('nak_deity', lang) || 'Ruling Deity', moonNakLore.deity],
+              [t('nak_symbol', lang) || 'Symbol', moonNakLore.symbol],
+              [t('nak_gana', lang) || 'Gana (Type)', moonNakLore.gana],
+              [t('nak_nature', lang) || 'Nature (Quality)', moonNakLore.nature],
+              [t('nak_animal', lang) || 'Animal (Yoni)', moonNakLore.animal],
+              [t('nak_goal', lang) || 'Goal (Purushartha)', moonNakLore.goal],
+              [t('nak_guna', lang) || 'Guna', moonNakLore.guna]
+            ].map(([lbl, val]) => val && (
+              <div key={lbl} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.05)', padding: '8px 12px', borderRadius: 6, borderLeft: '2px solid #7C3AED' }}>
+                <div style={{ fontSize: 10, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5, marginRight: 8 }}>{lbl}</div>
+                <div style={{ fontSize: 12, fontWeight: 500, color: '#FDE68A', textAlign: 'right' }}>{val}</div>
               </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-               <div style={{ background: 'rgba(255,255,255,0.05)', padding: 12, borderRadius: 8 }}>
-                <div style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Symbol</div>
-                <div style={{ fontSize: 14, fontWeight: 500, color: '#FDE68A' }}>{moonNakLore.symbol}</div>
-              </div>
-              <div style={{ background: 'rgba(255,255,255,0.05)', padding: 12, borderRadius: 8, flex: 1 }}>
-                <div style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Famous Personalities</div>
-                <div style={{ fontSize: 13, color: '#E2E8F0', lineHeight: 1.4 }}>{moonNakLore.famous}</div>
-              </div>
-            </div>
+            ))}
           </div>
         </Card>
       )}
@@ -141,7 +124,7 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
           ))}
         </div>
         <div style={{ marginTop: 14, padding: '10px 12px', background: '#F8F5FF', borderRadius: 8, fontSize: 12, color: '#6B7280' }}>
-          Janma Nakshatra: <strong style={{ color: '#7C3AED' }}>{dasha.birthNakshatra}</strong> · Dasha Lord: <strong style={{ color: '#7C3AED', textTransform: 'capitalize' }}>{dasha.birthNakshatraLord}</strong>
+          {t('ov.janmaNak')}: <strong style={{ color: '#7C3AED' }}>{dasha.birthNakshatra}</strong> · {t('pl.lord')}: <strong style={{ color: '#7C3AED', textTransform: 'capitalize' }}>{dasha.birthNakshatraLord}</strong>
         </div>
       </Card>
     </div>

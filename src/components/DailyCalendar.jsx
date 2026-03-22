@@ -130,31 +130,7 @@ export default function DailyCalendar({ kundali, lang, t=(k)=>k, rashiNames }) {
         </div>
       </div>
 
-      {/* --- WEEKLY HORIZON (NEXT 6 DAYS) --- */}
-      <h4 style={{ margin: '0 0 12px 0', fontSize: '13px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('weekAhead', lang) || "The Week Ahead"}</h4>
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px' }}>
-        {upcoming.map((day, idx) => (
-          <div key={idx} style={{ 
-            minWidth: '85px', flex: 1, 
-            background: 'var(--bg-dark)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '10px 8px', textAlign: 'center',
-            position: 'relative', overflow: 'hidden'
-          }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: day.state === 'fav' ? '#10B981' : day.state === 'unf' ? '#EF4444' : '#D97706' }} />
-            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-main)', marginBottom: 2 }}>{getDayName(day.date, locale)}</div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: 6 }}>{day.date.getDate()} {day.date.toLocaleDateString(locale,{month:'short'})}</div>
-            
-            <div style={{ fontSize: '11px', color: 'var(--text-main)', background: 'var(--bg-app)', borderRadius: 12, padding: '2px 0', margin: '0 auto', width: '80%' }}>
-              H{day.house}
-            </div>
-            
-            {day.tithiName && (
-              <div style={{ fontSize: '9px', fontWeight: 700, color: '#7C3AED', marginTop: 6, lineHeight: 1.2 }}>
-                {day.tithiName.split(' ')[0]}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      {/* Weekly Horizon removed per user request */}
     </div>
   );
 }
