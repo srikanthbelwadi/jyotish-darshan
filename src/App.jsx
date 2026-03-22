@@ -4,6 +4,7 @@ import './index.css';
 import LifeDimensionsCard from './components/LifeDimensionsCard.jsx';
 import DailyCalendar from './components/DailyCalendar.jsx';
 import CompatibilityMatch from './components/CompatibilityMatch.jsx';
+import { calculateMatch } from './engine/matchmaking.js';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
 
 // ════════════════════════════════════════════════════════════════
@@ -2684,7 +2685,26 @@ function makeSVGChart(planets,lagnaR,size,lang='en'){
   return s+'</svg>';
 }
 
-function downloadPDF(K,lang){
+function downloadPDF(K,lang,PK){
+  try {
+
+
+  const browserNow=new Date();
+  const todayK=computeKundali({year:browserNow.getUTCFullYear(),month:browserNow.getUTCMonth()+1,day:browserNow.getUTCDate(),hour:browserNow.getUTCHours(),minute:browserNow.getUTCMinutes(),utcOffset:0,lat:K.input.lat,lng:K.input.lng});
+  const tMoon=todayK.planets.find(p=>p.key==='moon');
+  const natMoon=K.planets.find(p=>p.key==='moon');
+  const tJup=todayK.planets.find(p=>p.key==='jupiter');
+  const natJup=K.planets.find(p=>p.key==='jupiter');
+  const tSat=todayK.planets.find(p=>p.key==='saturn');
+  
+  const moonFromNat=(tMoon.rashi-natMoon.rashi+12)%12+1;
+  const jupFromLagna=(tJup.rashi-K.lagna.rashi+12)%12+1;
+  
+  const HT=L_HOUSE_THEMES[lang]||L_HOUSE_THEMES.en;
+  const XP=L_EXPERT[lang]||L_EXPERT.en;
+  const RNV=L_RASHI[lang]||L_RASHI.en;
+  const GNV=L_GRAHA[lang]||L_GRAHA.en;
+
   const S=STRINGS[lang]||STRINGS.en;
   const{input,lagna,planets,dasha,yogas:ys,shadbala:sb,ashtakavarga:av,panchang:pan,ayanamsaDMS,sunrise,sunset,lst}=K;
   const lpan=localizePanchang(pan,lang);
@@ -2703,6 +2723,51 @@ function downloadPDF(K,lang){
   const LS=(L_STATUS[lang]||L_STATUS.en);const planetRows=planets.map(p=>`<tr style="border-bottom:1px solid #F3F4F6"><td style="padding:5px 8px;border:1px solid #E5D5C0;font-weight:600;color:${PCOLOR[p.key]||'#1E3A5F'}">${(L_GRAHA[lang]||L_GRAHA.en)[p.key]||p.name}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${(L_RASHI[lang]||L_RASHI.en)[p.rashi]}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-family:monospace;font-size:11px">${p.degFmt}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-size:12px">${(L_NAKS[lang]||L_NAKS.en)[p.nIdx]||p.nakshatraName}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;text-align:center">${p.pada}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;text-align:center">${p.house}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-size:11px">${[p.exalted?LS.exalted:p.debil?LS.debilitated:'',(p.retro && p.key !== 'rahu' && p.key !== 'ketu')?LS.retrograde:'',p.combust?LS.combust:'',p.vargottama?LS.vargottama:''].filter(Boolean).join(', ')||'—'}</td></tr>`).join('');
   const dashaRows=dasha.mahadashas.map(m=>`<tr style="${m.isCurrent?'background:#FFF9E6':''}"><td style="padding:5px 8px;border:1px solid #E5D5C0;font-weight:600;color:${PCOLOR[m.planet]||'#1E3A5F'}">${(L_GRAHA[lang]||L_GRAHA.en)[m.planet]||m.planet}${m.isCurrent?' ★':''}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${DASHA_YRS[m.planet]} ${S['da.yrs']||S.da?.yrs||'yrs'}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${m.startStr}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${m.endStr}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-size:11px">${m.isCurrent?(curA?`${S.ov?.antar||S['pdf.antardasha']||'Antardasha'}: ${(L_GRAHA[lang]||L_GRAHA.en)[curA.planet]||curA.planet} (${curA.startStr}–${curA.endStr})`:S['da.active']||'Active'):'—'}</td></tr>`).join('');
   const sbRows=Object.entries(sb).map(([k,v])=>`<tr><td style="padding:5px 8px;border:1px solid #E5D5C0;font-weight:600">${(L_GRAHA[lang]||L_GRAHA.en)[k]||k}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;text-align:center">${v?.total?.toFixed(1)||'—'}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;text-align:center;color:${v?.cls==='Strong'?'#16A34A':v?.cls==='Weak'?'#DC2626':'#D97706'}">${(v?.cls==='Strong'?(S.shadbala?.strong||S['shadbala.strong']||'Strong'):v?.cls==='Moderate'?(S.shadbala?.moderate||S['shadbala.moderate']||'Moderate'):v?.cls==='Weak'?(S.shadbala?.weak||S['shadbala.weak']||'Weak'):'—')}</td></tr>`).join('');
+  
+  // Ashtakavarga HTML
+  let extraHTML = '<div class="page-break"></div>';
+  extraHTML += `<h2>${S.avarga||'Ashtakavarga'}</h2><table><thead><tr>${[1,2,3,4,5,6,7,8,9,10,11,12].map(h=>'<th>H'+h+'</th>').join('')}<th>Total</th></tr></thead><tbody><tr>${K.ashtakavarga.SAV.map(score => '<td style="text-align:center;font-weight:600;color:'+(score>=28?'#16A34A':'#DC2626')+'">'+score+'</td>').join('')}<td style="text-align:center;font-weight:700">337</td></tr></tbody></table>`;
+  
+  // Life Dimensions HTML
+  extraHTML += `<h2>${XP.labels?.overview||'Life Dimensions'}</h2>
+    <div class="reading-section"><div class="reading-label">${XP.labels?.career||'Career & Purpose'}</div><p>${XP.career(GNV[K.planets.find(p=>p.house===10)?.key||'saturn'], RNV[K.planets.find(p=>p.house===10)?.rashi||0], 10, strong)}</p></div>
+    <div class="reading-section"><div class="reading-label">${XP.labels?.partner||'Relationships & Partnerships'}</div><p>${XP.partner(GNV[K.planets.find(p=>p.house===7)?.key||'venus'], false, strong.includes('venus')?'Strong':weak.includes('venus')?'Weak':'Moderate')}</p></div>
+    <div class="reading-section"><div class="reading-label">${XP.labels?.strengths||'Planetary Gifts'}</div><p>${XP.strengths(strong.map(k=>GNV[k]))}</p></div>
+    <div class="reading-section"><div class="reading-label">${XP.labels?.growth||'Growth'}</div><p>${XP.growth(weak.map(k=>GNV[k]))}</p></div>
+    <div class="reading-section"><div class="reading-label">${XP.labels?.spiritual||'Spiritual Path'}</div><p>${XP.spiritual(GNV[K.planets.find(p=>p.house===9)?.key||'jupiter'], K.planets.find(p=>p.key==='jupiter')?.house||1)}</p></div>
+  `;
+
+  // Daily Forecast
+  let tmState = 'mix';
+  if ([1, 3, 6, 7, 10, 11].includes(moonFromNat)) tmState = 'fav';
+  else if ([4, 8, 12].includes(moonFromNat)) tmState = 'unf';
+  
+  extraHTML += `<div class="page-break"></div><h2>${S.ov?.dailyWeather||'Daily Cosmic Weather'}</h2>
+    <div style="background:rgba(0,0,0,0.03);padding:14px;border-left:3px solid #D97706;margin-bottom:16px;">
+      <strong>${S.ov?.transitRationale?.replace('{rashi}', RNV[tMoon.rashi]).replace('{house}', moonFromNat)||`Transit Moon in ${moonFromNat}th house`}</strong>
+    </div>
+    <div class="reading-section"><div class="reading-label">${S.ov?.favorable||'Favorable'}</div><p>${S.ov?.[`favorableDesc_${tmState}`] || S.ov?.favorableDesc || ''}</p></div>
+    <div class="reading-section"><div class="reading-label">${S.ov?.avoid||'Avoid'}</div><p>${S.ov?.[`avoidDesc_${tmState}`] || S.ov?.avoidDesc || ''}</p></div>
+    <div class="reading-section"><div class="reading-label">${S.ov?.mantra||'Mantra'}</div><p><em>${S.ov?.[`mantraDesc_${tmState}`] || S.ov?.mantraDesc || ''}</em></p></div>
+  `;
+
+  // Compatibility HTML
+  if (PK) {
+    const match = calculateMatch(K, PK);
+    const C = S;
+    extraHTML += `<div class="page-break"></div><h2>${C['comp.title']||'Relationship Compatibility'} — ${match.p2.name}</h2>
+    <div style="background:#FAFAF8;border:1px solid #E5D5C0;border-radius:8px;padding:16px;margin-bottom:12px;text-align:center">
+      <div style="font-size:28px;color:#7C3AED;font-weight:700;margin-bottom:8px">${match.totalScore.toFixed(1)} / 36</div>
+      <div style="font-size:14px;color:#1E3A5F;font-weight:600">${match.totalScore >= 18 ? (C.ov?.favorable||'Favorable Match') : (C.ov?.avoid||'Challenging Match')}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div class="stat-box" style="background:#FFF"><span class="stat-label">${match.p1.name} (User)</span><span class="stat-val">${RNV[match.p1.rashiIndex]||match.p1.rashi}</span><div class="stat-sub">Manglik: ${match.p1.isManglik?'Yes':'No'}</div></div>
+      <div class="stat-box" style="background:#FFF"><span class="stat-label">${match.p2.name} (Partner)</span><span class="stat-val">${RNV[match.p2.rashiIndex]||match.p2.rashi}</span><div class="stat-sub">Manglik: ${match.p2.isManglik?'Yes':'No'}</div></div>
+    </div>
+    <table><thead><tr><th>${C['comp.koota']||'Koota'}</th><th>${C['comp.score']||'Score'}</th><th>${C['comp.details']||'Details'}</th></tr></thead><tbody>
+      ${match.elements.map(k=>'<tr><td style="padding:6px 8px;border:1px solid #E5D5C0;font-weight:600">'+(C['comp.'+k.key]||k.name)+'</td><td style="padding:6px 8px;border:1px solid #E5D5C0;text-align:center;color:'+(k.score<k.max/2?'#EF4444':'#10B981')+'">'+k.score+' / '+k.max+'</td><td style="padding:6px 8px;border:1px solid #E5D5C0;font-size:11.5px">'+(C['comp.'+k.descKey]||k.desc)+'</td></tr>').join('')}
+    </tbody></table>`;
+  }
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${S.pdf.title} — ${input.city||''}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;background:white;color:#1E3A5F;font-size:13px;line-height:1.5}@media print{body{margin:0}.no-print{display:none!important}.page-break{page-break-before:always}}h1{font-size:22px;color:#7C3AED;margin-bottom:4px}h2{font-size:16px;color:#1E3A5F;margin:18px 0 8px;padding-bottom:5px;border-bottom:2px solid #E5D5C0}h3{font-size:13px;color:#7C3AED;margin:12px 0 6px}table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px}th{background:#F5F0FF;color:#7C3AED;text-align:left;padding:7px 8px;border:1px solid #E5D5C0;font-size:11px;text-transform:uppercase;letter-spacing:0.5px}td{padding:6px 8px;border:1px solid #E5D5C0;vertical-align:top}.page{max-width:800px;margin:0 auto;padding:28px 32px}.header-band{background:linear-gradient(135deg,#1E3A5F,#4C1D95,#7C3AED);color:white;padding:20px 32px;margin:-28px -32px 20px}.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}.stat-box{background:#F8F4FF;border:1px solid #E5D5C0;border-radius:6px;padding:10px;text-align:center}.stat-label{font-size:10px;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:2px}.stat-val{font-size:15px;font-weight:700;color:#7C3AED}.stat-sub{font-size:11px;color:#6B7280;margin-top:2px}.panchang-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}.panch-item{background:#FFF7ED;border:1px solid #E5D5C0;border-radius:6px;padding:8px;text-align:center}.chart-row{display:flex;gap:24px;justify-content:center;margin:16px 0}.chart-box{text-align:center}.chart-title{font-size:12px;font-weight:700;color:#7C3AED;margin-bottom:6px}.reading-section{background:#FAFAF8;border:1px solid #E5D5C0;border-radius:8px;padding:14px;margin-bottom:12px}.reading-label{font-size:11px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}.disc{font-size:11px;color:#9CA3AF;font-style:italic;border-top:1px solid #E5D5C0;padding-top:10px;margin-top:10px}.print-btn{display:inline-block;margin:16px 8px 0 0;padding:10px 20px;background:#7C3AED;color:white;border:none;border-radius:8px;font-family:Georgia,serif;font-size:14px;cursor:pointer}.close-btn{display:inline-block;margin:16px 0 0;padding:10px 20px;background:white;color:#7C3AED;border:1px solid #7C3AED;border-radius:8px;font-family:Georgia,serif;font-size:14px;cursor:pointer}</style></head><body>
 <div class="page">
 <div class="header-band">
@@ -2760,16 +2825,40 @@ ${ys.filter(y=>y.type!=='dosha').length>0?`<div class="reading-section"><div cla
 ${ys.filter(y=>y.type==='dosha').length>0?`<div class="reading-section" style="border-left:4px solid #EF4444"><div class="reading-label" style="color:#EF4444">${(L_STATUS[lang]||L_STATUS.en).combust?S.yo?.dosha||'Dosha':'Dosha'}</div><p>${ys.filter(y=>y.type==='dosha').map(y=>{const ly=(L_YOGA[lang]||L_YOGA.en)[y.name]||{name:y.name,effect:y.effect};return`<strong>${ly.name}</strong> — ${ly.effect}`}).join(' &nbsp;·&nbsp; ')}</p></div>`:''}
 ${strong.length>0?`<div class="reading-section"><div class="reading-label">${S.rd.strengthR}</div><p>${strong.map(k=>(L_GRAHA[lang]||L_GRAHA.en)[k]).join(', ')}${weak.length>0?' · '+weak.map(k=>(L_GRAHA[lang]||L_GRAHA.en)[k]).join(', '):''}</p></div>`:''}
 <div class="disc">${S.rd.disc}</div>
+${extraHTML}
 
 <div class="no-print" style="margin-top:20px;border-top:1px solid #E5D5C0;padding-top:16px">
   <button class="print-btn" onclick="window.print()">🖨 ${S['pdf.printBtn']||'Print / Save as PDF'}</button>
   <button class="close-btn" onclick="window.close()">✕ ${S['pdf.closeBtn']||'Close'}</button>
 </div>
 </div></body></html>`;
-  const w=window.open('','_blank','width=900,height=700,scrollbars=yes');
-  if(!w){alert((STRINGS[lang]||STRINGS.en)['popupAlert']||'Please allow popups for this site to download the PDF.');return;}
-  w.document.write(html);w.document.close();w.focus();
-  setTimeout(()=>{try{w.print();}catch(e){}},800);
+  const iframe = document.createElement('iframe');
+  // Chrome instantly aborts print dialogs if the iframe has opacity 0 or 0x0 size!
+  // Move it entirely off-screen but keep it 'visible' and 'large' to trick the spooler.
+  iframe.style.position = 'absolute';
+  iframe.style.top = '-10000px';
+  iframe.style.left = '-10000px';
+  iframe.style.width = '800px';
+  iframe.style.height = '1200px';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
+  iframe.contentWindow.document.open();
+  iframe.contentWindow.document.write(html);
+  iframe.contentWindow.document.close();
+  
+  setTimeout(() => {
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      // Use only a long fallback cleanup to ensure the dialog stays open
+      setTimeout(() => { try { document.body.removeChild(iframe); } catch(e){} }, 300000); // 5 mins
+    } catch(e) {}
+  }, 400);
+  
+  } catch (e) {
+    alert("PDF Error: " + e.message + "\n" + e.stack);
+    console.error("PDF Generation Error:", e);
+  }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2831,7 +2920,7 @@ function ResultsPage({K,onBack,lang,setLang}){
           <button onClick={handleShare} className="lux-btn" style={{padding:'8px 16px'}}>
             ⇧ {t('share',lang)}
           </button>
-          <button onClick={()=>downloadPDF(K,lang)} className="lux-btn" style={{padding:'8px 16px',background:'var(--accent-gold)',color:'#000'}}>
+          <button onClick={()=>downloadPDF(K,lang,partnerKundali)} className="lux-btn" style={{padding:'8px 16px',background:'var(--accent-gold)',color:'#000'}}>
             ↓ {t('download',lang)}
           </button>
         </div>

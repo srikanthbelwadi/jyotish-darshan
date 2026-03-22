@@ -23,7 +23,7 @@ const TABS = [
   { id: 'reading',   label: 'Expert Reading',  icon: '📜' },
 ];
 
-export default function ResultsPage({ kundali, onBack, lang, onLangChange }) {
+export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDownloadPDF }) {
   const [tab, setTab] = useState('overview');
   const [chartFormat, setChartFormat] = useState('south');
   const [copied, setCopied] = useState(false);
@@ -42,16 +42,24 @@ export default function ResultsPage({ kundali, onBack, lang, onLangChange }) {
   };
 
   const handlePrint = () => {
-    window.print();
+    // try to call global print if available, else standard window print
+    if(onDownloadPDF) {
+      onDownloadPDF();
+    } else {
+      window.print();
+    }
   };
 
   const handleDownloadPDF = async () => {
     setPrinting(true);
     try {
-      // Use browser's print-to-PDF
-      window.print();
+      if(onDownloadPDF) {
+        onDownloadPDF();
+      } else {
+        window.print();
+      }
     } finally {
-      setPrinting(false);
+      setTimeout(() => setPrinting(false), 1000);
     }
   };
 
