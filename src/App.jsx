@@ -7,6 +7,8 @@ import CompatibilityMatch from './components/CompatibilityMatch.jsx';
 import { calculateMatch } from './engine/matchmaking.js';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
 import { NAKSHATRA_LORE } from './data/nakshatra_lore.js';
+import { initializeAstroEngine, getSwe } from './engine/swissephLoader.js';
+
 // ════════════════════════════════════════════════════════════════
 // ASTRONOMY ENGINE
 // ════════════════════════════════════════════════════════════════
@@ -14,99 +16,63 @@ const DEG = Math.PI / 180;
 function norm(d){return((d%360)+360)%360}
 
 function toJD(year,month,day,hour=0,min=0,utc=0){
-  const h=hour+min/60-utc;
-  let y=year,m=month;
-  if(m<=2){y--;m+=12}
-  const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
-  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+day+h/24+B-1524.5;
+  const swe = getSwe();
+  const totalMinutes = hour * 60 + min - Math.round(utc * 60);
+  let uDate = new Date(Date.UTC(year, month - 1, day, 0, totalMinutes, 0));
+  let utHour = uDate.getUTCHours() + uDate.getUTCMinutes() / 60;
+  return swe.julday(uDate.getUTCFullYear(), uDate.getUTCMonth() + 1, uDate.getUTCDate(), utHour, swe.SE_GREG_CAL);
 }
 
 function lahiri(jd){
-  const T=(jd-2451545)/36525;
-  return 23.85308+1.39600*T-0.000308*T*T;
+  const swe = getSwe();
+  return swe.SweModule.ccall('swe_get_ayanamsa_ut', 'number', ['number'], [jd]);
 }
 
-function sunPos(T){
-  const L0=norm(280.46646+36000.76983*T);
-  const M=norm(357.52911+35999.05029*T);
-  const C=(1.914602-0.004817*T)*Math.sin(M*DEG)+(0.019993-0.000101*T)*Math.sin(2*M*DEG);
-  const o=125.04-1934.136*T;
-  return{lon:norm(L0+C-0.00569-0.00478*Math.sin(o*DEG)),spd:1.0};
-}
-
-function moonPos(T){
-  const T2=T*T,T3=T2*T,T4=T3*T;
-  const Lp=norm(218.3164477+481267.88123421*T-0.0015786*T2+T3/538841-T4/65194000);
-  const D=norm(297.8501921+445267.1114034*T-0.0018819*T2+T3/545868-T4/113065000);
-  const M=norm(357.5291092+35999.0502909*T-0.0001536*T2+T3/24490000);
-  const Mp=norm(134.9633964+477198.8675055*T+0.0087414*T2+T3/69699-T4/14712000);
-  const F=norm(93.2720950+483202.0175233*T-0.0036539*T2-T3/3526000+T4/863310000);
-  const E=1-0.002516*T-0.0000074*T2,E2=E*E,r=DEG;
-  const S=[[0,0,1,0,6288774],[2,0,-1,0,1274027],[2,0,0,0,658314],[0,0,2,0,213618],[0,1,0,0,-185116],
-    [0,0,0,2,-114332],[2,0,-2,0,58793],[2,-1,-1,0,57066],[2,0,1,0,53322],[2,-1,0,0,45758],
-    [0,1,-1,0,-40923],[1,0,0,0,-34720],[0,1,1,0,-30383],[2,0,0,-2,15327],[0,0,1,2,-12528],
-    [0,0,1,-2,10980],[4,0,-1,0,10675],[0,0,3,0,10034],[4,0,-2,0,8548],[2,1,-1,0,-7888],
-    [2,1,0,0,-6766],[1,0,-1,0,-5163],[1,1,0,0,4987],[2,-1,1,0,4036],[2,0,2,0,3994],
-    [4,0,0,0,3861],[2,0,-3,0,3665],[0,1,-2,0,-2689],[2,0,-1,2,-2602],[2,-1,-2,0,2390],
-    [1,0,1,0,-2348],[2,-2,0,0,2236],[0,1,2,0,-2120],[0,2,0,0,-2069],[2,-2,-1,0,2048],
-    [2,0,1,-2,-1773],[2,0,0,2,-1595],[4,-1,-1,0,1215],[0,0,2,2,-1110],[3,0,-1,0,-892],
-    [2,1,1,0,-810],[4,-1,-2,0,759],[0,2,-1,0,-713],[2,2,-1,0,-700],[2,1,-2,0,691],
-    [2,-1,0,-2,596],[4,0,1,0,549],[0,0,4,0,537],[4,-1,0,0,520],[1,0,-2,0,-487],
-    [2,1,0,-2,-399],[0,0,2,-2,-381],[1,1,1,0,351],[3,0,-2,0,-340],[4,0,-3,0,330],
-    [2,-1,2,0,327],[0,2,1,0,-323],[1,1,-1,0,299],[2,0,3,0,294]];
-  let dL=0;
-  for(const[d,m,mp,f,c]of S){let v=c;if(Math.abs(m)===1)v*=E;else if(Math.abs(m)===2)v*=E2;dL+=v*Math.sin((d*D+m*M+mp*Mp+f*F)*r);}
-  const A1=norm(119.75+131.849*T),A2=norm(53.09+479264.290*T);
-  dL+=3958*Math.sin(A1*r)+1962*Math.sin((Lp-F)*r)+318*Math.sin(A2*r);
-  return{lon:norm(Lp+dL/1000000),spd:13.2};
-}
-
-function planetPos(L0,L0r,M0,M0r,C1,C2,T){
-  const L=norm(L0+L0r*T),M=norm(M0+M0r*T);
-  const C=C1*Math.sin(M*DEG)+C2*Math.sin(2*M*DEG);
-  return{lon:norm(L+C)};
-}
-
-function rahuPos(T){return{lon:norm(125.0445-1934.1363*T),spd:-0.053}}
-
-function computeAsc(jd,lat,lng){
-  const T=(jd-2451545)/36525;
-  const GMST=norm(280.46061837+360.98564736629*(jd-2451545));
-  const LST=norm(GMST+lng);
-  const eps=(23.439291111-0.013004167*T)*DEG;
-  const L=LST*DEG,la=lat*DEG;
-  const tanA=(-Math.cos(L))/(Math.sin(eps)*Math.tan(la)+Math.cos(eps)*Math.sin(L));
-  let a=Math.atan(tanA)/DEG;
-  if(a<0)a+=180;
-  if(Math.cos(L)>0)a+=180;
-  return norm(a);
+function computeAsc(jd, lat, lng){
+  const swe = getSwe();
+  const cuspsPtr = swe.SweModule._malloc(13 * 8);
+  const ascmcPtr = swe.SweModule._malloc(10 * 8);
+  swe.SweModule.ccall('swe_houses', 'number', ['number', 'number', 'number', 'number', 'pointer', 'pointer'], [jd, lat, lng, 'P'.charCodeAt(0), cuspsPtr, ascmcPtr]);
+  const asc_trop = new Float64Array(swe.SweModule.HEAPF64.buffer, ascmcPtr, 10)[0];
+  const ay = lahiri(jd);
+  swe.SweModule._free(cuspsPtr); swe.SweModule._free(ascmcPtr);
+  return norm(asc_trop - ay);
 }
 
 function allPlanets(jd){
-  const T=(jd-2451545)/36525;
-  const ay=lahiri(jd);
-  const raw={
-    sun:sunPos(T),
-    moon:moonPos(T),
-    mars:planetPos(355.433,19140.299,19.373,19139.858,10.691,0.623,T),
-    mercury:planetPos(252.251,149472.675,168.656,149472.515,23.440,2.982,T),
-    jupiter:planetPos(34.352,3034.906,20.915,3034.906,5.555,0.168,T),
-    venus:planetPos(181.980,58517.816,212.352,58517.804,0.776,0.003,T),
-    saturn:planetPos(50.078,1222.114,317.907,1221.552,6.359,0.220,T),
-    rahu:rahuPos(T),
+  const swe = getSwe();
+  const flags = swe.SEFLG_SWIEPH | swe.SEFLG_SPEED | swe.SEFLG_SIDEREAL;
+  
+  const calc = (bodyId) => {
+    const res = swe.calc_ut(jd, bodyId, flags);
+    return { lon: norm(res[0]), spd: res[3] || 0 };
   };
-  raw.ketu={lon:norm(raw.rahu.lon+180),spd:-0.053};
-  const sid={};
+  
+  const ay = lahiri(jd);
+  const raw = {
+    sun: calc(swe.SE_SUN),
+    moon: calc(swe.SE_MOON),
+    mars: calc(swe.SE_MARS),
+    mercury: calc(swe.SE_MERCURY),
+    jupiter: calc(swe.SE_JUPITER),
+    venus: calc(swe.SE_VENUS),
+    saturn: calc(swe.SE_SATURN),
+    rahu: calc(swe.SE_TRUE_NODE),
+  };
+  raw.ketu = { lon: norm(raw.rahu.lon + 180), spd: raw.rahu.spd };
+  
+  const sid = {};
   for(const[k,v]of Object.entries(raw)){
-    sid[k]={...v,lon:norm(v.lon-ay),retro:(v.spd||0)<0};
+    sid[k] = { ...v, retro: v.spd < 0 };
   }
+  
   // combustion
-  const sunL=sid.sun.lon;
-  const thresh={moon:12,mars:17,mercury:13,jupiter:11,venus:10,saturn:15};
-  for(const[p,t]of Object.entries(thresh)){
-    if(sid[p]){let d=Math.abs(sid[p].lon-sunL);if(d>180)d=360-d;sid[p].combust=d<t;}
+  const sunL = sid.sun.lon;
+  const thresh = { moon:12, mars:17, mercury:13, jupiter:11, venus:10, saturn:15 };
+  for(const[p,t] of Object.entries(thresh)){
+    if(sid[p]) { let d=Math.abs(sid[p].lon-sunL); if(d>180) d=360-d; sid[p].combust=d<t; }
   }
-  return{sid,ay};
+  return { sid, ay };
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -3114,7 +3080,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile}){
       const saved = localStorage.getItem('jd_profiles');
       if (saved) setSavedProfiles(JSON.parse(saved));
     } catch(e) {}
-  }, []);
+  }, [K]);
 
   const[tab,setTab]=React.useState('charts');
   const[fmt,setFmt]=React.useState('south');
@@ -3389,24 +3355,40 @@ function App(){
   const[kundali,setKundali]=React.useState(null);
   const[lang,setLang]=React.useState(()=>localStorage.getItem('jd_lang')||'en');
   const[err,setErr]=React.useState(null);
+  
+  const [engineReady, setEngineReady] = React.useState(false);
+  const [loadMsg, setLoadMsg] = React.useState('Synthesizing Ephemeris data...');
+  const [loadPct, setLoadPct] = React.useState(0);
 
   React.useEffect(()=>{
-    const p=new URLSearchParams(location.search);
-    const k=p.get('k');
-    if(k){try{const d=JSON.parse(decodeURIComponent(atob(k)));handleSubmit({year:d.y,month:d.mo,day:d.d,hour:d.h,minute:d.mi,utcOffset:d.ut,lat:d.la,lng:d.ln,city:d.ci,country:d.co,timezone:d.tz,gender:d.ge,dob:`${d.y}-${String(d.mo).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`,tob:`${String(d.h).padStart(2,'0')}:${String(d.mi).padStart(2,'0')}`})}catch(e){console.warn('Invalid share link')}}
-    else {
-      try {
-        const saved = localStorage.getItem('jd_profiles');
-        if (saved) {
-          const profiles = JSON.parse(saved);
-          if (profiles && profiles.length > 0) {
-            setErr(null);
-            setKundali(computeKundali(profiles[0]));
-            setScreen('results');
+    let mounted = true;
+    initializeAstroEngine((pct, msg) => {
+      if(mounted){ setLoadPct(pct); setLoadMsg(msg); }
+    }).then(() => {
+      if(!mounted) return;
+      setEngineReady(true);
+      
+      const p=new URLSearchParams(location.search);
+      const k=p.get('k');
+      if(k){try{const d=JSON.parse(decodeURIComponent(atob(k)));handleSubmit({year:d.y,month:d.mo,day:d.d,hour:d.h,minute:d.mi,utcOffset:d.ut,lat:d.la,lng:d.ln,city:d.ci,country:d.co,timezone:d.tz,gender:d.ge,dob:`${d.y}-${String(d.mo).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`,tob:`${String(d.h).padStart(2,'0')}:${String(d.mi).padStart(2,'0')}`})}catch(e){console.warn('Invalid share link')}}
+      else {
+        try {
+          const saved = localStorage.getItem('jd_profiles');
+          if (saved) {
+            const profiles = JSON.parse(saved);
+            if (profiles && profiles.length > 0) {
+              setErr(null);
+              setKundali(computeKundali(profiles[0]));
+              setScreen('results');
+            }
           }
-        }
-      } catch (e) {}
-    }
+        } catch (e) {}
+      }
+    }).catch(err => {
+      if(mounted) setLoadMsg("Error loading astronomy engine: " + err.message);
+    });
+    
+    return () => { mounted = false; };
   },[]);
 
   function handleSubmit(inp){
@@ -3430,15 +3412,81 @@ function App(){
 
   if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily:'serif'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
   
-    const goBack = () => { setScreen('input'); history.replaceState({},'',location.pathname); };
+  if (!engineReady) {
     return (
-      <div style={{minHeight:'100vh'}}>
-        <AppHeader lang={lang} setLang={handleLang} />
-        <DailyPanchang lang={lang} />
-        {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
+      <div style={{minHeight:'100vh',background:'var(--bg-main)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-sans)',color:'var(--text-main)',padding:20}}>
+        
+        {/* RECONSTRUCTED LOGO FROM ATTACHMENT */}
+        <div style={{display:'flex',alignItems:'center',gap:24,marginBottom:40}}>
+          {/* Sun Crest */}
+          <div style={{
+            width: 72, height: 72, 
+            borderRadius: '50%', 
+            border: '2px solid var(--accent-gold)', 
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 0 15px rgba(245, 158, 11, 0.2)',
+            position: 'relative'
+          }}>
+            {/* Inner Sun Geometry */}
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="var(--accent-gold)" stroke="var(--accent-gold)" strokeWidth="1" style={{position:'absolute'}}>
+              <circle cx="12" cy="12" r="5" fill="var(--accent-gold)"></circle>
+              {/* Top/Bottom/Left/Right rays */}
+              <line x1="12" y1="2" x2="12" y2="5" strokeWidth="2"></line>
+              <line x1="12" y1="19" x2="12" y2="22" strokeWidth="2"></line>
+              <line x1="2" y1="12" x2="5" y2="12" strokeWidth="2"></line>
+              <line x1="19" y1="12" x2="22" y2="12" strokeWidth="2"></line>
+              {/* Diagonal rays */}
+              <line x1="4.93" y1="4.93" x2="7.05" y2="7.05" strokeWidth="2"></line>
+              <line x1="16.95" y1="16.95" x2="19.07" y2="19.07" strokeWidth="2"></line>
+              <line x1="4.93" y1="19.07" x2="7.05" y2="16.95" strokeWidth="2"></line>
+              <line x1="16.95" y1="7.05" x2="19.07" y2="4.93" strokeWidth="2"></line>
+            </svg>
+          </div>
+
+          {/* Typography */}
+          <div style={{display:'flex', flexDirection:'column', justifyContent:'center'}}>
+            <h1 style={{margin:0, fontSize:36, fontWeight:700, fontFamily:'serif', color:'var(--accent-gold)', letterSpacing:'2px', textShadow:'0 2px 4px rgba(0,0,0,0.5)'}}>
+              JYOTISH DARSHAN
+            </h1>
+            <p style={{margin:'4px 0 0 0', fontSize:14, color:'#9ca3af', letterSpacing:'4px', textTransform:'uppercase', fontWeight:500, display:'flex', alignItems:'center', gap:8}}>
+              VEDIC BIRTH CHART <span style={{fontSize:10}}>•</span> <span style={{letterSpacing:'1px', fontFamily:'sans-serif'}}>ज्योतिष दर्शन</span>
+            </p>
+          </div>
+        </div>
+        {/* END LOGO */}
+
+        <div style={{maxWidth:400, width:'100%', textAlign:'center'}}>
+          <div style={{background:'var(--bg-card)',height:4,borderRadius:2,overflow:'hidden',width:'100%',margin:'0 0 16px 0',boxShadow:'inset 0 1px 3px rgba(0,0,0,0.4)', position:'relative'}}>
+            {/* Flashing indeterminate state if loadPct === 0, else deterministic bar */}
+            {loadPct === 0 ? (
+               <div style={{height:'100%',background:'var(--accent-gold)',width:'30%',animation:'indeterminate 1.5s infinite ease-in-out',position:'absolute',left:0}}></div>
+            ) : (
+               <div style={{height:'100%',background:'linear-gradient(90deg, var(--accent-gold), #fff)',width:`${loadPct}%`,transition:'width 0.4s ease-out'}}></div>
+            )}
+          </div>
+          <p style={{margin:0,fontSize:13,fontWeight:500,color:'var(--text-muted)',letterSpacing:'0.5px'}}>{loadMsg}</p>
+        </div>
+        
+        <style dangerouslySetInnerHTML={{__html:`
+          @keyframes indeterminate {
+            0% { left: -30%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+          }
+        `}} />
       </div>
     );
   }
+
+  const goBack = () => { setScreen('input'); history.replaceState({},'',location.pathname); };
+  return (
+    <div style={{minHeight:'100vh'}}>
+      <AppHeader lang={lang} setLang={handleLang} />
+      <DailyPanchang lang={lang} />
+      {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
+    </div>
+  );
+}
 
 
 export default App;
