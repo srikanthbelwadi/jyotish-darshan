@@ -1734,7 +1734,7 @@ function SouthChart({planets,lagnaR,size=320,small=false,title,lang='en'}){
   return(
     <div style={{textAlign:'center'}}>
       {title&&<p style={{fontSize:small?10:13,fontWeight:700,color:'#7C3AED',marginBottom:5,fontFamily:'inherit'}}>{title}</p>}
-      <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{border:'1px solid var(--border-light)',borderRadius:6,background:'transparent',display:'block',margin:'0 auto',boxShadow:'inset 0 0 20px rgba(0,0,0,0.5)'}}>
+      <svg className="responsive-svg" viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{border:'1px solid var(--border-light)',borderRadius:6,background:'transparent',display:'block',margin:'0 auto',boxShadow:'inset 0 0 20px rgba(0,0,0,0.5)'}}>
         {[1,2,3].map(i=>(
           <g key={i}>
             <line x1={cell*i} y1={0} x2={cell*i} y2={size} stroke="var(--border-light)" strokeWidth={1}/>
@@ -1786,7 +1786,7 @@ function NorthChart({planets,lagnaR,size=320,small=false,title,lang='en'}){
   return(
     <div style={{textAlign:'center'}}>
       {title&&<p style={{fontSize:small?10:13,fontWeight:700,color:'#7C3AED',marginBottom:5,fontFamily:'inherit'}}>{title}</p>}
-      <svg viewBox="0 0 400 400" width={size} height={size} style={{border:'1px solid var(--border-light)',borderRadius:6,background:'transparent',display:'block',margin:'0 auto',boxShadow:'inset 0 0 20px rgba(0,0,0,0.5)'}}>
+      <svg className="responsive-svg" viewBox="0 0 400 400" width={size} height={size} style={{border:'1px solid var(--border-light)',borderRadius:6,background:'transparent',display:'block',margin:'0 auto',boxShadow:'inset 0 0 20px rgba(0,0,0,0.5)'}}>
         {NI_PATHS.map((path,i)=>{
           const house=i+1,ps=byHouse(house),[lx,ly]=NI_LABEL[i],isL=house===1;
           return(
@@ -2383,11 +2383,11 @@ function OverviewTab({K,fmt,lang='en'}){
   return(
     <div style={{animation:'slideIn 0.2s ease'}}>
       {/* Janma Vivaranam removed per user request */}
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:18,marginBottom:18}}>
+      <div className="responsive-grid-2" style={{marginBottom:18}}>
         <C planets={planets} lagnaR={lagna.rashi} title={t('ov.rashiChart',lang)} size={300} lang={lang}/>
         <C planets={navP} lagnaR={lagna.rashi} title={t('ov.navamsa',lang)} size={300} lang={lang}/>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:18}}>
+      <div className="responsive-grid-3" style={{marginBottom:18}}>
         {[[`${(L_RASHI[lang]||L_RASHI.en)[lagna.rashi]}`,lagna.degFmt,t('ov.lagna',lang),'#7C3AED'],
           [`${(L_RASHI[lang]||L_RASHI.en)[moon.rashi]}`,`${(L_NAKS[lang]||L_NAKS.en)[moon.nIdx]||moon.nakshatraName} ${t('pdf.pada',lang)||'Pd'} ${moon.pada}`,t('ov.moon',lang),'#8B5CF6'],
           [`${(L_RASHI[lang]||L_RASHI.en)[sun.rashi]}`,`${(L_NAKS[lang]||L_NAKS.en)[sun.nIdx]||sun.nakshatraName} ${t('pdf.pada',lang)||'Pd'} ${sun.pada}`,t('ov.sun',lang),'#D97706']].map(([val,sub,lbl,clr])=>(
@@ -2437,7 +2437,7 @@ function OverviewTab({K,fmt,lang='en'}){
 
       <Card>
         <h3 style={{margin:'0 0 12px',fontSize:14,color:'var(--text-main)',fontWeight:700}}>{t('ov.curDasha',lang)}</h3>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12}}>
+        <div className="responsive-grid-3" style={{gap:12}}>
           {[{lbl:t('ov.maha',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet,period:`${cur?.startStr}–${cur?.endStr}`,bg:'var(--bg-badge-purple)',clr:'var(--text-badge-purple)'},
             {lbl:t('ov.antar',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[curA?.planet]||curA?.planet,period:`${curA?.startStr}–${curA?.endStr}`,bg:'var(--bg-badge-orange)',clr:'var(--text-badge-orange)'},
             {lbl:t('ov.birth',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[dasha.nakLord]||dasha.nakLord,period:`${t('ov.nakshatra',lang)}: ${(L_NAKS[lang]||L_NAKS.en)[K.planets.find(p=>p.key==='moon')?.nIdx]||dasha.nakName}`,bg:'var(--bg-badge-green)',clr:'var(--text-badge-green)'}].map(({lbl,p,period,bg,clr})=>(
@@ -2466,7 +2466,7 @@ function ChartsTab({K,fmt,setFmt,lang='en'}){
           {['south','north'].map(f=><button key={f} onClick={()=>setFmt(f)} style={{padding:'5px 12px',borderRadius:5,border:'none',background:fmt===f?'var(--text-main)':'transparent',boxShadow:fmt===f?'0 1px 3px rgba(0,0,0,0.1)':'none',cursor:'pointer',fontSize:12,fontFamily:'inherit',fontWeight:fmt===f?700:400,color:fmt===f?'var(--bg-card)':'var(--text-main)'}}>{f==='south'?t('ch.south',lang):t('ch.north',lang)}</button>)}
         </div>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:20}}>
+      <div className="responsive-grid-2" style={{marginBottom:20}}>
         <C planets={K.planets} lagnaR={K.lagna.rashi} title={t('ov.rashiChart',lang)||'D1 · Rashi Chart'} size={280} lang={lang}/>
         <C planets={K.planets.map(p=>({...p,rashi:K.divCharts.D9?.[p.key]??p.rashi}))} lagnaR={K.lagna.rashi} title={t('ov.navamsa',lang)||'D9 · Navamsa'} size={280} lang={lang}/>
       </div>
@@ -2510,7 +2510,7 @@ function PlanetsTab({K,lang='en'}){
         ))}
       </div>
       <div style={{background:'var(--bg-card)',borderRadius:10,border:'1px solid var(--border-light)',overflow:'hidden',marginBottom:18}}>
-        <div style={{overflowX:'auto'}}>
+        <div className="table-scroll-wrapper">
           <table style={{width:'100%',fontSize:12}}>
             <thead><tr style={{background:'rgba(212,175,55,0.05)'}}>
               {[t('pl.graha',lang),t('pl.rashi',lang),t('pl.deg',lang),t('pl.nak',lang),t('pl.pada',lang),t('pl.nakL',lang),t('pl.signL',lang),t('pl.bhava',lang),t('pl.status',lang)].map(h=><th key={h} style={{padding:'9px 10px',textAlign:'left',fontWeight:700,color:'var(--accent-gold)',fontSize:10,textTransform:'uppercase',borderBottom:'1.5px solid #E5D5C0',whiteSpace:'nowrap'}}>{h}</th>)}
@@ -2680,7 +2680,7 @@ function ShadbalaTab({K,lang='en'}){
     <div style={{animation:'slideIn 0.2s ease'}}>
       <h3 style={{margin:'0 0 14px',fontSize:15,color:'var(--text-main)',fontWeight:700}}>{t('sh.title',lang)} — {t('sh.virupas',lang)}</h3>
       <div style={{background:'var(--bg-card)',border:'1px solid var(--border-light)',borderRadius:10,overflow:'hidden',marginBottom:20}}>
-        <div style={{overflowX:'auto'}}>
+        <div className="table-scroll-wrapper">
           <table style={{width:'100%',fontSize:12}}>
             <thead><tr style={{background:'rgba(212,175,55,0.05)'}}>
               {[t('sh.graha',lang),t('sh.sthana',lang),t('sh.dig',lang),t('sh.kala',lang),t('sh.chesta',lang),t('sh.naisargika',lang),t('sh.drik',lang),t('sh.total',lang),t('sh.strength',lang)].map(h=><th key={h} style={{padding:'9px 10px',textAlign:h==='Graha'?'left':'center',fontWeight:700,color:'var(--accent-gold)',fontSize:10,textTransform:'uppercase',borderBottom:'1.5px solid #E5D5C0',whiteSpace:'nowrap'}}>{h}</th>)}
@@ -2736,7 +2736,7 @@ function AshtakavargaTab({K,lang='en'}){
             <h4 style={{margin:0,fontSize:12,fontWeight:700,color:'var(--text-main)'}}>{PDN[p]} {t('av.bav',lang)}</h4>
             <span style={{marginLeft:'auto',fontSize:11,color:'var(--text-muted)'}}>{t('ashtakavarga.total',lang)}: <strong style={{color:'var(--accent-gold)'}}>{tot}</strong></span>
           </div>
-          <div style={{overflowX:'auto'}}>
+          <div className="table-scroll-wrapper">
             <table style={{width:'100%',tableLayout:'fixed'}}>
               <thead><tr>{(L_RASHI[lang]||L_RASHI.en).map((r,i)=><th key={i} style={{padding:'5px 3px',fontSize:9,fontWeight:600,color:'var(--text-muted)',textAlign:'center',borderBottom:'1px solid var(--border-light)',minWidth:55}}>{r.slice(0,4)}</th>)}</tr></thead>
               <tbody><tr>{row.map((v,i)=>{const{bg,c}=cc(v);return<td key={i} style={{padding:'7px 3px',textAlign:'center',background:bg}}><span style={{fontSize:13,fontWeight:700,color:c}}>{v}</span></td>})}</tr></tbody>
@@ -2749,7 +2749,7 @@ function AshtakavargaTab({K,lang='en'}){
           <h3 style={{margin:0,fontSize:13,fontWeight:700,color:'var(--accent-gold)'}}>{t('av.sav',lang)} — {t('av.savDesc',lang)}</h3>
           <p style={{margin:'3px 0 0',fontSize:11,color:'var(--text-muted)'}}>{t('av.stdTotal',lang)} = 337 · {t('av.yours',lang)}: {SAV.reduce((a,b)=>a+b,0)}</p>
         </div>
-        <div style={{overflowX:'auto'}}>
+        <div className="table-scroll-wrapper">
           <table style={{width:'100%',tableLayout:'fixed'}}>
             <thead><tr>{(L_RASHI[lang]||L_RASHI.en).map((r,i)=><th key={i} style={{padding:'7px 3px',fontSize:10,fontWeight:700,color:'var(--accent-gold)',textAlign:'center',borderBottom:'1.5px solid #E5D5C0',minWidth:60}}>{r.slice(0,5)}</th>)}</tr></thead>
             <tbody><tr>{SAV.map((v,i)=>{const{bg,c}=sc(v);return<td key={i} style={{padding:'9px 3px',textAlign:'center',background:bg,borderBottom:'1px solid var(--border-light)'}}><div style={{fontSize:16,fontWeight:700,color:c}}>{v}</div><div style={{fontSize:9,color:'var(--text-muted)'}}>{(L_RASHI[lang]||L_RASHI.en)[i].slice(0,3)}</div></td>})}</tr></tbody>
@@ -3370,14 +3370,14 @@ function AppHeader({ lang, setLang, user, syncStatus, onLoginClick, onLogoutClic
   const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
   return (
       <header className="app-header" style={{borderBottom:'1px solid var(--border-light)',background:'var(--bg-surface)',backdropFilter:'blur(12px)',position:'sticky',top:0,zIndex:20}}>
-        <div style={{maxWidth:1100, margin:'0 auto', display:'flex', flexWrap:'wrap', justifyContent:'space-between',alignItems:'center',padding:'12px 16px', gap:14}}>
+        <div className="app-header-content" style={{maxWidth:1100, margin:'0 auto', display:'flex', flexWrap:'wrap', justifyContent:'space-between',alignItems:'center',padding:'12px 16px', gap:14}}>
           <div style={{display:'flex',alignItems:'center',gap:14, minWidth:0, flexShrink:1}}>
             <div style={{width:40,height:40,flexShrink:0,background:'transparent',border:'1px solid var(--accent-gold)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 12px var(--accent-glow)'}}>
               <span style={{color:'var(--accent-gold)',fontSize:20}}>☀</span>
             </div>
             <div style={{minWidth:0}}><h1 className="serif" style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{t('tagline',lang)}</p></div>
           </div>
-          <div style={{display:'flex', gap:12, flexShrink:0, alignItems:'center'}}>
+          <div className="app-header-right" style={{display:'flex', gap:12, flexShrink:0, alignItems:'center'}}>
             {!user ? (
               <button type="button" onClick={onLoginClick} style={{background:'var(--accent-gold)', border:'none', borderRadius:'20px', padding:'6px 16px', color:'#000', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px'}}>Login / Register</button>
             ) : (

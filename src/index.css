@@ -190,3 +190,43 @@ table{border-collapse:collapse}
   border-bottom-color: var(--accent-gold);
 }
 .lux-tab:hover:not(.active) { color: var(--text-main); }
+
+/* --- Mobile Responsive Utilities --- */
+.responsive-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.responsive-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.mobile-col { display: flex; flex-direction: row; }
+
+/* Force tables to scroll smoothly across X-axis instead of breaking layouts */
+.table-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .mobile-col { flex-direction: column !important; }
+  .mobile-padding { padding: 20px !important; }
+  .mobile-hero-padding { padding: 24px 16px !important; }
+  .mobile-text-center { text-align: center !important; }
+  
+  /* Make all astrological SVGs dynamically scale down */
+  .responsive-svg {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100%;
+  }
+
+  /* Specific mobile overrides for heavy dashboard nodes */
+  .app-header-content { flex-direction: column !important; align-items: stretch !important; }
+  .app-header-right { justify-content: space-between !important; margin-top: 10px; width: 100%; }
+}

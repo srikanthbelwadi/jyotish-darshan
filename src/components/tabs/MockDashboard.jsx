@@ -445,7 +445,7 @@ const PILLAR_DATA = {
 const MandalaHero = ({ activeTime, setActiveTime }) => {
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
   return (
-    <div style={{ background: '#2c0b0e', backgroundImage: 'radial-gradient(#4a151b 20%, transparent 20%), radial-gradient(#4a151b 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid #b8860b', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5)' }}>
+    <div className="mobile-hero-padding" style={{ background: '#2c0b0e', backgroundImage: 'radial-gradient(#4a151b 20%, transparent 20%), radial-gradient(#4a151b 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid #b8860b', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5)' }}>
       <div style={{ position: 'absolute', top: '50%', right: '-5%', transform: 'translateY(-50%)', width: '300px', height: '300px', border: '5px dashed rgba(184, 134, 11, 0.2)', borderRadius: '50%', animation: 'spin 120s linear infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
          <div style={{ width: '200px', height: '200px', border: '10px double rgba(184, 134, 11, 0.3)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>
@@ -483,7 +483,7 @@ const EclipticChart = ({ hue, pillarId }) => {
    const rashi2 = Math.floor((p2Ang % 360) / 30);
 
   return (
-    <svg width="100%" viewBox="0 0 500 500" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '400px', overflow: 'visible' }}>
+    <svg className="responsive-svg" width="100%" viewBox="0 0 500 500" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '400px', overflow: 'visible' }}>
        {/* Structural rings */}
        <circle cx="250" cy="250" r="230" fill="none" stroke="#b8860b" strokeWidth="1" strokeDasharray="2 2" opacity="0.4" />
        <circle cx="250" cy="250" r="190" fill="none" stroke="#b8860b" strokeWidth="2" opacity="0.6" />
@@ -575,8 +575,8 @@ const InteractionGateway = ({ targetPillar, onSelect }) => {
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #0a0203 10%, transparent 100%)' }}></div>
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0a0203 0%, transparent 100%)' }}></div>
           
-          <div style={{ position: 'relative', zIndex: 10, padding: '40px', display: 'flex', gap: '40px', flexWrap: 'wrap', alignItems: 'center', minHeight: '400px', boxSizing: 'border-box' }}>
-             <div style={{ flex: '1 1 500px' }}>
+          <div className="mobile-hero-padding" style={{ position: 'relative', zIndex: 10, padding: '40px', display: 'flex', gap: '40px', flexWrap: 'wrap', alignItems: 'center', minHeight: '400px', boxSizing: 'border-box' }}>
+             <div style={{ flex: '1 1 500px', minWidth: 0 }}>
                <h3 style={{ fontSize: '48px', color: '#ffd700', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}>{data.title}</h3>
                <p style={{ color: '#f5deb3', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px rgba(0,0,0,0.9)', maxWidth: '800px', marginBottom: '32px' }}>
                  This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. {data.prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.
@@ -595,9 +595,9 @@ const InteractionGateway = ({ targetPillar, onSelect }) => {
        </div>
 
        {/* 3. 6 Shastric Outcome Cards with Images */}
-       <div style={{ padding: '60px 40px 0 40px' }}>
+       <div className="mobile-hero-padding" style={{ padding: '60px 40px 0 40px' }}>
          <h4 style={{ color: '#fff', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>Select an Outcome to Reveal Prophecy</h4>
-         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
+         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px' }}>
            {data.options.map((opt, i) => {
              const cardHue = (hue + (i * 45)) % 360;
              const cardBg = `https://images.unsplash.com/photo-1541698444083-023c97db0e21?w=800&auto=format&fit=crop`;
@@ -687,7 +687,7 @@ const SouthIndianChartSVG = ({ predText }) => {
 const AstrologicalBasisBox = ({ chartDesc, pillarId, pred }) => {
   return (
     <div style={{ marginTop: '24px', background: '#2c0b0e', padding: '24px', border: '1px solid #b8860b', display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
-      <div style={{ display: 'flex', gap: '16px', background: '#e8d5b5', padding: '16px', borderRadius: '4px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', background: '#e8d5b5', padding: '16px', borderRadius: '4px' }}>
         <div>
            <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>North Indian format</div>
            <NorthIndianChartSVG predText={pred} />
@@ -761,7 +761,7 @@ const StandardPillarView = ({ pillarId }) => {
   if(!opt) return <InteractionGateway targetPillar={pillarId} onSelect={setOpt} />;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1.2fr) 1.5fr', gap: '40px', alignItems: 'start' }}>
+    <div className="responsive-grid-2" style={{ alignItems: 'start' }}>
        <div style={{ background: '#2c0b0e', padding: '40px', border: '2px solid #b8860b', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)' }}>
          <MandalVisualizer selectedOpt={opt} />
          <ShastricExpander data={data} opt={opt} />
@@ -790,7 +790,7 @@ const FullScreenWrapper = ({ title, onBack, children }) => (
       ← Return to Main Mandala
     </button>
     <div style={{ background: '#1c0608', border: '2px solid #b8860b', padding: '2px' }}>
-      <div style={{ border: '1px dashed rgba(184, 134, 11, 0.5)', padding: '60px' }}>{children}</div>
+      <div className="mobile-hero-padding" style={{ border: '1px dashed rgba(184, 134, 11, 0.5)', padding: '60px' }}>{children}</div>
     </div>
   </div>
 );
