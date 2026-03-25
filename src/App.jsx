@@ -3608,8 +3608,14 @@ function App(){
   const goBack = () => { setScreen('input'); history.replaceState({},'',location.pathname); };
   return (
     <div style={{minHeight:'100vh'}}>
+      {syncToast && (
+        <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#10B981', color: '#fff', padding: '10px 20px', borderRadius: 20, zIndex: 9999, fontWeight: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.3)', animation: 'slideDown 0.3s ease-out' }}>
+           {syncToast}
+           <style>{`@keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }`}</style>
+        </div>
+      )}
       {showAuthModal && <AuthModal lang={lang} t={t} onLogin={(u) => { setUser(u); setShowAuthModal(false); }} onClose={() => setShowAuthModal(false)} />}
-      <AppHeader lang={lang} setLang={handleLang} user={user} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={() => setUser(null)} />
+      <AppHeader lang={lang} setLang={handleLang} user={user} syncStatus={syncStatus} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={() => { auth?.signOut(); setUser(null); setSyncStatus('offline'); }} />
       <DailyPanchang lang={lang} />
       {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
     </div>
