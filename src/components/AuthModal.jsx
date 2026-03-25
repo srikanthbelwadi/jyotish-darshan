@@ -1,6 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { signInWithGooglePopup } from '../firebase';
 
 export default function AuthModal({ onLogin, onClose, lang, t }) {
+  const [loading, setLoading] = useState(false);
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithGooglePopup();
+      const user = result.user;
+      onLogin({ 
+        name: user.displayName || 'Seeker', 
+        email: user.email, 
+        photoURL: user.photoURL,
+        method: 'google' 
+      });
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      alert("Authentication failed: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   // We use dark mode aesthetics matching Jyotish Darshan
   return (
     <div style={{
@@ -42,8 +63,10 @@ export default function AuthModal({ onLogin, onClose, lang, t }) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <button 
-            onClick={() => onLogin({ name: 'Seeker', method: 'google' })}
+            onClick={handleGoogleLogin}
+            disabled={loading}
             style={{
+              opacity: loading ? 0.7 : 1,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
               background: '#ffffff', color: '#000',
               border: 'none', padding: '14px', borderRadius: '8px',
