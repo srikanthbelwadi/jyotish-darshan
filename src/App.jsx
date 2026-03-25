@@ -3430,21 +3430,25 @@ function App(){
         setUser(prev => ({ ...prev, name: u.displayName || prev?.name || 'Seeker', email: u.email, photoURL: u.photoURL, uid: u.uid }));
         try {
           const cloudProfiles = await fetchCloudProfiles(u.uid);
-          if (cloudProfiles && cloudProfiles.length > 0) {
-            setLoadMsg("Syncing profiles from cloud...");
-            const saved = localStorage.getItem('jd_profiles');
-            let prev = saved ? JSON.parse(saved) : [];
-            if (!Array.isArray(prev)) prev = [];
-            const mergedMap = new Map();
-            prev.forEach(p => mergedMap.set((p.name || 'User').toLowerCase(), p));
+          const saved = localStorage.getItem('jd_profiles');
+          let prev = saved ? JSON.parse(saved) : [];
+          if (!Array.isArray(prev)) prev = [];
+          
+          const mergedMap = new Map();
+          prev.forEach(p => mergedMap.set((p.name || 'User').toLowerCase(), p));
+          if (cloudProfiles && Array.isArray(cloudProfiles)) {
             cloudProfiles.forEach(p => mergedMap.set((p.name || 'User').toLowerCase(), p));
-            const newProfiles = Array.from(mergedMap.values()).slice(0, 5);
+          }
+          
+          const newProfiles = Array.from(mergedMap.values()).slice(0, 5);
+          
+          if (newProfiles.length > 0) {
+            setLoadMsg("Synchronizing profiles from cloud...");
             localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
+            syncProfileToCloud(u.uid, newProfiles);
             
             // Queue the latest profile for generation
-            if (newProfiles.length > 0) {
-               setSyncRequestedProfile(newProfiles[0]);
-            }
+            setSyncRequestedProfile(newProfiles[0]);
           }
         } catch (e) { console.error("Cloud sync failed", e); }
       } else {
