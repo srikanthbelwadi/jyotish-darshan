@@ -8,6 +8,7 @@ import { calculateMatch } from './engine/matchmaking.js';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
 import { NAKSHATRA_LORE } from './data/nakshatra_lore.js';
 import { initializeAstroEngine, getSwe } from './engine/swissephLoader.js';
+import { MockDashboard } from './components/tabs/MockDashboard.jsx';
 
 // ════════════════════════════════════════════════════════════════
 // ASTRONOMY ENGINE
@@ -3073,6 +3074,7 @@ const TABS_DEF=[
 
 function ResultsPage({K,onBack,lang,onSwitchProfile}){
     React.useEffect(() => { window.scrollTo({top: 0, behavior: 'smooth'}); }, []);
+    const [isJyotishDeskOpen, setIsJyotishDeskOpen] = React.useState(false);
 
   const[savedProfiles, setSavedProfiles]=React.useState([]);
   React.useEffect(() => {
@@ -3213,7 +3215,19 @@ function ResultsPage({K,onBack,lang,onSwitchProfile}){
       </div>
 
       <div style={{maxWidth:1100,margin:'0 auto',padding:'40px 24px 80px'}}>
-        
+        {isJyotishDeskOpen ? (
+          <div>
+            <button 
+              onClick={() => {
+                setIsJyotishDeskOpen(false);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+              }}
+              className="lux-btn" 
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--accent-gold)', color: 'var(--accent-gold)', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', cursor: 'pointer' }}
+            >
+              <span>←</span> Back to The 36 Pathways
+            </button>
+            
         {/* Layer 1: My Insights */}
         <div style={{ marginBottom: 60 }}>
           {/* <h2 className="serif" style={{color:'var(--accent-gold)', borderBottom:'1px solid var(--border-light)', paddingBottom:'12px', marginBottom: '24px'}}>✧ {t('headers.insights', lang)}</h2> */}
@@ -3272,6 +3286,13 @@ function ResultsPage({K,onBack,lang,onSwitchProfile}){
             {tab==='reading'&&<ExpertReadingTab K={K} lang={lang}/>}
           </div>
         </div>
+          </div>
+        ) : (
+          <MockDashboard K={K} lang={lang} t={(k)=>k} onOpenJyotishDesk={() => {
+            setIsJyotishDeskOpen(true);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+          }} />
+        )}
 
       </div>
       <footer className="no-print" style={{textAlign:'center',padding:'24px',borderTop:'1px solid var(--border-light)',background:'var(--bg-dark)'}}>
