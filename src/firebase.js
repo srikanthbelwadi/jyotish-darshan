@@ -10,11 +10,24 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app, auth, googleProvider;
 
-// Initialize Firebase Authentication and get a reference to the service
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+try {
+  // Only initialize if the API key is present to prevent blank screen crashes
+  if (firebaseConfig.apiKey) {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    googleProvider = new GoogleAuthProvider();
+  }
+} catch (e) {
+  console.error("Firebase initialization failed", e);
+}
 
-export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+export { auth, googleProvider };
+
+export const signInWithGooglePopup = () => {
+    if (!auth) {
+        return Promise.reject(new Error("Firebase is not configured locally or in Vercel. Please add VITE_FIREBASE_API_KEY environment variables."));
+    }
+    return signInWithPopup(auth, googleProvider);
+};
