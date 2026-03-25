@@ -28,12 +28,16 @@ try {
 export { auth, googleProvider, db };
 
 export const syncProfileToCloud = async (userId, profiles) => {
-  if (!db) return;
+  if (!db) return false;
   try {
     const userRef = doc(db, "users", userId);
-    await setDoc(userRef, { profiles }, { merge: true });
+    // Stamp profiles with updatedAt if missing for deterministic merging
+    const stamped = profiles.map(p => ({ ...p, updatedAt: p.updatedAt || Date.now() }));
+    await setDoc(userRef, { lastSynced: Date.now(), profiles: stamped }, { merge: true });
+    return true;
   } catch (e) {
     console.error("Failed to sync profile to cloud", e);
+    return false;
   }
 };
 

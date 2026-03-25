@@ -3337,7 +3337,24 @@ function t_meridiem(meridiem, lang) {
 }
 
 
-function AppHeader({ lang, setLang, user, onLoginClick, onLogoutClick }) {
+function SyncIndicator({ status }) {
+  if (!status || status === 'offline') return null;
+  const ICONS = {
+    syncing: { icon: '🔄', color: 'var(--accent-gold)', title: 'Syncing to cloud...' },
+    synced:  { icon: '☁️✓', color: '#10B981', title: 'Saved to cloud' },
+    error:   { icon: '☁️⚠', color: '#EF4444', title: 'Cloud sync failed' }
+  };
+  const ui = ICONS[status];
+  if (!ui) return null;
+  return (
+    <span title={ui.title} style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 8, fontSize: 13, color: ui.color, animation: status==='syncing'?'spin 2s linear infinite':'' }}>
+      {ui.icon}
+      <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+    </span>
+  );
+}
+
+function AppHeader({ lang, setLang, user, syncStatus, onLoginClick, onLogoutClick }) {
   const [theme, setTheme] = React.useState('dark');
 
   React.useEffect(() => {
@@ -3364,7 +3381,9 @@ function AppHeader({ lang, setLang, user, onLoginClick, onLogoutClick }) {
             {!user ? (
               <button type="button" onClick={onLoginClick} style={{background:'var(--accent-gold)', border:'none', borderRadius:'20px', padding:'6px 16px', color:'#000', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px'}}>Login / Register</button>
             ) : (
-              <button type="button" onClick={onLogoutClick} style={{background:'transparent', border:'1px solid var(--accent-gold)', borderRadius:'20px', padding:'6px 16px', color:'var(--accent-gold)', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px'}}>{user.name} (Logout)</button>
+              <button type="button" onClick={onLogoutClick} style={{background:'transparent', border:'1px solid var(--accent-gold)', borderRadius:'20px', padding:'6px 16px', color:'var(--accent-gold)', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px', display: 'flex', alignItems: 'center'}}>
+                {user.name} <SyncIndicator status={syncStatus} /> <span style={{marginLeft: 8}}>(Logout)</span>
+              </button>
             )}
             <button type="button" onClick={toggleTheme} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
               <span style={{fontSize:16}}>{theme === 'light' ? '☾' : '☀'}</span>
@@ -3386,6 +3405,8 @@ function App(){
   const[lang,setLang]=React.useState(()=>localStorage.getItem('jd_lang')||'en');
   const[err,setErr]=React.useState(null);
   const [syncRequestedProfile, setSyncRequestedProfile] = React.useState(null);
+  const [syncStatus, setSyncStatus] = React.useState('offline');
+  const [syncToast, setSyncToast] = React.useState(null);
   
   const [engineReady, setEngineReady] = React.useState(false);
   const [loadMsg, setLoadMsg] = React.useState('Synthesizing Ephemeris data...');
@@ -3428,6 +3449,7 @@ function App(){
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
         setUser(prev => ({ ...prev, name: u.displayName || prev?.name || 'Seeker', email: u.email, photoURL: u.photoURL, uid: u.uid }));
+        setSyncStatus('syncing');
         try {
           const cloudProfiles = await fetchCloudProfiles(u.uid);
           const saved = localStorage.getItem('jd_profiles');
@@ -3435,22 +3457,43 @@ function App(){
           if (!Array.isArray(prev)) prev = [];
           
           const mergedMap = new Map();
-          prev.forEach(p => mergedMap.set((p.name || 'User').toLowerCase(), p));
-          if (cloudProfiles && Array.isArray(cloudProfiles)) {
-            cloudProfiles.forEach(p => mergedMap.set((p.name || 'User').toLowerCase(), p));
-          }
           
-          const newProfiles = Array.from(mergedMap.values()).slice(0, 5);
+          const mergeIn = (profilesArray) => {
+            profilesArray.forEach(p => {
+              const key = (p.name || 'User').toLowerCase();
+              const existing = mergedMap.get(key);
+              if (!existing || (p.updatedAt || 0) > (existing.updatedAt || 0)) {
+                mergedMap.set(key, { ...p, updatedAt: p.updatedAt || Date.now() });
+              }
+            });
+          };
+
+          if (cloudProfiles && Array.isArray(cloudProfiles)) mergeIn(cloudProfiles);
+          mergeIn(prev);
+          
+          const newProfiles = Array.from(mergedMap.values()).sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0)).slice(0, 5);
           
           if (newProfiles.length > 0) {
-            setLoadMsg("Synchronizing profiles from cloud...");
+            setLoadMsg("Synchronizing deterministic profiles layer...");
             localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
-            syncProfileToCloud(u.uid, newProfiles);
             
-            // Queue the latest profile for generation
+            const success = await syncProfileToCloud(u.uid, newProfiles);
+            setSyncStatus(success ? 'synced' : 'error');
+            
+            if (cloudProfiles && cloudProfiles.length > 0 && prev.length < newProfiles.length) {
+               const difference = newProfiles.length - prev.length;
+               setSyncToast(`☁️ Restored ${difference} new profile(s) from the cloud.`);
+               setTimeout(() => setSyncToast(null), 4500);
+            }
+            
             setSyncRequestedProfile(newProfiles[0]);
+          } else {
+            setSyncStatus('synced');
           }
-        } catch (e) { console.error("Cloud sync failed", e); }
+        } catch (e) { 
+          console.error("Cloud sync failed", e); 
+          setSyncStatus('error');
+        }
       } else {
         setUser(null);
       }
@@ -3475,13 +3518,17 @@ function App(){
         const saved = localStorage.getItem('jd_profiles');
         let prev = saved ? JSON.parse(saved) : [];
         if (!Array.isArray(prev)) prev = [];
-        const withoutCurrent = prev.filter(p => (p.name || 'User') !== (inp.name || 'User'));
-        const newProfiles = [inp, ...withoutCurrent].slice(0, 5);
+        const newInp = { ...inp, updatedAt: Date.now() };
+        const withoutCurrent = prev.filter(p => (p.name || 'User').toLowerCase() !== (newInp.name || 'User').toLowerCase());
+        const newProfiles = [newInp, ...withoutCurrent].slice(0, 5);
         localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
         
         // Push newly saved array directly to Firestore if logged in
         if (user && user.uid) {
-          syncProfileToCloud(user.uid, newProfiles);
+          setSyncStatus('syncing');
+          syncProfileToCloud(user.uid, newProfiles).then(success => {
+            setSyncStatus(success ? 'synced' : 'error');
+          });
         }
       } catch (e) {}
     }
