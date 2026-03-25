@@ -597,7 +597,7 @@ const InteractionGateway = ({ targetPillar, onSelect }) => {
        {/* 3. 6 Shastric Outcome Cards with Images */}
        <div className="mobile-hero-padding" style={{ padding: '60px 40px 0 40px' }}>
          <h4 style={{ color: '#fff', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>Select an Outcome to Reveal Prophecy</h4>
-         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px' }}>
+         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '32px' }}>
            {data.options.map((opt, i) => {
              const cardHue = (hue + (i * 45)) % 360;
              const cardBg = `https://images.unsplash.com/photo-1541698444083-023c97db0e21?w=800&auto=format&fit=crop`;

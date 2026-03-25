@@ -2471,7 +2471,7 @@ function ChartsTab({K,fmt,setFmt,lang='en'}){
         <C planets={K.planets.map(p=>({...p,rashi:K.divCharts.D9?.[p.key]??p.rashi}))} lagnaR={K.lagna.rashi} title={t('ov.navamsa',lang)||'D9 · Navamsa'} size={280} lang={lang}/>
       </div>
       {K.planets.filter(p=>p.vargottama).length>0&&<div style={{background:'rgba(212,175,55,0.05)',borderRadius:8,padding:'8px 12px',marginBottom:16,fontSize:12,color:'var(--accent-gold)'}}>✦ <strong>{t('ch.vargottama',lang)}:</strong> {K.planets.filter(p=>p.vargottama).map(p=>(L_GRAHA[lang]||L_GRAHA.en)[p.key]||p.key).join(', ')}</div>}
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))',gap:10}}>
         {VLIST.map(v=>{
           const ps=K.planets.map(p=>({...p,rashi:K.divCharts[v]?.[p.key]??p.rashi}));
           return(
