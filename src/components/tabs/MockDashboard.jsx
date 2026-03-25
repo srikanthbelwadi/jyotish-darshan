@@ -473,42 +473,72 @@ const EclipticChart = ({ hue, pillarId }) => {
    const sum = [...(pillarId||'x')].reduce((a,c)=>a+c.charCodeAt(0),0);
    const p1 = ALL[sum % ALL.length];
    const p2 = ALL[(sum + 3) % ALL.length];
+   const RASHIS = ['Ar','Ta','Ge','Cn','Le','Vi','Li','Sc','Sg','Cp','Aq','Pi'];
+
+   // Determine the Rashi index for highlighted planets to softly glow the sector
+   const p1Ang = ((sum % ALL.length) * 40 + 15);
+   const p2Ang = (((sum + 3) % ALL.length) * 40 + 15);
+   const rashi1 = Math.floor((p1Ang % 360) / 30);
+   const rashi2 = Math.floor((p2Ang % 360) / 30);
 
   return (
-    <svg width="100%" viewBox="0 0 400 400" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '300px' }}>
-       <circle cx="200" cy="200" r="180" fill="none" stroke="#b8860b" strokeWidth="2" strokeDasharray="4 4" />
-       <circle cx="200" cy="200" r="140" fill="none" stroke="#ffd700" strokeWidth="1" />
-       {Array.from({length:12}).map((_,i) => {
-         const a1=i*30*(Math.PI/180), x1=200+140*Math.cos(a1), y1=200+140*Math.sin(a1);
-         const x2=200+180*Math.cos(a1), y2=200+180*Math.sin(a1);
-         return <line key={`r-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#b8860b" strokeWidth="1" />
+    <svg width="100%" viewBox="0 0 400 400" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '300px', overflow: 'visible' }}>
+       {/* Structural rings */}
+       <circle cx="200" cy="200" r="180" fill="none" stroke="#b8860b" strokeWidth="2" strokeDasharray="4 4" opacity="0.5" />
+       <circle cx="200" cy="200" r="150" fill="none" stroke="#b8860b" strokeWidth="1" opacity="0.6" />
+       <circle cx="200" cy="200" r="130" fill="none" stroke="#ffd700" strokeWidth="1" />
+       
+       {/* 12 Rashi Sectors & Text */}
+       {RASHIS.map((rashi, i) => {
+         const aAngle = i * 30 * (Math.PI/180);
+         const x1 = 200 + 130 * Math.cos(aAngle), y1 = 200 + 130 * Math.sin(aAngle);
+         const x2 = 200 + 180 * Math.cos(aAngle), y2 = 200 + 180 * Math.sin(aAngle);
+         
+         const aMid = (i * 30 + 15) * (Math.PI/180);
+         const xText = 200 + 165 * Math.cos(aMid), yText = 200 + 165 * Math.sin(aMid);
+         const isRashiHighlighted = (i === rashi1 || i === rashi2);
+
+         return (
+           <g key={`r-${i}`}>
+             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#b8860b" strokeWidth="1" opacity="0.5" />
+             {isRashiHighlighted && <circle cx={xText} cy={yText} r="14" fill="#ffd700" opacity="0.3" filter="drop-shadow(0 0 5px #ffd700)" />}
+             <text x={xText} y={yText} fill={isRashiHighlighted ? "#fff" : "#f5deb3"} fontSize="12" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" opacity={isRashiHighlighted ? 1 : 0.7}>{rashi}</text>
+           </g>
+         )
        })}
+
+       {/* 27 Nakshatra Ticks inside Rashi band */}
        {Array.from({length:27}).map((_,i) => {
-         const a1=i*(360/27)*(Math.PI/180), x1=200+180*Math.cos(a1), y1=200+180*Math.sin(a1);
-         const x2=200+190*Math.cos(a1), y2=200+190*Math.sin(a1);
-         return <line key={`n-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#f5deb3" strokeWidth="1" opacity="0.4"/>
+         const a1 = i * (360/27) * (Math.PI/180);
+         const x1 = 200 + 130 * Math.cos(a1), y1 = 200 + 130 * Math.sin(a1);
+         const x2 = 200 + 140 * Math.cos(a1), y2 = 200 + 140 * Math.sin(a1);
+         return <line key={`n-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#f5deb3" strokeWidth="1.5" opacity="0.8"/>
        })}
+
+       {/* Planets */}
        {ALL.map((pl, i) => {
           const ang = (i * 40 + 15) * (Math.PI/180);
-          const r = 160;
+          const r = 110;
           const isHighlighted = (pl === p1 || pl === p2);
           return <g key={pl} transform={`translate(${200+r*Math.cos(ang)}, ${200+r*Math.sin(ang)})`}>
             {isHighlighted ? (
                 <>
-                <circle r="18" fill="#ffd700" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
-                <text fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
+                <line x1="0" y1="0" x2={20*Math.cos(ang)} y2={20*Math.sin(ang)} stroke="#ffd700" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
+                <circle r="16" fill="#ffd700" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
+                <text fill="#000" fontSize="13" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
                 </>
             ) : (
                 <>
-                <circle r="12" fill="#2c0b0e" stroke="#ffd700" strokeWidth="1" opacity="0.4" />
-                <text fill="#ffd700" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{pl}</text>
+                <circle r="10" fill="#2c0b0e" stroke="#ffd700" strokeWidth="1" opacity="0.4" />
+                <text fill="#ffd700" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{pl}</text>
                 </>
             )}
           </g>
        })}
+       
        <circle cx="200" cy="200" r="40" fill="#ffd700" opacity="0.1" />
-       <circle cx="200" cy="200" r="10" fill="#ffd700" />
-       <text x="200" y="260" fill="#b8860b" fontSize="10" textAnchor="middle" letterSpacing="2">ECLIPTIC PLANE</text>
+       <circle cx="200" cy="200" r="8" fill="#ffd700" />
+       <text x="200" y="225" fill="#b8860b" fontSize="8" textAnchor="middle" letterSpacing="1">RASHI / NAKSHATRA</text>
     </svg>
   );
 };
@@ -770,7 +800,8 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin }) => {
       <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} />
       
       <div style={{ marginBottom: '40px', borderBottom: '2px solid #4a151b', paddingBottom: '20px' }}>
-        <h2 style={{ fontSize: '42px', margin: '0 0 12px 0', fontFamily: '"Cinzel", serif', color: '#ffd700', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>The 24 Dharmic Pathways</h2>
+        <h2 style={{ fontSize: '42px', margin: '0 0 4px 0', fontFamily: '"Cinzel", serif', color: '#ffd700', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>Reveal ṣaṭtriṃśat Mārga</h2>
+        <div style={{color:'#b8860b', fontSize:'14px', letterSpacing:'4px', textTransform:'uppercase', marginBottom:'16px', fontWeight:'bold'}}>The 36 Pathways</div>
         <p style={{ margin: 0, color: '#f5deb3', fontSize: '18px', fontStyle: 'italic' }}>Select a classical astrological dimension below. Over 96 sacred predictive pathways map the unfolding of your precise karmic timeline based on the Parashari system.</p>
       </div>
 
