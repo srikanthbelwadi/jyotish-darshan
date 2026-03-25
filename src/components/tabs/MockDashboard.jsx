@@ -473,7 +473,8 @@ const EclipticChart = ({ hue, pillarId }) => {
    const sum = [...(pillarId||'x')].reduce((a,c)=>a+c.charCodeAt(0),0);
    const p1 = ALL[sum % ALL.length];
    const p2 = ALL[(sum + 3) % ALL.length];
-   const RASHIS = ['Ar','Ta','Ge','Cn','Le','Vi','Li','Sc','Sg','Cp','Aq','Pi'];
+   const RASHIS = ['Mesha ♈','Vrish ♉','Mith ♊','Kark ♋','Simha ♌','Kanya ♍','Tula ♎','Vrish ♏','Dhanu ♐','Makar ♑','Kumbh ♒','Meen ♓'];
+   const NAKSHATRAS = ['Aswini', 'Bharani', 'Krittika', 'Rohini', 'Mrigasira', 'Ardra', 'Punarvasu', 'Pushya', 'Aslesha', 'Magha', 'P.Phal', 'U.Phal', 'Hasta', 'Chitra', 'Swati', 'Visakha', 'Anuradha', 'Jyeshtha', 'Mula', 'P.Ashadha', 'U.Ashadha', 'Sravana', 'Dhanishta', 'Satabhisha', 'P.Bhadra', 'U.Bhadra', 'Revati'];
 
    // Determine the Rashi index for highlighted planets to softly glow the sector
    const p1Ang = ((sum % ALL.length) * 40 + 15);
@@ -482,63 +483,81 @@ const EclipticChart = ({ hue, pillarId }) => {
    const rashi2 = Math.floor((p2Ang % 360) / 30);
 
   return (
-    <svg width="100%" viewBox="0 0 400 400" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '300px', overflow: 'visible' }}>
+    <svg width="100%" viewBox="0 0 500 500" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '400px', overflow: 'visible' }}>
        {/* Structural rings */}
-       <circle cx="200" cy="200" r="180" fill="none" stroke="#b8860b" strokeWidth="2" strokeDasharray="4 4" opacity="0.5" />
-       <circle cx="200" cy="200" r="150" fill="none" stroke="#b8860b" strokeWidth="1" opacity="0.6" />
-       <circle cx="200" cy="200" r="130" fill="none" stroke="#ffd700" strokeWidth="1" />
+       <circle cx="250" cy="250" r="230" fill="none" stroke="#b8860b" strokeWidth="1" strokeDasharray="2 2" opacity="0.4" />
+       <circle cx="250" cy="250" r="190" fill="none" stroke="#b8860b" strokeWidth="2" opacity="0.6" />
+       <circle cx="250" cy="250" r="150" fill="none" stroke="#ffd700" strokeWidth="1" />
        
        {/* 12 Rashi Sectors & Text */}
        {RASHIS.map((rashi, i) => {
          const aAngle = i * 30 * (Math.PI/180);
-         const x1 = 200 + 130 * Math.cos(aAngle), y1 = 200 + 130 * Math.sin(aAngle);
-         const x2 = 200 + 180 * Math.cos(aAngle), y2 = 200 + 180 * Math.sin(aAngle);
+         const x1 = 250 + 150 * Math.cos(aAngle), y1 = 250 + 150 * Math.sin(aAngle);
+         const x2 = 250 + 190 * Math.cos(aAngle), y2 = 250 + 190 * Math.sin(aAngle);
          
          const aMid = (i * 30 + 15) * (Math.PI/180);
-         const xText = 200 + 165 * Math.cos(aMid), yText = 200 + 165 * Math.sin(aMid);
+         const xText = 250 + 170 * Math.cos(aMid), yText = 250 + 170 * Math.sin(aMid);
          const isRashiHighlighted = (i === rashi1 || i === rashi2);
 
          return (
            <g key={`r-${i}`}>
              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#b8860b" strokeWidth="1" opacity="0.5" />
-             {isRashiHighlighted && <circle cx={xText} cy={yText} r="14" fill="#ffd700" opacity="0.3" filter="drop-shadow(0 0 5px #ffd700)" />}
-             <text x={xText} y={yText} fill={isRashiHighlighted ? "#fff" : "#f5deb3"} fontSize="12" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" opacity={isRashiHighlighted ? 1 : 0.7}>{rashi}</text>
+             {isRashiHighlighted && <circle cx={xText} cy={yText} r="16" fill="#ffd700" opacity="0.3" filter="drop-shadow(0 0 5px #ffd700)" />}
+             <text x={xText} y={yText} fill={isRashiHighlighted ? "#fff" : "#f5deb3"} fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" opacity={isRashiHighlighted ? 1 : 0.7} letterSpacing="0.5">{rashi}</text>
            </g>
          )
        })}
 
-       {/* 27 Nakshatra Ticks inside Rashi band */}
-       {Array.from({length:27}).map((_,i) => {
+       {/* 27 Nakshatras & Sectors */}
+       {NAKSHATRAS.map((nak, i) => {
+         // Sector line
          const a1 = i * (360/27) * (Math.PI/180);
-         const x1 = 200 + 130 * Math.cos(a1), y1 = 200 + 130 * Math.sin(a1);
-         const x2 = 200 + 140 * Math.cos(a1), y2 = 200 + 140 * Math.sin(a1);
-         return <line key={`n-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#f5deb3" strokeWidth="1.5" opacity="0.8"/>
+         const x1 = 250 + 190 * Math.cos(a1), y1 = 250 + 190 * Math.sin(a1);
+         const x2 = 250 + 230 * Math.cos(a1), y2 = 250 + 230 * Math.sin(a1);
+         
+         // Text placement
+         const aMidDeg = i * (360/27) + (360/54);
+         const aMid = aMidDeg * (Math.PI/180);
+         const xText = 250 + 210 * Math.cos(aMid);
+         const yText = 250 + 210 * Math.sin(aMid);
+         
+         // Readability rotation: flip text if it's upside down
+         let rot = aMidDeg;
+         if (rot > 90 && rot < 270) rot += 180;
+         
+         return (
+           <g key={`n-${i}`}>
+             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#f5deb3" strokeWidth="1" strokeDasharray="2 2" opacity="0.4"/>
+             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="#b8860b" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{nak}</text>
+           </g>
+         )
        })}
 
        {/* Planets */}
        {ALL.map((pl, i) => {
           const ang = (i * 40 + 15) * (Math.PI/180);
-          const r = 110;
+          const r = 125;
           const isHighlighted = (pl === p1 || pl === p2);
-          return <g key={pl} transform={`translate(${200+r*Math.cos(ang)}, ${200+r*Math.sin(ang)})`}>
+          return <g key={pl} transform={`translate(${250+r*Math.cos(ang)}, ${250+r*Math.sin(ang)})`}>
             {isHighlighted ? (
                 <>
-                <line x1="0" y1="0" x2={20*Math.cos(ang)} y2={20*Math.sin(ang)} stroke="#ffd700" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
-                <circle r="16" fill="#ffd700" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
-                <text fill="#000" fontSize="13" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
+                <line x1="0" y1="0" x2={25*Math.cos(ang)} y2={25*Math.sin(ang)} stroke="#ffd700" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
+                <circle r="18" fill="#ffd700" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
+                <text fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
                 </>
             ) : (
                 <>
-                <circle r="10" fill="#2c0b0e" stroke="#ffd700" strokeWidth="1" opacity="0.4" />
-                <text fill="#ffd700" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{pl}</text>
+                <circle r="12" fill="#2c0b0e" stroke="#ffd700" strokeWidth="1" opacity="0.4" />
+                <text fill="#ffd700" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{pl}</text>
                 </>
             )}
           </g>
        })}
        
-       <circle cx="200" cy="200" r="40" fill="#ffd700" opacity="0.1" />
-       <circle cx="200" cy="200" r="8" fill="#ffd700" />
-       <text x="200" y="225" fill="#b8860b" fontSize="8" textAnchor="middle" letterSpacing="1">RASHI / NAKSHATRA</text>
+       <circle cx="250" cy="250" r="50" fill="#ffd700" opacity="0.1" />
+       <circle cx="250" cy="250" r="10" fill="#ffd700" />
+       <text x="250" y="285" fill="#b8860b" fontSize="10" textAnchor="middle" letterSpacing="1">VEDIC</text>
+       <text x="250" y="300" fill="#b8860b" fontSize="10" textAnchor="middle" letterSpacing="1">MANDALA</text>
     </svg>
   );
 };
