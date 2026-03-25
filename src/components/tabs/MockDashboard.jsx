@@ -468,7 +468,12 @@ const MandalaHero = ({ activeTime, setActiveTime }) => {
   );
 };
 
-const EclipticChart = ({ hue }) => {
+const EclipticChart = ({ hue, pillarId }) => {
+   const ALL = ['Su','Mo','Ma','Me','Ju','Ve','Sa','Ra','Ke'];
+   const sum = [...(pillarId||'x')].reduce((a,c)=>a+c.charCodeAt(0),0);
+   const p1 = ALL[sum % ALL.length];
+   const p2 = ALL[(sum + 3) % ALL.length];
+
   return (
     <svg width="100%" viewBox="0 0 400 400" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '300px' }}>
        <circle cx="200" cy="200" r="180" fill="none" stroke="#b8860b" strokeWidth="2" strokeDasharray="4 4" />
@@ -483,12 +488,22 @@ const EclipticChart = ({ hue }) => {
          const x2=200+190*Math.cos(a1), y2=200+190*Math.sin(a1);
          return <line key={`n-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#f5deb3" strokeWidth="1" opacity="0.4"/>
        })}
-       {['Su','Mo','Ma','Me','Ju','Ve','Sa','Ra','Ke'].map((pl, i) => {
+       {ALL.map((pl, i) => {
           const ang = (i * 40 + 15) * (Math.PI/180);
           const r = 160;
+          const isHighlighted = (pl === p1 || pl === p2);
           return <g key={pl} transform={`translate(${200+r*Math.cos(ang)}, ${200+r*Math.sin(ang)})`}>
-            <circle r="12" fill="#2c0b0e" stroke="#ffd700" strokeWidth="2" />
-            <text fill="#ffd700" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
+            {isHighlighted ? (
+                <>
+                <circle r="18" fill="#ffd700" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
+                <text fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
+                </>
+            ) : (
+                <>
+                <circle r="12" fill="#2c0b0e" stroke="#ffd700" strokeWidth="1" opacity="0.4" />
+                <text fill="#ffd700" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{pl}</text>
+                </>
+            )}
           </g>
        })}
        <circle cx="200" cy="200" r="40" fill="#ffd700" opacity="0.1" />
@@ -525,7 +540,7 @@ const InteractionGateway = ({ targetPillar, onSelect }) => {
              {/* 2. Ecliptic Visualization */}
              <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                <div style={{ fontSize: '13px', color: '#b8860b', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>Stellar Ecliptic Alignment</div>
-               <EclipticChart hue={hue} />
+               <EclipticChart hue={hue} pillarId={targetPillar} />
              </div>
           </div>
        </div>
@@ -686,6 +701,12 @@ const ShastricExpander = ({ data, opt }) => {
 
 const StandardPillarView = ({ pillarId }) => {
   const [opt, setOpt] = useState(null);
+
+  React.useEffect(() => {
+    const el = document.getElementById('mock-dashboard-top');
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  }, [opt, pillarId]);
   const data = PILLAR_DATA[pillarId];
 
   if(!opt) return <InteractionGateway targetPillar={pillarId} onSelect={setOpt} />;
@@ -735,7 +756,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin }) => {
   if (activeView !== 'grid') {
     const data = PILLAR_DATA[activeView];
     return (
-      <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
+      <div id="mock-dashboard-top" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
         <FullScreenWrapper title={`${data.icon} ${data.title}`} onBack={() => setActiveView('grid')}>
           <StandardPillarView pillarId={activeView} />
         </FullScreenWrapper>
@@ -744,7 +765,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin }) => {
   }
 
   return (
-    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 24px', fontFamily: 'serif', paddingBottom: '140px', background: '#0a0203', minHeight: '100vh' }}>
+    <div id="mock-dashboard-top" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 24px', fontFamily: 'serif', paddingBottom: '140px', background: '#0a0203', minHeight: '100vh' }}>
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
       <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} />
       
@@ -758,7 +779,12 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin }) => {
           <div 
             key={key} onClick={() => { 
               if(!user) { onRequireLogin(); return; }
-              setActiveView(key); window.scrollTo({top:0, behavior:'smooth'}); 
+              setActiveView(key); 
+              setTimeout(() => {
+                const el = document.getElementById('mock-dashboard-top');
+                if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+              }, 50); 
             }}
             style={{ background: '#2c0b0e', padding: '36px 24px', border: '1px solid #b8860b', cursor: 'pointer', transition: 'all 0.3s', position:'relative', overflow:'hidden', display: 'flex', flexDirection: 'column', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)' }}
             onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.background = '#4a151b'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.8)'; }}
