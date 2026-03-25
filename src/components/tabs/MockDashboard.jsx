@@ -468,28 +468,101 @@ const MandalaHero = ({ activeTime, setActiveTime }) => {
   );
 };
 
-const InteractionGateway = ({ targetPillar, onSelect }) => {
-  const data = PILLAR_DATA[targetPillar];
+const EclipticChart = ({ hue }) => {
   return (
-    <div style={{ textAlign: 'center', padding: '60px 20px', background: '#2c0b0e', borderRadius: '4px', border: '2px solid #b8860b' }}>
-      <h3 style={{ fontSize: '32px', color: '#ffd700', marginBottom: '16px', fontFamily: '"Cinzel", serif' }}>{data.title} ({data.desc})</h3>
-      <p style={{ color: '#f5deb3', maxWidth: '700px', margin: '0 auto 40px', lineHeight: 1.6, fontSize: '18px', fontFamily: 'serif' }}>{data.prompt}</p>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-        {data.options.map(opt => (
-          <button 
-            key={opt.id} onClick={() => onSelect(opt)}
-            style={{ background: '#1a0608', color: '#f5deb3', border: '1px solid #b8860b', padding: '24px', borderRadius: '2px', fontSize: '16px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)' }}
-            onMouseOver={e => { e.currentTarget.style.background = '#4a151b'; e.currentTarget.style.transform = 'translateY(-2px)' }}
-            onMouseOut={e => { e.currentTarget.style.background = '#1a0608'; e.currentTarget.style.transform = 'translateY(0)' }}
-          >
-            <span style={{ fontSize: '42px', filter: 'drop-shadow(0 0 10px rgba(255,215,0,0.4))' }}>{opt.icon}</span>{opt.label}
-          </button>
-        ))}
-      </div>
-    </div>
+    <svg width="100%" viewBox="0 0 400 400" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '300px' }}>
+       <circle cx="200" cy="200" r="180" fill="none" stroke="#b8860b" strokeWidth="2" strokeDasharray="4 4" />
+       <circle cx="200" cy="200" r="140" fill="none" stroke="#ffd700" strokeWidth="1" />
+       {Array.from({length:12}).map((_,i) => {
+         const a1=i*30*(Math.PI/180), x1=200+140*Math.cos(a1), y1=200+140*Math.sin(a1);
+         const x2=200+180*Math.cos(a1), y2=200+180*Math.sin(a1);
+         return <line key={`r-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#b8860b" strokeWidth="1" />
+       })}
+       {Array.from({length:27}).map((_,i) => {
+         const a1=i*(360/27)*(Math.PI/180), x1=200+180*Math.cos(a1), y1=200+180*Math.sin(a1);
+         const x2=200+190*Math.cos(a1), y2=200+190*Math.sin(a1);
+         return <line key={`n-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#f5deb3" strokeWidth="1" opacity="0.4"/>
+       })}
+       {['Su','Mo','Ma','Me','Ju','Ve','Sa','Ra','Ke'].map((pl, i) => {
+          const ang = (i * 40 + 15) * (Math.PI/180);
+          const r = 160;
+          return <g key={pl} transform={`translate(${200+r*Math.cos(ang)}, ${200+r*Math.sin(ang)})`}>
+            <circle r="12" fill="#2c0b0e" stroke="#ffd700" strokeWidth="2" />
+            <text fill="#ffd700" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
+          </g>
+       })}
+       <circle cx="200" cy="200" r="40" fill="#ffd700" opacity="0.1" />
+       <circle cx="200" cy="200" r="10" fill="#ffd700" />
+       <text x="200" y="260" fill="#b8860b" fontSize="10" textAnchor="middle" letterSpacing="2">ECLIPTIC PLANE</text>
+    </svg>
   );
 };
 
+const InteractionGateway = ({ targetPillar, onSelect }) => {
+  const data = PILLAR_DATA[targetPillar];
+  const hue = [...targetPillar].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
+  const heroImg = `https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000&auto=format&fit=crop`;
+
+  return (
+    <div style={{ background: '#0a0203', padding: '0 0 80px 0', border: '1px solid #4a151b', borderRadius: '8px', overflow: 'hidden' }}>
+       {/* 1. Summary Image & Description Panel */}
+       <div style={{ position: 'relative', minHeight: '400px', borderBottom: '2px solid #b8860b' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: `hue-rotate(${hue}deg) brightness(0.4)` }}></div>
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #0a0203 10%, transparent 100%)' }}></div>
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0a0203 0%, transparent 100%)' }}></div>
+          
+          <div style={{ position: 'relative', zIndex: 10, padding: '40px', display: 'flex', gap: '40px', flexWrap: 'wrap', alignItems: 'center', minHeight: '400px', boxSizing: 'border-box' }}>
+             <div style={{ flex: '1 1 500px' }}>
+               <h3 style={{ fontSize: '48px', color: '#ffd700', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}>{data.title}</h3>
+               <p style={{ color: '#f5deb3', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px rgba(0,0,0,0.9)', maxWidth: '800px', marginBottom: '32px' }}>
+                 This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. {data.prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.
+               </p>
+               <div style={{ display: 'inline-block', background: 'rgba(44, 11, 14, 0.8)', border: '1px solid #b8860b', padding: '10px 24px', color: '#ffd700', fontFamily: '"Cinzel", serif', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                 {data.options.length} Shastric Outcomes Discovered
+               </div>
+             </div>
+             
+             {/* 2. Ecliptic Visualization */}
+             <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+               <div style={{ fontSize: '13px', color: '#b8860b', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>Stellar Ecliptic Alignment</div>
+               <EclipticChart hue={hue} />
+             </div>
+          </div>
+       </div>
+
+       {/* 3. 6 Shastric Outcome Cards with Images */}
+       <div style={{ padding: '60px 40px 0 40px' }}>
+         <h4 style={{ color: '#fff', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>Select an Outcome to Reveal Prophecy</h4>
+         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
+           {data.options.map((opt, i) => {
+             const cardHue = (hue + (i * 45)) % 360;
+             const cardBg = `https://images.unsplash.com/photo-1541698444083-023c97db0e21?w=800&auto=format&fit=crop`;
+             return (
+               <button 
+                 key={opt.id} 
+                 onClick={() => onSelect(opt)}
+                 style={{ 
+                   position: 'relative', height: '240px', overflow: 'hidden', border: '2px solid #b8860b', borderRadius: '8px', cursor: 'pointer', transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)', 
+                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', textDecoration: 'none'
+                 }}
+                 onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.borderColor = '#ffd700'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.2)'; e.currentTarget.querySelector('.card-bg').style.transform = 'scale(1.1)'; e.currentTarget.querySelector('.card-bg').style.filter = `hue-rotate(${cardHue}deg) sepia(0.3) brightness(0.6)`; }}
+                 onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = '#b8860b'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(0,0,0,0.5)'; e.currentTarget.querySelector('.card-bg').style.transform = 'scale(1)'; e.currentTarget.querySelector('.card-bg').style.filter = `hue-rotate(${cardHue}deg) sepia(0.5) brightness(0.3)`; }}
+               >
+                 <div className="card-bg" style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cardBg})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: `hue-rotate(${cardHue}deg) sepia(0.5) brightness(0.3)`, zIndex: 0, transition: 'all 0.6s ease' }}></div>
+                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,2,3,0.9) 0%, transparent 100%)', zIndex: 1 }}></div>
+                 
+                 <span style={{ position: 'relative', zIndex: 2, fontSize: '64px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s' }}>{opt.icon}</span>
+                 <span style={{ position: 'relative', zIndex: 2, color: '#f5deb3', fontSize: '22px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px rgba(0,0,0,0.9)', letterSpacing: '1px', textAlign: 'center' }}>
+                   {opt.label}
+                 </span>
+               </button>
+             );
+           })}
+         </div>
+       </div>
+    </div>
+  );
+};
 const AstrologicalRemedyBox = ({ alert, remedy }) => (
   <div style={{ marginTop: '24px', background: '#1a0608', padding: '24px', border: '2px solid #b8860b', boxShadow: '0 10px 30px rgba(0,0,0,0.6)' }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', borderBottom: '1px solid rgba(184, 134, 11, 0.3)', paddingBottom: '12px' }}>
@@ -655,7 +728,7 @@ const FullScreenWrapper = ({ title, onBack, children }) => (
 // ==========================================
 // 3. MAIN DASHBOARD AGGREGATOR
 // ==========================================
-export const MockDashboard = ({ onOpenJyotishDesk }) => {
+export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin }) => {
   const [activeTime, setActiveTime] = useState('This Masa (Month)');
   const [activeView, setActiveView] = useState('grid'); 
 
@@ -683,7 +756,10 @@ export const MockDashboard = ({ onOpenJyotishDesk }) => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
         {Object.entries(PILLAR_DATA).map(([key, data]) => (
           <div 
-            key={key} onClick={() => { setActiveView(key); window.scrollTo({top:0, behavior:'smooth'}); }}
+            key={key} onClick={() => { 
+              if(!user) { onRequireLogin(); return; }
+              setActiveView(key); window.scrollTo({top:0, behavior:'smooth'}); 
+            }}
             style={{ background: '#2c0b0e', padding: '36px 24px', border: '1px solid #b8860b', cursor: 'pointer', transition: 'all 0.3s', position:'relative', overflow:'hidden', display: 'flex', flexDirection: 'column', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)' }}
             onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.background = '#4a151b'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.8)'; }}
             onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = '#2c0b0e'; e.currentTarget.style.boxShadow = 'inset 0 0 10px rgba(0,0,0,0.8)'; }}

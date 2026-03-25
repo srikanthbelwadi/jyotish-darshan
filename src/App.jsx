@@ -8,6 +8,7 @@ import { calculateMatch } from './engine/matchmaking.js';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
 import { NAKSHATRA_LORE } from './data/nakshatra_lore.js';
 import { initializeAstroEngine, getSwe } from './engine/swissephLoader.js';
+import AuthModal from './components/AuthModal.jsx';
 import { MockDashboard } from './components/tabs/MockDashboard.jsx';
 
 // ════════════════════════════════════════════════════════════════
@@ -3072,9 +3073,9 @@ const TABS_DEF=[
   {id:'reading',label:'Expert Reading',icon:'📜'},
 ];
 
-function ResultsPage({K,onBack,lang,onSwitchProfile}){
+function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
     React.useEffect(() => { window.scrollTo({top: 0, behavior: 'smooth'}); }, []);
-    const [isJyotishDeskOpen, setIsJyotishDeskOpen] = React.useState(false);
+    const [showPathways, setShowPathways] = React.useState(false);
 
   const[savedProfiles, setSavedProfiles]=React.useState([]);
   React.useEffect(() => {
@@ -3215,17 +3216,16 @@ function ResultsPage({K,onBack,lang,onSwitchProfile}){
       </div>
 
       <div style={{maxWidth:1100,margin:'0 auto',padding:'40px 24px 80px'}}>
-        {isJyotishDeskOpen ? (
+        {!showPathways ? (
           <div>
             <button 
               onClick={() => {
-                setIsJyotishDeskOpen(false);
+                setShowPathways(true);
                 window.scrollTo({top: 0, behavior: 'smooth'});
               }}
-              className="lux-btn" 
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--accent-gold)', color: 'var(--accent-gold)', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', cursor: 'pointer' }}
+              style={{ width: '100%', background: '#1a0608', color: '#ffd700', border: '2px solid #b8860b', padding: '16px 24px', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', transition: 'all 0.2s', fontFamily: '"Cinzel", serif', marginBottom: '40px' }}
             >
-              <span>←</span> Back to The 36 Pathways
+              <span style={{fontSize:'24px'}}>✨</span> Unlock The 36 Pathways
             </button>
             
         {/* Layer 1: My Insights */}
@@ -3288,8 +3288,8 @@ function ResultsPage({K,onBack,lang,onSwitchProfile}){
         </div>
           </div>
         ) : (
-          <MockDashboard K={K} lang={lang} t={(k)=>k} onOpenJyotishDesk={() => {
-            setIsJyotishDeskOpen(true);
+          <MockDashboard K={K} lang={lang} t={(k)=>k} user={user} onRequireLogin={onRequireLogin} onOpenJyotishDesk={() => {
+            setShowPathways(false);
             window.scrollTo({top: 0, behavior: 'smooth'});
           }} />
         )}
@@ -3335,7 +3335,7 @@ function t_meridiem(meridiem, lang) {
 }
 
 
-function AppHeader({ lang, setLang }) {
+function AppHeader({ lang, setLang, user, onLoginClick, onLogoutClick }) {
   const [theme, setTheme] = React.useState('dark');
 
   React.useEffect(() => {
@@ -3358,7 +3358,12 @@ function AppHeader({ lang, setLang }) {
             </div>
             <div style={{minWidth:0}}><h1 className="serif" style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{t('tagline',lang)}</p></div>
           </div>
-          <div style={{display:'flex', gap:12, flexShrink:0}}>
+          <div style={{display:'flex', gap:12, flexShrink:0, alignItems:'center'}}>
+            {!user ? (
+              <button type="button" onClick={onLoginClick} style={{background:'var(--accent-gold)', border:'none', borderRadius:'20px', padding:'6px 16px', color:'#000', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px'}}>Login / Register</button>
+            ) : (
+              <button type="button" onClick={onLogoutClick} style={{background:'transparent', border:'1px solid var(--accent-gold)', borderRadius:'20px', padding:'6px 16px', color:'var(--accent-gold)', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px'}}>{user.name} (Logout)</button>
+            )}
             <button type="button" onClick={toggleTheme} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
               <span style={{fontSize:16}}>{theme === 'light' ? '☾' : '☀'}</span>
             </button>
@@ -3373,6 +3378,8 @@ function AppHeader({ lang, setLang }) {
 
 function App(){
   const[screen,setScreen]=React.useState('input');
+  const [user, setUser] = React.useState(null);
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
   const[kundali,setKundali]=React.useState(null);
   const[lang,setLang]=React.useState(()=>localStorage.getItem('jd_lang')||'en');
   const[err,setErr]=React.useState(null);
@@ -3502,9 +3509,10 @@ function App(){
   const goBack = () => { setScreen('input'); history.replaceState({},'',location.pathname); };
   return (
     <div style={{minHeight:'100vh'}}>
-      <AppHeader lang={lang} setLang={handleLang} />
+      {showAuthModal && <AuthModal lang={lang} t={t} onLogin={(u) => { setUser(u); setShowAuthModal(false); }} onClose={() => setShowAuthModal(false)} />}
+      <AppHeader lang={lang} setLang={handleLang} user={user} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={() => setUser(null)} />
       <DailyPanchang lang={lang} />
-      {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
+      {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
     </div>
   );
 }
