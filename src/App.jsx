@@ -10,6 +10,8 @@ import { NAKSHATRA_LORE } from './data/nakshatra_lore.js';
 import { initializeAstroEngine, getSwe } from './engine/swissephLoader.js';
 import AuthModal from './components/AuthModal.jsx';
 import { MockDashboard } from './components/tabs/MockDashboard.jsx';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, fetchCloudProfiles, syncProfileToCloud } from './firebase.js';
 
 // ════════════════════════════════════════════════════════════════
 // ASTRONOMY ENGINE
@@ -3383,6 +3385,7 @@ function App(){
   const[kundali,setKundali]=React.useState(null);
   const[lang,setLang]=React.useState(()=>localStorage.getItem('jd_lang')||'en');
   const[err,setErr]=React.useState(null);
+  const [syncRequestedProfile, setSyncRequestedProfile] = React.useState(null);
   
   const [engineReady, setEngineReady] = React.useState(false);
   const [loadMsg, setLoadMsg] = React.useState('Synthesizing Ephemeris data...');
@@ -3419,6 +3422,46 @@ function App(){
     return () => { mounted = false; };
   },[]);
 
+  // Auth & Cloud Sync listener
+  React.useEffect(() => {
+    if (typeof auth === 'undefined' || !auth) return;
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        setUser(prev => ({ ...prev, name: u.displayName || prev?.name || 'Seeker', email: u.email, photoURL: u.photoURL, uid: u.uid }));
+        try {
+          const cloudProfiles = await fetchCloudProfiles(u.uid);
+          if (cloudProfiles && cloudProfiles.length > 0) {
+            setLoadMsg("Syncing profiles from cloud...");
+            const saved = localStorage.getItem('jd_profiles');
+            let prev = saved ? JSON.parse(saved) : [];
+            if (!Array.isArray(prev)) prev = [];
+            const mergedMap = new Map();
+            prev.forEach(p => mergedMap.set((p.name || 'User').toLowerCase(), p));
+            cloudProfiles.forEach(p => mergedMap.set((p.name || 'User').toLowerCase(), p));
+            const newProfiles = Array.from(mergedMap.values()).slice(0, 5);
+            localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
+            
+            // Queue the latest profile for generation
+            if (newProfiles.length > 0) {
+               setSyncRequestedProfile(newProfiles[0]);
+            }
+          }
+        } catch (e) { console.error("Cloud sync failed", e); }
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  React.useEffect(() => {
+    if (engineReady && syncRequestedProfile) {
+      setKundali(computeKundali(syncRequestedProfile));
+      setScreen('results');
+      setSyncRequestedProfile(null);
+    }
+  }, [engineReady, syncRequestedProfile]);
+
   function handleSubmit(inp){
     try{
       setErr(null);
@@ -3431,6 +3474,11 @@ function App(){
         const withoutCurrent = prev.filter(p => (p.name || 'User') !== (inp.name || 'User'));
         const newProfiles = [inp, ...withoutCurrent].slice(0, 5);
         localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
+        
+        // Push newly saved array directly to Firestore if logged in
+        if (user && user.uid) {
+          syncProfileToCloud(user.uid, newProfiles);
+        }
       } catch (e) {}
     }
     catch(e){console.error(e);setErr(t('computeError',lang))}
