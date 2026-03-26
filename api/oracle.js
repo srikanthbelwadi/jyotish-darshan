@@ -1,25 +1,24 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-export const config = { runtime: 'edge' };
-
-export default async function handler(req) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ message: 'Method Not Allowed' }), { status: 405 });
+    return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
   try {
-    const { timescale, kundaliData, currentDate } = await req.json();
+    const { timescale, kundaliData, currentDate } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       console.error('CRITICAL: GEMINI_API_KEY missing from environment.');
-      return new Response(JSON.stringify({ error: 'Server misconfiguration: API key is missing.' }), { status: 500 });
+      return res.status(500).json({ error: 'Server misconfiguration: API key is missing.' });
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
       generationConfig: {
+        maxOutputTokens: 350, // Capped securely to guarantee generation concludes well under the 8s budget
         temperature: 0.75,
       }
     });
@@ -48,37 +47,13 @@ CRITICAL FORMATTING RULES:
 5. Your tone must match exactly this example: "With the potent conjunction of Surya and Shukra currently moving through Simha in your 8th house, this month marks a powerful period of personal transformation and deep self-reflection. You may encounter some unexpected intensity regarding shared resources or close relationships, especially as the energies of Magha nakshatra demand clarity and truth. However, your strong Saturn Dasha provides the discipline needed to navigate these shifts smoothly. Use this time to gracefully release old habits that no longer serve you, and focus on securing your personal boundaries."
 `;
 
-    const stream = new ReadableStream({
-      async start(controller) {
-        try {
-          // Send request inside stream logic so Edge immediately returns Response headers
-          const result = await model.generateContentStream(systemPrompt);
-          for await (const chunk of result.stream) {
-            const chunkText = chunk.text();
-            if (chunkText) {
-               controller.enqueue(new TextEncoder().encode(chunkText));
-            }
-          }
-        } catch (error) {
-          console.error('Stream processing error:', error);
-          controller.error(error);
-        } finally {
-          controller.close();
-        }
-      }
-    });
+    const result = await model.generateContent(systemPrompt);
+    const responseText = result.response.text();
 
-    return new Response(stream, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-cache, no-transform',
-        'Transfer-Encoding': 'chunked'
-      }
-    });
+    return res.status(200).json({ prediction: responseText.trim() });
 
   } catch (error) {
-    console.error('Oracle Edge Streaming Error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to consult the Oracle due to a cosmic disruption.' }), { status: 500 });
+    console.error('Oracle Node Generation Error:', error);
+    return res.status(500).json({ error: 'Failed to consult the Oracle due to a cosmic disruption.' });
   }
 }
