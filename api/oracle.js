@@ -43,11 +43,27 @@ CRITICAL FORMATTING RULES:
 2. DO NOT use introductory phrases like "Based on your chart" or "I predict". Just state the reading immediately.
 3. Keep the entire response as one dense paragraph, but strictly use short, direct sentences.
 4. Avoid overly fatalistic, scary, or cryptic language. State facts cleanly.
-5. Your tone and sentence structure must match exactly this example: "Surya and Shukra are currently aligned in Simha within your 8th house. This creates immediate friction regarding shared financial resources. Do not ignore minor accounting discrepancies today. Review your joint accounts tonight and firmly postpone signing new contracts until the active Magha nakshatra energy settles. Your current Saturn Dasha demands structural discipline, so ensure every agreement is fully documented in writing."
+5. ABSOLUTELY DO NOT output JSON or wrap your response in JSON brackets. Return raw plain text exclusively.
+6. Your tone and sentence structure must match exactly this example: "Surya and Shukra are currently aligned in Simha within your 8th house. This creates immediate friction regarding shared financial resources. Do not ignore minor accounting discrepancies today. Review your joint accounts tonight and firmly postpone signing new contracts until the active Magha nakshatra energy settles. Your current Saturn Dasha demands structural discipline, so ensure every agreement is fully documented in writing."
 `;
 
     const result = await model.generateContent(systemPrompt);
-    const responseText = result.response.text();
+    let responseText = result.response.text().trim();
+
+    // Failsafe interceptor for spontaneous JSON LLM hallucinations
+    if (responseText.startsWith('```')) {
+      responseText = responseText.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim();
+    }
+    if (responseText.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(responseText);
+        if (parsed.prediction) responseText = parsed.prediction;
+        else if (Object.values(parsed).length > 0) responseText = Object.values(parsed)[0];
+      } catch (e) {
+        // Fallback blind strip if JSON is malformed
+        responseText = responseText.replace(/^{"prediction":\s*"/, '').replace(/"\s*}$/, '');
+      }
+    }
 
     return res.status(200).json({ prediction: responseText.trim() });
 
