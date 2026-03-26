@@ -1,19 +1,22 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-export default async function handler(req, res) {
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
+    return new Response(JSON.stringify({ message: 'Method Not Allowed' }), { status: 405 });
   }
 
   try {
-    const { timescale, kundaliData, currentDate } = req.body;
+    const { timescale, kundaliData, currentDate } = await req.json();
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!process.env.GEMINI_API_KEY) {
+    if (!apiKey) {
       console.error('CRITICAL: GEMINI_API_KEY missing from environment.');
-      return res.status(500).json({ error: 'Server misconfiguration: API key is missing.' });
+      return new Response(JSON.stringify({ error: 'Server misconfiguration: API key is missing.' }), { status: 500 });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
       generationConfig: {
@@ -21,7 +24,6 @@ export default async function handler(req, res) {
       }
     });
 
-    // Enforcing strict Astrological tone and layout matches the original Mocks
     const systemPrompt = `You are an insightful, modern, and practical Vedic Astrologer analyzing a Jyotish (Indian Astrology) chart.
 You communicate in a clear, empowering, and easy-to-understand tone. While you maintain the authenticity of traditional Shastras by using correct Sanskrit terminology (such as planetary names, Dashas, or Bhavas), you always weave these concepts into modern, actionable, and everyday guidance.
 
@@ -46,12 +48,37 @@ CRITICAL FORMATTING RULES:
 5. Your tone must match exactly this example: "With the potent conjunction of Surya and Shukra currently moving through Simha in your 8th house, this month marks a powerful period of personal transformation and deep self-reflection. You may encounter some unexpected intensity regarding shared resources or close relationships, especially as the energies of Magha nakshatra demand clarity and truth. However, your strong Saturn Dasha provides the discipline needed to navigate these shifts smoothly. Use this time to gracefully release old habits that no longer serve you, and focus on securing your personal boundaries."
 `;
 
-    const result = await model.generateContent(systemPrompt);
-    const responseText = result.response.text();
+    const result = await model.generateContentStream(systemPrompt);
 
-    res.status(200).json({ prediction: responseText.trim() });
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of result.stream) {
+            const chunkText = chunk.text();
+            if (chunkText) {
+               controller.enqueue(new TextEncoder().encode(chunkText));
+            }
+          }
+        } catch (error) {
+          console.error('Stream processing error:', error);
+          controller.error(error);
+        } finally {
+          controller.close();
+        }
+      }
+    });
+
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        'Transfer-Encoding': 'chunked'
+      }
+    });
+
   } catch (error) {
-    console.error('Oracle Generation Error:', error);
-    res.status(500).json({ error: 'Failed to consult the Oracle due to a cosmic disruption.' });
+    console.error('Oracle Edge Streaming Error:', error);
+    return new Response(JSON.stringify({ error: 'Failed to consult the Oracle due to a cosmic disruption.' }), { status: 500 });
   }
 }

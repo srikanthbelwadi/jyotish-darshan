@@ -471,6 +471,8 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
 
     setLoading(true);
     setError(null);
+    let streamStarted = false;
+
     try {
       const res = await fetch('/api/oracle', {
         method: 'POST',
@@ -494,15 +496,42 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
           }
         })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to consult the Oracle.');
-      
-      setCache(prev => ({ ...prev, [activeTime]: data.prediction }));
-      localStorage.setItem(`jyotish_oracle_${activeTime}`, JSON.stringify({ text: data.prediction, timestamp: Date.now() }));
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to consult the Oracle.');
+      }
+
+      setLoading(false); // Drop loading spinner immediately upon stream connection
+      streamStarted = true;
+      setCache(prev => ({ ...prev, [activeTime]: '' })); 
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let streamedText = '';
+
+      while (!done) {
+        const { value, done: isDone } = await reader.read();
+        done = isDone;
+        if (value) {
+          const chunkStr = decoder.decode(value, { stream: true });
+          streamedText += chunkStr;
+          // React forcefully re-renders characters typing onto screen visually
+          setCache(prev => ({ ...prev, [activeTime]: streamedText }));
+        }
+      }
+
+      localStorage.setItem(`jyotish_oracle_${activeTime}`, JSON.stringify({ text: streamedText, timestamp: Date.now() }));
     } catch (err) {
-      setError(err.message);
+      if (!streamStarted) {
+        setError(err.message);
+      } else {
+        // If stream broke mid-generation, append error inline
+        setCache(prev => ({ ...prev, [activeTime]: prev[activeTime] + '\n\n[Network interruption: Prophecy fractured]' }));
+      }
     } finally {
-      setLoading(false);
+      if (!streamStarted) setLoading(false);
     }
   }, [activeTime, K, cache]);
 
