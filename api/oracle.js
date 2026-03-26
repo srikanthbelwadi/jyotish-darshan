@@ -48,11 +48,11 @@ CRITICAL FORMATTING RULES:
 5. Your tone must match exactly this example: "With the potent conjunction of Surya and Shukra currently moving through Simha in your 8th house, this month marks a powerful period of personal transformation and deep self-reflection. You may encounter some unexpected intensity regarding shared resources or close relationships, especially as the energies of Magha nakshatra demand clarity and truth. However, your strong Saturn Dasha provides the discipline needed to navigate these shifts smoothly. Use this time to gracefully release old habits that no longer serve you, and focus on securing your personal boundaries."
 `;
 
-    const result = await model.generateContentStream(systemPrompt);
-
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          // Send request inside stream logic so Edge immediately returns Response headers
+          const result = await model.generateContentStream(systemPrompt);
           for await (const chunk of result.stream) {
             const chunkText = chunk.text();
             if (chunkText) {
