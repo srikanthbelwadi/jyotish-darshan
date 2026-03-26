@@ -477,7 +477,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          currentDate: new Date().toISOString(),
+          currentDate: new Date().toString(), // Explicitly enforce Local Timezone inclusion over strict UTC
           timescale: activeTime,
           kundaliData: {
              lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
@@ -655,6 +655,62 @@ const InteractionGateway = ({ targetPillar, onSelect }) => {
   const hue = [...targetPillar].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
   const heroImg = `https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000&auto=format&fit=crop`;
 
+  const [prediction, setPrediction] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchPrediction = async () => {
+      const cacheKey = `jyotish_pathway_${targetPillar}`;
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+         setPrediction(JSON.parse(cached).text);
+         return;
+      }
+      
+      const kData = localStorage.getItem('currentKundali');
+      if (!kData) return;
+      const K = JSON.parse(kData);
+
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch('/api/pathway', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            currentDate: new Date().toString(),
+            pathwayName: data.title,
+            kundaliData: {
+              lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
+              planets: K.planets.map(p => ({
+                id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
+              })),
+              dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null,
+              panchanga: K.panchanga ? {
+                tithi: K.panchanga.tithi?.name,
+                karana: K.panchanga.karana?.name,
+                yoga: K.panchanga.yoga?.name,
+                nakshatra: K.panchanga.nakshatra?.name
+              } : null,
+              ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
+            }
+          })
+        });
+        const resData = await res.json();
+        if(!res.ok) throw new Error(resData.error || 'Failed to sync with pathway matrix.');
+        
+        setPrediction(resData.prediction);
+        localStorage.setItem(cacheKey, JSON.stringify({ text: resData.prediction, timestamp: Date.now() }));
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPrediction();
+  }, [targetPillar, data]);
+
   return (
     <div style={{ background: '#0a0203', padding: '0 0 80px 0', border: '1px solid #4a151b', borderRadius: '8px', overflow: 'hidden' }}>
        {/* 1. Summary Image & Description Panel */}
@@ -666,9 +722,22 @@ const InteractionGateway = ({ targetPillar, onSelect }) => {
           <div className="mobile-hero-padding" style={{ position: 'relative', zIndex: 10, padding: '40px', display: 'flex', gap: '40px', flexWrap: 'wrap', alignItems: 'center', minHeight: '400px', boxSizing: 'border-box' }}>
              <div style={{ flex: '1 1 500px', minWidth: 0 }}>
                <h3 style={{ fontSize: '48px', color: '#ffd700', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}>{data.title}</h3>
-               <p style={{ color: '#f5deb3', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px rgba(0,0,0,0.9)', maxWidth: '800px', marginBottom: '32px' }}>
-                 This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. {data.prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.
-               </p>
+               {loading ? (
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#b8860b', marginBottom: '32px' }}>
+                     <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
+                     <span style={{ fontFamily: '"Cinzel", serif', fontSize: '18px', letterSpacing: '2px', textTransform: 'uppercase' }}>Synthesizing Pathway Matrix...</span>
+                   </div>
+               ) : error ? (
+                   <p style={{ color: '#ff6b6b', fontSize: '18px', fontFamily: '"Cinzel", serif', marginBottom: '32px' }}>⚠️ {error}</p>
+               ) : prediction ? (
+                   <p style={{ padding: '24px', background: 'rgba(0,0,0,0.6)', borderLeft: '4px solid #ffd700', color: '#f5deb3', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px rgba(0,0,0,0.9)', maxWidth: '800px', marginBottom: '32px' }}>
+                     {prediction}
+                   </p>
+               ) : (
+                   <p style={{ color: '#f5deb3', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px rgba(0,0,0,0.9)', maxWidth: '800px', marginBottom: '32px' }}>
+                     This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. {data.prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.
+                   </p>
+               )}
                <div style={{ display: 'inline-block', background: 'rgba(44, 11, 14, 0.8)', border: '1px solid #b8860b', padding: '10px 24px', color: '#ffd700', fontFamily: '"Cinzel", serif', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>
                  {data.options.length} Shastric Outcomes Discovered
                </div>
