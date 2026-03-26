@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
       generationConfig: {
-        maxOutputTokens: 150, // Force strict, rapid completion to prevent long latency
+        maxOutputTokens: 800, // Expanded explicitly to allow full synthesized Shastric readings
         temperature: 0.85,
       }
     });
@@ -34,15 +34,16 @@ User's Real-Time Astrological Chart Data (JSON representation):
 ${JSON.stringify(kundaliData, null, 2)}
 
 Task:
-Write a single, highly specific, predictive paragraph (2 to 4 sentences maximum) based ONLY on this timescale and the chart data provided.
-Your prophecy must give a concrete prediction of what is currently happening, about to happen, or the prevailing karmic energy.
-State the astrological reasoning behind your prediction briefly within the text (e.g., "Because your Moon is eclipsed by Rahu...").
+Write a comprehensive, highly specific, and deeply insightful predictive paragraph (4 to 7 complex sentences) based ONLY on this timescale and the chart data provided.
+Synthesize the active Dasha, the intricate Panchanga elements, current transits, and the Ashtakavarga house strengths (SAV array).
+Your prophecy must give a concrete prediction of what is currently happening or the prevailing karmic energy.
+State the genuine astrological reasoning behind your prediction seamlessly within the text.
 
 CRITICAL FORMATTING RULES:
 1. DO NOT use markdown format (NO bolding, NO bullet points).
 2. DO NOT use introductory phrases like "Based on your chart" or "I predict". Just state the prophecy immediately.
-3. Keep the entire response as one single raw text paragraph.
-4. Your tone must match exactly this example: "The Moon transits your 8th house over Mars. Ritual purity must be maintained today. Avoid hasty actions."
+3. Keep the entire response as one dense, immersive paragraph.
+4. Your tone must match exactly this scholarly example: "The potent conjunction of Surya and Shukra in Simha, entrenched within your Ashtama Bhava, ignites profound transformations. Vicious karmic energies tied to ancestral debts will surface, demanding reckoning in your intimate spheres, for the celestial luminaries in Magha compel revelation. Expect the unveiling of that which was concealed, a crucible for your very being."
 `;
 
     const result = await model.generateContent(systemPrompt);
