@@ -13,8 +13,13 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Server misconfiguration: API key is missing.' });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-2.5-flash',
+      generationConfig: {
+        maxOutputTokens: 150, // Force strict, rapid completion to prevent long latency
+        temperature: 0.85,
+      }
+    });
 
     // Enforcing strict Astrological tone and layout matches the original Mocks
     const systemPrompt = `You are a highly orthodox, deeply fatalistic, and brutally precise traditional Vedic Astrologer analyzing a Jyotish (Indian Astrology) chart.

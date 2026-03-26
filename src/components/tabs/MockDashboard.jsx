@@ -449,43 +449,58 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  React.useEffect(() => {
-    if (cache[activeTime] || !K) return;
+  const fetchOracle = React.useCallback(async (forceRegenerate = false) => {
+    if (!K) return;
 
-    let isMounted = true;
-    const fetchOracle = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch('/api/oracle', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            timescale: activeTime,
-            kundaliData: {
-               lagna: K.lagna,
-               planets: K.planets.map(p => ({
-                 planet: p.key, rashi: p.rashi, degFmt: p.degFmt, house: p.house, nakshatra: p.nakshatraName
-               })),
-               dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null
-            }
-          })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to consult the Oracle.');
-        if (isMounted) {
-           setCache(prev => ({ ...prev, [activeTime]: data.prediction }));
-        }
-      } catch (err) {
-        if (isMounted) setError(err.message);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-    
-    fetchOracle();
-    return () => { isMounted = false; };
+    if (!forceRegenerate) {
+       // Check localStorage for 24h TTK Cache
+       const stored = localStorage.getItem(`jyotish_oracle_${activeTime}`);
+       if (stored) {
+         try {
+           const parsed = JSON.parse(stored);
+           const isStale = Date.now() - parsed.timestamp > 24 * 60 * 60 * 1000;
+           if (!isStale && parsed.text) {
+             setCache(prev => ({ ...prev, [activeTime]: parsed.text }));
+             return;
+           }
+         } catch(e) {}
+       }
+       // Fallback to active session mapping
+       if (cache[activeTime]) return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/oracle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timescale: activeTime,
+          kundaliData: {
+             lagna: K.lagna,
+             planets: K.planets.map(p => ({
+               planet: p.key, rashi: p.rashi, degFmt: p.degFmt, house: p.house, nakshatra: p.nakshatraName
+             })),
+             dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null
+          }
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to consult the Oracle.');
+      
+      setCache(prev => ({ ...prev, [activeTime]: data.prediction }));
+      localStorage.setItem(`jyotish_oracle_${activeTime}`, JSON.stringify({ text: data.prediction, timestamp: Date.now() }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }, [activeTime, K, cache]);
+
+  React.useEffect(() => {
+    fetchOracle();
+  }, [activeTime, K]);
 
   return (
     <div className="mobile-hero-padding" style={{ background: '#2c0b0e', backgroundImage: 'radial-gradient(#4a151b 20%, transparent 20%), radial-gradient(#4a151b 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid #b8860b', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5)' }}>
@@ -508,9 +523,22 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
           ) : error ? (
              <p style={{ margin: 0, fontSize: '16px', color: '#ff6b6b', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
           ) : (
-             <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: '#f5deb3', fontFamily: 'serif', fontStyle: 'italic' }}>
-               "{cache[activeTime] || 'Awaiting celestial alignment...'}"
-             </p>
+             <div style={{ position: 'relative', width: '100%', minHeight: '50px' }}>
+               <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: '#f5deb3', fontFamily: 'serif', fontStyle: 'italic', paddingRight: '40px' }}>
+                 "{cache[activeTime] || 'Awaiting celestial alignment...'}"
+               </p>
+               {cache[activeTime] && (
+                 <button 
+                   onClick={() => fetchOracle(true)}
+                   title="Consult again (Override cache)"
+                   style={{ position: 'absolute', top: '-10px', right: 0, background: 'rgba(44, 11, 14, 0.8)', border: '1px solid rgba(184, 134, 11, 0.4)', color: '#b8860b', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}
+                   onMouseOver={e => { e.currentTarget.style.borderColor = '#ffd700'; e.currentTarget.style.color = '#ffd700'; e.currentTarget.style.transform = 'rotate(180deg)'; }}
+                   onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(184, 134, 11, 0.4)'; e.currentTarget.style.color = '#b8860b'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
+                 >
+                   ⟳
+                 </button>
+               )}
+             </div>
           )}
         </div>
       </div>
