@@ -650,7 +650,7 @@ const EclipticChart = ({ hue, pillarId }) => {
   );
 };
 
-const InteractionGateway = ({ targetPillar, onSelect }) => {
+const InteractionGateway = ({ targetPillar, onSelect, K }) => {
   const data = PILLAR_DATA[targetPillar];
   const hue = [...targetPillar].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
   const heroImg = `https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000&auto=format&fit=crop`;
@@ -673,9 +673,7 @@ const InteractionGateway = ({ targetPillar, onSelect }) => {
       }
     }
     
-    const kData = localStorage.getItem('currentKundali');
-    if (!kData) return;
-    const K = JSON.parse(kData);
+    if (!K) return;
 
     setLoading(true);
     setError(null);
@@ -917,7 +915,7 @@ const ShastricExpander = ({ data, opt }) => {
   );
 };
 
-const StandardPillarView = ({ pillarId }) => {
+const StandardPillarView = ({ pillarId, K }) => {
   const [opt, setOpt] = useState(null);
 
   React.useEffect(() => {
@@ -927,7 +925,7 @@ const StandardPillarView = ({ pillarId }) => {
   }, [opt, pillarId]);
   const data = PILLAR_DATA[pillarId];
 
-  if(!opt) return <InteractionGateway targetPillar={pillarId} onSelect={setOpt} />;
+  if(!opt) return <InteractionGateway targetPillar={pillarId} onSelect={setOpt} K={K} />;
 
   return (
     <div className="responsive-grid-2" style={{ alignItems: 'start' }}>
@@ -976,7 +974,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K }) =>
     return (
       <div id="mock-dashboard-top" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
         <FullScreenWrapper title={`${data.icon} ${data.title}`} onBack={() => setActiveView('grid')}>
-          <StandardPillarView pillarId={activeView} />
+          <StandardPillarView pillarId={activeView} K={K} />
         </FullScreenWrapper>
       </div>
     );
