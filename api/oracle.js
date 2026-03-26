@@ -6,13 +6,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { timescale, kundaliData } = req.body;
+    const { timescale, kundaliData, currentDate } = req.body;
 
     if (!process.env.GEMINI_API_KEY) {
       console.error('CRITICAL: GEMINI_API_KEY missing from environment.');
       return res.status(500).json({ error: 'Server misconfiguration: API key is missing.' });
     }
 
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
       generationConfig: {
@@ -25,7 +26,9 @@ export default async function handler(req, res) {
     const systemPrompt = `You are a highly orthodox, deeply fatalistic, and brutally precise traditional Vedic Astrologer analyzing a Jyotish (Indian Astrology) chart.
 You communicate in a mysterious, esoteric, scholarly, and intense tone, frequently using Sanskrit terms appropriately.
 
-Context: You must analyze the user's specific astrological data and provide a prophecy specifically for the timescale: "${timescale}".
+Context: 
+- Current Earth Date: ${currentDate}
+- Timescale to Predict: "${timescale}"
 
 User's Real-Time Astrological Chart Data (JSON representation):
 ${JSON.stringify(kundaliData, null, 2)}

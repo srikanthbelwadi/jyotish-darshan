@@ -476,13 +476,21 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          currentDate: new Date().toISOString(),
           timescale: activeTime,
           kundaliData: {
-             lagna: K.lagna,
+             lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
              planets: K.planets.map(p => ({
-               planet: p.key, rashi: p.rashi, degFmt: p.degFmt, house: p.house, nakshatra: p.nakshatraName
+               id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
              })),
-             dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null
+             dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null,
+             panchanga: K.panchanga ? {
+               tithi: K.panchanga.tithi?.name,
+               karana: K.panchanga.karana?.name,
+               yoga: K.panchanga.yoga?.name,
+               nakshatra: K.panchanga.nakshatra?.name
+             } : null,
+             ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
           }
         })
       });
