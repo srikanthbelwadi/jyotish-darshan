@@ -442,8 +442,51 @@ const PILLAR_DATA = {
 // 2. CLASSICAL MODULAR COMPONENTS
 // ==========================================
 
-const MandalaHero = ({ activeTime, setActiveTime }) => {
+const MandalaHero = ({ activeTime, setActiveTime, K }) => {
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
+
+  const [cache, setCache] = React.useState({});
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    if (cache[activeTime] || !K) return;
+
+    let isMounted = true;
+    const fetchOracle = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch('/api/oracle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            timescale: activeTime,
+            kundaliData: {
+               lagna: K.lagna,
+               planets: K.planets.map(p => ({
+                 planet: p.key, rashi: p.rashi, degFmt: p.degFmt, house: p.house, nakshatra: p.nakshatraName
+               })),
+               dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null
+            }
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to consult the Oracle.');
+        if (isMounted) {
+           setCache(prev => ({ ...prev, [activeTime]: data.prediction }));
+        }
+      } catch (err) {
+        if (isMounted) setError(err.message);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    
+    fetchOracle();
+    return () => { isMounted = false; };
+  }, [activeTime, K, cache]);
+
   return (
     <div className="mobile-hero-padding" style={{ background: '#2c0b0e', backgroundImage: 'radial-gradient(#4a151b 20%, transparent 20%), radial-gradient(#4a151b 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid #b8860b', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5)' }}>
       <div style={{ position: 'absolute', top: '50%', right: '-5%', transform: 'translateY(-50%)', width: '300px', height: '300px', border: '5px dashed rgba(184, 134, 11, 0.2)', borderRadius: '50%', animation: 'spin 120s linear infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -456,12 +499,19 @@ const MandalaHero = ({ activeTime, setActiveTime }) => {
             <button key={t} onClick={() => setActiveTime(t)} style={{ background: activeTime === t ? '#ffd700' : '#4a151b', color: activeTime === t ? '#2c0b0e' : '#ffd700', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t}</button>
           ))}
         </div>
-        <div style={{ background: 'rgba(0,0,0,0.6)', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700' }}>
-          <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: '#f5deb3', fontFamily: 'serif', fontStyle: 'italic' }}>
-             {activeTime === 'Today' && "The Moon transits your 8th house over Mars. Ritual purity must be maintained today. Avoid hasty actions."}
-             {activeTime === 'This Masa (Month)' && "The Sun approaches your natal Jupiter. A period of profound Vedic clarity is opening. Perfect for spiritual austerity."}
-             {(activeTime !== 'Today' && activeTime !== 'This Masa (Month)') && "The Mahadasha of Jupiter anchors this phase in expanding Dharma. A time of immense spiritual and material growth according to the Shastras."}
-          </p>
+        <div style={{ background: 'rgba(0,0,0,0.6)', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700', minHeight: '100px', display: 'flex', alignItems: 'center' }}>
+          {loading ? (
+             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#b8860b' }}>
+               <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
+               <span style={{ fontFamily: '"Cinzel", serif', fontSize: '16px', letterSpacing: '2px', textTransform: 'uppercase' }}>Consulting Akashic Records...</span>
+             </div>
+          ) : error ? (
+             <p style={{ margin: 0, fontSize: '16px', color: '#ff6b6b', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
+          ) : (
+             <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: '#f5deb3', fontFamily: 'serif', fontStyle: 'italic' }}>
+               "{cache[activeTime] || 'Awaiting celestial alignment...'}"
+             </p>
+          )}
         </div>
       </div>
     </div>
@@ -798,7 +848,7 @@ const FullScreenWrapper = ({ title, onBack, children }) => (
 // ==========================================
 // 3. MAIN DASHBOARD AGGREGATOR
 // ==========================================
-export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin }) => {
+export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K }) => {
   const [activeTime, setActiveTime] = useState('This Masa (Month)');
   const [activeView, setActiveView] = useState('grid'); 
 
@@ -816,7 +866,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin }) => {
   return (
     <div id="mock-dashboard-top" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 24px', fontFamily: 'serif', paddingBottom: '140px', background: '#0a0203', minHeight: '100vh' }}>
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
-      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} />
+      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} />
       
       <div style={{ marginBottom: '40px', borderBottom: '2px solid #4a151b', paddingBottom: '20px' }}>
         <h2 style={{ fontSize: '42px', margin: '0 0 4px 0', fontFamily: '"Cinzel", serif', color: '#ffd700', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>Reveal ṣaṭtriṃśat Mārga</h2>
