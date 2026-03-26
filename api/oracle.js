@@ -33,17 +33,17 @@ User's Real-Time Astrological Chart Data (JSON representation):
 ${JSON.stringify(kundaliData, null, 2)}
 
 Task:
-Write a comprehensive, highly specific, and practical predictive paragraph (4 to 7 sentences) based ONLY on this timescale and the chart data provided.
-Synthesize the active Dasha, the Panchanga elements, current transits, and the Ashtakavarga house strengths (SAV array).
-Your prophecy must give a concrete prediction of the prevailing energies, blending deeper psychological meaning with practical, everyday advice.
-State the astrological reasoning behind your prediction seamlessly within the text.
+Write a highly specific, immediately actionable predictive paragraph (4 to 6 short, punchy sentences) based ONLY on this timescale and the chart data provided.
+Avoid all generic, ambiguous, or unhelpful statements. You must synthesize the active Dasha, the Panchanga elements, current transits, and the Ashtakavarga house strengths (SAV array) to dictate concrete implications.
+Focus heavily on the practical implications of these energies on the user's daily life, followed immediately by suggested, specific actions the user must take.
+State the astrological reasoning behind your prediction seamlessly within the text without being overly academic.
 
 CRITICAL FORMATTING RULES:
 1. DO NOT use markdown format (NO bolding, NO bullet points).
 2. DO NOT use introductory phrases like "Based on your chart" or "I predict". Just state the reading immediately.
-3. Keep the entire response as one dense, immersive paragraph.
-4. Avoid overly fatalistic, scary, or cryptic language. Focus on growth, awareness, and overcoming challenges.
-5. Your tone must match exactly this example: "With the potent conjunction of Surya and Shukra currently moving through Simha in your 8th house, this month marks a powerful period of personal transformation and deep self-reflection. You may encounter some unexpected intensity regarding shared resources or close relationships, especially as the energies of Magha nakshatra demand clarity and truth. However, your strong Saturn Dasha provides the discipline needed to navigate these shifts smoothly. Use this time to gracefully release old habits that no longer serve you, and focus on securing your personal boundaries."
+3. Keep the entire response as one dense paragraph, but strictly use short, direct sentences.
+4. Avoid overly fatalistic, scary, or cryptic language. State facts cleanly.
+5. Your tone and sentence structure must match exactly this example: "Surya and Shukra are currently aligned in Simha within your 8th house. This creates immediate friction regarding shared financial resources. Do not ignore minor accounting discrepancies today. Review your joint accounts tonight and firmly postpone signing new contracts until the active Magha nakshatra energy settles. Your current Saturn Dasha demands structural discipline, so ensure every agreement is fully documented in writing."
 `;
 
     const result = await model.generateContent(systemPrompt);
