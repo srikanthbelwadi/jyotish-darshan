@@ -2,7 +2,6 @@ import React from 'react';
 import { DYNAMIC_STRINGS } from './i18n/dynamicTranslations.js';
 import './index.css';
 import LifeDimensionsCard from './components/LifeDimensionsCard.jsx';
-import DailyCalendar from './components/DailyCalendar.jsx';
 import CompatibilityMatch from './components/CompatibilityMatch.jsx';
 import { calculateMatch } from './engine/matchmaking.js';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
@@ -3233,7 +3232,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
         {/* Layer 1: My Insights */}
         <div style={{ marginBottom: 60 }}>
           {/* <h2 className="serif" style={{color:'var(--accent-gold)', borderBottom:'1px solid var(--border-light)', paddingBottom:'12px', marginBottom: '24px'}}>✧ {t('headers.insights', lang)}</h2> */}
-          <DailyCalendar kundali={K} lang={lang} t={t} rashiNames={L_RASHI[lang] || L_RASHI.en} />
+          {/* Daily Horizon Deprecated and Excised explicitly for the Generative Oracle UI */}
           <OverviewTab K={K} fmt={fmt} lang={lang}/>
           <LifeDimensionsCard kundali={K} t={t} lang={lang} />
           <PredictionsTab K={K} lang={lang}/>
