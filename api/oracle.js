@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     // Enforcing strict Astrological tone and layout matches the original Mocks
     const systemPrompt = `You are a highly orthodox, deeply fatalistic, and brutally precise traditional Vedic Astrologer analyzing a Jyotish (Indian Astrology) chart.
