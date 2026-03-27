@@ -915,7 +915,7 @@ const ShastricExpander = ({ data, opt }) => {
   );
 };
 
-const StandardPillarView = ({ pillarId, K }) => {
+const StandardPillarView = ({ pillarId, K, companionUI }) => {
   const [opt, setOpt] = useState(null);
 
   React.useEffect(() => {
@@ -947,6 +947,13 @@ const StandardPillarView = ({ pillarId, K }) => {
          <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.pred} />
          <AstrologicalRemedyBox remedy={opt.rem} alert={opt.pred.includes('afflict') || opt.pred.includes('debilitated') || opt.pred.includes('danger') ? "Malefic vibration detected." : null} />
        </div>
+       
+       {/* 4. Native Dependency Component Injection (Synastry Engine) */}
+       {pillarId === 'vivaha' && companionUI && (
+         <div style={{ gridColumn: '1 / -1' }}>
+           {companionUI}
+         </div>
+       )}
     </div>
   );
 };
@@ -965,7 +972,7 @@ const FullScreenWrapper = ({ title, onBack, children }) => (
 // ==========================================
 // 3. MAIN DASHBOARD AGGREGATOR
 // ==========================================
-export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K }) => {
+export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, companionUI }) => {
   const [activeTime, setActiveTime] = useState('This Masa (Month)');
   const [activeView, setActiveView] = useState('grid'); 
 
@@ -974,7 +981,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K }) =>
     return (
       <div id="mock-dashboard-top" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
         <FullScreenWrapper title={`${data.icon} ${data.title}`} onBack={() => setActiveView('grid')}>
-          <StandardPillarView pillarId={activeView} K={K} />
+          <StandardPillarView pillarId={activeView} K={K} companionUI={companionUI} />
         </FullScreenWrapper>
       </div>
     );
