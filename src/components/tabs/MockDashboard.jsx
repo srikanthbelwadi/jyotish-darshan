@@ -650,7 +650,7 @@ const EclipticChart = ({ hue, pillarId }) => {
   );
 };
 
-const InteractionGateway = ({ targetPillar, onSelect, K }) => {
+const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
   const data = PILLAR_DATA[targetPillar];
   const hue = [...targetPillar].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
   const heroImg = `https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000&auto=format&fit=crop`;
@@ -720,7 +720,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
           
           <div className="mobile-hero-padding" style={{ position: 'relative', zIndex: 10, padding: '40px', display: 'flex', gap: '40px', flexWrap: 'wrap', alignItems: 'center', minHeight: '400px', boxSizing: 'border-box' }}>
              <div style={{ flex: '1 1 500px', minWidth: 0 }}>
-               <h3 style={{ fontSize: '48px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px var(--bg-surface)' }}>{data.title}</h3>
+               <h3 style={{ fontSize: '48px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px var(--bg-surface)' }}>{t(data.title)}</h3>
                {loading ? (
                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'var(--text-muted)', marginBottom: '32px' }}>
                      <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
@@ -747,13 +747,13 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
                    </div>
                )}
                <div style={{ display: 'inline-block', background: 'var(--bg-surface)', border: '1px solid #b8860b', padding: '10px 24px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                 {data.options.length} Shastric Outcomes Discovered
+                 {data.options.length} {t('Shastric Outcomes Discovered')}
                </div>
              </div>
              
              {/* 2. Ecliptic Visualization */}
              <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-               <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>Stellar Ecliptic Alignment</div>
+               <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>{t('Stellar Ecliptic Alignment')}</div>
                <EclipticChart hue={hue} pillarId={targetPillar} />
              </div>
           </div>
@@ -761,7 +761,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
 
        {/* 3. 6 Shastric Outcome Cards with Images */}
        <div className="mobile-hero-padding" style={{ padding: '60px 40px 0 40px' }}>
-         <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>Select an Outcome to Reveal Prophecy</h4>
+         <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>{t('Select an Outcome to Reveal Prophecy')}</h4>
          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '32px' }}>
            {data.options.map((opt, i) => {
              const cardHue = (hue + (i * 45)) % 360;
@@ -781,7 +781,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
 
                  <span style={{ position: 'relative', zIndex: 2, fontSize: '64px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s' }}>{opt.icon}</span>
                  <span style={{ position: 'relative', zIndex: 2, color: 'var(--text-main)', fontSize: '22px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px var(--bg-surface)', letterSpacing: '1px', textAlign: 'center' }}>
-                   {opt.label}
+                   {t(opt.label)}
                  </span>
                </button>
              );
@@ -791,13 +791,13 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
     </div>
   );
 };
-const AstrologicalRemedyBox = ({ alert, remedy }) => (
+const AstrologicalRemedyBox = ({ alert, remedy, t, lang }) => (
   <div style={{ marginTop: '24px', background: 'var(--bg-card)', padding: '24px', border: '2px solid var(--border-light)', boxShadow: '0 10px 30px var(--bg-surface)' }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
-      <span style={{ fontSize: '24px' }}>🕉️</span><h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>Shastric Mitigation Protocol</h4>
+      <span style={{ fontSize: '24px' }}>🕉️</span><h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{t('Shastric Mitigation Protocol')}</h4>
     </div>
-    {alert && <p style={{ color: 'var(--text-badge-red)', fontSize: '15px', marginBottom: '16px', background: 'rgba(255,0,0,0.1)', padding: '12px', border: '1px solid #ff6b6b' }}><strong>Dosha Identified:</strong> {alert}</p>}
-    <p style={{ color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.6, margin: 0, fontFamily: 'serif' }}><strong>Prescribed Parihara (Action):</strong> {remedy}</p>
+    {alert && <p style={{ color: 'var(--text-badge-red)', fontSize: '15px', marginBottom: '16px', background: 'rgba(255,0,0,0.1)', padding: '12px', border: '1px solid #ff6b6b' }}><strong>{t('Dosha Identified:')}</strong> {alert}</p>}
+    <p style={{ color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.6, margin: 0, fontFamily: 'serif' }}><strong>{t('Prescribed Parihara (Action):')}</strong> {remedy}</p>
   </div>
 );
 
@@ -848,35 +848,35 @@ const SouthIndianChartSVG = ({ predText }) => {
   );
 };
 
-const AstrologicalBasisBox = ({ chartDesc, pillarId, pred }) => {
+const AstrologicalBasisBox = ({ chartDesc, pillarId, pred, t, lang }) => {
   return (
     <div style={{ marginTop: '24px', background: 'var(--bg-input)', padding: '24px', border: '1px solid #b8860b', display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', background: '#e8d5b5', padding: '16px', borderRadius: '4px' }}>
         <div>
-           <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>North Indian format</div>
+           <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>{t('North Indian format')}</div>
            <NorthIndianChartSVG predText={pred} />
         </div>
         <div>
-           <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>South Indian format</div>
+           <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>{t('South Indian format')}</div>
            <SouthIndianChartSVG predText={pred} />
         </div>
       </div>
       
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <span style={{ fontSize: '20px' }}>📜</span><h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '18px', fontFamily: '"Cinzel"' }}>Panchanga Calculation Basis</h4>
+          <span style={{ fontSize: '20px' }}>📜</span><h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '18px', fontFamily: '"Cinzel"' }}>{t('Panchanga Calculation Basis')}</h4>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' }}>
           <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>Primary Varga</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>{t('Primary Varga')}</div>
             <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>{chartDesc.split(' ')[0]}</div>
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>Panchanga Tithi</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>{t('Panchanga Tithi')}</div>
             <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>Shukla Navami</div>
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>Governing Nakshatra</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>{t('Governing Nakshatra')}</div>
             <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>Pushya (Siddhi Yoga)</div>
           </div>
         </div>
@@ -896,23 +896,23 @@ const MandalVisualizer = ({ selectedOpt }) => {
   );
 };
 
-const ShastricExpander = ({ data, opt }) => {
+const ShastricExpander = ({ data, opt, t, lang }) => {
   return (
     <div style={{ marginTop: '32px', color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.8, borderTop: '2px solid var(--border-light)', paddingTop: '24px', fontFamily: 'serif' }}>
       <p style={{ marginBottom: '16px' }}>
-        <strong style={{color:'var(--accent-gold)'}}>Shastric Synthesis:</strong> Upon rigorous examination of the <em>{data.desc}</em> framework regarding <strong>{opt.label.toLowerCase()}</strong>, the karmic unfoldment is unambiguous. The celestial bodies establish a critical temporal vibration affecting the relevant Bhava within your D1 matrix.
+        <strong style={{color:'var(--accent-gold)'}}>{t('Shastric Synthesis:')}</strong> Upon rigorous examination of the <em>{data.desc}</em> framework regarding <strong>{opt.label.toLowerCase()}</strong>, the karmic unfoldment is unambiguous. The celestial bodies establish a critical temporal vibration affecting the relevant Bhava within your D1 matrix.
       </p>
       <p style={{ marginBottom: '16px' }}>
         According to the foundational geometric tenets of Brihat Parashara Hora Shastra, when the Grahas align in this specific configuration relative to the primary Varga matrix, the karmic ledger is activated. This precise dimensional alignment creates an unavoidable channel for the results of past-life (Sanchita) karma to manifest in the current timeline.
       </p>
       <p style={{ margin: 0 }}>
-        The Oracle reveals: <em>"{opt.pred}"</em> Therefore, this transit cannot be bypassed purely through willpower. Strict, unwavering adherence to the prescribed remedial protocol is the only mechanism that will actively alter the trajectory of this event within the boundaries of Dharma.
+        {t('The Oracle reveals: ')}<em>"{opt.pred}"</em> Therefore, this transit cannot be bypassed purely through willpower. Strict, unwavering adherence to the prescribed remedial protocol is the only mechanism that will actively alter the trajectory of this event within the boundaries of Dharma.
       </p>
     </div>
   );
 };
 
-const StandardPillarView = ({ pillarId, K, partnerKundali }) => {
+const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
   const [opt, setOpt] = useState(null);
 
   React.useEffect(() => {
@@ -922,32 +922,32 @@ const StandardPillarView = ({ pillarId, K, partnerKundali }) => {
   }, [opt, pillarId]);
   const data = PILLAR_DATA[pillarId];
 
-  if(!opt) return <InteractionGateway targetPillar={pillarId} onSelect={setOpt} K={K} />;
+  if(!opt) return <InteractionGateway targetPillar={pillarId} onSelect={setOpt} K={K} t={t} lang={lang} />;
 
   return (
     <div className="responsive-grid-2" style={{ alignItems: 'start' }}>
        <div style={{ background: 'var(--bg-input)', padding: '40px', border: '2px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)' }}>
          <MandalVisualizer selectedOpt={opt} />
-         <ShastricExpander data={data} opt={opt} />
+         <ShastricExpander data={data} opt={opt} t={t} lang={lang} />
        </div>
        <div>
-         <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>Subject: {opt.label}</div>
-         <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '24px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{data.title} Oracle Activated</h3>
+         <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>{t('Subject: ')} {t(opt.label)}</div>
+         <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '24px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t(data.title)} {t('Oracle Activated')}</h3>
          
          <div style={{ background: 'var(--bg-input)', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
            <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-             <span style={{ fontSize: '18px' }}>👁️</span> Prophetic Unfoldment
+             <span style={{ fontSize: '18px' }}>👁️</span> {t('Prophetic Unfoldment')}
            </div>
            <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.pred}</p>
          </div>
 
-         <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.pred} />
-         <AstrologicalRemedyBox remedy={opt.rem} alert={opt.pred.includes('afflict') || opt.pred.includes('debilitated') || opt.pred.includes('danger') ? "Malefic vibration detected." : null} />
+         <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.pred} t={t} lang={lang} />
+         <AstrologicalRemedyBox remedy={opt.rem} alert={opt.pred.includes('afflict') || opt.pred.includes('debilitated') || opt.pred.includes('danger') ? t("Malefic vibration detected.") : null} t={t} lang={lang} />
           {/* 4. Native Dependency Component Injection (Synastry Engine) */}
           {partnerKundali && (pillarId === 'vivaha' || pillarId === 'dhana' || pillarId === 'dharma' || pillarId === 'arogya' || pillarId === 'muhurta') && (
             <div style={{ marginTop: '24px', background: 'rgba(255,215,0,0.05)', padding: '24px', border: '1px solid var(--accent-gold)', borderRadius: '8px', borderLeft: '6px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
               <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px' }}>💞</span> Synastry Oracle Alignment: {partnerKundali.name || 'Partner'}
+                <span style={{ fontSize: '18px' }}>💞</span> {t('Synastry Oracle Alignment: ')} {partnerKundali.name || t('Partner')}
               </div>
               <p style={{ color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.7, margin: 0, fontFamily: 'serif', fontStyle: 'italic' }}>
                 {pillarId === 'vivaha' && "The combined planetary gravity of both charts indicates deep karmic debt resolution in this cycle. Joint communication must be carefully guarded on Tuesdays during Mars Hora."}
@@ -963,10 +963,10 @@ const StandardPillarView = ({ pillarId, K, partnerKundali }) => {
   );
 };
 
-const FullScreenWrapper = ({ title, onBack, children }) => (
+const FullScreenWrapper = ({ title, onBack, children, t, lang }) => (
   <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
     <button onClick={onBack} style={{ background: 'var(--bg-card)', color: 'var(--accent-gold)', border: '1px solid #ffd700', padding: '12px 28px', cursor: 'pointer', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '16px', fontFamily: '"Cinzel", serif', transition:'all 0.2s', textTransform:'uppercase' }} onMouseOver={e=>{e.currentTarget.style.background='var(--bg-input)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'}}>
-      ← Return to Main Mandala
+      {t('← Return to Main Mandala')}
     </button>
     <div style={{ background: 'var(--bg-card)', border: '2px solid var(--border-light)', padding: '2px' }}>
       <div className="mobile-hero-padding" style={{ border: '1px dashed rgba(184, 134, 11, 0.5)', padding: '60px' }}>{children}</div>
@@ -977,7 +977,7 @@ const FullScreenWrapper = ({ title, onBack, children }) => (
 // ==========================================
 // 3. MAIN DASHBOARD AGGREGATOR
 // ==========================================
-export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, partnerKundali }) => {
+export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, partnerKundali, t, lang }) => {
   const [activeTime, setActiveTime] = useState('This Masa (Month)');
   const [activeView, setActiveView] = useState('grid'); 
 
@@ -985,8 +985,8 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, part
     const data = PILLAR_DATA[activeView];
     return (
       <div id="mock-dashboard-top" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
-        <FullScreenWrapper title={`${data.icon} ${data.title}`} onBack={() => setActiveView('grid')}>
-          <StandardPillarView pillarId={activeView} K={K} partnerKundali={partnerKundali} />
+        <FullScreenWrapper title={`${data.icon} ${t(data.title)}`} onBack={() => setActiveView('grid')} t={t} lang={lang}>
+          <StandardPillarView pillarId={activeView} K={K} partnerKundali={partnerKundali} t={t} lang={lang} />
         </FullScreenWrapper>
       </div>
     );
@@ -997,15 +997,15 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, part
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '2px solid var(--border-light)', paddingBottom: '20px', flexWrap: 'wrap', gap: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <h2 style={{ fontSize: '42px', margin: 0, fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>ṣaṭtriṃśat Mārga</h2>
+          <h2 style={{ fontSize: '42px', margin: 0, fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Life Paths')}</h2>
           {partnerKundali && (
             <div style={{ background: 'var(--bg-input)', border: '1px solid var(--accent-gold)', padding: '6px 12px', borderRadius: '4px', color: 'var(--accent-gold)', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span>💞</span> Synastry Active
+              <span>💞</span> {t('Synastry Active')}
             </div>
           )}
         </div>
         <button onClick={onOpenJyotishDesk} style={{background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 28px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow: '0 4px 15px rgba(255,215,0,0.4)'}} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(255,215,0,0.6)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 4px 15px rgba(255,215,0,0.4)'}}>
-          Reveal Kundali <span style={{fontSize:'20px'}}>➔</span>
+          {t('Reveal Kundali ➔')}
         </button>
       </div>
       <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} />
@@ -1029,10 +1029,10 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, part
             <div style={{ position: 'absolute', top: '-10px', right: '-10px', fontSize: '140px', opacity: 0.03, pointerEvents: 'none' }}>{data.icon}</div>
             <div style={{ fontSize: '50px', marginBottom: '20px', filter: 'drop-shadow(0 0 15px rgba(255,215,0,0.3))' }}>{data.icon}</div>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '22px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>{data.title}</h3>
-            <div style={{ color: 'var(--text-muted)', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px', fontFamily: 'sans-serif' }}>{data.desc}</div>
-            <p style={{ margin: 0, fontSize: '15px', color: 'var(--text-main)', lineHeight: 1.6, flexGrow: 1 }}>{data.options.length} Shastric Outcomes</p>
+            <div style={{ color: 'var(--text-muted)', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px', fontFamily: 'sans-serif' }}>{t(data.desc)}</div>
+            <p style={{ margin: 0, fontSize: '15px', color: 'var(--text-main)', lineHeight: 1.6, flexGrow: 1 }}>{data.options.length} {t('Shastric Outcomes')}</p>
             <div style={{ marginTop: '24px', color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: '"Cinzel", serif', textTransform: 'uppercase' }}>
-              Consult Oracle <span>→</span>
+              {t('Consult Oracle →')}
             </div>
           </div>
         ))}

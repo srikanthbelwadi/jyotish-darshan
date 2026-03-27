@@ -31,10 +31,13 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
         manualChunks: {
           react: ['react', 'react-dom'],
+          firebase: ['firebase/app', 'firebase/firestore', 'firebase/auth'],
+          swisseph: ['swisseph-wasm']
         }
       }
     }

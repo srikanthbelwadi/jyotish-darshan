@@ -2419,11 +2419,11 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                   alert("Celestial misalignment. Please verify the birth coordinates."); 
                   setShowPartnerForm(false);
                 } 
-              }} onCancel={() => setShowPartnerForm(false)} lang={lang} t={(k)=>k} />
+              }} onCancel={() => setShowPartnerForm(false)} lang={lang} t={(k)=>t(k,lang)} />
             </div>
           )}
           {partnerKundali && isSynastryExpanded && (
-            <CompatibilityMatch primaryKundali={K} partnerKundali={partnerKundali} lang={lang} t={(k)=>k} />
+            <CompatibilityMatch primaryKundali={K} partnerKundali={partnerKundali} lang={lang} t={(k)=>t(k,lang)} />
           )}
         </div>
         )}
@@ -2431,7 +2431,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
         {dashboardMode === 'kundali' && (
           <div style={{animation:'fadeIn 0.5s ease'}}>
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'40px', borderBottom:'1px solid #b8860b', paddingBottom:'16px', flexWrap:'wrap', gap:'16px'}}>
-              <h2 style={{color:'var(--accent-gold)', margin:0, fontSize:'28px', textShadow:'0 0 10px rgba(255,215,0,0.3)'}}>Kundali</h2>
+              <h2 style={{ fontSize: '42px', margin: 0, fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>Kundali</h2>
               <button onClick={()=>{setDashboardMode('pathways');window.scrollTo({top:0,behavior:'smooth'});}} style={{background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 28px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 4px 15px rgba(255,215,0,0.4)'}} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(255,215,0,0.6)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 4px 15px rgba(255,215,0,0.4)'}}>Reveal Life Path <span style={{fontSize:'20px'}}>➔</span></button>
             </div>
             
@@ -2468,7 +2468,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
           <MockDashboard 
             K={K} 
             lang={lang} 
-            t={(k)=>k} 
+            t={(k)=>t(k,lang)} 
             user={user} 
             onRequireLogin={onRequireLogin} 
             onOpenJyotishDesk={() => {
