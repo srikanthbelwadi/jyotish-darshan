@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { callOracle, callPathway } from '../../firebase';
 
 // ==========================================
 // 1. TRADITIONAL TRUTH: 24 PILLARS & 96+ OPTIONS
@@ -473,31 +474,24 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
     setError(null);
 
     try {
-      const res = await fetch('/api/oracle', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          currentDate: new Date().toString(), // Explicitly enforce Local Timezone inclusion over strict UTC
-          timescale: activeTime,
-          kundaliData: {
-             lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
-             planets: K.planets.map(p => ({
-               id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
-             })),
-             dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null,
-             panchanga: K.panchanga ? {
-               tithi: K.panchanga.tithi?.name,
-               karana: K.panchanga.karana?.name,
-               yoga: K.panchanga.yoga?.name,
-               nakshatra: K.panchanga.nakshatra?.name
-             } : null,
-             ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
-          }
-        })
+      const data = await callOracle({
+        currentDate: new Date().toString(),
+        timescale: activeTime,
+        kundaliData: {
+           lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
+           planets: K.planets.map(p => ({
+             id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
+           })),
+           dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null,
+           panchanga: K.panchanga ? {
+             tithi: K.panchanga.tithi?.name,
+             karana: K.panchanga.karana?.name,
+             yoga: K.panchanga.yoga?.name,
+             nakshatra: K.panchanga.nakshatra?.name
+           } : null,
+           ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
+        }
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to consult the Oracle.');
 
       setCache(prev => ({ ...prev, [activeTime]: data.prediction }));
       localStorage.setItem(`jyotish_oracle_${activeTime}`, JSON.stringify({ text: data.prediction, timestamp: Date.now() }));
@@ -678,30 +672,24 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/pathway', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          currentDate: new Date().toString(),
-          pathwayName: data.title,
-          kundaliData: {
-            lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
-            planets: K.planets.map(p => ({
-              id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
-            })),
-            dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null,
-            panchanga: K.panchanga ? {
-              tithi: K.panchanga.tithi?.name,
-              karana: K.panchanga.karana?.name,
-              yoga: K.panchanga.yoga?.name,
-              nakshatra: K.panchanga.nakshatra?.name
-            } : null,
-            ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
-          }
-        })
+      const resData = await callPathway({
+        currentDate: new Date().toString(),
+        pathwayName: data.title,
+        kundaliData: {
+          lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
+          planets: K.planets.map(p => ({
+            id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
+          })),
+          dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null,
+          panchanga: K.panchanga ? {
+            tithi: K.panchanga.tithi?.name,
+            karana: K.panchanga.karana?.name,
+            yoga: K.panchanga.yoga?.name,
+            nakshatra: K.panchanga.nakshatra?.name
+          } : null,
+          ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
+        }
       });
-      const resData = await res.json();
-      if(!res.ok) throw new Error(resData.error || 'Failed to sync with pathway matrix.');
       
       setPrediction(resData.prediction);
       localStorage.setItem(cacheKey, JSON.stringify({ text: resData.prediction, timestamp: Date.now() }));

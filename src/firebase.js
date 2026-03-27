@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,7 +12,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-let app, auth, googleProvider, db;
+let app, auth, googleProvider, db, functions;
 
 try {
   // Only initialize if the API key is present to prevent blank screen crashes
@@ -20,12 +21,13 @@ try {
     auth = getAuth(app);
     googleProvider = new GoogleAuthProvider();
     db = getFirestore(app);
+    functions = getFunctions(app);
   }
 } catch (e) {
   console.error("Firebase initialization failed", e);
 }
 
-export { auth, googleProvider, db };
+export { auth, googleProvider, db, functions };
 
 export const syncProfileToCloud = async (userId, profiles) => {
   if (!db) return false;
@@ -60,4 +62,18 @@ export const signInWithGooglePopup = () => {
         return Promise.reject(new Error("Firebase is not configured locally or in Vercel. Please add VITE_FIREBASE_API_KEY environment variables."));
     }
     return signInWithPopup(auth, googleProvider);
+};
+
+export const callOracle = async (data) => {
+  if (!functions) throw new Error("Firebase Functions not initialized");
+  const func = httpsCallable(functions, 'generateOracle');
+  const result = await func(data);
+  return result.data;
+};
+
+export const callPathway = async (data) => {
+  if (!functions) throw new Error("Firebase Functions not initialized");
+  const func = httpsCallable(functions, 'generatePathway');
+  const result = await func(data);
+  return result.data;
 };
