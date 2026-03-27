@@ -33,7 +33,7 @@ export function calculateMatch(k1, k2) {
   };
   const vB = getVarna(boy.rashi);
   const vG = getVarna(girl.rashi);
-  const varnaScore = vB >= vG ? 1 : 0; 
+  const varnaScore = Math.abs(vB - vG) <= 1 ? 1 : 0; 
   const varnaDesc = varnaScore === 1 ? 'Compatible work ethics and spiritual ego.' : 'Differing societal perspectives and ego drives.';
 
   // 2. Vashya (2 pts)
@@ -64,7 +64,10 @@ export function calculateMatch(k1, k2) {
   ];
   const bLord = rLords[boy.rashi];
   const gLord = rLords[girl.rashi];
-  const grahaScore = (bLord === gLord) ? 5 : (bLord === 'sun' || bLord === 'moon' || bLord === 'jupiter' ? 3 : 2); // Extremely simplified fallback
+  const sattvic = ['sun', 'moon', 'jupiter', 'mars'];
+  const bIsSat = sattvic.includes(bLord);
+  const gIsSat = sattvic.includes(gLord);
+  const grahaScore = (bLord === gLord) ? 5 : (bIsSat === gIsSat ? 4 : 2);
   const grahaDesc = grahaScore >= 4 ? 'Harmonious psychological and friendly alignment.' : 'Differing mentalities; compromises needed.';
 
   // 6. Gana (6 pts)
@@ -99,13 +102,13 @@ export function calculateMatch(k1, k2) {
   let summary = "";
   let summaryKey = "";
   if (totalScore >= 26) {
-    summary = "A Highly Excellent Match. Exceptional alignment across mental, physical, and spiritual dimensions.";
+    summary = "A Highly Excellent Match. Exceptional cosmic alignment across mental, physical, and spiritual dimensions. The Ashtakuta indices suggest profound mutual understanding, natural telepathy, and an enduring sense of spiritual duty towards one another. The couple will easily navigate life's inevitable storms through their deeply harmonious synastry.";
     summaryKey = "sumHigh";
   } else if (totalScore >= 18) {
-    summary = "A Good, Stable Match. Solid foundation, with typical relationship adjustments required.";
+    summary = "A Good, Stable Match. Solid Shastric foundation indicating healthy long-term potential. While typical relationship adjustments and negotiations are required, the underlying astrological bedrock is secure. Focusing on transparent communication and mutual spiritual practices will elevate this union significantly.";
     summaryKey = "sumMed";
   } else {
-    summary = "A Challenging Match. Requires immense patience, understanding, and conscious effort to sustain harmony.";
+    summary = "A Karmically Challenging Match. This union requires immense patience, understanding, and conscious ego-suppression to sustain harmony. The planetary cross-currents indicate profound lessons in compromise, where karmic debts may need to be balanced. Specific remedial measures (Upayas) and deep spiritual maturity are highly advised.";
     summaryKey = "sumLow";
   }
 
@@ -155,21 +158,21 @@ export function calculateMatch(k1, k2) {
   let mutualCancellation = false;
 
   if (m1.isManglik && m2.isManglik) {
-    manglikStatus = "Both are Manglik. By rules of mutual cancellation, the Dosha is neutralized, allowing for equal energetic matching.";
+    manglikStatus = "Both partners possess Mangal Dosha. By the classic Shastric principles of mutual cancellation (Dosha Samya), the fiery marital friction is effectively neutralized. Their equal energetic, protective, and assertive drives will harmonize rather than burn each other out.";
     manglikKey = "manBoth";
     mutualCancellation = true;
   } else if (!m1.isManglik && !m2.isManglik) {
-    manglikStatus = "Neither partner has Manglik Dosha. Excellent foundational peace.";
+    manglikStatus = "Neither partner carries a disrupting Mangal Dosha. This promises an excellent foundational peace and domestic tranquility, untouched by the sudden marital combative energies typically associated with an afflicted Mars.";
     manglikKey = "manNeither";
   } else {
       // One is, one isn't
       const theManglik = m1.isManglik ? p1.name : p2.name;
       const theObj = m1.isManglik ? m1 : m2;
       if (theObj.isCancelled) {
-          manglikStatus = `${theManglik} has Manglik Dosha, but it is cancelled due to planetary dignity (${theObj.cancelReason}). No clash.`;
+          manglikStatus = `${theManglik} has Manglik Dosha, but it is cancelled due to inherent planetary dignity (${theObj.cancelReason}). The fiery marital influence is thereby neutralized, preventing Shastric conflict.`;
           manglikKey = "manCancelled";
       } else {
-          manglikStatus = "Significant Mangal Dosha Match Mismatch! One partner is Manglik while the other is not. This can cause severe friction or marital instability without astrological remedies.";
+          manglikStatus = "Significant Mangal Dosha Mismatch! One partner is explicitly Manglik while the other is not. This severe astrological imbalance creates disproportionate protective/combative drives and can cause highly severe friction, emotional distance, or marital instability without proper astrological remedies (Upayas).";
           manglikKey = "manPresent";
       }
   }

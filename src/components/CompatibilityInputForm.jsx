@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 
 export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=(x)=>x, lang }) {
   const [form, setForm] = useState({
-    dob: '', tob: '', city: '', country: '', lat: null, lng: null, timezone: '', gender: ''
+    name: '', dob: '', tob: '', city: '', country: '', lat: null, lng: null, timezone: '', gender: ''
   });
   const [cityQ, setCityQ] = useState('');
   const [suggs, setSuggs] = useState([]);
@@ -10,6 +10,11 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
   const [loading, setLoading] = useState(false);
   const [errs, setErrs] = useState({});
   const dbRef = useRef(null);
+
+  const txt = (key, fallback) => {
+    const r = t(key, lang);
+    return r === key ? fallback : r;
+  };
 
   const LS = { display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--accent-gold)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 };
 
@@ -62,6 +67,7 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrs = {};
+    if (!form.name) newErrs.name = 'Required';
     if (!form.dob) newErrs.dob = 'Required';
     if (!form.tob) newErrs.tob = 'Required';
     if (!form.lat) newErrs.city = 'Required';
@@ -75,7 +81,7 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
     const offset = getUTCOffset(form.timezone, Number(y), Number(m), Number(d), Number(h), Number(min_));
 
     const inputData = {
-      name: t('comp.partner', lang) || "Partner",
+      name: form.name || txt('comp.partner', "Partner"),
       year: Number(y), month: Number(m), day: Number(d),
       hour: Number(h), minute: Number(min_),
       city: form.city, country: form.country,
@@ -92,22 +98,30 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
     <div className="lux-card" style={{ width: '100%', maxWidth: 580, padding: 0, overflow: 'visible', margin: '0 auto', background: 'var(--bg-card)' }}>
       <div style={{ padding: '24px 34px', borderBottom: '1px solid var(--border-light)' }}>
         <h3 className="serif" style={{ margin: 0, fontSize: 20, fontWeight: 400, color: 'var(--accent-gold)', letterSpacing: 1.5 }}>
-          {t('comp.addPartner', lang)}
+          {txt('comp.addPartner', 'Add Companion Chart')}
         </h3>
-        <p style={{ margin: '6px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>{t('formNote', lang)}</p>
+        <p style={{ margin: '6px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>{txt('formNote', 'Enter the precise birth specifics of the partner to calculate synastry resonances.')}</p>
       </div>
 
       <form onSubmit={handleSubmit} style={{ padding: '34px' }}>
+        <div style={{ marginBottom: 20 }}>
+          <label style={LS}>{txt('comp.partnerName', 'Partner Name')}</label>
+          <input type="text" required placeholder="Enter companion's name" value={form.name}
+            onChange={e => { setForm(f => ({...f, name: e.target.value})); setErrs(er => ({...er, name: null})) }}
+            className="lux-input" style={{ borderColor: errs.name ? '#EF4444' : undefined }} />
+          {errs.name && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 4 }}>{errs.name}</p>}
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
           <div>
-            <label style={LS}>{t('dob', lang)}</label>
+            <label style={LS}>{txt('dob', 'Date of Birth')}</label>
             <input type="date" required value={form.dob} max={new Date().toISOString().slice(0,10)} min="1900-01-01"
               onChange={e => { setForm(f => ({...f, dob: e.target.value})); setErrs(er => ({...er, dob: null})) }}
               className="lux-input" style={{ borderColor: errs.dob ? '#EF4444' : undefined }} />
             {errs.dob && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 4 }}>{errs.dob}</p>}
           </div>
           <div>
-            <label style={LS}>{t('tob', lang)}</label>
+            <label style={LS}>{txt('tob', 'Time of Birth')}</label>
             <input type="time" required value={form.tob}
               onChange={e => { setForm(f => ({...f, tob: e.target.value})); setErrs(er => ({...er, tob: null})) }}
               className="lux-input" style={{ borderColor: errs.tob ? '#EF4444' : undefined }} />
@@ -115,11 +129,11 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
           </div>
         </div>
         
-        <p style={{ margin: '-10px 0 16px', fontSize: 12, color: 'var(--text-muted)' }}>{t('inputAccuracy', lang)}</p>
+        <p style={{ margin: '-10px 0 16px', fontSize: 12, color: 'var(--text-muted)' }}>{txt('inputAccuracy', 'A known time of birth is required for precise astrological accuracy.')}</p>
         
         <div style={{ marginBottom: 20, position: 'relative' }}>
-          <label style={LS}>{t('city', lang)}</label>
-          <input type="text" placeholder={t('cityPlaceholder', lang)} value={cityQ}
+          <label style={LS}>{txt('city', 'City')}</label>
+          <input type="text" placeholder={txt('cityPlaceholder', 'Search birth city...')} value={cityQ}
             onChange={e => { setCityQ(e.target.value); setForm(f => ({...f, lat: null})); setShowS(true); clearTimeout(dbRef.current); dbRef.current = setTimeout(() => searchCity(e.target.value), 300) }}
             onFocus={() => suggs.length > 0 && setShowS(true)}
             onBlur={() => setTimeout(() => setShowS(false), 180)}
@@ -142,14 +156,14 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
         </div>
         
         {form.country && <div style={{ marginBottom: 24 }}>
-          <label style={LS}>{t('country', lang)}</label>
+          <label style={LS}>{txt('country', 'Country')}</label>
           <div style={{ padding: '14px 16px', borderRadius: 6, border: '1px solid var(--border-light)', background: 'rgba(255,255,255,0.02)', fontSize: 14, color: 'var(--text-secondary)' }}>{form.country}</div>
         </div>}
         
         <div style={{ marginBottom: 30 }}>
-          <label style={{ ...LS, marginBottom: 12 }}>{t('gender', lang)}</label>
+          <label style={{ ...LS, marginBottom: 12 }}>{txt('gender', 'Gender')}</label>
           <div style={{ display: 'flex', gap: 10 }}>
-            {[['Male', t('male', lang) || 'Male'], ['Female', t('female', lang) || 'Female'], ['Other', t('other', lang) || 'Other']].map(([val, lbl]) => (
+            {[['Male', txt('male', 'Male')], ['Female', txt('female', 'Female')], ['Other', txt('other', 'Other')]].map(([val, lbl]) => (
               <button key={val} type="button" onClick={() => { setForm(f => ({...f, gender: val})); setErrs(er => ({...er, gender: null})) }}
                 style={{ flex: 1, padding: '12px', borderRadius: 6, border: form.gender === val ? '1px solid var(--accent-gold)' : '1px solid var(--border-light)', background: form.gender === val ? 'var(--bg-dark)' : 'transparent', color: form.gender === val ? 'var(--accent-gold)' : 'var(--text-secondary)', fontWeight: form.gender === val ? 500 : 400, cursor: 'pointer', fontSize: 14, fontFamily: 'inherit', transition: 'all 0.3s ease', boxShadow: form.gender === val ? '0 0 10px var(--accent-glow)' : 'none' }}>
                 {lbl}
@@ -161,10 +175,10 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
         
         <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
           <button type="button" onClick={onCancel} className="lux-btn" style={{ flex: 1, background: 'transparent', border: '1px solid var(--border-light)', color: 'var(--text-main)', padding: '16px', fontSize: 15 }}>
-             <strong style={{ letterSpacing: 1 }}>{t('comp.cancel', lang)}</strong>
+             <strong style={{ letterSpacing: 1 }}>{txt('comp.cancel', 'CANCEL')}</strong>
           </button>
           <button type="submit" disabled={loading} className="lux-btn" style={{ flex: 2, padding: '16px', background: 'var(--accent-gold)', color: '#000', border: 'none', fontSize: 15 }}>
-            <strong style={{ letterSpacing: 1 }}>{loading ? t('comp.match', lang) + '...' : t('comp.match', lang)}</strong>
+            <strong style={{ letterSpacing: 1 }}>{loading ? txt('comp.match', 'CALCULATE SYNASTRY') + '...' : txt('comp.match', 'CALCULATE SYNASTRY')}</strong>
           </button>
         </div>
       </form>

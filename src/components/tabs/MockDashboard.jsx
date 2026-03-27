@@ -518,7 +518,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
          <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>Ashtakavarga Oracle</h2>
+        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>Predictions</h2>
         <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
           {timescales.map(t => (
             <button key={t} onClick={() => setActiveTime(t)} style={{ background: activeTime === t ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === t ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t}</button>
@@ -912,7 +912,7 @@ const ShastricExpander = ({ data, opt }) => {
   );
 };
 
-const StandardPillarView = ({ pillarId, K, companionUI }) => {
+const StandardPillarView = ({ pillarId, K, partnerKundali }) => {
   const [opt, setOpt] = useState(null);
 
   React.useEffect(() => {
@@ -944,9 +944,18 @@ const StandardPillarView = ({ pillarId, K, companionUI }) => {
          <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.pred} />
          <AstrologicalRemedyBox remedy={opt.rem} alert={opt.pred.includes('afflict') || opt.pred.includes('debilitated') || opt.pred.includes('danger') ? "Malefic vibration detected." : null} />
           {/* 4. Native Dependency Component Injection (Synastry Engine) */}
-          {pillarId === 'vivaha' && companionUI && (
-            <div>
-              {companionUI}
+          {partnerKundali && (pillarId === 'vivaha' || pillarId === 'dhana' || pillarId === 'dharma' || pillarId === 'arogya' || pillarId === 'muhurta') && (
+            <div style={{ marginTop: '24px', background: 'rgba(255,215,0,0.05)', padding: '24px', border: '1px solid var(--accent-gold)', borderRadius: '8px', borderLeft: '6px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
+              <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>💞</span> Synastry Oracle Alignment: {partnerKundali.name || 'Partner'}
+              </div>
+              <p style={{ color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.7, margin: 0, fontFamily: 'serif', fontStyle: 'italic' }}>
+                {pillarId === 'vivaha' && "The combined planetary gravity of both charts indicates deep karmic debt resolution in this cycle. Joint communication must be carefully guarded on Tuesdays during Mars Hora."}
+                {pillarId === 'dhana' && "Shared planetary energies indicate massive financial growth when liquid assets are pooled. The partner's Jupiter strongly trines your primary wealth axis, guaranteeing dual prosperity."}
+                {pillarId === 'dharma' && "Spiritual paths diverge slightly under Rahu's influence, demanding extreme intellectual patience, but core moral philosophies remain perfectly bonded by the Sun."}
+                {pillarId === 'arogya' && "The partner's lunar placement provides enormous ambient emotional healing to your nervous system. Vata dosha spikes are passively neutralized by their presence."}
+                {pillarId === 'muhurta' && "Auspicious timings must now calculate both Moon signs (Chandra Bala). Your partner's lunar chart subtly delays the current window of absolute perfection by 48 hours."}
+              </p>
             </div>
           )}
        </div>
@@ -968,7 +977,7 @@ const FullScreenWrapper = ({ title, onBack, children }) => (
 // ==========================================
 // 3. MAIN DASHBOARD AGGREGATOR
 // ==========================================
-export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, companionUI }) => {
+export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, partnerKundali }) => {
   const [activeTime, setActiveTime] = useState('This Masa (Month)');
   const [activeView, setActiveView] = useState('grid'); 
 
@@ -977,7 +986,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, comp
     return (
       <div id="mock-dashboard-top" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
         <FullScreenWrapper title={`${data.icon} ${data.title}`} onBack={() => setActiveView('grid')}>
-          <StandardPillarView pillarId={activeView} K={K} companionUI={companionUI} />
+          <StandardPillarView pillarId={activeView} K={K} partnerKundali={partnerKundali} />
         </FullScreenWrapper>
       </div>
     );
@@ -986,13 +995,20 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, comp
   return (
     <div id="mock-dashboard-top" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 24px', fontFamily: 'serif', paddingBottom: '140px', background: 'var(--bg-app)', minHeight: '100vh' }}>
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
-      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} />
-      
-      <div style={{ marginBottom: '40px', borderBottom: '2px solid #4a151b', paddingBottom: '20px' }}>
-        <h2 style={{ fontSize: '42px', margin: '0 0 4px 0', fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>Reveal ṣaṭtriṃśat Mārga</h2>
-        <div style={{color:'var(--text-muted)', fontSize:'14px', letterSpacing:'4px', textTransform:'uppercase', marginBottom:'16px', fontWeight:'bold'}}>The 36 Pathways</div>
-        <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '18px', fontStyle: 'italic' }}>Select a classical astrological dimension below. Over 96 sacred predictive pathways map the unfolding of your precise karmic timeline based on the Parashari system.</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '2px solid var(--border-light)', paddingBottom: '20px', flexWrap: 'wrap', gap: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <h2 style={{ fontSize: '42px', margin: 0, fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>ṣaṭtriṃśat Mārga</h2>
+          {partnerKundali && (
+            <div style={{ background: 'var(--bg-input)', border: '1px solid var(--accent-gold)', padding: '6px 12px', borderRadius: '4px', color: 'var(--accent-gold)', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>💞</span> Synastry Active
+            </div>
+          )}
+        </div>
+        <button onClick={onOpenJyotishDesk} style={{background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 28px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow: '0 4px 15px rgba(255,215,0,0.4)'}} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(255,215,0,0.6)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 4px 15px rgba(255,215,0,0.4)'}}>
+          Reveal Kundali <span style={{fontSize:'20px'}}>➔</span>
+        </button>
       </div>
+      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
         {Object.entries(PILLAR_DATA).map(([key, data]) => (
@@ -1022,11 +1038,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, comp
         ))}
       </div>
 
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, var(--bg-surface) 0%, transparent 100%)', padding: '80px 0 40px 0', display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 100 }}>
-         <button onClick={onOpenJyotishDesk} style={{ pointerEvents: 'auto', background: 'var(--bg-card)', color: 'var(--accent-gold)', border: '2px solid var(--border-light)', padding: '16px 48px', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '16px', boxShadow: '0 10px 50px var(--bg-surface)', transition: 'all 0.2s', fontFamily: '"Cinzel", serif' }} onMouseOver={e=>{e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background='var(--bg-input)';}} onMouseOut={e=>{e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background='var(--bg-card)';}}>
-           <span style={{fontSize:'28px'}}>🪔</span> Open Technical Jyotish Desk
-         </button>
-      </div>
+
     </div>
   );
 };

@@ -1,8 +1,13 @@
 import React from 'react';
 import { calculateMatch } from '../engine/matchmaking.js';
-import { L_NAKS, L_RASHI } from '../App.jsx';
+import { L_NAKS, L_RASHI, localizePanchang } from '../App.jsx';
 
 export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(x)=>x, lang }) {
+  const txt = (key, fallback) => {
+    const r = t(key, lang);
+    return r === key ? (fallback || key) : r;
+  };
+
   const match = calculateMatch(primaryKundali, partnerKundali);
   
   const englishNakshatras = L_NAKS.en;
@@ -21,65 +26,121 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
 
   return (
     <div style={{
+      position: 'relative',
       background: 'var(--bg-card)', border: '1px solid var(--accent-gold)', 
       borderRadius: '12px', padding: '30px', marginTop: '20px', color: 'var(--text-main)',
       boxShadow: '0 8px 32px rgba(212, 175, 55, 0.1)'
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-light)', paddingBottom: '16px', marginBottom: '24px' }}>
-        <h3 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '22px' }}>💞 {t('comp.milan',lang) || 'Compatibility'}</h3>
-        <div style={{
-          padding: '8px 16px', borderRadius: '20px', border: '2px solid var(--accent-gold)',
-          fontSize: '20px', fontWeight: 'bold', color: 'var(--accent-gold)', background: 'var(--bg-dark)'
-        }}>
-          {match.ashtaKuta.totalScore} / 36
+        <h3 className="serif" style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '24px', fontFamily: '"Cinzel", serif', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          💞 {txt('comp.milan', 'Compatibility')}
+        </h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            padding: '8px 16px', borderRadius: '20px', border: '1px solid var(--accent-gold)',
+            fontSize: '18px', fontWeight: 'bold', color: 'var(--accent-gold)', background: 'var(--bg-dark)', fontFamily: '"Cinzel", serif'
+          }}>
+            {match.ashtaKuta.totalScore} / 36
+          </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-        <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', textAlign: 'center' }}>
-          <h4 style={{ margin: '0 0 8px', color: 'var(--text-main)', fontSize: '18px' }}>{match.p1.name === 'User' ? t('comp.user',lang) : match.p1.name}</h4>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.moonR',lang)}: <span style={{color:'var(--accent-gold)'}}>{p1RashiTranslated}</span></div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.nak',lang)}: <span style={{color:'var(--accent-gold)'}}>{p1NakTranslated}</span></div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>{t('comp.manglik',lang)}: <span style={{color: match.mangalDosha.p1Manglik ? '#EF4444' : '#10B981'}}>{match.mangalDosha.p1Manglik ? t('comp.yes',lang) : t('comp.no',lang)}</span></div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px', marginBottom: '20px' }}>
+        
+        {/* P1 METADATA */}
+        <div style={{ background: 'var(--bg-surface)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-light)', textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+          <h4 style={{ margin: '0 0 12px', color: 'var(--text-main)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{match.p1.name === 'User' ? txt('comp.user', 'User') : match.p1.name}</h4>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '18px', color: 'var(--text-secondary)', fontSize: '13px', fontFamily: 'serif', alignItems: 'center' }}>
+            <div>📅 {new Date(primaryKundali.input.year, primaryKundali.input.month - 1, primaryKundali.input.day).toLocaleDateString(lang === 'en' ? 'en-IN' : lang, { day: 'numeric', month: 'long', year: 'numeric' })}, {primaryKundali.input.tob}</div>
+            <div style={{display:'flex', gap: 6}}><span> {primaryKundali.input.lat?.toFixed(3)}°N, {primaryKundali.input.lng?.toFixed(3)}°E</span></div>
+            <div>🔹 {txt('ayanamsa', 'Ayanamsa')}: {primaryKundali.ayanamsaDMS}</div>
+            <div>♑ {txt('lagna', 'Lagna')}: {localizePanchang(primaryKundali.panchang, lang)?.lagna || L_RASHI[lang]?.[primaryKundali.planets?.find(p=>p.key==='lagna')?.rashi] || L_RASHI.en[primaryKundali.planets?.find(p=>p.key==='lagna')?.rashi]} {primaryKundali.planets?.find(p=>p.key==='lagna')?.dms ? `${primaryKundali.planets.find(p=>p.key==='lagna').dms.d}°${primaryKundali.planets.find(p=>p.key==='lagna').dms.m}'` : ''}</div>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '18px', flex: 1 }}>
+            {[
+              { k: 'comp.moonR', label: 'Moon Sign', v: p1RashiTranslated },
+              { k: 'comp.nak', label: 'Nakshatra', v: p1NakTranslated },
+              { k: 'tithi', label: 'Tithi', v: localizePanchang(primaryKundali.panchang, lang)?.tithi?.split(' (')[0] },
+              { k: 'vara', label: 'Vara', v: localizePanchang(primaryKundali.panchang, lang)?.vara },
+              { k: 'yoga', label: 'Yoga', v: localizePanchang(primaryKundali.panchang, lang)?.yoga },
+              { k: 'karana', label: 'Karana', v: localizePanchang(primaryKundali.panchang, lang)?.karana }
+            ].map((item, idx) => (
+              <div key={idx} style={{ border: '1px solid var(--border-light)', borderRadius: '4px', padding: '4px 10px', fontSize: '13px', background: 'var(--bg-card)' }}>
+                <span style={{ color: 'var(--accent-gold)' }}>{txt(item.k, item.label)}:</span> <span style={{color:'var(--text-main)'}}>{item.v}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ color: 'var(--text-main)', fontSize: '15px', fontFamily: 'serif', paddingTop: '14px', borderTop: '1px dashed var(--border-light)' }}>
+            {txt('comp.manglik', 'Manglik')}: <strong style={{color: match.mangalDosha.p1Manglik ? '#EF4444' : '#10B981'}}>{match.mangalDosha.p1Manglik ? txt('comp.yes', 'Yes') : txt('comp.no', 'No')}</strong>
+          </div>
         </div>
-        <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', textAlign: 'center' }}>
-          <h4 style={{ margin: '0 0 8px', color: 'var(--text-main)', fontSize: '18px' }}>{match.p2.name === 'Partner' ? t('comp.partner',lang) : match.p2.name}</h4>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.moonR',lang)}: <span style={{color:'var(--accent-gold)'}}>{p2RashiTranslated}</span></div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('comp.nak',lang)}: <span style={{color:'var(--accent-gold)'}}>{p2NakTranslated}</span></div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>{t('comp.manglik',lang)}: <span style={{color: match.mangalDosha.p2Manglik ? '#EF4444' : '#10B981'}}>{match.mangalDosha.p2Manglik ? t('comp.yes',lang) : t('comp.no',lang)}</span></div>
+
+        {/* P2 METADATA */}
+        <div style={{ background: 'var(--bg-surface)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-light)', textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+          <h4 style={{ margin: '0 0 12px', color: 'var(--text-main)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{match.p2.name === 'Partner' ? txt('comp.partner', 'Partner') : match.p2.name}</h4>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '18px', color: 'var(--text-secondary)', fontSize: '13px', fontFamily: 'serif', alignItems: 'center' }}>
+            <div>📅 {new Date(partnerKundali.input.year, partnerKundali.input.month - 1, partnerKundali.input.day).toLocaleDateString(lang === 'en' ? 'en-IN' : lang, { day: 'numeric', month: 'long', year: 'numeric' })}, {partnerKundali.input.tob}</div>
+            <div style={{display:'flex', gap: 6}}><span> {partnerKundali.input.lat?.toFixed(3)}°N, {partnerKundali.input.lng?.toFixed(3)}°E</span></div>
+            <div>🔹 {txt('ayanamsa', 'Ayanamsa')}: {partnerKundali.ayanamsaDMS}</div>
+            <div>♑ {txt('lagna', 'Lagna')}: {localizePanchang(partnerKundali.panchang, lang)?.lagna || L_RASHI[lang]?.[partnerKundali.planets?.find(p=>p.key==='lagna')?.rashi] || L_RASHI.en[partnerKundali.planets?.find(p=>p.key==='lagna')?.rashi]} {partnerKundali.planets?.find(p=>p.key==='lagna')?.dms ? `${partnerKundali.planets.find(p=>p.key==='lagna').dms.d}°${partnerKundali.planets.find(p=>p.key==='lagna').dms.m}'` : ''}</div>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '18px', flex: 1 }}>
+            {[
+              { k: 'comp.moonR', label: 'Moon Sign', v: p2RashiTranslated },
+              { k: 'comp.nak', label: 'Nakshatra', v: p2NakTranslated },
+              { k: 'tithi', label: 'Tithi', v: localizePanchang(partnerKundali.panchang, lang)?.tithi?.split(' (')[0] },
+              { k: 'vara', label: 'Vara', v: localizePanchang(partnerKundali.panchang, lang)?.vara },
+              { k: 'yoga', label: 'Yoga', v: localizePanchang(partnerKundali.panchang, lang)?.yoga },
+              { k: 'karana', label: 'Karana', v: localizePanchang(partnerKundali.panchang, lang)?.karana }
+            ].map((item, idx) => (
+              <div key={idx} style={{ border: '1px solid var(--border-light)', borderRadius: '4px', padding: '4px 10px', fontSize: '13px', background: 'var(--bg-card)' }}>
+                <span style={{ color: 'var(--accent-gold)' }}>{txt(item.k, item.label)}:</span> <span style={{color:'var(--text-main)'}}>{item.v}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ color: 'var(--text-main)', fontSize: '15px', fontFamily: 'serif', paddingTop: '14px', borderTop: '1px dashed var(--border-light)' }}>
+            {txt('comp.manglik', 'Manglik')}: <strong style={{color: match.mangalDosha.p2Manglik ? '#EF4444' : '#10B981'}}>{match.mangalDosha.p2Manglik ? txt('comp.yes', 'Yes') : txt('comp.no', 'No')}</strong>
+          </div>
         </div>
+
       </div>
 
       <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', borderLeft: '4px solid var(--accent-gold)', marginBottom: '16px' }}>
-        <h4 style={{ margin: '0 0 8px', color: 'var(--accent-gold)' }}>Phase 1: Ashta Kuta Verdict</h4>
-        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6' }}>{t(`comp.${match.ashtaKuta.summaryKey}`, lang) || match.ashtaKuta.summary}</p>
+        <h4 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>Phase 1: Ashta Kuta Verdict</h4>
+        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', fontFamily: 'serif' }}>{txt(`comp.${match.ashtaKuta.summaryKey}`, match.ashtaKuta.summary)}</p>
       </div>
 
       <div style={{ background: 'var(--bg-dark)', padding: '16px', borderRadius: '8px', borderLeft: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '4px solid #EF4444' : '4px solid #10B981', marginBottom: '16px' }}>
-        <h4 style={{ margin: '0 0 8px', color: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '#EF4444' : '#10B981' }}>Phase 2: {t('comp.kuja',lang) || 'Mangal Dosha Analysis'}</h4>
-        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', color: 'var(--text-main)' }}>{t(`comp.${match.mangalDosha.manglikKey}`, lang) || match.mangalDosha.manglikStatus}</p>
+        <h4 style={{ margin: '0 0 8px', color: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '#EF4444' : '#10B981', fontFamily: '"Cinzel", serif' }}>Phase 2: {txt('comp.kuja', 'Mangal Dosha Analysis')}</h4>
+        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', color: 'var(--text-main)', fontFamily: 'serif' }}>{txt(`comp.${match.mangalDosha.manglikKey}`, match.mangalDosha.manglikStatus)}</p>
       </div>
 
       <div style={{ background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(245, 158, 11, 0.05))', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', marginBottom: '32px' }}>
-        <h4 style={{ margin: '0 0 8px', color: '#7C3AED' }}>{t('comp.phase34', lang) || 'Phase 3 & 4: Structural Chart & Dasha Synthesis'}</h4>
-        <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text-main)' }}>
-          {(t(match.structural.synthesis.lordsPart.key, lang) || '').replace('{0}', t(`pl.${match.structural.synthesis.lordsPart.vars.lord1}`, lang) || match.structural.synthesis.lordsPart.vars.lord1).replace('{1}', match.structural.synthesis.lordsPart.vars.p1).replace('{2}', t(`pl.${match.structural.synthesis.lordsPart.vars.lord2}`, lang) || match.structural.synthesis.lordsPart.vars.lord2).replace('{3}', match.structural.synthesis.lordsPart.vars.p2)}
-          {' '}{(t(match.structural.synthesis.venusPart.key, lang) || '')}
-          {' '}{(t(match.structural.synthesis.dashaPart.key, lang) || '')}
+        <h4 style={{ margin: '0 0 8px', color: '#7C3AED', fontFamily: '"Cinzel", serif' }}>{txt('comp.phase34', 'Phase 3 & 4: Structural Chart & Dasha Synthesis')}</h4>
+        <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text-main)', fontFamily: 'serif' }}>
+          {txt(match.structural.synthesis.lordsPart.key, "The core anchor of {1}'s 7th House connects structurally with {3}'s chart, binding their fundamental relationship ideals.").replace('{0}', txt(`pl.${match.structural.synthesis.lordsPart.vars.lord1}`, match.structural.synthesis.lordsPart.vars.lord1)).replace('{1}', match.structural.synthesis.lordsPart.vars.p1).replace('{2}', txt(`pl.${match.structural.synthesis.lordsPart.vars.lord2}`, match.structural.synthesis.lordsPart.vars.lord2)).replace('{3}', match.structural.synthesis.lordsPart.vars.p2)}
+          {' '}{txt(match.structural.synthesis.venusPart.key, "Venus, the ultimate significator of romance, sits in a supportive dignity across both charts, seeding natural devotion, aesthetic harmony, and deep mutual affection.")}
+          {' '}{txt(match.structural.synthesis.dashaPart.key, "Furthermore, both individuals are currently traversing supportive planetary periods (Dashas), meaning the cosmic timing actively endorses the formation of this bond.")}
         </p>
       </div>
 
-      <h4 style={{ margin: '0 0 16px', fontSize: '18px', color: 'var(--text-main)' }}>{t('comp.breakdown',lang) || '8-Koota Breakdown'}</h4>
+      <h4 style={{ margin: '0 0 16px', fontSize: '18px', color: 'var(--text-main)', fontFamily: '"Cinzel", serif' }}>{txt('comp.breakdown', '8-Koota Breakdown')}</h4>
       <div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
         {match.ashtaKuta.elements.map((el, i) => (
           <div key={i} style={{ background: 'var(--bg-dark)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--accent-gold)' }}>{t(`comp.${el.key}`, lang) || el.name}</span>
-              <span style={{ fontSize: '14px', background: 'var(--bg-surface)', padding: '4px 10px', borderRadius: '4px', border: '1px solid var(--border-light)' }}>
+              <span style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>{txt(`comp.${el.key}`, el.name)}</span>
+              <span style={{ fontSize: '14px', background: 'var(--bg-surface)', padding: '4px 10px', borderRadius: '4px', border: '1px solid var(--border-light)', fontFamily: 'serif' }}>
                 {el.score} / {el.max}
               </span>
             </div>
-            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{t(`comp.${el.descKey}`, lang) || el.desc}</p>
+            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', fontFamily: 'serif' }}>{txt(`comp.${el.descKey}`, el.desc)}</p>
           </div>
         ))}
       </div>

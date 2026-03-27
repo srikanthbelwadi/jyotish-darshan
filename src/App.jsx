@@ -927,7 +927,7 @@ gu:['ચૈત્ર','વૈશાખ','જ્યેષ્ઠ','અષાઢ','
 bn:['চৈত্র','বৈশাখ','জ্যৈষ্ঠ','আষাঢ','শ্রাবণ','ভাদ্র','আশ্বিন','কার্তিক','অগ্রহায়ণ','পৌষ','মাঘ','ফাল্গুন'],
 ml:['ചൈത്രം','വൈശാഖം','ജ്യേഷ്ഠം','ആഷാഢം','ശ്രാവണം','ഭാദ്രപദം','ആശ്വിനം','കാർത്തിക','മാർഗശീർഷം','പൗഷം','മാഘം','ഫാൽഗുനം']};
 const SAMVATSARA=['Prabhava','Vibhava','Shukla','Pramoda','Prajapati','Angirasa','Shreemukha','Bhava','Yuva','Dhatri','Ishvara','Bahudhanya','Pramathi','Vikrama','Vrisha','Chitrabhanu','Subhanu','Tarana','Parthiva','Vyaya','Sarvajit','Sarvadharin','Virodhi','Vikrita','Khara','Nandana','Vijaya','Jaya','Manmatha','Durmukhi','Hevilambi','Vilambi','Vikari','Sharvari','Plava','Shubhakruti','Sobhakruti','Krodhi','Vishvavasu','Parabhava','Plavanga','Keelaka','Saumya','Sadharana','Virodhakrit','Paridhaavi','Pramadeecha','Ananda','Rakshasa','Nala','Pingala','Kalayukti','Siddhartha','Raudra','Durmathi','Dundubhi','Rudhirodgari','Raktakshi','Krodhana','Akshaya'];
-function localizePanchang(pan, lang) {
+export function localizePanchang(pan, lang) {
   if (!pan || lang === 'en') return pan;
   const tA=L_TITHI[lang]||L_TITHI.en, vA=L_VARA[lang]||L_VARA.en, pO=L_PAKSHA[lang]||L_PAKSHA.en;
   const yA=L_YOGA_PANCH[lang]||L_YOGA_PANCH.en, kA=L_KARANA[lang]||L_KARANA.en, nA=L_NAKS[lang]||L_NAKS.en;
@@ -2207,9 +2207,9 @@ const TABS_DEF=[
   {id:'reading',label:'Expert Reading',icon:'📜'},
 ];
 
-function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
+function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceSync}){
     React.useEffect(() => { window.scrollTo({top: 0, behavior: 'smooth'}); }, []);
-    const [dashboardMode, setDashboardMode] = React.useState('gateway');
+    const [dashboardMode, setDashboardMode] = React.useState('kundali');
 
   const[savedProfiles, setSavedProfiles]=React.useState([]);
   React.useEffect(() => {
@@ -2233,8 +2233,23 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuRef]);
+  const getPartnerKey = React.useCallback(() => `jd_partner_${K?.input?.name}_${K?.input?.year}_${K?.input?.month}_${K?.input?.day}`, [K]);
+
   const[partnerKundali, setPartnerKundali]=React.useState(null);
   const[showPartnerForm, setShowPartnerForm]=React.useState(false);
+  const[isSynastryExpanded, setIsSynastryExpanded]=React.useState(true);
+
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem(getPartnerKey());
+      setPartnerKundali(saved ? JSON.parse(saved) : null);
+      setShowPartnerForm(false);
+      setIsSynastryExpanded(true);
+    } catch(e) { 
+      setPartnerKundali(null); 
+    }
+  }, [K, getPartnerKey]);
+
 
   const{input,lagna,panchang:pan,ayanamsaDMS,planets}=K;
   const lpan=localizePanchang(pan,lang);
@@ -2279,8 +2294,9 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
       {/* Banner */}
       <div style={{background:'var(--bg-header-gradient)',borderBottom:'1px solid var(--border-light)',padding:'30px 40px', position:'relative'}} ref={menuRef}>
         <div style={{maxWidth:1100,margin:'0 auto'}}>
-          <div style={{display:'flex', alignItems:'center', gap:20, flexWrap:'wrap', marginBottom: 12}}>
-            <div style={{display:'inline-block', position:'relative'}}>
+          <div style={{display:'flex', alignItems:'center', justifyContent: 'space-between', width: '100%', gap:20, flexWrap:'wrap', marginBottom: 12}}>
+            <div style={{display:'flex', alignItems:'center', gap:20, flexWrap:'wrap'}}>
+              <div style={{display:'inline-block', position:'relative'}}>
               <h2 onClick={()=>setMenuOpen(!menuOpen)} className="serif" style={{margin:0,fontSize:28,fontWeight:400,color:'var(--accent-gold)',letterSpacing:1, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:10, paddingBottom: 4, borderBottom: '1px dashed rgba(212, 175, 55, 0.4)', userSelect:'none'}}>
                 {K.input.name || t('inputTitle',lang)}
                 <span style={{fontSize:12, opacity:0.8, color:'var(--text-muted)', transform: menuOpen ? 'rotate(180deg)' : 'none', transition:'transform 0.2s'}}>▼</span>
@@ -2313,6 +2329,9 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
                         newProfiles.splice(i, 1);
                         localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
                         setSavedProfiles(newProfiles);
+                        if (user && onForceSync) {
+                          onForceSync(newProfiles);
+                        }
                         if(newProfiles.length === 0) {
                           window.location.href = "/";
                         } else if (i === 0 && onSwitchProfile && newProfiles.length > 0) {
@@ -2330,10 +2349,39 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
                 </div>
               )}
             </div>
+
+            {/* PARTNER BUTTON */}
+            <div style={{display:'flex', alignItems:'center', gap: 12}}>
+              {!partnerKundali ? (
+                 <button onClick={() => {setShowPartnerForm(!showPartnerForm); setIsSynastryExpanded(true);}} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px dashed var(--accent-gold)', padding: '6px 12px', fontSize: '12px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }} onMouseOver={e=>{e.currentTarget.style.opacity=1; e.currentTarget.style.background='rgba(212,175,55,0.1)'}} onMouseOut={e=>{e.currentTarget.style.opacity=0.8; e.currentTarget.style.background='transparent'}}>
+                    ＋ ADD PARTNER
+                 </button>
+              ) : (
+                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                   <span style={{color: 'var(--accent-gold)', fontSize: 28, fontFamily: '"Cinzel", serif', opacity: 0.5}}>&</span>
+                   <h2 className="serif" onClick={() => setIsSynastryExpanded(!isSynastryExpanded)} style={{margin:0,fontSize:28,fontWeight:400,color:'var(--accent-gold)',letterSpacing:1, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:10, paddingBottom: 4, borderBottom: '1px dashed rgba(212, 175, 55, 0.4)', userSelect:'none', transition:'opacity 0.2s'}} title="Toggle Compatibility Details" onMouseOver={e=>e.currentTarget.style.opacity=0.8} onMouseOut={e=>e.currentTarget.style.opacity=1}>
+                     {partnerKundali.name || 'Partner'}
+                     <span style={{fontSize:12, opacity:0.8, color:'var(--text-muted)', transform: isSynastryExpanded ? 'rotate(180deg)' : 'none', transition:'transform 0.2s'}}>▼</span>
+                   </h2>
+                   <button onClick={() => {
+                     setPartnerKundali(null); 
+                     setShowPartnerForm(false);
+                     localStorage.removeItem(getPartnerKey());
+                   }} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px', outline: 'none', padding: '0 8px', marginLeft: 4 }} title="Remove Partner">
+                     ✕
+                   </button>
+                 </div>
+              )}
+            </div>
             
-            <button onClick={() => { setMenuOpen(false); onBack(); }} style={{fontSize:13, fontWeight:500, padding:'6px 14px', borderRadius:20, background:'var(--bg-card)', color:'var(--accent-gold)', border:'1px solid rgba(212, 175, 55, 0.3)', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:6, transition:'all 0.2s', boxShadow:'0 2px 5px rgba(0,0,0,0.2)'}} onMouseOver={e=>{e.currentTarget.style.background='rgba(212, 175, 55, 0.1)'; e.currentTarget.style.borderColor='var(--accent-gold)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'; e.currentTarget.style.borderColor='rgba(212, 175, 55, 0.3)'}} title={t('newChart',lang) || 'New Kundali'}>
-              <span style={{fontSize:14}}>➕</span> {t('newChart',lang) || 'New Kundali'}
-            </button>
+            </div> {/* END LEFT GROUP */}
+
+            {/* RIGHT GROUP: NEW KUNDALI BUTTON */}
+            <div style={{display:'flex', alignItems:'center'}}>
+              <button onClick={() => { setMenuOpen(false); onBack(); }} style={{fontSize:13, fontWeight:500, padding:'6px 14px', borderRadius:20, background:'var(--bg-card)', color:'var(--accent-gold)', border:'1px solid rgba(212, 175, 55, 0.3)', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:6, transition:'all 0.2s', boxShadow:'0 2px 5px rgba(0,0,0,0.2)'}} onMouseOver={e=>{e.currentTarget.style.background='rgba(212, 175, 55, 0.1)'; e.currentTarget.style.borderColor='var(--accent-gold)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'; e.currentTarget.style.borderColor='rgba(212, 175, 55, 0.3)'}} title={t('newChart',lang) || 'New Kundali'}>
+                <span style={{fontSize:14}}>➕</span> {t('newChart',lang) || 'New Kundali'}
+              </button>
+            </div>
           </div>
           <div style={{display:'flex',flexWrap:'wrap',gap:'14px 28px',fontSize:13,color:'var(--text-secondary)',marginBottom:16}}>
             <span>📅 {formattedDate}, {input.tob}</span>
@@ -2350,50 +2398,41 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
       </div>
 
       <div style={{maxWidth:1100,margin:'0 auto',padding:'40px 24px 80px', fontFamily:'"Cinzel", serif'}}>
-        {dashboardMode === 'gateway' && (
-          <div style={{animation:'fadeIn 0.5s ease', paddingTop:'20px'}}>
-            <h2 style={{textAlign:'center', fontSize:'36px', color:'var(--accent-gold)', textShadow:'0 0 10px rgba(255,215,0,0.5)', marginBottom:'40px'}}>Select Your Destined Path</h2>
-            <div style={{display:'flex', flexDirection:'column', gap:'24px', maxWidth:'600px', margin:'0 auto'}}>
-              
-              {/* Reveal Kundali Button */}
-              <button 
-                onClick={() => {
-                  setDashboardMode('kundali');
-                  window.scrollTo({top: 0, behavior: 'smooth'});
-                }}
-                style={{ background: 'linear-gradient(145deg, var(--bg-card), var(--bg-input))', color: 'var(--accent-gold)', border: '1px solid #b8860b', padding: '24px', fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', boxShadow: 'inset 0 0 20px var(--bg-surface), 0 5px 15px rgba(0,0,0,0.2)', transition: 'all 0.3s', borderRadius: '12px', position:'relative', overflow:'hidden' }}
-                onMouseOver={e=>{e.currentTarget.style.transform='scale(1.02)'; e.currentTarget.style.borderColor='var(--accent-gold)'; e.currentTarget.style.boxShadow='0 0 20px rgba(255,215,0,0.2)'}}
-                onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.borderColor='var(--text-muted)'; e.currentTarget.style.boxShadow='0 10px 30px rgba(0,0,0,0.5)'}}
-              >
-                <div style={{fontSize:'32px', marginBottom:'4px'}}>✨</div>
-                <div>Reveal Kundali</div>
-                <div style={{fontSize:'12px', color:'var(--text-main)', fontWeight:'normal', letterSpacing:'1px', textTransform:'uppercase', fontFamily:'sans-serif'}}>Mathematical Charts & Planetary Degrees</div>
-              </button>
 
-              {/* Reveal Life Path Button */}
-              <button 
-                onClick={() => {
-                  setDashboardMode('pathways');
-                  window.scrollTo({top: 0, behavior: 'smooth'});
-                }}
-                style={{ background: 'linear-gradient(145deg, var(--bg-card), var(--bg-input))', color: 'var(--accent-gold)', border: '1px solid #b8860b', padding: '24px', fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', boxShadow: 'inset 0 0 20px var(--bg-surface), 0 5px 15px rgba(0,0,0,0.2)', transition: 'all 0.3s', borderRadius: '12px', position:'relative', overflow:'hidden' }}
-                onMouseOver={e=>{e.currentTarget.style.transform='scale(1.02)'; e.currentTarget.style.borderColor='var(--accent-gold)'; e.currentTarget.style.boxShadow='0 0 20px rgba(255,215,0,0.2)'}}
-                onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.borderColor='var(--text-muted)'; e.currentTarget.style.boxShadow='0 10px 30px rgba(0,0,0,0.5)'}}
-              >
-                <div style={{fontSize:'32px', marginBottom:'4px'}}>🪔</div>
-                <div>Reveal Life Path</div>
-                <div style={{fontSize:'12px', color:'var(--text-main)', fontWeight:'normal', letterSpacing:'1px', textTransform:'uppercase', fontFamily:'sans-serif'}}>AI Generative 36 Mārga Oracle</div>
-              </button>
-
+        {/* Global Synastry Form Dropdown */}
+        {(showPartnerForm || (partnerKundali && isSynastryExpanded)) && (
+        <div style={{ position: 'relative', marginBottom: 40, padding: '24px', background: 'var(--bg-input)', border: '1px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.2)', animation: 'fadeIn 0.4s ease' }}>
+          <button onClick={() => { setIsSynastryExpanded(false); setShowPartnerForm(false); }} style={{ position: 'absolute', top: '12px', right: '16px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '20px', cursor: 'pointer', outline: 'none', transition: 'color 0.2s', padding: 0 }} onMouseOver={e=>e.currentTarget.style.color='var(--accent-gold)'} onMouseOut={e=>e.currentTarget.style.color='var(--text-muted)'} title="Close">
+            ✕
+          </button>
+          {showPartnerForm && (
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', marginBottom: partnerKundali ? '24px' : '0' }}>
+              <CompatibilityInputForm onGeneratePartner={(inputParams) => { 
+                try { 
+                  const pk = computeKundali(inputParams); 
+                  pk.name = inputParams.name;
+                  setPartnerKundali(pk); 
+                  localStorage.setItem(getPartnerKey(), JSON.stringify(pk));
+                  setShowPartnerForm(false);
+                  setIsSynastryExpanded(true);
+                } catch(e) { 
+                  alert("Celestial misalignment. Please verify the birth coordinates."); 
+                  setShowPartnerForm(false);
+                } 
+              }} onCancel={() => setShowPartnerForm(false)} lang={lang} t={(k)=>k} />
             </div>
-          </div>
+          )}
+          {partnerKundali && isSynastryExpanded && (
+            <CompatibilityMatch primaryKundali={K} partnerKundali={partnerKundali} lang={lang} t={(k)=>k} />
+          )}
+        </div>
         )}
 
         {dashboardMode === 'kundali' && (
           <div style={{animation:'fadeIn 0.5s ease'}}>
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'40px', borderBottom:'1px solid #b8860b', paddingBottom:'16px'}}>
-              <h2 style={{color:'var(--accent-gold)', margin:0, fontSize:'28px', textShadow:'0 0 10px rgba(255,215,0,0.3)'}}>✨ Classical Kundali View</h2>
-              <button onClick={()=>{setDashboardMode('gateway');window.scrollTo({top:0,behavior:'smooth'});}} style={{background:'transparent', border:'1px solid #b8860b', color:'var(--text-main)', padding:'8px 16px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', transition:'all 0.2s'}} onMouseOver={e=>{e.currentTarget.style.background='var(--border-light)'}} onMouseOut={e=>{e.currentTarget.style.background='transparent'}}>← Back to Gateway</button>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'40px', borderBottom:'1px solid #b8860b', paddingBottom:'16px', flexWrap:'wrap', gap:'16px'}}>
+              <h2 style={{color:'var(--accent-gold)', margin:0, fontSize:'28px', textShadow:'0 0 10px rgba(255,215,0,0.3)'}}>Kundali</h2>
+              <button onClick={()=>{setDashboardMode('pathways');window.scrollTo({top:0,behavior:'smooth'});}} style={{background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 28px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 4px 15px rgba(255,215,0,0.4)'}} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(255,215,0,0.6)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 4px 15px rgba(255,215,0,0.4)'}}>Reveal Life Path <span style={{fontSize:'20px'}}>➔</span></button>
             </div>
             
             {/* Layer 1: My Insights */}
@@ -2433,42 +2472,10 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
             user={user} 
             onRequireLogin={onRequireLogin} 
             onOpenJyotishDesk={() => {
-              setDashboardMode('gateway');
+              setDashboardMode('kundali');
               window.scrollTo({top: 0, behavior: 'smooth'});
             }} 
-            companionUI={
-              <div style={{ marginTop: '32px', padding: '24px', background: 'var(--bg-input)', border: '1px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.2)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-                  <h2 className="serif" style={{color:'var(--accent-gold)', fontSize: '32px', margin: 0, textShadow: '2px 2px 4px rgba(0,0,0,0.5)'}}>
-                    💞 Astrological Synastry Engine
-                  </h2>
-                  {!partnerKundali && !showPartnerForm && (
-                    <button onClick={() => setShowPartnerForm(true)} style={{ background: 'var(--accent-gold)', color: 'var(--bg-app)', border: 'none', padding: '12px 32px', fontSize: '16px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(255,215,0,0.4)', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>{e.currentTarget.style.transform='scale(1.05)'}} onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'}}>
-                      ＋ Align Partner Chart
-                    </button>
-                  )}
-                </div>
-                
-                {showPartnerForm && (
-                  <div style={{ background: 'var(--bg-card)', padding: '24px', border: '1px solid #b8860b', marginBottom: '32px' }}>
-                    <CompatibilityInputForm onGeneratePartner={(inputParams) => { 
-                      try { 
-                        const pk = computeKundali(inputParams); 
-                        pk.name = inputParams.name;
-                        setPartnerKundali(pk); 
-                        setShowPartnerForm(false); 
-                      } catch(e) { 
-                        alert("Celestial misalignment. Please verify the birth coordinates."); 
-                        setShowPartnerForm(false);
-                      } 
-                    }} onCancel={() => setShowPartnerForm(false)} lang={lang} t={(k)=>k} />
-                  </div>
-                )}
-                {partnerKundali && (
-                  <CompatibilityMatch primaryKundali={K} partnerKundali={partnerKundali} lang={lang} t={(k)=>k} />
-                )}
-              </div>
-            }
+            partnerKundali={partnerKundali}
           />
         )}
       </div>
@@ -2512,24 +2519,24 @@ function t_meridiem(meridiem, lang) {
 }
 
 
-function SyncIndicator({ status }) {
+function SyncIndicator({ status, onForceSync }) {
   if (!status || status === 'offline') return null;
   const ICONS = {
     syncing: { icon: '🔄', color: 'var(--accent-gold)', title: 'Syncing to cloud...' },
-    synced:  { icon: '☁️✓', color: '#10B981', title: 'Saved to cloud' },
-    error:   { icon: '☁️⚠', color: '#EF4444', title: 'Cloud sync failed' }
+    synced:  { icon: '☁️✓', color: '#10B981', title: 'Saved to cloud. Click to force sync.' },
+    error:   { icon: '☁️⚠', color: '#EF4444', title: 'Cloud sync failed. Click to retry.' }
   };
   const ui = ICONS[status];
   if (!ui) return null;
   return (
-    <span title={ui.title} style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 8, fontSize: 13, color: ui.color, animation: status==='syncing'?'spin 2s linear infinite':'' }}>
+    <span onClick={(e) => { e.stopPropagation(); if (onForceSync && status !== 'syncing') onForceSync(); }} title={ui.title} style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 8, fontSize: 13, color: ui.color, animation: status==='syncing'?'spin 2s linear infinite':'', cursor: status !== 'syncing' ? 'pointer' : 'default' }}>
       {ui.icon}
       <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
     </span>
   );
 }
 
-function AppHeader({ lang, setLang, user, syncStatus, onLoginClick, onLogoutClick }) {
+function AppHeader({ lang, setLang, user, syncStatus, onLoginClick, onLogoutClick, onForceSync }) {
   const [theme, setTheme] = React.useState('dark');
 
   React.useEffect(() => {
@@ -2557,7 +2564,7 @@ function AppHeader({ lang, setLang, user, syncStatus, onLoginClick, onLogoutClic
               <button type="button" onClick={onLoginClick} style={{background:'var(--accent-gold)', border:'none', borderRadius:'20px', padding:'6px 16px', color:'#000', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px'}}>Login / Register</button>
             ) : (
               <button type="button" onClick={onLogoutClick} style={{background:'transparent', border:'1px solid var(--accent-gold)', borderRadius:'20px', padding:'6px 16px', color:'var(--accent-gold)', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px', display: 'flex', alignItems: 'center'}}>
-                {user.name} <SyncIndicator status={syncStatus} /> <span style={{marginLeft: 8}}>(Logout)</span>
+                {user.name} <SyncIndicator status={syncStatus} onForceSync={onForceSync} /> <span style={{marginLeft: 8}}>(Logout)</span>
               </button>
             )}
             <button type="button" onClick={toggleTheme} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
@@ -2582,6 +2589,15 @@ function App(){
   const [syncRequestedProfile, setSyncRequestedProfile] = React.useState(null);
   const [syncStatus, setSyncStatus] = React.useState('offline');
   const [syncToast, setSyncToast] = React.useState(null);
+
+  const handleForceSync = (profilesToSync) => {
+    if(!user) return;
+    const targets = Array.isArray(profilesToSync) ? profilesToSync : JSON.parse(localStorage.getItem('jd_profiles') || '[]');
+    setSyncStatus('syncing');
+    syncProfileToCloud(user.uid, targets).then(success => {
+      setSyncStatus(success ? 'synced' : 'error');
+    });
+  };
   
   const [engineReady, setEngineReady] = React.useState(false);
   const [loadMsg, setLoadMsg] = React.useState('Synthesizing Ephemeris data...');
@@ -2790,9 +2806,9 @@ function App(){
         </div>
       )}
       {showAuthModal && <AuthModal lang={lang} t={t} onLogin={(u) => { setUser(u); setShowAuthModal(false); }} onClose={() => setShowAuthModal(false)} />}
-      <AppHeader lang={lang} setLang={handleLang} user={user} syncStatus={syncStatus} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={() => { auth?.signOut(); setUser(null); setSyncStatus('offline'); }} />
+      <AppHeader lang={lang} setLang={handleLang} user={user} syncStatus={syncStatus} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={() => { auth?.signOut(); setUser(null); setSyncStatus('offline'); }} onForceSync={() => handleForceSync()} />
       <DailyPanchang lang={lang} />
-      {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
+      {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} onForceSync={handleForceSync} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
     </div>
   );
 }
