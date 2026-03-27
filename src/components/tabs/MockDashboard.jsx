@@ -513,37 +513,37 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
   }, [activeTime, K]);
 
   return (
-    <div className="mobile-hero-padding" style={{ background: '#2c0b0e', backgroundImage: 'radial-gradient(#4a151b 20%, transparent 20%), radial-gradient(#4a151b 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid #b8860b', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5)' }}>
-      <div style={{ position: 'absolute', top: '50%', right: '-5%', transform: 'translateY(-50%)', width: '300px', height: '300px', border: '5px dashed rgba(184, 134, 11, 0.2)', borderRadius: '50%', animation: 'spin 120s linear infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-         <div style={{ width: '200px', height: '200px', border: '10px double rgba(184, 134, 11, 0.3)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
+    <div className="mobile-hero-padding" style={{ background: 'var(--bg-input)', backgroundImage: 'radial-gradient(var(--bg-input) 20%, transparent 20%), radial-gradient(var(--bg-input) 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid var(--border-light)', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px var(--bg-surface), 0 10px 30px rgba(0,0,0,0.5)' }}>
+      <div style={{ position: 'absolute', top: '50%', right: '-5%', transform: 'translateY(-50%)', width: '300px', height: '300px', border: '5px dashed var(--border-light)', borderRadius: '50%', animation: 'spin 120s linear infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+         <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <h2 style={{ fontSize: '38px', color: '#ffd700', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>Ashtakavarga Oracle</h2>
+        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>Ashtakavarga Oracle</h2>
         <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
           {timescales.map(t => (
-            <button key={t} onClick={() => setActiveTime(t)} style={{ background: activeTime === t ? '#ffd700' : '#4a151b', color: activeTime === t ? '#2c0b0e' : '#ffd700', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t}</button>
+            <button key={t} onClick={() => setActiveTime(t)} style={{ background: activeTime === t ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === t ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t}</button>
           ))}
         </div>
-        <div style={{ background: 'rgba(0,0,0,0.6)', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700', minHeight: '100px', display: 'flex', alignItems: 'center' }}>
+        <div style={{ background: 'var(--bg-surface)', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700', minHeight: '100px', display: 'flex', alignItems: 'center' }}>
           {loading ? (
-             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#b8860b' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'var(--text-muted)' }}>
                <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
                <span style={{ fontFamily: '"Cinzel", serif', fontSize: '16px', letterSpacing: '2px', textTransform: 'uppercase' }}>Consulting Akashic Records...</span>
              </div>
           ) : error ? (
-             <p style={{ margin: 0, fontSize: '16px', color: '#ff6b6b', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
+             <p style={{ margin: 0, fontSize: '16px', color: 'var(--text-badge-red)', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
           ) : (
              <div style={{ position: 'relative', width: '100%', minHeight: '50px' }}>
-               <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: '#f5deb3', fontFamily: 'serif', fontStyle: 'italic', paddingRight: '40px' }}>
+               <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', fontStyle: 'italic', paddingRight: '40px' }}>
                  "{cache[activeTime] || 'Awaiting celestial alignment...'}"
                </p>
                {cache[activeTime] && (
                  <button 
                    onClick={() => fetchOracle(true)}
                    title="Consult again (Override cache)"
-                   style={{ position: 'absolute', top: '-10px', right: 0, background: 'rgba(44, 11, 14, 0.8)', border: '1px solid rgba(184, 134, 11, 0.4)', color: '#b8860b', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}
-                   onMouseOver={e => { e.currentTarget.style.borderColor = '#ffd700'; e.currentTarget.style.color = '#ffd700'; e.currentTarget.style.transform = 'rotate(180deg)'; }}
-                   onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(184, 134, 11, 0.4)'; e.currentTarget.style.color = '#b8860b'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
+                   style={{ position: 'absolute', top: '-10px', right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}
+                   onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent-gold)'; e.currentTarget.style.color = 'var(--accent-gold)'; e.currentTarget.style.transform = 'rotate(180deg)'; }}
+                   onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
                  >
                    ⟳
                  </button>
@@ -573,9 +573,9 @@ const EclipticChart = ({ hue, pillarId }) => {
   return (
     <svg className="responsive-svg" width="100%" viewBox="0 0 500 500" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '400px', overflow: 'visible' }}>
        {/* Structural rings */}
-       <circle cx="250" cy="250" r="230" fill="none" stroke="#b8860b" strokeWidth="1" strokeDasharray="2 2" opacity="0.4" />
-       <circle cx="250" cy="250" r="190" fill="none" stroke="#b8860b" strokeWidth="2" opacity="0.6" />
-       <circle cx="250" cy="250" r="150" fill="none" stroke="#ffd700" strokeWidth="1" />
+       <circle cx="250" cy="250" r="230" fill="none" stroke="var(--text-muted)" strokeWidth="1" strokeDasharray="2 2" opacity="0.4" />
+       <circle cx="250" cy="250" r="190" fill="none" stroke="var(--text-muted)" strokeWidth="2" opacity="0.6" />
+       <circle cx="250" cy="250" r="150" fill="none" stroke="var(--accent-gold)" strokeWidth="1" />
        
        {/* 12 Rashi Sectors & Text */}
        {RASHIS.map((rashi, i) => {
@@ -589,9 +589,9 @@ const EclipticChart = ({ hue, pillarId }) => {
 
          return (
            <g key={`r-${i}`}>
-             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#b8860b" strokeWidth="1" opacity="0.5" />
-             {isRashiHighlighted && <circle cx={xText} cy={yText} r="16" fill="#ffd700" opacity="0.3" filter="drop-shadow(0 0 5px #ffd700)" />}
-             <text x={xText} y={yText} fill={isRashiHighlighted ? "#fff" : "#f5deb3"} fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" opacity={isRashiHighlighted ? 1 : 0.7} letterSpacing="0.5">{rashi}</text>
+             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--text-muted)" strokeWidth="1" opacity="0.5" />
+             {isRashiHighlighted && <circle cx={xText} cy={yText} r="16" fill="var(--accent-gold)" opacity="0.3" filter="drop-shadow(0 0 5px #ffd700)" />}
+             <text x={xText} y={yText} fill={isRashiHighlighted ? "#fff" : "var(--text-main)"} fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" opacity={isRashiHighlighted ? 1 : 0.7} letterSpacing="0.5">{rashi}</text>
            </g>
          )
        })}
@@ -615,8 +615,8 @@ const EclipticChart = ({ hue, pillarId }) => {
          
          return (
            <g key={`n-${i}`}>
-             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#f5deb3" strokeWidth="1" strokeDasharray="2 2" opacity="0.4"/>
-             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="#b8860b" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{nak}</text>
+             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--text-main)" strokeWidth="1" strokeDasharray="2 2" opacity="0.4"/>
+             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="var(--text-muted)" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{nak}</text>
            </g>
          )
        })}
@@ -629,23 +629,23 @@ const EclipticChart = ({ hue, pillarId }) => {
           return <g key={pl} transform={`translate(${250+r*Math.cos(ang)}, ${250+r*Math.sin(ang)})`}>
             {isHighlighted ? (
                 <>
-                <line x1="0" y1="0" x2={25*Math.cos(ang)} y2={25*Math.sin(ang)} stroke="#ffd700" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
-                <circle r="18" fill="#ffd700" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
+                <line x1="0" y1="0" x2={25*Math.cos(ang)} y2={25*Math.sin(ang)} stroke="var(--accent-gold)" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
+                <circle r="18" fill="var(--accent-gold)" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
                 <text fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
                 </>
             ) : (
                 <>
-                <circle r="12" fill="#2c0b0e" stroke="#ffd700" strokeWidth="1" opacity="0.4" />
-                <text fill="#ffd700" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{pl}</text>
+                <circle r="12" fill="#2c0b0e" stroke="var(--accent-gold)" strokeWidth="1" opacity="0.4" />
+                <text fill="var(--accent-gold)" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{pl}</text>
                 </>
             )}
           </g>
        })}
        
-       <circle cx="250" cy="250" r="50" fill="#ffd700" opacity="0.1" />
-       <circle cx="250" cy="250" r="10" fill="#ffd700" />
-       <text x="250" y="285" fill="#b8860b" fontSize="10" textAnchor="middle" letterSpacing="1">VEDIC</text>
-       <text x="250" y="300" fill="#b8860b" fontSize="10" textAnchor="middle" letterSpacing="1">MANDALA</text>
+       <circle cx="250" cy="250" r="50" fill="var(--accent-gold)" opacity="0.1" />
+       <circle cx="250" cy="250" r="10" fill="var(--accent-gold)" />
+       <text x="250" y="285" fill="var(--text-muted)" fontSize="10" textAnchor="middle" letterSpacing="1">VEDIC</text>
+       <text x="250" y="300" fill="var(--text-muted)" fontSize="10" textAnchor="middle" letterSpacing="1">MANDALA</text>
     </svg>
   );
 };
@@ -713,49 +713,47 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
   };
 
   return (
-    <div style={{ background: '#0a0203', padding: '0 0 80px 0', border: '1px solid #4a151b', borderRadius: '8px', overflow: 'hidden' }}>
+    <div style={{ background: 'var(--bg-app)', padding: '0 0 80px 0', border: '1px solid #4a151b', borderRadius: '8px', overflow: 'hidden' }}>
        {/* 1. Summary Image & Description Panel */}
-       <div style={{ position: 'relative', minHeight: '400px', borderBottom: '2px solid #b8860b' }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: `hue-rotate(${hue}deg) brightness(0.4)` }}></div>
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #0a0203 10%, transparent 100%)' }}></div>
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0a0203 0%, transparent 100%)' }}></div>
+       <div style={{ position: 'relative', minHeight: '400px', borderBottom: '2px solid var(--border-light)' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--bg-app)' }}></div>
           
           <div className="mobile-hero-padding" style={{ position: 'relative', zIndex: 10, padding: '40px', display: 'flex', gap: '40px', flexWrap: 'wrap', alignItems: 'center', minHeight: '400px', boxSizing: 'border-box' }}>
              <div style={{ flex: '1 1 500px', minWidth: 0 }}>
-               <h3 style={{ fontSize: '48px', color: '#ffd700', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}>{data.title}</h3>
+               <h3 style={{ fontSize: '48px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px var(--bg-surface)' }}>{data.title}</h3>
                {loading ? (
-                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#b8860b', marginBottom: '32px' }}>
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'var(--text-muted)', marginBottom: '32px' }}>
                      <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
                      <span style={{ fontFamily: '"Cinzel", serif', fontSize: '18px', letterSpacing: '2px', textTransform: 'uppercase' }}>Synthesizing Pathway Matrix...</span>
                    </div>
                ) : error ? (
                    <div style={{ position: 'relative', marginBottom: '32px' }}>
-                     <p style={{ color: '#ff6b6b', fontSize: '18px', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
-                     <button onClick={() => fetchPrediction(true)} style={{ position: 'absolute', top: 0, right: 0, background: 'rgba(44, 11, 14, 0.8)', border: '1px solid rgba(184, 134, 11, 0.4)', color: '#b8860b', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
+                     <p style={{ color: 'var(--text-badge-red)', fontSize: '18px', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
+                     <button onClick={() => fetchPrediction(true)} style={{ position: 'absolute', top: 0, right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                    </div>
                ) : prediction ? (
                    <div style={{ position: 'relative', marginBottom: '32px' }}>
-                     <p style={{ padding: '24px', background: 'rgba(0,0,0,0.6)', borderLeft: '4px solid #ffd700', color: '#f5deb3', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px rgba(0,0,0,0.9)', maxWidth: '800px', margin: 0, fontStyle: 'italic' }}>
+                     <p style={{ padding: '24px', background: 'var(--bg-surface)', borderLeft: '4px solid #ffd700', color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: 0, fontStyle: 'italic' }}>
                        "{prediction}"
                      </p>
-                     <button onClick={() => fetchPrediction(true)} style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(44, 11, 14, 0.8)', border: '1px solid rgba(184, 134, 11, 0.4)', color: '#b8860b', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
+                     <button onClick={() => fetchPrediction(true)} style={{ position: 'absolute', top: '10px', right: '10px', background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                    </div>
                ) : (
                    <div style={{ position: 'relative', marginBottom: '32px' }}>
-                     <p style={{ color: '#f5deb3', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px rgba(0,0,0,0.9)', maxWidth: '800px', margin: 0 }}>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: 0 }}>
                        This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. {data.prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.
                      </p>
-                     <button onClick={() => fetchPrediction(true)} style={{ position: 'absolute', top: 0, right: 0, background: 'rgba(44, 11, 14, 0.8)', border: '1px solid rgba(184, 134, 11, 0.4)', color: '#b8860b', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
+                     <button onClick={() => fetchPrediction(true)} style={{ position: 'absolute', top: 0, right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                    </div>
                )}
-               <div style={{ display: 'inline-block', background: 'rgba(44, 11, 14, 0.8)', border: '1px solid #b8860b', padding: '10px 24px', color: '#ffd700', fontFamily: '"Cinzel", serif', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>
+               <div style={{ display: 'inline-block', background: 'var(--bg-surface)', border: '1px solid #b8860b', padding: '10px 24px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>
                  {data.options.length} Shastric Outcomes Discovered
                </div>
              </div>
              
              {/* 2. Ecliptic Visualization */}
              <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-               <div style={{ fontSize: '13px', color: '#b8860b', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>Stellar Ecliptic Alignment</div>
+               <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>Stellar Ecliptic Alignment</div>
                <EclipticChart hue={hue} pillarId={targetPillar} />
              </div>
           </div>
@@ -763,7 +761,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
 
        {/* 3. 6 Shastric Outcome Cards with Images */}
        <div className="mobile-hero-padding" style={{ padding: '60px 40px 0 40px' }}>
-         <h4 style={{ color: '#fff', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>Select an Outcome to Reveal Prophecy</h4>
+         <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>Select an Outcome to Reveal Prophecy</h4>
          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '32px' }}>
            {data.options.map((opt, i) => {
              const cardHue = (hue + (i * 45)) % 360;
@@ -773,17 +771,16 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
                  key={opt.id} 
                  onClick={() => onSelect(opt)}
                  style={{ 
-                   position: 'relative', height: '240px', overflow: 'hidden', border: '2px solid #b8860b', borderRadius: '8px', cursor: 'pointer', transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)', 
+                   position: 'relative', height: '240px', overflow: 'hidden', border: '2px solid var(--border-light)', borderRadius: '8px', cursor: 'pointer', transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)', 
                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', textDecoration: 'none'
                  }}
-                 onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.borderColor = '#ffd700'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.2)'; e.currentTarget.querySelector('.card-bg').style.transform = 'scale(1.1)'; e.currentTarget.querySelector('.card-bg').style.filter = `hue-rotate(${cardHue}deg) sepia(0.3) brightness(0.6)`; }}
-                 onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = '#b8860b'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(0,0,0,0.5)'; e.currentTarget.querySelector('.card-bg').style.transform = 'scale(1)'; e.currentTarget.querySelector('.card-bg').style.filter = `hue-rotate(${cardHue}deg) sepia(0.5) brightness(0.3)`; }}
+                 onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.borderColor = 'var(--accent-gold)'; e.currentTarget.style.boxShadow = '0 20px 40px var(--bg-surface), 0 0 20px rgba(255,215,0,0.2)'; e.currentTarget.querySelector('.card-bg').style.transform = 'scale(1.1)'; e.currentTarget.querySelector('.card-bg').style.opacity = '0.8'; }}
+                 onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)'; e.currentTarget.querySelector('.card-bg').style.transform = 'scale(1)'; e.currentTarget.querySelector('.card-bg').style.opacity = '1'; }}
                >
-                 <div className="card-bg" style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cardBg})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: `hue-rotate(${cardHue}deg) sepia(0.5) brightness(0.3)`, zIndex: 0, transition: 'all 0.6s ease' }}></div>
-                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,2,3,0.9) 0%, transparent 100%)', zIndex: 1 }}></div>
-                 
+                 <div className="card-bg" style={{ position: 'absolute', inset: 0, background: 'var(--bg-card)', zIndex: 0, transition: 'all 0.6s ease' }}></div>
+
                  <span style={{ position: 'relative', zIndex: 2, fontSize: '64px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s' }}>{opt.icon}</span>
-                 <span style={{ position: 'relative', zIndex: 2, color: '#f5deb3', fontSize: '22px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px rgba(0,0,0,0.9)', letterSpacing: '1px', textAlign: 'center' }}>
+                 <span style={{ position: 'relative', zIndex: 2, color: 'var(--text-main)', fontSize: '22px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px var(--bg-surface)', letterSpacing: '1px', textAlign: 'center' }}>
                    {opt.label}
                  </span>
                </button>
@@ -795,12 +792,12 @@ const InteractionGateway = ({ targetPillar, onSelect, K }) => {
   );
 };
 const AstrologicalRemedyBox = ({ alert, remedy }) => (
-  <div style={{ marginTop: '24px', background: '#1a0608', padding: '24px', border: '2px solid #b8860b', boxShadow: '0 10px 30px rgba(0,0,0,0.6)' }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', borderBottom: '1px solid rgba(184, 134, 11, 0.3)', paddingBottom: '12px' }}>
-      <span style={{ fontSize: '24px' }}>🕉️</span><h4 style={{ margin: 0, color: '#ffd700', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>Shastric Mitigation Protocol</h4>
+  <div style={{ marginTop: '24px', background: 'var(--bg-card)', padding: '24px', border: '2px solid var(--border-light)', boxShadow: '0 10px 30px var(--bg-surface)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
+      <span style={{ fontSize: '24px' }}>🕉️</span><h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>Shastric Mitigation Protocol</h4>
     </div>
-    {alert && <p style={{ color: '#ff6b6b', fontSize: '15px', marginBottom: '16px', background: 'rgba(255,0,0,0.1)', padding: '12px', border: '1px solid #ff6b6b' }}><strong>Dosha Identified:</strong> {alert}</p>}
-    <p style={{ color: '#f5deb3', fontSize: '16px', lineHeight: 1.6, margin: 0, fontFamily: 'serif' }}><strong>Prescribed Parihara (Action):</strong> {remedy}</p>
+    {alert && <p style={{ color: 'var(--text-badge-red)', fontSize: '15px', marginBottom: '16px', background: 'rgba(255,0,0,0.1)', padding: '12px', border: '1px solid #ff6b6b' }}><strong>Dosha Identified:</strong> {alert}</p>}
+    <p style={{ color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.6, margin: 0, fontFamily: 'serif' }}><strong>Prescribed Parihara (Action):</strong> {remedy}</p>
   </div>
 );
 
@@ -853,7 +850,7 @@ const SouthIndianChartSVG = ({ predText }) => {
 
 const AstrologicalBasisBox = ({ chartDesc, pillarId, pred }) => {
   return (
-    <div style={{ marginTop: '24px', background: '#2c0b0e', padding: '24px', border: '1px solid #b8860b', display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
+    <div style={{ marginTop: '24px', background: 'var(--bg-input)', padding: '24px', border: '1px solid #b8860b', display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', background: '#e8d5b5', padding: '16px', borderRadius: '4px' }}>
         <div>
            <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>North Indian format</div>
@@ -867,20 +864,20 @@ const AstrologicalBasisBox = ({ chartDesc, pillarId, pred }) => {
       
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <span style={{ fontSize: '20px' }}>📜</span><h4 style={{ margin: 0, color: '#ffd700', fontSize: '18px', fontFamily: '"Cinzel"' }}>Panchanga Calculation Basis</h4>
+          <span style={{ fontSize: '20px' }}>📜</span><h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '18px', fontFamily: '"Cinzel"' }}>Panchanga Calculation Basis</h4>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' }}>
-          <div style={{ background: '#1a0608', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: '#b8860b', textTransform: 'uppercase', marginBottom: '6px' }}>Primary Varga</div>
-            <div style={{ color: '#f5deb3', fontWeight: 'bold', fontSize: '16px' }}>{chartDesc.split(' ')[0]}</div>
+          <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>Primary Varga</div>
+            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>{chartDesc.split(' ')[0]}</div>
           </div>
-          <div style={{ background: '#1a0608', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: '#b8860b', textTransform: 'uppercase', marginBottom: '6px' }}>Panchanga Tithi</div>
-            <div style={{ color: '#f5deb3', fontWeight: 'bold', fontSize: '16px' }}>Shukla Navami</div>
+          <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>Panchanga Tithi</div>
+            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>Shukla Navami</div>
           </div>
-          <div style={{ background: '#1a0608', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: '#b8860b', textTransform: 'uppercase', marginBottom: '6px' }}>Governing Nakshatra</div>
-            <div style={{ color: '#f5deb3', fontWeight: 'bold', fontSize: '16px' }}>Pushya (Siddhi Yoga)</div>
+          <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>Governing Nakshatra</div>
+            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>Pushya (Siddhi Yoga)</div>
           </div>
         </div>
       </div>
@@ -901,9 +898,9 @@ const MandalVisualizer = ({ selectedOpt }) => {
 
 const ShastricExpander = ({ data, opt }) => {
   return (
-    <div style={{ marginTop: '32px', color: '#f5deb3', fontSize: '16px', lineHeight: 1.8, borderTop: '2px solid rgba(184, 134, 11, 0.3)', paddingTop: '24px', fontFamily: 'serif' }}>
+    <div style={{ marginTop: '32px', color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.8, borderTop: '2px solid var(--border-light)', paddingTop: '24px', fontFamily: 'serif' }}>
       <p style={{ marginBottom: '16px' }}>
-        <strong style={{color:'#ffd700'}}>Shastric Synthesis:</strong> Upon rigorous examination of the <em>{data.desc}</em> framework regarding <strong>{opt.label.toLowerCase()}</strong>, the karmic unfoldment is unambiguous. The celestial bodies establish a critical temporal vibration affecting the relevant Bhava within your D1 matrix.
+        <strong style={{color:'var(--accent-gold)'}}>Shastric Synthesis:</strong> Upon rigorous examination of the <em>{data.desc}</em> framework regarding <strong>{opt.label.toLowerCase()}</strong>, the karmic unfoldment is unambiguous. The celestial bodies establish a critical temporal vibration affecting the relevant Bhava within your D1 matrix.
       </p>
       <p style={{ marginBottom: '16px' }}>
         According to the foundational geometric tenets of Brihat Parashara Hora Shastra, when the Grahas align in this specific configuration relative to the primary Varga matrix, the karmic ledger is activated. This precise dimensional alignment creates an unavoidable channel for the results of past-life (Sanchita) karma to manifest in the current timeline.
@@ -929,41 +926,40 @@ const StandardPillarView = ({ pillarId, K, companionUI }) => {
 
   return (
     <div className="responsive-grid-2" style={{ alignItems: 'start' }}>
-       <div style={{ background: '#2c0b0e', padding: '40px', border: '2px solid #b8860b', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)' }}>
+       <div style={{ background: 'var(--bg-input)', padding: '40px', border: '2px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)' }}>
          <MandalVisualizer selectedOpt={opt} />
          <ShastricExpander data={data} opt={opt} />
        </div>
        <div>
-         <div style={{ display: 'inline-block', background: '#1a0608', color: '#ffd700', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>Subject: {opt.label}</div>
-         <h3 style={{ color: '#fff', fontSize: '30px', marginTop: 0, marginBottom: '24px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>{data.title} Oracle Activated</h3>
+         <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>Subject: {opt.label}</div>
+         <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '24px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{data.title} Oracle Activated</h3>
          
-         <div style={{ background: '#4a151b', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
-           <div style={{ color: '#f5deb3', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+         <div style={{ background: 'var(--bg-input)', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
+           <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
              <span style={{ fontSize: '18px' }}>👁️</span> Prophetic Unfoldment
            </div>
-           <p style={{ color: '#fff', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.pred}</p>
+           <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.pred}</p>
          </div>
 
          <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.pred} />
          <AstrologicalRemedyBox remedy={opt.rem} alert={opt.pred.includes('afflict') || opt.pred.includes('debilitated') || opt.pred.includes('danger') ? "Malefic vibration detected." : null} />
+          {/* 4. Native Dependency Component Injection (Synastry Engine) */}
+          {pillarId === 'vivaha' && companionUI && (
+            <div>
+              {companionUI}
+            </div>
+          )}
        </div>
-       
-       {/* 4. Native Dependency Component Injection (Synastry Engine) */}
-       {pillarId === 'vivaha' && companionUI && (
-         <div style={{ gridColumn: '1 / -1' }}>
-           {companionUI}
-         </div>
-       )}
     </div>
   );
 };
 
 const FullScreenWrapper = ({ title, onBack, children }) => (
   <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
-    <button onClick={onBack} style={{ background: '#1a0608', color: '#ffd700', border: '1px solid #ffd700', padding: '12px 28px', cursor: 'pointer', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '16px', fontFamily: '"Cinzel", serif', transition:'all 0.2s', textTransform:'uppercase' }} onMouseOver={e=>{e.currentTarget.style.background='#4a151b'}} onMouseOut={e=>{e.currentTarget.style.background='#1a0608'}}>
+    <button onClick={onBack} style={{ background: 'var(--bg-card)', color: 'var(--accent-gold)', border: '1px solid #ffd700', padding: '12px 28px', cursor: 'pointer', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '16px', fontFamily: '"Cinzel", serif', transition:'all 0.2s', textTransform:'uppercase' }} onMouseOver={e=>{e.currentTarget.style.background='var(--bg-input)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'}}>
       ← Return to Main Mandala
     </button>
-    <div style={{ background: '#1c0608', border: '2px solid #b8860b', padding: '2px' }}>
+    <div style={{ background: 'var(--bg-card)', border: '2px solid var(--border-light)', padding: '2px' }}>
       <div className="mobile-hero-padding" style={{ border: '1px dashed rgba(184, 134, 11, 0.5)', padding: '60px' }}>{children}</div>
     </div>
   </div>
@@ -988,14 +984,14 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, comp
   }
 
   return (
-    <div id="mock-dashboard-top" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 24px', fontFamily: 'serif', paddingBottom: '140px', background: '#0a0203', minHeight: '100vh' }}>
+    <div id="mock-dashboard-top" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 24px', fontFamily: 'serif', paddingBottom: '140px', background: 'var(--bg-app)', minHeight: '100vh' }}>
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
       <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} />
       
       <div style={{ marginBottom: '40px', borderBottom: '2px solid #4a151b', paddingBottom: '20px' }}>
-        <h2 style={{ fontSize: '42px', margin: '0 0 4px 0', fontFamily: '"Cinzel", serif', color: '#ffd700', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>Reveal ṣaṭtriṃśat Mārga</h2>
-        <div style={{color:'#b8860b', fontSize:'14px', letterSpacing:'4px', textTransform:'uppercase', marginBottom:'16px', fontWeight:'bold'}}>The 36 Pathways</div>
-        <p style={{ margin: 0, color: '#f5deb3', fontSize: '18px', fontStyle: 'italic' }}>Select a classical astrological dimension below. Over 96 sacred predictive pathways map the unfolding of your precise karmic timeline based on the Parashari system.</p>
+        <h2 style={{ fontSize: '42px', margin: '0 0 4px 0', fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>Reveal ṣaṭtriṃśat Mārga</h2>
+        <div style={{color:'var(--text-muted)', fontSize:'14px', letterSpacing:'4px', textTransform:'uppercase', marginBottom:'16px', fontWeight:'bold'}}>The 36 Pathways</div>
+        <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '18px', fontStyle: 'italic' }}>Select a classical astrological dimension below. Over 96 sacred predictive pathways map the unfolding of your precise karmic timeline based on the Parashari system.</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
@@ -1010,24 +1006,24 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, comp
                 else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
               }, 50); 
             }}
-            style={{ background: '#2c0b0e', padding: '36px 24px', border: '1px solid #b8860b', cursor: 'pointer', transition: 'all 0.3s', position:'relative', overflow:'hidden', display: 'flex', flexDirection: 'column', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)' }}
-            onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.background = '#4a151b'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.8)'; }}
-            onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = '#2c0b0e'; e.currentTarget.style.boxShadow = 'inset 0 0 10px rgba(0,0,0,0.8)'; }}
+            style={{ background: 'var(--bg-input)', padding: '36px 24px', border: '1px solid #b8860b', cursor: 'pointer', transition: 'all 0.3s', position:'relative', overflow:'hidden', display: 'flex', flexDirection: 'column', boxShadow: 'inset 0 0 10px var(--bg-surface)' }}
+            onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.background = 'var(--bg-input)'; e.currentTarget.style.boxShadow = '0 10px 30px var(--bg-surface), inset 0 0 10px var(--bg-surface)'; }}
+            onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = 'var(--bg-input)'; e.currentTarget.style.boxShadow = 'inset 0 0 10px var(--bg-surface)'; }}
           >
             <div style={{ position: 'absolute', top: '-10px', right: '-10px', fontSize: '140px', opacity: 0.03, pointerEvents: 'none' }}>{data.icon}</div>
             <div style={{ fontSize: '50px', marginBottom: '20px', filter: 'drop-shadow(0 0 15px rgba(255,215,0,0.3))' }}>{data.icon}</div>
-            <h3 style={{ margin: '0 0 12px 0', fontSize: '22px', color: '#ffd700', fontFamily: '"Cinzel", serif' }}>{data.title}</h3>
-            <div style={{ color: '#b8860b', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px', fontFamily: 'sans-serif' }}>{data.desc}</div>
-            <p style={{ margin: 0, fontSize: '15px', color: '#f5deb3', lineHeight: 1.6, flexGrow: 1 }}>{data.options.length} Shastric Outcomes</p>
-            <div style={{ marginTop: '24px', color: '#ffd700', fontSize: '14px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: '"Cinzel", serif', textTransform: 'uppercase' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '22px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>{data.title}</h3>
+            <div style={{ color: 'var(--text-muted)', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px', fontFamily: 'sans-serif' }}>{data.desc}</div>
+            <p style={{ margin: 0, fontSize: '15px', color: 'var(--text-main)', lineHeight: 1.6, flexGrow: 1 }}>{data.options.length} Shastric Outcomes</p>
+            <div style={{ marginTop: '24px', color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: '"Cinzel", serif', textTransform: 'uppercase' }}>
               Consult Oracle <span>→</span>
             </div>
           </div>
         ))}
       </div>
 
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(10,2,3,0.95) 0%, rgba(10,2,3,0.8) 50%, transparent 100%)', padding: '80px 0 40px 0', display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 100 }}>
-         <button onClick={onOpenJyotishDesk} style={{ pointerEvents: 'auto', background: '#1a0608', color: '#ffd700', border: '2px solid #b8860b', padding: '16px 48px', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '16px', boxShadow: '0 10px 50px rgba(0,0,0,0.9)', transition: 'all 0.2s', fontFamily: '"Cinzel", serif' }} onMouseOver={e=>{e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background='#2c0b0e';}} onMouseOut={e=>{e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background='#1a0608';}}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, var(--bg-surface) 0%, transparent 100%)', padding: '80px 0 40px 0', display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 100 }}>
+         <button onClick={onOpenJyotishDesk} style={{ pointerEvents: 'auto', background: 'var(--bg-card)', color: 'var(--accent-gold)', border: '2px solid var(--border-light)', padding: '16px 48px', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '16px', boxShadow: '0 10px 50px var(--bg-surface)', transition: 'all 0.2s', fontFamily: '"Cinzel", serif' }} onMouseOver={e=>{e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background='var(--bg-input)';}} onMouseOut={e=>{e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background='var(--bg-card)';}}>
            <span style={{fontSize:'28px'}}>🪔</span> Open Technical Jyotish Desk
          </button>
       </div>

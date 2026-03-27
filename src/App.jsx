@@ -1448,7 +1448,7 @@ function InputForm({onSubmit,lang,setLang}){
                 className="lux-input" style={{borderColor:errs.city?'#EF4444':undefined}}/>
               {errs.city&&<p style={{color:'#EF4444',fontSize:11,marginTop:4}}>{errs.city}</p>}
               {showS&&suggs.length>0&&(
-                <div style={{position:'absolute',top:'100%',left:0,right:0,background:'var(--bg-input)',border:'1px solid var(--accent-gold)',borderRadius:8,boxShadow:'0 10px 30px rgba(0,0,0,0.8)',zIndex:100,maxHeight:220,overflowY:'auto',marginTop:4}}>
+                <div style={{position:'absolute',top:'100%',left:0,right:0,background:'var(--bg-input)',border:'1px solid var(--accent-gold)',borderRadius:8,boxShadow:'0 10px 30px var(--bg-surface)',zIndex:100,maxHeight:220,overflowY:'auto',marginTop:4}}>
                   {suggs.map((c,i)=>(
                     <div key={i} onMouseDown={()=>selectCity(c)}
                       style={{padding:'12px 16px',cursor:'pointer',fontSize:14,color:'var(--text-main)',borderBottom:'1px solid var(--border-light)',transition:'background 0.2s'}}
@@ -2352,7 +2352,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
       <div style={{maxWidth:1100,margin:'0 auto',padding:'40px 24px 80px', fontFamily:'"Cinzel", serif'}}>
         {dashboardMode === 'gateway' && (
           <div style={{animation:'fadeIn 0.5s ease', paddingTop:'20px'}}>
-            <h2 style={{textAlign:'center', fontSize:'36px', color:'#ffd700', textShadow:'0 0 10px rgba(255,215,0,0.5)', marginBottom:'40px'}}>Select Your Destined Path</h2>
+            <h2 style={{textAlign:'center', fontSize:'36px', color:'var(--accent-gold)', textShadow:'0 0 10px rgba(255,215,0,0.5)', marginBottom:'40px'}}>Select Your Destined Path</h2>
             <div style={{display:'flex', flexDirection:'column', gap:'24px', maxWidth:'600px', margin:'0 auto'}}>
               
               {/* Reveal Kundali Button */}
@@ -2361,13 +2361,13 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
                   setDashboardMode('kundali');
                   window.scrollTo({top: 0, behavior: 'smooth'});
                 }}
-                style={{ background: 'linear-gradient(145deg, #2c0b0E, #1a0608)', color: '#ffd700', border: '1px solid #b8860b', padding: '24px', fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5)', transition: 'all 0.3s', borderRadius: '12px', position:'relative', overflow:'hidden' }}
-                onMouseOver={e=>{e.currentTarget.style.transform='scale(1.02)'; e.currentTarget.style.borderColor='#ffd700'; e.currentTarget.style.boxShadow='0 0 20px rgba(255,215,0,0.2)'}}
-                onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.borderColor='#b8860b'; e.currentTarget.style.boxShadow='0 10px 30px rgba(0,0,0,0.5)'}}
+                style={{ background: 'linear-gradient(145deg, var(--bg-card), var(--bg-input))', color: 'var(--accent-gold)', border: '1px solid #b8860b', padding: '24px', fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', boxShadow: 'inset 0 0 20px var(--bg-surface), 0 5px 15px rgba(0,0,0,0.2)', transition: 'all 0.3s', borderRadius: '12px', position:'relative', overflow:'hidden' }}
+                onMouseOver={e=>{e.currentTarget.style.transform='scale(1.02)'; e.currentTarget.style.borderColor='var(--accent-gold)'; e.currentTarget.style.boxShadow='0 0 20px rgba(255,215,0,0.2)'}}
+                onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.borderColor='var(--text-muted)'; e.currentTarget.style.boxShadow='0 10px 30px rgba(0,0,0,0.5)'}}
               >
                 <div style={{fontSize:'32px', marginBottom:'4px'}}>✨</div>
                 <div>Reveal Kundali</div>
-                <div style={{fontSize:'12px', color:'#f5deb3', fontWeight:'normal', letterSpacing:'1px', textTransform:'uppercase', fontFamily:'sans-serif'}}>Mathematical Charts & Planetary Degrees</div>
+                <div style={{fontSize:'12px', color:'var(--text-main)', fontWeight:'normal', letterSpacing:'1px', textTransform:'uppercase', fontFamily:'sans-serif'}}>Mathematical Charts & Planetary Degrees</div>
               </button>
 
               {/* Reveal Life Path Button */}
@@ -2376,13 +2376,13 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
                   setDashboardMode('pathways');
                   window.scrollTo({top: 0, behavior: 'smooth'});
                 }}
-                style={{ background: 'linear-gradient(145deg, #2c0b0E, #1a0608)', color: '#ffd700', border: '1px solid #b8860b', padding: '24px', fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5)', transition: 'all 0.3s', borderRadius: '12px', position:'relative', overflow:'hidden' }}
-                onMouseOver={e=>{e.currentTarget.style.transform='scale(1.02)'; e.currentTarget.style.borderColor='#ffd700'; e.currentTarget.style.boxShadow='0 0 20px rgba(255,215,0,0.2)'}}
-                onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.borderColor='#b8860b'; e.currentTarget.style.boxShadow='0 10px 30px rgba(0,0,0,0.5)'}}
+                style={{ background: 'linear-gradient(145deg, var(--bg-card), var(--bg-input))', color: 'var(--accent-gold)', border: '1px solid #b8860b', padding: '24px', fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', boxShadow: 'inset 0 0 20px var(--bg-surface), 0 5px 15px rgba(0,0,0,0.2)', transition: 'all 0.3s', borderRadius: '12px', position:'relative', overflow:'hidden' }}
+                onMouseOver={e=>{e.currentTarget.style.transform='scale(1.02)'; e.currentTarget.style.borderColor='var(--accent-gold)'; e.currentTarget.style.boxShadow='0 0 20px rgba(255,215,0,0.2)'}}
+                onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.borderColor='var(--text-muted)'; e.currentTarget.style.boxShadow='0 10px 30px rgba(0,0,0,0.5)'}}
               >
                 <div style={{fontSize:'32px', marginBottom:'4px'}}>🪔</div>
                 <div>Reveal Life Path</div>
-                <div style={{fontSize:'12px', color:'#f5deb3', fontWeight:'normal', letterSpacing:'1px', textTransform:'uppercase', fontFamily:'sans-serif'}}>AI Generative 36 Mārga Oracle</div>
+                <div style={{fontSize:'12px', color:'var(--text-main)', fontWeight:'normal', letterSpacing:'1px', textTransform:'uppercase', fontFamily:'sans-serif'}}>AI Generative 36 Mārga Oracle</div>
               </button>
 
             </div>
@@ -2392,8 +2392,8 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
         {dashboardMode === 'kundali' && (
           <div style={{animation:'fadeIn 0.5s ease'}}>
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'40px', borderBottom:'1px solid #b8860b', paddingBottom:'16px'}}>
-              <h2 style={{color:'#ffd700', margin:0, fontSize:'28px', textShadow:'0 0 10px rgba(255,215,0,0.3)'}}>✨ Classical Kundali View</h2>
-              <button onClick={()=>{setDashboardMode('gateway');window.scrollTo({top:0,behavior:'smooth'});}} style={{background:'transparent', border:'1px solid #b8860b', color:'#f5deb3', padding:'8px 16px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', transition:'all 0.2s'}} onMouseOver={e=>{e.currentTarget.style.background='rgba(184, 134, 11, 0.2)'}} onMouseOut={e=>{e.currentTarget.style.background='transparent'}}>← Back to Gateway</button>
+              <h2 style={{color:'var(--accent-gold)', margin:0, fontSize:'28px', textShadow:'0 0 10px rgba(255,215,0,0.3)'}}>✨ Classical Kundali View</h2>
+              <button onClick={()=>{setDashboardMode('gateway');window.scrollTo({top:0,behavior:'smooth'});}} style={{background:'transparent', border:'1px solid #b8860b', color:'var(--text-main)', padding:'8px 16px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', transition:'all 0.2s'}} onMouseOver={e=>{e.currentTarget.style.background='var(--border-light)'}} onMouseOut={e=>{e.currentTarget.style.background='transparent'}}>← Back to Gateway</button>
             </div>
             
             {/* Layer 1: My Insights */}
@@ -2404,15 +2404,15 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
 
             {/* Layer 3: Jyotish Desk (Technical Charts) */}
             <div>
-              <h2 style={{color:'#ffd700', borderBottom:'1px solid #b8860b', paddingBottom:'12px', marginBottom: '24px'}}>⌬ {t('headers.desk', lang)}</h2>
+              <h2 style={{color:'var(--accent-gold)', borderBottom:'1px solid #b8860b', paddingBottom:'12px', marginBottom: '24px'}}>⌬ {t('headers.desk', lang)}</h2>
               
-              <div className="no-print" style={{background:'#1a0608',border:'1px solid #b8860b', borderRadius: '8px', marginBottom: '24px', overflow:'hidden'}}>
+              <div className="no-print" style={{background:'var(--bg-card)',border:'1px solid #b8860b', borderRadius: '8px', marginBottom: '24px', overflow:'hidden'}}>
                 <div style={{display:'flex',overflowX:'auto',whiteSpace:'nowrap',scrollbarWidth:'none', padding: '0 8px'}}>
-                  {TABS_DEF.map(tb=><button key={tb.id} onClick={()=>setTab(tb.id)} style={{background:tab===tb.id?'#4a151b':'transparent', color:tab===tb.id?'#ffd700':'#b8860b', border:'none', padding:'12px 24px', cursor:'pointer', fontFamily:'"Cinzel", serif', fontWeight:tab===tb.id?'bold':'normal', transition:'all 0.2s', whiteSpace:'nowrap'}}><span style={{fontSize:14,marginRight:6}}>{tb.icon}</span>{t(`tabs.${tb.id}`,lang)}</button>)}
+                  {TABS_DEF.map(tb=><button key={tb.id} onClick={()=>setTab(tb.id)} style={{background:tab===tb.id?'var(--bg-input)':'transparent', color:tab===tb.id?'var(--accent-gold)':'var(--text-muted)', border:'none', padding:'12px 24px', cursor:'pointer', fontFamily:'"Cinzel", serif', fontWeight:tab===tb.id?'bold':'normal', transition:'all 0.2s', whiteSpace:'nowrap'}}><span style={{fontSize:14,marginRight:6}}>{tb.icon}</span>{t(`tabs.${tb.id}`,lang)}</button>)}
                 </div>
               </div>
               
-              <div style={{ background: '#1a0608', padding: '24px', borderRadius: '12px', border: '1px solid #b8860b', color: '#f5deb3' }}>
+              <div style={{ background: 'var(--bg-card)', padding: '24px', borderRadius: '12px', border: '1px solid #b8860b', color: 'var(--text-main)' }}>
                 {tab==='charts'&&<ChartsTab K={K} fmt={fmt} setFmt={setFmt} lang={lang}/>}
                 {tab==='planets'&&<PlanetsTab K={K} lang={lang}/>}
                 {tab==='dasha'&&<DashaTab K={K} lang={lang}/>}
@@ -2437,20 +2437,20 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin}){
               window.scrollTo({top: 0, behavior: 'smooth'});
             }} 
             companionUI={
-              <div style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px dashed rgba(184, 134, 11, 0.3)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
-                  <h2 className="serif" style={{color:'#ffd700', fontSize: '32px', margin: 0, textShadow: '2px 2px 4px rgba(0,0,0,0.5)'}}>
+              <div style={{ marginTop: '32px', padding: '24px', background: 'var(--bg-input)', border: '1px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.2)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+                  <h2 className="serif" style={{color:'var(--accent-gold)', fontSize: '32px', margin: 0, textShadow: '2px 2px 4px rgba(0,0,0,0.5)'}}>
                     💞 Astrological Synastry Engine
                   </h2>
                   {!partnerKundali && !showPartnerForm && (
-                    <button onClick={() => setShowPartnerForm(true)} style={{ background: '#ffd700', color: '#0a0203', border: 'none', padding: '12px 32px', fontSize: '16px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(255,215,0,0.4)', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>{e.currentTarget.style.transform='scale(1.05)'}} onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'}}>
+                    <button onClick={() => setShowPartnerForm(true)} style={{ background: 'var(--accent-gold)', color: 'var(--bg-app)', border: 'none', padding: '12px 32px', fontSize: '16px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(255,215,0,0.4)', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>{e.currentTarget.style.transform='scale(1.05)'}} onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'}}>
                       ＋ Align Partner Chart
                     </button>
                   )}
                 </div>
                 
                 {showPartnerForm && (
-                  <div style={{ background: '#1a0608', padding: '24px', border: '1px solid #b8860b', marginBottom: '32px' }}>
+                  <div style={{ background: 'var(--bg-card)', padding: '24px', border: '1px solid #b8860b', marginBottom: '32px' }}>
                     <CompatibilityInputForm onGeneratePartner={(inputParams) => { 
                       try { 
                         const pk = computeKundali(inputParams); 
