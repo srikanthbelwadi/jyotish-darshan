@@ -556,19 +556,26 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
   );
 };
 
-const EclipticChart = ({ hue, pillarId, t }) => {
-   const ALL = ['Su','Mo','Ma','Me','Ju','Ve','Sa','Ra','Ke'];
-   const sum = [...(pillarId||'x')].reduce((a,c)=>a+c.charCodeAt(0),0);
-   const p1 = ALL[sum % ALL.length];
-   const p2 = ALL[(sum + 3) % ALL.length];
+const EclipticChart = ({ hue, pillarId, t, K }) => {
    const RASHIS = ['Mesha ♈','Vrish ♉','Mith ♊','Kark ♋','Simha ♌','Kanya ♍','Tula ♎','Vrish ♏','Dhanu ♐','Makar ♑','Kumbh ♒','Meen ♓'];
    const NAKSHATRAS = ['Aswini', 'Bharani', 'Krittika', 'Rohini', 'Mrigasira', 'Ardra', 'Punarvasu', 'Pushya', 'Aslesha', 'Magha', 'P.Phal', 'U.Phal', 'Hasta', 'Chitra', 'Swati', 'Visakha', 'Anuradha', 'Jyeshtha', 'Mula', 'P.Ashadha', 'U.Ashadha', 'Sravana', 'Dhanishta', 'Satabhisha', 'P.Bhadra', 'U.Bhadra', 'Revati'];
 
-   // Determine the Rashi index for highlighted planets to softly glow the sector
-   const p1Ang = ((sum % ALL.length) * 40 + 15);
-   const p2Ang = (((sum + 3) % ALL.length) * 40 + 15);
-   const rashi1 = Math.floor((p1Ang % 360) / 30);
-   const rashi2 = Math.floor((p2Ang % 360) / 30);
+   // Select symbolic focus planets for this pathway pillar based on the hash
+   const PLANET_KEYS = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu', 'ketu'];
+   const PLANET_ABBR = { sun: 'Su', moon: 'Mo', mars: 'Ma', mercury: 'Me', jupiter: 'Ju', venus: 'Ve', saturn: 'Sa', rahu: 'Ra', ketu: 'Ke' };
+   
+   const sum = [...(pillarId||'x')].reduce((a,c)=>a+c.charCodeAt(0),0);
+   const p1Key = PLANET_KEYS[sum % PLANET_KEYS.length];
+   const p2Key = PLANET_KEYS[(sum + 3) % PLANET_KEYS.length];
+
+   // Highlighted rashis based on actual longitudes from computation engine
+   let rashi1 = -1, rashi2 = -1;
+   if (K?.planets) {
+       const p1 = K.planets.find(p => p.key === p1Key);
+       const p2 = K.planets.find(p => p.key === p2Key);
+       if (p1) rashi1 = p1.rashi;
+       if (p2) rashi2 = p2.rashi;
+   }
 
   return (
     <svg className="responsive-svg" width="100%" viewBox="0 0 500 500" style={{ filter: `hue-rotate(${hue}deg) drop-shadow(0 0 20px rgba(255,215,0,0.3))`, maxWidth: '400px', overflow: 'visible' }}>
@@ -621,22 +628,23 @@ const EclipticChart = ({ hue, pillarId, t }) => {
          )
        })}
 
-       {/* Planets */}
-       {ALL.map((pl, i) => {
-          const ang = (i * 40 + 15) * (Math.PI/180);
+       {/* Planets rendered exactly at their astronomical sidereal longitude */}
+       {(K?.planets || []).map((pl) => {
+          const ang = pl.longitude * (Math.PI/180);
           const r = 125;
-          const isHighlighted = (pl === p1 || pl === p2);
-          return <g key={pl} transform={`translate(${250+r*Math.cos(ang)}, ${250+r*Math.sin(ang)})`}>
+          const isHighlighted = (pl.key === p1Key || pl.key === p2Key);
+          const abbr = PLANET_ABBR[pl.key] || pl.key;
+          return <g key={pl.key} transform={`translate(${250+r*Math.cos(ang)}, ${250+r*Math.sin(ang)})`}>
             {isHighlighted ? (
                 <>
-                <line x1="0" y1="0" x2={25*Math.cos(ang)} y2={25*Math.sin(ang)} stroke="var(--accent-gold)" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
+                <line x1="0" y1="0" x2={35*Math.cos(ang)} y2={35*Math.sin(ang)} stroke="var(--accent-gold)" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
                 <circle r="18" fill="var(--accent-gold)" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
-                <text fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{pl}</text>
+                <text fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{abbr}</text>
                 </>
             ) : (
                 <>
                 <circle r="12" fill="#2c0b0e" stroke="var(--accent-gold)" strokeWidth="1" opacity="0.4" />
-                <text fill="var(--accent-gold)" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{pl}</text>
+                <text fill="var(--accent-gold)" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{abbr}</text>
                 </>
             )}
           </g>
@@ -801,10 +809,19 @@ const AstrologicalRemedyBox = ({ alert, remedy, t, lang }) => (
   </div>
 );
 
-const NorthIndianChartSVG = ({ predText }) => {
-  const h = Math.floor(Math.random()*12) + 1;
-  const pl = 'Su';
+const NorthIndianChartSVG = ({ predText, K }) => {
   const centers = [ {x:100,y:50}, {x:50,y:30}, {x:30,y:50}, {x:50,y:100}, {x:30,y:150}, {x:50,y:170}, {x:100,y:150}, {x:150,y:170}, {x:170,y:150}, {x:150,y:100}, {x:170,y:50}, {x:150,y:30} ];
+  const PLANET_ABBR = { sun: 'Su', moon: 'Mo', mars: 'Ma', mercury: 'Me', jupiter: 'Ju', venus: 'Ve', saturn: 'Sa', rahu: 'Ra', ketu: 'Ke' };
+
+  // Group planets by relative house from Lagna
+  const houseMap = Array(12).fill('');
+  if (K?.planets && K?.lagna) {
+      K.planets.forEach(p => {
+          const hIdx = (p.rashi - K.lagna.rashi + 12) % 12;
+          const abbr = PLANET_ABBR[p.key] || p.key.substring(0, 2);
+          houseMap[hIdx] = houseMap[hIdx] ? houseMap[hIdx] + ',' + abbr : abbr;
+      });
+  }
 
   return (
     <svg width="180" height="180" viewBox="0 0 200 200" style={{background:'#fdf5e6', border:'2px solid #8b0000', padding:'4px'}}>
@@ -816,18 +833,32 @@ const NorthIndianChartSVG = ({ predText }) => {
       <line x1="100" y1="200" x2="0" y2="100" stroke="#8b0000" strokeWidth="2"/>
       <line x1="0" y1="100" x2="100" y2="0" stroke="#8b0000" strokeWidth="2"/>
       {centers.map((c, i) => (
-        <text key={i} x={c.x} y={c.y} fill="#8b0000" fontSize="14" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
-          {(i+1)===h ? pl : (i+1)}
+        <text key={i} x={c.x} y={c.y} fill="#8b0000" fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+          {houseMap[i] || ''}
         </text>
       ))}
+      {/* Ascendant indicator */}
+      {K?.lagna && <text x={100} y={30} fill="#8b0000" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">Asc</text>}
     </svg>
   );
 };
 
-const SouthIndianChartSVG = ({ predText }) => {
-  const h = Math.floor(Math.random()*12) + 1;
-  const pl = 'Su';
+const SouthIndianChartSVG = ({ predText, K }) => {
   const centers = [ {x:75,y:25}, {x:125,y:25}, {x:175,y:25}, {x:175,y:75}, {x:175,y:125}, {x:175,y:175}, {x:125,y:175}, {x:75,y:175}, {x:25,y:175}, {x:25,y:125}, {x:25,y:75}, {x:25,y:25} ];
+  const PLANET_ABBR = { sun: 'Su', moon: 'Mo', mars: 'Ma', mercury: 'Me', jupiter: 'Ju', venus: 'Ve', saturn: 'Sa', rahu: 'Ra', ketu: 'Ke' };
+
+  // Group planets by absolute Rashi
+  const rashiMap = Array(12).fill('');
+  if (K?.planets) {
+      K.planets.forEach(p => {
+          const hIdx = p.rashi;
+          const abbr = PLANET_ABBR[p.key] || p.key.substring(0, 2);
+          rashiMap[hIdx] = rashiMap[hIdx] ? rashiMap[hIdx] + ',' + abbr : abbr;
+      });
+  }
+
+  // Find Lagna location
+  const lagnaRashi = K?.lagna?.rashi;
 
   return (
     <svg width="180" height="180" viewBox="0 0 200 200" style={{background:'#fdf5e6', border:'2px solid #8b0000', padding:'4px'}}>
@@ -840,25 +871,28 @@ const SouthIndianChartSVG = ({ predText }) => {
       <line x1="150" y1="0" x2="150" y2="200" stroke="#8b0000" strokeWidth="2"/>
       <rect x="52" y="52" width="96" height="96" fill="#fdf5e6" />
       {centers.map((c, i) => (
-        <text key={i} x={c.x} y={c.y} fill="#8b0000" fontSize="16" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
-          {(i+1)===h ? pl : ''}
+        <text key={i} x={c.x} y={c.y} fill="#8b0000" fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+          {rashiMap[i] || ''}
         </text>
       ))}
+      {lagnaRashi !== undefined && (
+          <text x={centers[lagnaRashi].x} y={centers[lagnaRashi].y - 12} fill="#8b0000" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">Asc</text>
+      )}
     </svg>
   );
 };
 
-const AstrologicalBasisBox = ({ chartDesc, pillarId, pred, t, lang }) => {
+const AstrologicalBasisBox = ({ chartDesc, pillarId, pred, t, lang, K }) => {
   return (
     <div style={{ marginTop: '24px', background: 'var(--bg-input)', padding: '24px', border: '1px solid #b8860b', display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', background: '#e8d5b5', padding: '16px', borderRadius: '4px' }}>
         <div>
            <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>{t('North Indian format')}</div>
-           <NorthIndianChartSVG predText={pred} />
+           <NorthIndianChartSVG predText={pred} K={K} />
         </div>
         <div>
            <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>{t('South Indian format')}</div>
-           <SouthIndianChartSVG predText={pred} />
+           <SouthIndianChartSVG predText={pred} K={K} />
         </div>
       </div>
       
@@ -941,7 +975,7 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
            <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.pred}</p>
          </div>
 
-         <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.pred} t={t} lang={lang} />
+         <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.pred} t={t} lang={lang} K={K} />
          <AstrologicalRemedyBox remedy={opt.rem} alert={opt.pred.includes('afflict') || opt.pred.includes('debilitated') || opt.pred.includes('danger') ? t("Malefic vibration detected.") : null} t={t} lang={lang} />
           {/* 4. Native Dependency Component Injection (Synastry Engine) */}
           {partnerKundali && (pillarId === 'vivaha' || pillarId === 'dhana' || pillarId === 'dharma' || pillarId === 'arogya' || pillarId === 'muhurta') && (

@@ -10,15 +10,15 @@ export default defineConfig({
   reporter: [['html', { open: 'never' }], ['list']],
   timeout: 60_000,
   use: {
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: 'npx serve . -l 8080 -s',
-    port: 8080,
-    reuseExistingServer: !process.env.CI,
-    timeout: 15_000,
+    command: 'npm run dev',
+    port: 5173,
+    reuseExistingServer: true,
+    timeout: 120_000,
   },
   projects: [
     {

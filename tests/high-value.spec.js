@@ -30,7 +30,7 @@ async function compute(page, input = BASE_INPUT) {
   return page.evaluate((inp) => {
     try {
       // computeKundali takes a single input object (not positional args)
-      return computeKundali(inp);
+      return window.computeKundali(inp);
     } catch (e) { return { _error: e.message }; }
   }, input);
 }
@@ -149,8 +149,8 @@ test.describe('MATH-05: Rahu/Ketu Always 180° Apart', () => {
     test(`Rahu/Ketu 180° apart — ${chart.label}`, async ({ page }) => {
       await boot(page);
       const result = await page.evaluate((inp) => {
-        const jd = toJD(inp.year, inp.month, inp.day, inp.hour, inp.minute, inp.utcOffset);
-        const { sid } = allPlanets(jd);
+        const jd = window.toJD(inp.year, inp.month, inp.day, inp.hour, inp.minute, inp.utcOffset);
+        const { sid } = window.allPlanets(jd);
         const diff = Math.abs(sid.rahu.lon - sid.ketu.lon);
         return { rahu: sid.rahu.lon, ketu: sid.ketu.lon, diff: diff > 180 ? 360 - diff : diff };
       }, chart);
@@ -354,8 +354,8 @@ test.describe('EDGE-02: Year Boundary (Dec 31 → Jan 1)', () => {
     await boot(page);
 
     const dec31 = await page.evaluate(() => {
-      const jd1 = toJD(2023, 12, 31, 23, 59, 0);
-      const jd2 = toJD(2024, 1, 1, 0, 0, 0);
+      const jd1 = window.toJD(2023, 12, 31, 23, 59, 0);
+      const jd2 = window.toJD(2024, 1, 1, 0, 0, 0);
       return { jdDiff: Math.abs(jd2 - jd1 - 1/1440), jd1, jd2 };
     });
 

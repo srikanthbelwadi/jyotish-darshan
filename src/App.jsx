@@ -359,6 +359,15 @@ function computeKundali(input){
   return{input,jd,ayanamsa:ay.toFixed(4),ayanamsaDMS:toDMS(ay),lagna:{lon:lagnaLon,rashi:lagnaR,degFmt:fmtDeg(lagnaLon)},planets,divCharts,dasha:dashaData,yogas:yogaList,shadbala:sbala,ashtakavarga:avarga,panchang:panch,sunrise:fmtT(noon-half),sunset:fmtT(noon+half),lst:`${String(lh).padStart(2,'0')}h ${String(lm).padStart(2,'0')}m`};
 }
 
+// Expose core math functions for Playwright regression tests
+if (typeof window !== 'undefined') {
+  console.log("EXPOSING MATH FUNCTIONS TO WINDOW");
+  window.toJD = toJD;
+  window.allPlanets = allPlanets;
+  window.computeKundali = computeKundali;
+  console.log("VERIFICATION:", typeof window.toJD);
+}
+
 const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
 
 // ════════════════════════════════════════════════════════════════
@@ -2438,8 +2447,8 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
         {dashboardMode === 'kundali' && (
           <div style={{animation:'fadeIn 0.5s ease'}}>
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'40px', borderBottom:'1px solid #b8860b', paddingBottom:'16px', flexWrap:'wrap', gap:'16px'}}>
-              <h2 style={{ fontSize: '42px', margin: 0, fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>Kundali</h2>
-              <button onClick={()=>{setDashboardMode('pathways');window.scrollTo({top:0,behavior:'smooth'});}} style={{background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 28px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 4px 15px rgba(255,215,0,0.4)'}} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(255,215,0,0.6)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 4px 15px rgba(255,215,0,0.4)'}}>Reveal Life Path <span style={{fontSize:'20px'}}>➔</span></button>
+              <h2 style={{ fontSize: '42px', margin: 0, fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Kundali',lang)}</h2>
+              <button onClick={()=>{setDashboardMode('pathways');window.scrollTo({top:0,behavior:'smooth'});}} style={{background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 28px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 4px 15px rgba(255,215,0,0.4)'}} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(255,215,0,0.6)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 4px 15px rgba(255,215,0,0.4)'}}>{t('Reveal Life Path ➔', lang)}</button>
             </div>
             
             {/* Layer 1: My Insights */}
