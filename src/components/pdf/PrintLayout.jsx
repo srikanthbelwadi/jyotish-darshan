@@ -142,8 +142,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
              <li>5. Yoga, Dosha &amp; Shadbala</li>
              {ashtakavarga && <li>6. Ashtakavarga Points</li>}
              <li>{(ashtakavarga ? '7' : '6')}. Expert Reading</li>
-             {formattedData && <li>{(ashtakavarga ? 8 : 7)}. Life Dimensions Reading</li>}
-             {partnerKundali && <li>{(ashtakavarga ? 8 : 7) + (formattedData ? 1 : 0)}. Relationship Compatibility</li>}
+             {partnerKundali && <li>{(ashtakavarga ? 8 : 7)}. Relationship Compatibility</li>}
           </ul>
 
           <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: '60px' }}>1. Birth Alignments &amp; Panchang</h2>
@@ -329,35 +328,11 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
            </div>
         </div>
 
-        {/* PAGE 6: LIFE DIMENSIONS */}
-        {formattedData && (
-           <div className="print-page" style={{ padding: '20mm', boxSizing: 'border-box', pageBreakBefore: 'always' }}>
-              <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: 0 }}>{(ashtakavarga ? 8 : 7)}. Life Dimensions Reading</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
-                 {Object.entries(formattedData).map(([key, data]) => {
-                    let icon = '✨';
-                    if (key === 'Career & Purpose') icon = '💼';
-                    if (key === 'Health & Vitality') icon = '⚕️';
-                    if (key === 'Wealth & Finance') icon = '💎';
-                    if (key === 'Spiritual Pursuit') icon = '🪷';
-                    if (key === 'Relationships & Love') icon = '💞';
-                    if (key === 'Intellect & Learning') icon = '📖';
-
-                    return (
-                       <div key={key} style={{ background: '#fff', border: '1px solid #e5d5c0', padding: '15px', borderRadius: '8px' }}>
-                          <h4 style={{ margin: '0 0 10px', fontSize: '16px', color: '#1e3a5f' }}>{icon} {key}</h4>
-                          <p style={{ margin: 0, fontSize: '13px', lineHeight: '1.6', color: '#374151' }}>{data?.desc || ''}</p>
-                       </div>
-                    );
-                 })}
-              </div>
-           </div>
-        )}
 
         {/* PAGE 7: PARTNER MATCHING */}
         {partnerKundali && (
            <div className="print-page" style={{ padding: '20mm', boxSizing: 'border-box', pageBreakBefore: 'always' }}>
-              <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: 0 }}>{(ashtakavarga ? 8 : 7) + (formattedData ? 1 : 0)}. Relationship Compatibility</h2>
+              <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: 0 }}>{(ashtakavarga ? 8 : 7)}. Relationship Compatibility</h2>
               <p style={{ fontSize: '14px', marginBottom: '20px' }}>Match evaluation between <strong>{input?.name || 'Native'}</strong> and <strong>{partnerKundali?.input?.name || 'Partner'}</strong>.</p>
               <div style={{ background: '#fff', border: '1px solid #1e3a5f', padding: '20px', borderRadius: '8px' }}>
                  <h3 style={{ margin: '0 0 10px', color: '#1e3a5f' }}>Ashtakoota Milan (36-Point System)</h3>
