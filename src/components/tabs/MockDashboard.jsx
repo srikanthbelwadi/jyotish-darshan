@@ -652,13 +652,10 @@ const ShastricExpander = ({ data, opt, t, lang }) => {
   return (
     <div style={{ marginTop: '32px', color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.8, borderTop: '2px solid var(--border-light)', paddingTop: '24px', fontFamily: 'serif' }}>
       <p style={{ marginBottom: '16px' }}>
-        <strong style={{color:'var(--accent-gold)'}}>{t('Shastric Synthesis:')}</strong> Upon rigorous examination of the <em>{data.desc}</em> framework regarding <strong>{opt.label.toLowerCase()}</strong>, the karmic unfoldment is unambiguous. The celestial bodies establish a critical temporal vibration affecting the relevant Bhava within your D1 matrix.
-      </p>
-      <p style={{ marginBottom: '16px' }}>
-        According to the foundational geometric tenets of Brihat Parashara Hora Shastra, when the Grahas align in this specific configuration relative to the primary Varga matrix, the karmic ledger is activated. This precise dimensional alignment creates an unavoidable channel for the results of past-life (Sanchita) karma to manifest in the current timeline.
+        <strong style={{color:'var(--accent-gold)'}}>{t('Shastric Synthesis:')}</strong> {opt.synthesis}
       </p>
       <p style={{ margin: 0 }}>
-        {t('The Oracle reveals: ')}<em>"{opt.pred}"</em> Therefore, this transit cannot be bypassed purely through willpower. Strict, unwavering adherence to the prescribed remedial protocol is the only mechanism that will actively alter the trajectory of this event within the boundaries of Dharma.
+        {t('The Oracle reveals: ')}<em>"{opt.prediction}"</em> Therefore, this transit cannot be bypassed purely through willpower. Strict, unwavering adherence to the prescribed remedial protocol is the only mechanism that will actively alter the trajectory of this event within the boundaries of Dharma.
       </p>
     </div>
   );
@@ -690,11 +687,11 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
            <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
              <span style={{ fontSize: '18px' }}>👁️</span> {t('Prophetic Unfoldment')}
            </div>
-           <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.pred}</p>
+           <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.prediction}</p>
          </div>
 
-         <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.pred} t={t} lang={lang} K={K} />
-         <AstrologicalRemedyBox remedy={opt.rem} alert={opt.pred.includes('afflict') || opt.pred.includes('debilitated') || opt.pred.includes('danger') ? t("Malefic vibration detected.") : null} t={t} lang={lang} />
+         <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.prediction} t={t} lang={lang} K={K} />
+         <AstrologicalRemedyBox remedy={opt.remedy} alert={opt.prediction?.includes('afflict') || opt.prediction?.includes('debilitated') || opt.prediction?.includes('danger') ? t("Malefic vibration detected.") : null} t={t} lang={lang} />
           {/* 4. Native Dependency Component Injection (Synastry Engine) */}
           {partnerKundali && (pillarId === 'vivaha' || pillarId === 'dhana' || pillarId === 'dharma' || pillarId === 'arogya' || pillarId === 'muhurta') && (
             <div style={{ marginTop: '24px', background: 'rgba(255,215,0,0.05)', padding: '24px', border: '1px solid var(--accent-gold)', borderRadius: '8px', borderLeft: '6px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
