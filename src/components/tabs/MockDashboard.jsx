@@ -630,7 +630,7 @@ const EclipticChart = ({ hue, pillarId, t, K }) => {
 
        {/* Planets rendered exactly at their astronomical sidereal longitude */}
        {(K?.planets || []).map((pl) => {
-          const ang = pl.longitude * (Math.PI/180);
+          const ang = pl.lon * (Math.PI/180);
           const r = 125;
           const isHighlighted = (pl.key === p1Key || pl.key === p2Key);
           const abbr = PLANET_ABBR[pl.key] || pl.key;
@@ -762,7 +762,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
              {/* 2. Ecliptic Visualization */}
              <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>{t('Stellar Ecliptic Alignment')}</div>
-               <EclipticChart hue={hue} pillarId={targetPillar} t={t} />
+               <EclipticChart hue={hue} pillarId={targetPillar} t={t} K={K} />
              </div>
           </div>
        </div>
