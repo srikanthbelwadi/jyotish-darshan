@@ -11,6 +11,7 @@ import AuthModal from './components/AuthModal.jsx';
 import { MockDashboard } from './components/tabs/MockDashboard.jsx';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, fetchCloudProfiles, syncProfileToCloud } from './firebase.js';
+import ExpertReadingTab from './components/tabs/ExpertReadingTab.jsx';
 
 // ════════════════════════════════════════════════════════════════
 // ASTRONOMY ENGINE
@@ -1912,108 +1913,6 @@ function AshtakavargaTab({K,lang='en'}){
   );
 }
 
-function ExpertReadingTab({K,lang='en'}){
-  const{lagna,planets,yogas:ys,dasha,shadbala:sb}=K;
-  const EX=L_EXPERT[lang]||L_EXPERT.en;
-  const LAGNA_R=L_LAGNA[lang]||L_LAGNA.en;
-  const DASHA_M=L_DASHA[lang]||L_DASHA.en;
-  const GRAHA=L_GRAHA[lang]||L_GRAHA.en;
-  const RASHI_N=L_RASHI[lang]||L_RASHI.en;
-  const NAKS=L_NAKS[lang]||L_NAKS.en;
-  const birthYear=K.input?.year||(new Date().getFullYear()-30);
-  const moon=planets.find(p=>p.key==='moon');
-  const jupiter=planets.find(p=>p.key==='jupiter');
-  const RASHI_LORDS=['mars','venus','mercury','moon','sun','mercury','venus','mars','jupiter','saturn','saturn','jupiter'];
-  const tenthLord=RASHI_LORDS[(lagna.rashi+9)%12];
-  const seventhLord=RASHI_LORDS[(lagna.rashi+6)%12];
-  const ninthLord=RASHI_LORDS[(lagna.rashi+8)%12];
-  const tenthLordHouse=planets.find(p=>p.key===tenthLord)?.house||1;
-  const jupHouse=jupiter?.house||0;
-  const strong=Object.entries(sb).filter(([,v])=>v.cls==='Strong').map(([k])=>k);
-  const weak=Object.entries(sb).filter(([,v])=>v.cls==='Weak').map(([k])=>k);
-  const venusCls=sb.venus?.cls||'Moderate';
-  const rajaYogas=ys.filter(y=>y.type==='raja');
-  const hasMangal=!!ys.find(y=>y.name==='Mangal Dosha');
-  const cur=dasha.mahadashas.find(m=>m.isCurrent)||dasha.mahadashas[0];
-  const curA=cur?.antars?.find(a=>a.isCurrent)||cur?.antars?.[0];
-  const pName=k=>GRAHA[k]||k;
-  const dashaAge=ds=>{if(!ds)return'?';const y=parseInt((ds+'').split(' ').pop());return isNaN(y)?'?':y-birthYear;};
-  const strongNames=strong.map(pName);
-  const weakNames=weak.map(pName);
-  const Sec=({icon,title,children})=>(
-    <div style={{marginBottom:26}}>
-      <h4 style={{margin:'0 0 10px',fontSize:14,fontWeight:700,color:'var(--accent-gold)',borderBottom:'1px solid var(--border-light)',paddingBottom:7,display:'flex',alignItems:'center',gap:6}}>
-        <span style={{fontSize:16}}>{icon}</span>{title}
-      </h4>
-      {children}
-    </div>
-  );
-  const P=({text,style={}})=><p style={{margin:'0 0 9px',fontSize:13.5,color:'var(--text-main)',lineHeight:1.9,...style}}>{text}</p>;
-  const PhaseCard=({m})=>{
-    const aS=dashaAge(m.startStr),aE=dashaAge(m.endStr),isCur=m.isCurrent;
-    const gn=pName(m.planet);
-    return(
-      <div style={{marginBottom:12,padding:'13px 15px',borderRadius:10,border:isCur?'2px solid #7C3AED':'1px solid #E5D5C0',background:isCur?'#FAF5FF':'#FFFCF5',position:'relative'}}>
-        {isCur&&<span style={{position:'absolute',top:8,right:10,fontSize:10,background:'#7C3AED',color:'white',padding:'2px 8px',borderRadius:10,fontWeight:700,letterSpacing:'0.5px'}}>▶ NOW</span>}
-        <div style={{display:'flex',alignItems:'baseline',gap:8,flexWrap:'wrap',marginBottom:5}}>
-          <span style={{fontWeight:700,fontSize:14,color:'var(--accent-gold)'}}>{gn}</span>
-          <span style={{fontSize:12,color:'var(--text-muted)'}}>{EX.labels.ages} {aS}–{aE}</span>
-          <span style={{fontSize:11,color:'var(--text-muted)'}}>({typeof m.yrs==='number'?m.yrs.toFixed(1):m.yrs} yrs)</span>
-        </div>
-        <p style={{margin:'0 0 6px',fontSize:13,color:'var(--text-main)',lineHeight:1.8}}>{DASHA_M[m.planet]||''}</p>
-        {EX.challenge[m.planet]&&<p style={{margin:'0 0 4px',fontSize:12.5,color:'#92400E',lineHeight:1.7}}><strong>{EX.labels.challenge}:</strong> {EX.challenge[m.planet]}</p>}
-        {EX.suggest[m.planet]&&<p style={{margin:0,fontSize:12.5,color:'#065F46',lineHeight:1.7}}><strong>{EX.labels.suggestion}:</strong> {EX.suggest[m.planet]}</p>}
-      </div>
-    );
-  };
-  return(
-    <div style={{animation:'slideIn 0.2s ease'}}>
-      <div style={{background:'var(--bg-card)',border:'1px solid var(--border-light)',borderRadius:12,padding:26}}>
-        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:24,paddingBottom:16,borderBottom:'1px solid var(--border-light)'}}>
-          <div style={{width:46,height:46,background:'linear-gradient(135deg,#7C3AED,#F59E0B)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><span style={{color:'white',fontSize:22}}>☀</span></div>
-          <div>
-            <h3 style={{margin:0,fontSize:16,color:'var(--text-main)',fontWeight:700}}>{t('rd.title',lang)}</h3>
-            <p style={{margin:'3px 0 0',fontSize:12,color:'var(--text-muted)'}}>{t('rd.subtitle',lang)}</p>
-          </div>
-        </div>
-        <Sec icon="🌟" title={EX.labels.overview}>
-          <P text={LAGNA_R[lagna.rashi]||''}/>
-          <P text={EX.overview(RASHI_N[lagna.rashi],NAKS[moon?.nIdx||0],RASHI_N[moon?.rashi||0],strongNames,rajaYogas.length)}/>
-        </Sec>
-        <Sec icon="🗺️" title={EX.labels.journey}>
-          {dasha.mahadashas.map((m,i)=><PhaseCard key={i} m={m}/>)}
-        </Sec>
-        <Sec icon="💼" title={EX.labels.career}>
-          <P text={EX.career(tenthLord,pName(tenthLord),tenthLordHouse,strong)}/>
-        </Sec>
-        <Sec icon="💫" title={EX.labels.partner}>
-          <P text={EX.partner(pName(seventhLord),hasMangal,venusCls)}/>
-        </Sec>
-        {strongNames.length>0&&<Sec icon="✨" title={EX.labels.strengths}><P text={EX.strengths(strongNames)}/></Sec>}
-        {weakNames.length>0&&<Sec icon="🌱" title={EX.labels.growth}><P text={EX.growth(weakNames)}/></Sec>}
-        <Sec icon="🪷" title={EX.labels.spiritual}>
-          <P text={EX.spiritual(pName(ninthLord),jupHouse)}/>
-        </Sec>
-        {cur&&<Sec icon="⏳" title={EX.labels.current}>
-          <div style={{padding:'15px',background:'rgba(212,175,55,0.05)',borderRadius:9,border:'1px solid var(--border-light)'}}>
-            <p style={{margin:'0 0 6px',fontSize:13.5,fontWeight:700,color:'var(--accent-gold)'}}>{pName(cur.planet)} — {cur.startStr} → {cur.endStr}</p>
-            <p style={{margin:'0 0 7px',fontSize:13,color:'var(--text-main)',lineHeight:1.85}}>{DASHA_M[cur.planet]||''}</p>
-            <p style={{margin:'0 0 5px',fontSize:13,color:'#92400E',lineHeight:1.7}}><strong>{EX.labels.challenge}:</strong> {EX.challenge[cur.planet]||''}</p>
-            <p style={{margin:'0 0 12px',fontSize:13,color:'#065F46',lineHeight:1.7}}><strong>{EX.labels.suggestion}:</strong> {EX.suggest[cur.planet]||''}</p>
-            {curA&&<div style={{borderTop:'1px solid var(--border-light)',paddingTop:10}}>
-              <p style={{margin:'0 0 5px',fontSize:12.5,fontWeight:700,color:'var(--accent-gold)'}}>↳ {pName(curA.planet)} Antardasha — {curA.startStr} → {curA.endStr}</p>
-              <p style={{margin:0,fontSize:12.5,color:'var(--text-main)',lineHeight:1.8}}>{DASHA_M[curA.planet]||''}</p>
-            </div>}
-          </div>
-        </Sec>}
-        <div style={{marginTop:18,padding:'12px 16px',background:'rgba(217, 119, 6, 0.05)',borderRadius:8,border:'1px solid #FDE68A'}}>
-          <p style={{margin:0,fontSize:12,color:'#92400E',lineHeight:1.65}}><strong>{t('rd.note',lang)}:</strong> {t('rd.disc',lang)}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ════════════════════════════════════════════════════════════════
 // PDF GENERATOR
 // ════════════════════════════════════════════════════════════════
@@ -2467,7 +2366,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                 {tab==='yoga'&&<YogaTab K={K} lang={lang}/>}
                 {tab==='shadbala'&&<ShadbalaTab K={K} lang={lang}/>}
                 {tab==='avarga'&&<AshtakavargaTab K={K} lang={lang}/>}
-                {tab==='reading'&&<ExpertReadingTab K={K} lang={lang}/>}
+                {tab==='reading'&&<ExpertReadingTab kundali={K} lang={lang}/>}
               </div>
             </div>
           </div>
