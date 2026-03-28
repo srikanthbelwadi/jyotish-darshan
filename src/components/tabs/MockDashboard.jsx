@@ -453,7 +453,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
                {loading ? (
                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'var(--text-muted)', marginBottom: '32px' }}>
                      <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
-                     <span style={{ fontFamily: '"Cinzel", serif', fontSize: '18px', letterSpacing: '2px', textTransform: 'uppercase' }}>Synthesizing Pathway Matrix...</span>
+                     <span style={{ fontFamily: '"Cinzel", serif', fontSize: '18px', letterSpacing: '2px', textTransform: 'uppercase' }}>{t('Synthesizing Pathway Matrix...')}</span>
                    </div>
                ) : error ? (
                    <div style={{ position: 'relative', marginBottom: '32px' }}>
@@ -487,7 +487,9 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
 
        {/* 3. 6 Shastric Outcome Cards with Images */}
        <div className="mobile-hero-padding" style={{ padding: '60px 40px 0 40px' }}>
-         <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>{t('Select an Outcome to Reveal Prophecy')}</h4>
+         {pathwayData?.options?.length > 0 && (
+           <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>{t('Select an Outcome to Reveal Prophecy')}</h4>
+         )}
          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '32px' }}>
            {(pathwayData?.options || []).map((opt, i) => {
              const cardHue = (hue + (i * 45)) % 360;
