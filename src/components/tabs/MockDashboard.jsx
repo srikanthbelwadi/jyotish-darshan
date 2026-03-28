@@ -625,11 +625,11 @@ const AstrologicalBasisBox = ({ chartDesc, pillarId, pred, t, lang, K }) => {
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
             <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>{t('Panchanga Tithi')}</div>
-            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>Shukla Navami</div>
+            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>{K?.panchanga?.tithi?.name || '---'}</div>
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
             <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>{t('Governing Nakshatra')}</div>
-            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>Pushya (Siddhi Yoga)</div>
+            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>{K?.panchanga?.nakshatra?.name || '---'} {K?.panchanga?.yoga?.name ? `(${K.panchanga.yoga.name} Yoga)` : ''}</div>
           </div>
         </div>
       </div>
@@ -655,7 +655,7 @@ const ShastricExpander = ({ data, opt, t, lang }) => {
         <strong style={{color:'var(--accent-gold)'}}>{t('Shastric Synthesis:')}</strong> {opt.synthesis}
       </p>
       <p style={{ margin: 0 }}>
-        {t('The Oracle reveals: ')}<em>"{opt.prediction}"</em> Therefore, this transit cannot be bypassed purely through willpower. Strict, unwavering adherence to the prescribed remedial protocol is the only mechanism that will actively alter the trajectory of this event within the boundaries of Dharma.
+        <strong style={{color:'var(--accent-gold)'}}>{t('The Oracle reveals: ')}</strong><br/><em>"{opt.prediction}"</em>
       </p>
     </div>
   );
@@ -692,21 +692,18 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
 
          <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.prediction} t={t} lang={lang} K={K} />
          <AstrologicalRemedyBox remedy={opt.remedy} alert={opt.prediction?.includes('afflict') || opt.prediction?.includes('debilitated') || opt.prediction?.includes('danger') ? t("Malefic vibration detected.") : null} t={t} lang={lang} />
-          {/* 4. Native Dependency Component Injection (Synastry Engine) */}
-          {partnerKundali && (pillarId === 'vivaha' || pillarId === 'dhana' || pillarId === 'dharma' || pillarId === 'arogya' || pillarId === 'muhurta') && (
+          {/* Synastry Engine temporarily hidden pending LLM upgrade 
+           {partnerKundali && (pillarId === 'vivaha' || pillarId === 'dhana' || pillarId === 'dharma' || pillarId === 'arogya' || pillarId === 'muhurta') && (
             <div style={{ marginTop: '24px', background: 'rgba(255,215,0,0.05)', padding: '24px', border: '1px solid var(--accent-gold)', borderRadius: '8px', borderLeft: '6px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
               <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>💞</span> {t('Synastry Oracle Alignment: ')} {partnerKundali.name || t('Partner')}
               </div>
               <p style={{ color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.7, margin: 0, fontFamily: 'serif', fontStyle: 'italic' }}>
-                {pillarId === 'vivaha' && "The combined planetary gravity of both charts indicates deep karmic debt resolution in this cycle. Joint communication must be carefully guarded on Tuesdays during Mars Hora."}
-                {pillarId === 'dhana' && "Shared planetary energies indicate massive financial growth when liquid assets are pooled. The partner's Jupiter strongly trines your primary wealth axis, guaranteeing dual prosperity."}
-                {pillarId === 'dharma' && "Spiritual paths diverge slightly under Rahu's influence, demanding extreme intellectual patience, but core moral philosophies remain perfectly bonded by the Sun."}
-                {pillarId === 'arogya' && "The partner's lunar placement provides enormous ambient emotional healing to your nervous system. Vata dosha spikes are passively neutralized by their presence."}
-                {pillarId === 'muhurta' && "Auspicious timings must now calculate both Moon signs (Chandra Bala). Your partner's lunar chart subtly delays the current window of absolute perfection by 48 hours."}
+                {t('Awaiting advanced Synastry computations from the pathway nexus...')}
               </p>
             </div>
           )}
+          */}
        </div>
     </div>
   );
