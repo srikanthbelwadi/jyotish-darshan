@@ -85,7 +85,7 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
       year: Number(y), month: Number(m), day: Number(d),
       hour: Number(h), minute: Number(min_),
       city: form.city, country: form.country,
-      lat: form.lat, lng: form.lng,
+      lat: form.lat, lng: form.lng, dob: form.dob, tob: form.tob,
       timezone: form.timezone, utcOffset: offset, gender: form.gender
     };
 

@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { pathwayName, kundaliData, currentDate } = req.body;
+    const { pillarId, pillarTitle, pillarDesc, kundaliData, lang = 'en' } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -18,58 +18,60 @@ export default async function handler(req, res) {
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
       generationConfig: {
-        temperature: 0.75,
+        temperature: 0.8,
+        responseMimeType: "application/json",
       }
     });
 
-    const systemPrompt = `You are an insightful, modern, and practical Vedic Astrologer analyzing a Jyotish (Indian Astrology) chart.
-You communicate in a clear, empowering, and easy-to-understand tone. While you maintain the authenticity of traditional Shastras by using correct Sanskrit terminology, you always weave these concepts into modern, actionable, and everyday guidance.
-
+    const systemPrompt = `You are an elite Vedic Astrologer running a high-fidelity Parashari synthesis engine.
 Context:
-- Current Earth Date (Local User Time): ${currentDate}
-- The Specific ṣaṭtriṃśat Mārga (Pathway) to Analyze: "${pathwayName}"
-
-User's Real-Time Astrological Chart Data (JSON representation):
-${JSON.stringify(kundaliData, null, 2)}
+- Activated Path: "${pillarTitle}" (Governing: ${pillarDesc})
+- TARGET UI LANGUAGE CODE: ${lang}
+User's Chart: ${JSON.stringify(kundaliData)}
 
 Task:
-Write a highly specific, immediately actionable predictive paragraph (4 to 6 short, punchy sentences) predicting the user's prevailing karmic energy specifically regarding the target Pathway provided.
-Avoid all generic, ambiguous, or unhelpful statements. You must systematically isolate the specific planets, house lords, and active configurations within the JSON chart that mathematically govern this exact Pathway (e.g., analyzing the 10th house for "Dharma & Duty").
-Focus heavily on the practical implications of these energies on the user's daily life, followed immediately by suggested, specific actions the user must take regarding this Pathway.
+Based on the user's chart, you must return a strict JSON object with two top-level keys: "summary" and "options".
 
-CRITICAL FORMATTING RULES:
-1. DO NOT use markdown format (NO bolding, NO bullet points).
-2. DO NOT use introductory phrases like "Based on your chart" or "I predict". Just state the reading immediately.
-3. Keep the entire response as one dense paragraph, but strictly use short, direct sentences.
-4. Avoid overly fatalistic language. State the astrological reasoning behind your prediction seamlessly within the text without being overly academic.
-5. ABSOLUTELY DO NOT output JSON or wrap your response in JSON brackets. Return raw plain text exclusively.
-6. You MUST closely mirror the density, technical astrological math, and hyper-specific actionable advice modeled in the examples below. 
+1. "summary": A dense 3-4 sentence paragraph evaluating the user's specific chart regarding this Path. State exactly which houses/planets govern this topic based on Brihat Parashara Hora Shastra, and analyze their strength in the user's D1 matrix.
+2. "options": An array of exactly 6 absolute most probable karmic paths/outcomes operating under this specific Pillar right now for the user.
 
-*** EXACT TONE EXAMPLES BY PATHWAY ***
+CRITICAL: EVERY SINGLE STRING VALUE IN THE JSON (except icons) MUST BE IN THE EXACT LANGUAGE SPECIFIED BY THE TARGET UI LANGUAGE CODE (${lang}). NEVER return English unless the code is 'en'.
 
-If Pathway is "Dharma & Duty": "With the transit of Shani through your 10th house of Karma currently scoring a powerful 32 bindus in Ashtakavarga, your professional structure is demanding ultimate accountability. Because you are currently inside your Mercury Antardasha—the Karaka of commerce located in your 11th house—your primary Dharma right now is scaling your structural framework. Do not permit ambiguity in your corporate reporting structures today. Review your direct-report protocols tomorrow morning and explicitly document all compliance workflows in writing. Embrace Saturn's strict demand for unwavering discipline to anchor your career trajectory for the next 2.5 years."
-
-If Pathway is "Wealth & Assets": "Your second house of accumulated wealth is heavily activated today by the transit of Jupiter over your natal Venus, creating an extremely auspicious Dhana Yoga window. The prevailing Panchanga features Shukla Navami, pushing expansive energies into your financial sector. This is a critical mathematical window for wealth consolidation, not high-risk liquid trading. Consolidate your fragmented digital assets tonight and restructure your long-term tax sheltered accounts immediately. Leverage this expansive Jupiter energy to formalize the exact infrastructural budgets required for your next massive real estate acquisition."
-`;
+EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (You must translate the concepts into ${lang}):
+{
+  "summary": "Your Dharma (9th house) lord Guru (Jupiter), exalted in your Lagna, firmly anchors your identity in higher purpose and ethical leadership. The Karma (10th house) lord Mangal (Mars) in the Tritiya Bhava (3rd house) powerfully aspects your professional sphere, demanding courage. Yet, with Chandra (Moon) in the Shashta Bhava (6th house), there is potential emotional friction amidst your daily duties. You must proactively align your immediate work routines to embody your spiritual purpose, heavily prioritizing meticulous, service-oriented action.",
+  "options": [
+    {
+      "id": "outcome_1",
+      "icon": "🌊",
+      "label": "Crossing the Ocean",
+      "synthesis": "Upon rigorous examination of the 12th/9th House Vectors framework regarding crossing the ocean, the karmic unfoldment is unambiguous. The celestial bodies establish a critical temporal vibration affecting the relevant Bhava within your D1 matrix.",
+      "prediction": "Rahu dictates a long journey across the sea. Settlement in a foreign, non-Vedic land is highly indicated for acquiring immense wealth.",
+      "remedy": "Perform a small puja to Varuna before embarking by water."
+    },
+    {
+      "id": "outcome_2",
+      "icon": "⚖️",
+      "label": "Legal Victory",
+      "synthesis": "Examining the Shashta Bhava (6th house) matrix, Mars casts a dominating 8th aspect onto the 12th house of confinement, mathematically neutralizing any adversarial litigation against your primary assets.",
+      "prediction": "The impending inherited property dispute will swiftly collapse in your favor before reaching trial. Do not entertain any out-of-court settlements.",
+      "remedy": "Recite the Aditya Hrudayam exactly at sunrise on Sundays facing east."
+    }
+  ] // ALWAYS BE SURE TO GENERATE EXACTLY 6 UNIQUE OPTIONS.
+}`;
 
     const result = await model.generateContent(systemPrompt);
     let responseText = result.response.text().trim();
-
-    // Failsafe interceptor for spontaneous JSON LLM hallucinations
-    if (responseText.startsWith('```')) {
-      responseText = responseText.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim();
-    }
-    if (responseText.startsWith('{')) {
-      try {
-        const parsed = JSON.parse(responseText);
-        if (parsed.prediction) responseText = parsed.prediction;
-        else if (Object.values(parsed).length > 0) responseText = Object.values(parsed)[0];
-      } catch (e) {
-        responseText = responseText.replace(/^{"prediction":\s*"/, '').replace(/"\s*}$/, '');
-      }
+    
+    let parsed;
+    try {
+      parsed = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Failed to parse JSON directly. Raw output:', responseText);
+      return res.status(500).json({ error: 'Failed to synthesize pathway. The Oracle returned a malformed vision.' });
     }
 
-    return res.status(200).json({ prediction: responseText.trim() });
+    return res.status(200).json(parsed);
 
   } catch (error) {
     console.error('Pathway Node Generation Error:', error);

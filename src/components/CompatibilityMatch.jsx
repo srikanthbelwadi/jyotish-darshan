@@ -52,10 +52,10 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
           <h4 style={{ margin: '0 0 12px', color: 'var(--text-main)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{match.p1.name === 'User' ? txt('comp.user', 'User') : match.p1.name}</h4>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '18px', color: 'var(--text-secondary)', fontSize: '13px', fontFamily: 'serif', alignItems: 'center' }}>
-            <div>📅 {new Date(primaryKundali.input.year, primaryKundali.input.month - 1, primaryKundali.input.day).toLocaleDateString(lang === 'en' ? 'en-IN' : lang, { day: 'numeric', month: 'long', year: 'numeric' })}, {primaryKundali.input.tob}</div>
+            <div>📅 {new Date(primaryKundali.input.year, primaryKundali.input.month - 1, primaryKundali.input.day).toLocaleDateString(lang === 'en' ? 'en-IN' : lang, { day: 'numeric', month: 'long', year: 'numeric' })}, {primaryKundali.input.tob || String(primaryKundali.input.hour).padStart(2,'0')+':'+String(primaryKundali.input.minute).padStart(2,'0')}</div>
             <div style={{display:'flex', gap: 6}}><span> {primaryKundali.input.lat?.toFixed(3)}°N, {primaryKundali.input.lng?.toFixed(3)}°E</span></div>
             <div>🔹 {txt('ayanamsa', 'Ayanamsa')}: {primaryKundali.ayanamsaDMS}</div>
-            <div>♑ {txt('lagna', 'Lagna')}: {localizePanchang(primaryKundali.panchang, lang)?.lagna || L_RASHI[lang]?.[primaryKundali.planets?.find(p=>p.key==='lagna')?.rashi] || L_RASHI.en[primaryKundali.planets?.find(p=>p.key==='lagna')?.rashi]} {primaryKundali.planets?.find(p=>p.key==='lagna')?.dms ? `${primaryKundali.planets.find(p=>p.key==='lagna').dms.d}°${primaryKundali.planets.find(p=>p.key==='lagna').dms.m}'` : ''}</div>
+            <div>♑ {txt('lagna', 'Lagna')}: {(L_RASHI[lang] || L_RASHI.en)[primaryKundali.lagna?.rashi]} {primaryKundali.lagna?.degFmt}</div>
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '18px', flex: 1 }}>
@@ -83,10 +83,10 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
           <h4 style={{ margin: '0 0 12px', color: 'var(--text-main)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{match.p2.name === 'Partner' ? txt('comp.partner', 'Partner') : match.p2.name}</h4>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '18px', color: 'var(--text-secondary)', fontSize: '13px', fontFamily: 'serif', alignItems: 'center' }}>
-            <div>📅 {new Date(partnerKundali.input.year, partnerKundali.input.month - 1, partnerKundali.input.day).toLocaleDateString(lang === 'en' ? 'en-IN' : lang, { day: 'numeric', month: 'long', year: 'numeric' })}, {partnerKundali.input.tob}</div>
+            <div>📅 {new Date(partnerKundali.input.year, partnerKundali.input.month - 1, partnerKundali.input.day).toLocaleDateString(lang === 'en' ? 'en-IN' : lang, { day: 'numeric', month: 'long', year: 'numeric' })}, {partnerKundali.input.tob || String(partnerKundali.input.hour).padStart(2,'0')+':'+String(partnerKundali.input.minute).padStart(2,'0')}</div>
             <div style={{display:'flex', gap: 6}}><span> {partnerKundali.input.lat?.toFixed(3)}°N, {partnerKundali.input.lng?.toFixed(3)}°E</span></div>
             <div>🔹 {txt('ayanamsa', 'Ayanamsa')}: {partnerKundali.ayanamsaDMS}</div>
-            <div>♑ {txt('lagna', 'Lagna')}: {localizePanchang(partnerKundali.panchang, lang)?.lagna || L_RASHI[lang]?.[partnerKundali.planets?.find(p=>p.key==='lagna')?.rashi] || L_RASHI.en[partnerKundali.planets?.find(p=>p.key==='lagna')?.rashi]} {partnerKundali.planets?.find(p=>p.key==='lagna')?.dms ? `${partnerKundali.planets.find(p=>p.key==='lagna').dms.d}°${partnerKundali.planets.find(p=>p.key==='lagna').dms.m}'` : ''}</div>
+            <div>♑ {txt('lagna', 'Lagna')}: {(L_RASHI[lang] || L_RASHI.en)[partnerKundali.lagna?.rashi]} {partnerKundali.lagna?.degFmt}</div>
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '18px', flex: 1 }}>
