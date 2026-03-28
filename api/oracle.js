@@ -30,21 +30,28 @@ Context:
 User's Real-Time Astrological Chart Data (JSON): ${JSON.stringify(kundaliData)}
 
 Task:
-Write a highly specific, immediately actionable predictive paragraph based ONLY on the provided timescale and chart data. 
+You must provide a highly specific, immediately actionable forecasting analysis based ONLY on the provided timescale and chart data. 
 - You MUST write the entire response natively in the requested TARGET UI LANGUAGE CODE. Never output in English unless the code is 'en'.
 - Synthesize active Dashas, current transits (Gochar), and Ashtakavarga bindus. 
-- Output raw localized text only. No markdown formatting.
 - DO NOT use introductory phrases like "Based on your chart" or "I predict". Just state the reading immediately.
-- Keep the entire response as one dense, practical paragraph.
 
-*** CANONICAL EXAMPLES BY TIMESCALE (Translate these styles/tones precisely into the Target Language) ***
+CRITICAL: Return a strict JSON object with exactly these 5 keys answering these questions thoroughly:
+{
+  "period": "State the exact future timeframe of the forecast (e.g., 'Over the next 28 days' or 'For the remainder of 2026').",
+  "basis": "Explain the exact astrological mathematical basis for making your assertions (e.g. transits, dasha, bindus).",
+  "assertions": "Provide deeply personalized, unflinching predictions and assert what specific events/shifts will occur.",
+  "lifestyle": "Give highly practical, worldly suggestions and actions the user should take to prepare.",
+  "mitigation": "Provide a strict, specific Shastric parihara/remedy to make things go more favorably."
+}
 
-If timescale is "This Masa (Month)":
-"This Mithuna Masa, with Surya and Guru transiting your Lagna in Punarvasu and Ashlesha Nakshatras, strongly emphasizes personal introspection and the expansion of your intellectual horizons. Your second Bhava, governing accumulated wealth and clear communication, is exceptionally fortified with a robust 49 bindus in its Ashtakavarga, indicating a prime window for meticulous financial structuring due to Budha and Shani’s conjunction in Karka Rasi. Therefore, channel this month's energy into meticulously planning and executing significant financial negotiations or family legacy discussions, utilizing your refined communication to overcome minor logistical hurdles and secure long-term material well-being."
-
-If timescale is "Mahadasha":
-"You are currently operating within the profound evolutionary chapter of your Jupiter Mahadasha, specifically navigating the Mercury Antardasha. Jupiter acts as the great synthesizer, while Mercury governs advanced computing and analytical discrimination. Within your Dashamsha (D-10) chart, Mercury is positioned powerfully in a Kendra, signifying a sustained period of peak technical output and industry visibility. The Jyotish directive for this Dasha is to transition from operational excellence to assuming the role of an architectural visionary, utilizing your strong Mercury to bridge the gap between raw power and vital applications."
-`;
+*** CANONICAL EXAMPLE (Translate these styles/tones precisely into the Target Language) ***
+{
+  "period": "Over the duration of this Masa (Month).",
+  "basis": "Surya and Guru transiting your Lagna in Punarvasu and Ashlesha Nakshatras... Your second Bhava is exceptionally fortified with a robust 49 bindus.",
+  "assertions": "This potent combination indicates an unavoidable period ripe for significant career advancements and financial windfalls. A major structural opportunity in your family legacy will arise.",
+  "lifestyle": "Channel your formidable intellectual energy into meticulously planning and executing significant financial negotiations. Do not shy away from demanding higher compensation.",
+  "mitigation": "Offer regular prayers to the Sun God (Surya Namaskar) at dawn to sustain this high vitality and burn away any residual career lethargy."
+}`;
 
     const result = await model.generateContent(systemPrompt);
     let responseText = result.response.text().trim();
@@ -53,18 +60,17 @@ If timescale is "Mahadasha":
     if (responseText.startsWith('```')) {
       responseText = responseText.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim();
     }
+    
+    let parsedPrediction = responseText;
     if (responseText.startsWith('{')) {
       try {
-        const parsed = JSON.parse(responseText);
-        if (parsed.prediction) responseText = parsed.prediction;
-        else if (Object.values(parsed).length > 0) responseText = Object.values(parsed)[0];
+        parsedPrediction = JSON.parse(responseText);
       } catch (e) {
-        // Fallback blind strip if JSON is malformed
-        responseText = responseText.replace(/^{"prediction":\s*"/, '').replace(/"\s*}$/, '');
+        console.error("Failed to parse oracle json", e);
       }
     }
 
-    return res.status(200).json({ prediction: responseText.trim() });
+    return res.status(200).json({ prediction: parsedPrediction });
 
   } catch (error) {
     console.error('Oracle Node Generation Error:', error);

@@ -33,11 +33,14 @@ Task:
 Return a strict JSON object with "summary" and "options".
 
 1. "summary": A dense 2-3 sentence paragraph evaluating the user's specific chart regarding this Path. State exactly which houses/planets govern this topic based on Brihat Parashara Hora Shastra, and analyze their strength in the user's D1 matrix.
-2. "options": Exactly 6 deeply analyzed karmic outcomes operating under this specific Pillar right now for the user. For each outcome, provide a definitive future timeframe (in months or years) and break down the analysis into 2-3 distinct descriptive paragraphs, each with an appropriate subheading.
+2. "options": Exactly 6 deeply analyzed karmic outcomes operating under this specific Pillar right now for the user. For each outcome, provide a definitive future timeframe (in months or years) and break down the analysis into EXACTLY 3 distinct paragraphs, each with an appropriate subheading mapping to these exact concepts:
+   - Paragraph 1: The Astrological Basis
+   - Paragraph 2: The Prophetic Assertions
+   - Paragraph 3: Lifestyle & Practical Preparedness
 
-CRITICAL: EVERY SINGLE STRING VALUE IN THE JSON (except icons) MUST BE IN THE EXACT LANGUAGE SPECIFIED BY THE TARGET UI LANGUAGE CODE (${lang}). NEVER return English unless the code is 'en'.
+CRITICAL: EVERY SINGLE STRING VALUE IN THE JSON (except icons) MUST BE IN THE EXACT LANGUAGE SPECIFIED BY THE TARGET UI LANGUAGE CODE (${lang}).
 
-EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (You must translate the concepts into ${lang}):
+EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (Translate the text to ${lang}):
 {
   "summary": "Your Dharma (9th house) lord Guru (Jupiter), exalted in your Lagna, firmly anchors your identity in higher purpose and ethical leadership...",
   "options": [
@@ -48,32 +51,19 @@ EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (You must translate the concepts in
       "timeframe": "Over the next 14 to 18 months",
       "paragraphs": [
          { 
-           "subheading": "Karmic Synthesis", 
-           "content": "Rahu's transit through your 12th house dictates a long journey across the sea. The celestial bodies establish a critical temporal vibration affecting this relevant Bhava within your D1 matrix." 
+           "subheading": "Astrological Mechanics", 
+           "content": "Rahu's transit through your 12th house establishes a critical temporal vibration affecting the foreign settlement Bhava." 
          },
          { 
-           "subheading": "Financial Implications", 
-           "content": "Settlement in a foreign, non-Vedic land is highly indicated for acquiring immense wealth. However, this transit cannot be bypassed purely through willpower." 
+           "subheading": "Karmic Synthesis", 
+           "content": "Settlement in a foreign, non-Vedic land is highly indicated for acquiring immense wealth. A sudden visa approval is imminent." 
+         },
+         {
+           "subheading": "Practical Counsel",
+           "content": "Begin liquidating localized assets to ensure maximum liquidity when the transition occurs."
          }
       ],
       "mitigation": "Perform a strict water-offering puja to Varuna before embarking by water."
-    },
-    {
-      "id": "outcome_2",
-      "icon": "⚖️",
-      "label": "Legal Victory",
-      "timeframe": "Culminating by mid-2027",
-      "paragraphs": [
-         {
-           "subheading": "Astrological Mechanics",
-           "content": "Examining the Shashta Bhava (6th house) matrix, Mars casts a dominating 8th aspect onto the 12th house of confinement, mathematically neutralizing any adversarial litigation against your primary assets."
-         },
-         {
-           "subheading": "Prophetic Unfoldment",
-           "content": "The impending inherited property dispute will swiftly collapse in your favor before reaching trial. Do not entertain any out-of-court settlements."
-         }
-      ],
-      "mitigation": "Recite the Aditya Hrudayam exactly at sunrise on Sundays facing east."
     }
   ]
 }`;
