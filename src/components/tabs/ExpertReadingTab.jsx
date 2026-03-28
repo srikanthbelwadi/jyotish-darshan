@@ -9,7 +9,7 @@ export function buildReading(kundali) {
   const sunRashi = RASHIS[sunPlanet.rashi];
   const lagnaLord = planets.find(p => p.key === lagnaRashi.lord);
   const currentMaha = dasha.mahadashas.find(m => m.isCurrent) || dasha.mahadashas[0];
-  const currentAntar = currentMaha?.antardashas?.find(a => a.isCurrent) || currentMaha?.antardashas?.[0];
+  const currentAntar = currentMaha?.antars?.find(a => a.isCurrent) || currentMaha?.antars?.[0];
 
   const rajaYogas = yogas.filter(y => y.type === 'raja').map(y => y.name);
   const doshas = yogas.filter(y => y.type === 'dosha').map(y => y.name);
@@ -179,15 +179,15 @@ export function buildReading(kundali) {
        desc += ` ${spiritualSummary}`;
      }
 
-     const sYear = parseInt(maha.start.split('-')[0]);
-     const eYear = parseInt(maha.end.split('-')[0]);
+     const sYear = parseInt(maha.startStr.split('-')[0]);
+     const eYear = parseInt(maha.endStr.split('-')[0]);
      const ageStart = Math.max(0, sYear - birthYear);
      const ageEnd = Math.max(0, eYear - birthYear);
 
      return {
         planet: maha.planet,
-        start: maha.start,
-        end: maha.end,
+        start: maha.startStr,
+        end: maha.endStr,
         years: maha.years,
         ageStr: `Ages ${ageStart}-${ageEnd} (${maha.years} yrs)`,
         isCurrent: maha.isCurrent,
@@ -201,9 +201,9 @@ export function buildReading(kundali) {
     maha: lifeJourney.find(m => m.isCurrent) || lifeJourney[0],
     antar: currentAntar ? {
       planet: currentAntar.planet,
-      start: currentAntar.start,
-      end: currentAntar.end,
-      dict: DASHA_DICT[currentAntar.planet] || { desc: '' }
+      start: currentAntar.startStr,
+      end: currentAntar.endStr,
+      dict: DASHA_DICT[currentAntar.planet] || { desc: '', challenge: '', guidance: '' }
     } : null
   };
 
