@@ -1,5 +1,6 @@
 import React from 'react';
 import { DYNAMIC_STRINGS } from './i18n/dynamicTranslations.js';
+import { UI_STRINGS } from './i18n/uiStrings.js';
 import './index.css';
 import LifeDimensionsCard from './components/LifeDimensionsCard.jsx';
 import CompatibilityMatch from './components/CompatibilityMatch.jsx';
@@ -467,6 +468,12 @@ ml:{
 };
 
 function t(path,lang){
+  if (UI_STRINGS[path]) {
+    const translation = UI_STRINGS[path][lang];
+    if (translation) return translation;
+    const enFallback = UI_STRINGS[path]['en'];
+    if (enFallback) return enFallback;
+  }
   if (DYNAMIC_STRINGS[lang] && DYNAMIC_STRINGS[lang][path]) return DYNAMIC_STRINGS[lang][path];
   const S=STRINGS[lang]||STRINGS.en;
   if(S[path]!==undefined)return S[path];

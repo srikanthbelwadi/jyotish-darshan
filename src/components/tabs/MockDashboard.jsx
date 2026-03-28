@@ -1028,7 +1028,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, part
           >
             <div style={{ position: 'absolute', top: '-10px', right: '-10px', fontSize: '140px', opacity: 0.03, pointerEvents: 'none' }}>{data.icon}</div>
             <div style={{ fontSize: '50px', marginBottom: '20px', filter: 'drop-shadow(0 0 15px rgba(255,215,0,0.3))' }}>{data.icon}</div>
-            <h3 style={{ margin: '0 0 12px 0', fontSize: '22px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>{data.title}</h3>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '22px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>{t(data.title)}</h3>
             <div style={{ color: 'var(--text-muted)', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px', fontFamily: 'sans-serif' }}>{t(data.desc)}</div>
             <p style={{ margin: 0, fontSize: '15px', color: 'var(--text-main)', lineHeight: 1.6, flexGrow: 1 }}>{data.options.length} {t('Shastric Outcomes')}</p>
             <div style={{ marginTop: '24px', color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: '"Cinzel", serif', textTransform: 'uppercase' }}>
