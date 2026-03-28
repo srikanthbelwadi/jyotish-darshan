@@ -754,9 +754,6 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
                      <button onClick={() => fetchPrediction(true)} style={{ position: 'absolute', top: 0, right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                    </div>
                )}
-               <div style={{ display: 'inline-block', background: 'var(--bg-surface)', border: '1px solid #b8860b', padding: '10px 24px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                 {data.options.length} {t('Shastric Outcomes Discovered')}
-               </div>
              </div>
              
              {/* 2. Ecliptic Visualization */}
@@ -966,7 +963,7 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
        </div>
        <div>
          <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>{t('Subject: ')} {t(opt.label)}</div>
-         <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '24px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t(data.title)} {t('Oracle Activated')}</h3>
+         <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '24px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t(data.title)}</h3>
          
          <div style={{ background: 'var(--bg-input)', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
            <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -1063,11 +1060,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, part
             <div style={{ position: 'absolute', top: '-10px', right: '-10px', fontSize: '140px', opacity: 0.03, pointerEvents: 'none' }}>{data.icon}</div>
             <div style={{ fontSize: '50px', marginBottom: '20px', filter: 'drop-shadow(0 0 15px rgba(255,215,0,0.3))' }}>{data.icon}</div>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '22px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>{t(data.title)}</h3>
-            <div style={{ color: 'var(--text-muted)', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px', fontFamily: 'sans-serif' }}>{t(data.desc)}</div>
-            <p style={{ margin: 0, fontSize: '15px', color: 'var(--text-main)', lineHeight: 1.6, flexGrow: 1 }}>{data.options.length} {t('Shastric Outcomes')}</p>
-            <div style={{ marginTop: '24px', color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: '"Cinzel", serif', textTransform: 'uppercase' }}>
-              {t('Consult Oracle →')}
-            </div>
+
           </div>
         ))}
       </div>
