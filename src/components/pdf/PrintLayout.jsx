@@ -1,7 +1,7 @@
 import React from 'react';
 import { RASHIS } from '../../engine/constants.js';
 import { DYNAMIC_STRINGS } from '../../i18n/dynamicTranslations.js';
-
+import { buildReading } from '../tabs/ExpertReadingTab.jsx';
 function DrawChart({ data, title }) {
   const cellStyle = {
     border: '1px solid #1e3a5f',
@@ -301,30 +301,26 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
            </>
            )}
 
-           <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: ashtakavarga ? '40px' : '0' }}>{(ashtakavarga ? '7' : '6')}. Expert Reading</h2>
-           <div style={{ background: '#FAFAF8', border: '1px solid #E5D5C0', borderRadius: '8px', padding: '20px', fontSize: '13px', lineHeight: '1.6' }}>
-              <div style={{ marginBottom: '16px' }}>
-                 <strong style={{ color: '#7C3AED', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Lagna (Ascendant)</strong>
-                 <p style={{ margin: 0 }}>{(L_LAGNA[lang] || L_LAGNA.en || [])[lagna.rashi] || ''}</p>
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                 <strong style={{ color: '#7C3AED', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Chandra (Moon Sign)</strong>
-                 <p style={{ margin: 0 }}>{(L_READING[lang] || L_READING.en || {}).chandra ? (L_READING[lang] || L_READING.en).chandra(getMoonNaks(planets), getMoonName(planets), false, false) : ''}</p>
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                 <strong style={{ color: '#7C3AED', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Current Dasha Phase</strong>
-                 <p style={{ margin: 0 }}>
-                    <strong>{getGrahaName(cur?.planet)}</strong> Mahadasha ({cur?.startStr || ''} – {cur?.endStr || ''}). 
-                    {' '}{(L_DASHA[lang] || L_DASHA.en || {})[cur?.planet] || ''}
-                    {curA ? ` During this, the Antardasha of ${getGrahaName(curA.planet)} (${curA.startStr || ''} – ${curA.endStr || ''}) is active. ${(L_DASHA[lang]||L_DASHA.en||{})[curA.planet]||''}` : ''}
-                 </p>
-              </div>
-              {strong.length > 0 && (
-              <div style={{ marginBottom: '16px' }}>
-                 <strong style={{ color: '#7C3AED', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Planetary Strengths</strong>
-                 <p style={{ margin: 0 }}>Strong planets giving prime results: {strong.map(getGrahaName).join(', ')}. {weak.length > 0 ? `Weak planets requiring remedies: ${weak.map(getGrahaName).join(', ')}.` : ''}</p>
-              </div>
-              )}
+           <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: ashtakavarga ? '40px' : '0' }}>{(ashtakavarga ? '7' : '6')}. Your Life Journey (Mahadashas)</h2>
+           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {(() => {
+                 const readingData = buildReading(K);
+                 return readingData.lifeJourney.map(maha => (
+                    <div key={maha.planet} style={{ background: maha.isCurrent ? '#F3E8FF' : '#FAFAF8', border: maha.isCurrent ? '1px solid #7C3AED' : '1px solid #E5D5C0', borderRadius: '8px', padding: '16px', position: 'relative' }}>
+                       {maha.isCurrent && <div style={{ position: 'absolute', top: '10px', right: '10px', background: '#7C3AED', color: 'white', fontSize: '10px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '4px' }}>CURRENT</div>}
+                       <h3 style={{ margin: '0 0 8px', color: '#1e3a5f', fontSize: '14px', textTransform: 'capitalize' }}>
+                          {maha.planet} Mahadasha ({maha.ageStr})
+                       </h3>
+                       <p style={{ margin: '0 0 10px', fontSize: '13px', lineHeight: '1.5', color: '#374151' }}>
+                          {maha.description}
+                       </p>
+                       <div style={{ background: '#fff', padding: '10px', borderRadius: '4px', border: '1px solid #e5d5c0', fontSize: '12px' }}>
+                          <div style={{ marginBottom: '6px' }}><strong style={{ color: '#DC2626' }}>Key Challenge:</strong> {maha.keyChallenge}</div>
+                          <div><strong style={{ color: '#16A34A' }}>Guidance:</strong> {maha.guidance}</div>
+                       </div>
+                    </div>
+                 ));
+              })()}
            </div>
         </div>
 

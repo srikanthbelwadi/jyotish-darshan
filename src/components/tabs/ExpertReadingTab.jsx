@@ -1,7 +1,7 @@
 import { RASHIS } from '../../engine/constants.js';
 
-function buildReading(kundali) {
-  const { lagna, planets, yogas, dasha, shadbala } = kundali;
+export function buildReading(kundali) {
+  const { lagna, planets, yogas, dasha, shadbala, input } = kundali;
   const moonPlanet = planets.find(p => p.key === 'moon');
   const sunPlanet = planets.find(p => p.key === 'sun');
   const lagnaRashi = RASHIS[lagna.rashi];
@@ -16,6 +16,8 @@ function buildReading(kundali) {
 
   const strongPlanets = Object.entries(shadbala).filter(([, v]) => v.classification === 'Strong').map(([k]) => k);
   const weakPlanets = Object.entries(shadbala).filter(([, v]) => v.classification === 'Weak').map(([k]) => k);
+
+  const birthYear = input?.dob ? parseInt(input.dob.split('-')[0]) : new Date().getFullYear();
 
   // Lagna-based personality
   const LAGNA_READINGS = {
@@ -66,140 +68,280 @@ function buildReading(kundali) {
 
   const nakshatraQuality = NAKSHATRA_READINGS[moonPlanet.nakshatraName] || 'profound depth and spiritual awareness';
 
+  // 10th Lord / Career
   const careerPlanet = planets.find(p => p.house === 10) || lagnaLord;
   const careerHint = strongPlanets.includes('jupiter') ? 'Jupiter\'s strength indicates success in teaching, law, finance, or spiritual guidance.' :
                      strongPlanets.includes('mercury') ? 'Mercury\'s prominence suggests excellence in technology, writing, commerce, or communications.' :
                      strongPlanets.includes('saturn') ? 'Saturn\'s strength points toward sustained success through discipline in engineering, administration, or service professions.' :
                      'The career trajectory shows promise through consistent effort and application of natural talents.';
+  
+  const yogaText = rajaYogas.length > 0
+    ? `The chart is graced by ${rajaYogas.slice(0, 2).join(' and ')}, powerful combinations that elevate the native's potential for achievement and recognition.`
+    : 'While major named yogas may not be prominently present, the chart holds its own unique constellation of strengths that will express through consistent effort.';
 
-  const marriageHouse7 = planets.filter(p => p.house === 7);
+  const careerSummary = `${careerHint} ${yogaText}`;
+
+  // 7th House / Relationships
   const venusStatus = planets.find(p => p.key === 'venus');
-  const marriageHint = doshas.includes('Mangal Dosha (Kuja Dosha)')
+  const marriageSummary = doshas.includes('Mangal Dosha (Kuja Dosha)')
     ? 'The presence of Kuja Dosha calls for careful partner selection. Matching with a Manglik native and performing Mangal Shanti before marriage is strongly recommended.'
     : venusStatus?.isExalted
     ? 'Venus being exalted promises a devoted, cultured, and affectionate partner. Marital life holds the promise of genuine companionship.'
     : 'The 7th house configuration suggests a relationship built on mutual respect and shared values.';
 
-  const currentPeriod = `${currentMaha?.planet} Mahadasha${currentAntar ? `, ${currentAntar.planet} Antardasha` : ''}`;
-  const periodYears = `${currentMaha?.start} to ${currentMaha?.end}`;
+  // Spiritual / 9th/12th
+  const buildSpiritualReading = () => {
+    const jupiter = planets.find(p => p.key === 'jupiter');
+    const ketu = planets.find(p => p.key === 'ketu');
+    const jupHouse = jupiter?.house;
+    if (jupHouse === 9 || jupHouse === 12 || jupHouse === 1) {
+      return 'Jupiter\'s placement in a Dharmic or Moksha house indicates a soul deeply oriented toward spiritual evolution. The native is naturally drawn to Vedantic study, philosophical inquiry, and service to others as a path to liberation (Moksha).';
+    }
+    if (ketu?.house === 12 || ketu?.house === 9) {
+      return 'Ketu\'s position in a Moksha-oriented house suggests accumulated spiritual merit from past lifetimes. The native may experience profound inner realizations and is drawn toward meditation (Dhyana) and renunciation of attachment.';
+    }
+    return 'The chart indicates a gradual unfolding of spiritual awareness through life\'s experiences. Bhakti (devotion), Karma Yoga (selfless action), and regular Sadhana (spiritual practice) are the recommended paths for this native\'s growth.';
+  };
 
-  const yogaText = rajaYogas.length > 0
-    ? `The chart is graced by ${rajaYogas.slice(0, 2).join(' and ')}, powerful combinations that elevate the native's potential for achievement and recognition.`
-    : 'While major named yogas may not be prominently present, the chart holds its own unique constellation of strengths that will express through consistent effort.';
+  const spiritualSummary = buildSpiritualReading();
+
+  // Create Soul Blueprint
+  const strongPlanetsStr = strongPlanets.length > 0 
+    ? ` Exceptional planetary strength flows through ${strongPlanets.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(', ')}, bestowing natural mastery in those domains.` 
+    : '';
+  const soulBlueprint = `${LAGNA_READINGS[lagna.rashi] || ''} This chart is rooted in ${lagnaRashi.name} Lagna — shaping the native\'s core personality, physical constitution, and fundamental approach to life. The Moon in ${moonPlanet.nakshatraName} Nakshatra (${moonRashi.name}) colours the emotional world with ${nakshatraQuality}.${strongPlanetsStr}`;
+
+  // Build the Dasha Dictionary
+  const DASHA_DICT = {
+    sun: {
+      desc: 'Sun period elevates authority and spiritual awareness.',
+      challenge: 'Avoid arrogance and excessive need for recognition. Guard against ego-driven decisions in authority roles.',
+      guidance: 'Step into leadership and public service with confidence. Surya Namaskar and morning sun practice strengthen solar energy and vitality.'
+    },
+    moon: {
+      desc: 'Moon period brings emotional depth and public recognition.',
+      challenge: 'Avoid emotional reactivity and over-attachment. Stillness and inner nourishment are essential practices.',
+      guidance: 'Nurture emotional well-being through creative expression, time near water, and family connection. Journaling and meditation bring inner clarity.'
+    },
+    mars: {
+      desc: 'Mars period activates courage, property matters, and competitive drive.',
+      challenge: 'Channel drive constructively — avoid impulsive action, unnecessary conflict, or overexertion.',
+      guidance: 'Direct energy into physical fitness, entrepreneurial ventures, or property matters. Take bold but calculated action — Hanuman puja supports courage and protection.'
+    },
+    rahu: {
+      desc: 'Rahu period creates intense worldly ambition and unconventional breakthroughs.',
+      challenge: 'Ground ambitions in ethical action. Avoid obsessive desire or deception in pursuing goals.',
+      guidance: 'Embrace innovation and transformative opportunities boldly. Study new fields, engage with foreign connections, and take thoughtful unconventional paths.'
+    },
+    jupiter: {
+      desc: 'Jupiter period bestows wisdom, expansion, and spiritual growth.',
+      challenge: 'Beware of overconfidence or moralizing. True wisdom involves listening as much as teaching.',
+      guidance: 'Pursue higher education, teaching, and philosophical inquiry. Expand through travel or study. Charitable giving amplifies Jupiter\'s blessings considerably.'
+    },
+    saturn: {
+      desc: 'Saturn period teaches discipline through challenges and builds lasting structures.',
+      challenge: 'Patience is paramount. Avoid shortcuts and resentment — steady, disciplined effort is the only key.',
+      guidance: 'Build long-term foundations with patience and integrity. Focus on disciplined service and karma yoga. Saturn richly rewards sincere, unglamorous hard work.'
+    },
+    mercury: {
+      desc: 'Mercury period enhances intellect, commerce, and communication.',
+      challenge: 'Avoid mental scatteredness and overthinking. Direct intellectual energy into focused, purposeful work.',
+      guidance: 'Invest in learning, writing, teaching, or skill-building. Launch communication-heavy or analytical projects and strengthen business foundations.'
+    },
+    ketu: {
+      desc: 'Ketu period deepens spiritual insight and detachment from material pursuits.',
+      challenge: 'Avoid excessive withdrawal or self-doubt. Integrate inner gifts with active present-world engagement.',
+      guidance: 'Deepen meditation and spiritual study. Service to the underprivileged brings peace. Ancestral healing practices and pilgrimage are beneficial.'
+    },
+    venus: {
+      desc: 'Venus period brings luxury, relationships, and artistic expression.',
+      challenge: 'Avoid indulgence or emotional dependency. Balance enjoyment with purposeful effort.',
+      guidance: 'Invest in relationships, art, and creative expression. Social connection, diplomacy, and gratitude practices are all highly favoured.'
+    }
+  };
+
+  // Map Mahadashas and inject thematic summaries
+  const lifeJourney = dasha.mahadashas.map(maha => {
+     let dict = DASHA_DICT[maha.planet] || { desc: '', challenge: '', guidance: '' };
+     let desc = dict.desc;
+     
+     // Thematic Injections based on planetary rule
+     // Inject Career into 10th lord or strongest career planet (fallback Saturn)
+     if (maha.planet === careerPlanet.key || (careerPlanet.key==='lagna' && maha.planet==='saturn')) {
+       desc += ` ${careerSummary}`;
+     }
+     // Inject Marriage into 7th lord or Venus
+     if (maha.planet === 'venus' || planets.find(p=>p.house===7)?.key === maha.planet) {
+       desc += ` ${marriageSummary}`;
+     }
+     // Inject Spiritual into Jupiter or Ketu
+     if (maha.planet === 'jupiter' || maha.planet === 'ketu') {
+       desc += ` ${spiritualSummary}`;
+     }
+
+     const sYear = parseInt(maha.start.split('-')[0]);
+     const eYear = parseInt(maha.end.split('-')[0]);
+     const ageStart = Math.max(0, sYear - birthYear);
+     const ageEnd = Math.max(0, eYear - birthYear);
+
+     return {
+        planet: maha.planet,
+        start: maha.start,
+        end: maha.end,
+        years: maha.years,
+        ageStr: `Ages ${ageStart}-${ageEnd} (${maha.years} yrs)`,
+        isCurrent: maha.isCurrent,
+        description: desc,
+        keyChallenge: dict.challenge,
+        guidance: dict.guidance
+     }
+  });
+
+  const deepDive = {
+    maha: lifeJourney.find(m => m.isCurrent) || lifeJourney[0],
+    antar: currentAntar ? {
+      planet: currentAntar.planet,
+      start: currentAntar.start,
+      end: currentAntar.end,
+      dict: DASHA_DICT[currentAntar.planet] || { desc: '' }
+    } : null
+  };
 
   return {
-    personality: LAGNA_READINGS[lagna.rashi] || '',
-    nakshatra: `The Moon placed in ${moonPlanet.nakshatraName} Nakshatra (${moonRashi.name}) bestows ${nakshatraQuality}. This reflects the inner emotional landscape — how the native processes experience, seeks comfort, and relates to the mother principle.`,
-    career: `${careerHint} ${yogaText}`,
-    marriage: marriageHint,
-    currentPeriod,
-    periodYears,
-    currentAnalysis: buildPeriodAnalysis(currentMaha?.planet, currentAntar?.planet, lagna.rashi),
-    spiritual: buildSpiritualReading(planets, lagna.rashi),
+    soulBlueprint,
+    themesSummary: {
+      career: careerSummary,
+      marriage: marriageSummary,
+      spiritual: spiritualSummary
+    },
+    lifeJourney,
+    deepDive
   };
-}
-
-function buildPeriodAnalysis(mahaPlanet, antarPlanet, lagnaRashi) {
-  const DASHA_MEANINGS = {
-    sun: 'a period of vitality, authority, and recognition. Solar energy brings clarity of purpose and success through personal effort.',
-    moon: 'a period of emotional sensitivity, heightened intuition, and growth through nurturing. Travel, mother-related matters, and public prominence are activated.',
-    mars: 'a period of action, courage, and decisive moves. Property, siblings, and competitive endeavors are highlighted.',
-    mercury: 'a period of intellectual expansion, communication, business acumen, and learning. Beneficial for education, writing, and trade.',
-    jupiter: 'an auspicious period of wisdom, spiritual growth, prosperity, and family blessings. Guru\'s benefic rays open doors of grace.',
-    venus: 'a period of creative flourishing, marital happiness, artistic expression, and material comforts. Relationships and aesthetic pursuits prosper.',
-    saturn: 'a period of karmic consolidation, disciplined effort, and lessons in responsibility. Hard work now plants seeds for lasting achievement.',
-    rahu: 'a period of ambition, foreign connections, unconventional paths, and material desires. Innovation and intensity characterize this phase.',
-    ketu: 'a period of spiritualization, detachment, and inner turning. Mystical experiences, research, and liberation from past patterns.',
-  };
-  const mahaText = DASHA_MEANINGS[mahaPlanet] || 'a significant period of personal development.';
-  const antarText = antarPlanet ? `The current Antardasha of ${antarPlanet} adds ${DASHA_MEANINGS[antarPlanet] || 'its own coloration'}.` : '';
-  return `The running ${mahaPlanet?.charAt(0).toUpperCase() + mahaPlanet?.slice(1)} Mahadasha is ${mahaText} ${antarText}`;
-}
-
-function buildSpiritualReading(planets, lagnaRashi) {
-  const jupiter = planets.find(p => p.key === 'jupiter');
-  const ketu = planets.find(p => p.key === 'ketu');
-  const jupHouse = jupiter?.house;
-  if (jupHouse === 9 || jupHouse === 12 || jupHouse === 1) {
-    return 'Jupiter\'s placement in a Dharmic or Moksha house indicates a soul deeply oriented toward spiritual evolution. The native is naturally drawn to Vedantic study, philosophical inquiry, and service to others as a path to liberation (Moksha).';
-  }
-  if (ketu?.house === 12 || ketu?.house === 9) {
-    return 'Ketu\'s position in a Moksha-oriented house suggests accumulated spiritual merit from past lifetimes. The native may experience profound inner realizations and is drawn toward meditation (Dhyana) and renunciation of attachment.';
-  }
-  return 'The chart indicates a gradual unfolding of spiritual awareness through life\'s experiences. Bhakti (devotion), Karma Yoga (selfless action), and regular Sadhana (spiritual practice) are the recommended paths for this native\'s growth.';
 }
 
 export default function ExpertReadingTab({ kundali }) {
   const reading = buildReading(kundali);
-  const { lagna, planets, dasha } = kundali;
-  const currentMaha = dasha.mahadashas.find(m => m.isCurrent) || dasha.mahadashas[0];
 
-  const Section = ({ title, children }) => (
-    <div style={{ marginBottom: 24 }}>
-      <h4 style={{ margin: '0 0 10px', fontSize: 15, fontWeight: 700, color: '#7C3AED', borderBottom: '1px solid #EDE9FE', paddingBottom: 6 }}>{title}</h4>
-      <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.85 }}>{children}</div>
-    </div>
+  const SectionTitle = ({ icon, title }) => (
+    <h4 style={{ margin: '0 0 16px', fontSize: 16, fontWeight: 700, color: '#1E3A5F', borderBottom: '2px solid #E5D5C0', paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+      <span>{icon}</span> {title}
+    </h4>
   );
 
   return (
     <div style={{ animation: 'slideIn 0.25s ease' }}>
-      <div style={{ background: 'white', border: '1px solid #E5D5C0', borderRadius: 12, padding: 28 }}>
+      <div style={{ background: '#120d00', border: '1px solid #D4B896', borderRadius: 12, padding: '28px' }}>
+        
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24, paddingBottom: 18, borderBottom: '1px solid #E5D5C0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 32, paddingBottom: 18, borderBottom: '1px solid #453412' }}>
           <div style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #7C3AED, #F59E0B)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <span style={{ color: 'white', fontSize: 24 }}>☀</span>
           </div>
           <div>
-            <h3 style={{ margin: 0, fontSize: 17, color: '#1E3A5F', fontWeight: 700 }}>Jyotish Vivechanam</h3>
-            <p style={{ margin: '3px 0 0', fontSize: 12, color: '#9CA3AF' }}>Expert Vedic Astrology Reading · Based on Lahiri Ayanamsa & classical Parashara Hora Shastra</p>
+            <h3 style={{ margin: 0, fontSize: 18, color: '#FCD34D', fontWeight: 700 }}>Expert Jyotish Reading</h3>
+            <p style={{ margin: '3px 0 0', fontSize: 13, color: '#D4B896' }}>Parashara Hora Shastra · Lahiri Ayanamsa</p>
           </div>
         </div>
 
-        {/* Personality */}
-        <Section title="🌟 Lagna Analysis — Personality & Temperament">
-          <p>{reading.personality}</p>
-        </Section>
+        {/* Soul Blueprint */}
+        <div style={{ marginBottom: 40 }}>
+          <SectionTitle icon="🌟" title="Soul Blueprint" />
+          <p style={{ fontSize: 14, color: '#fef3c7', lineHeight: 1.85, margin: 0 }}>
+            {reading.soulBlueprint}
+          </p>
+        </div>
 
-        {/* Moon */}
-        <Section title="🌙 Chandra — Emotional Nature & Janma Nakshatra">
-          <p>{reading.nakshatra}</p>
-        </Section>
-
-        {/* Career */}
-        <Section title="💼 Artha — Career, Wealth & Dharmic Purpose">
-          <p>{reading.career}</p>
-        </Section>
-
-        {/* Relationships */}
-        <Section title="💫 Kama — Relationships & Marriage Outlook">
-          <p>{reading.marriage}</p>
-        </Section>
-
-        {/* Current Dasha */}
-        <Section title={`⏳ Dasha Phala — Current Period Analysis (${reading.currentPeriod})`}>
-          <div style={{ background: '#F5F0FF', borderRadius: 8, padding: '12px 16px', marginBottom: 10 }}>
-            <p style={{ margin: 0, fontSize: 12, color: '#7C3AED', fontWeight: 600 }}>
-              Period active: {reading.periodYears}
-            </p>
+        {/* Thematic Summaries */}
+        <div style={{ marginBottom: 40, borderLeft: '3px solid #7C3AED', paddingLeft: 16 }}>
+          <SectionTitle icon="📜" title="Life Themes Overview" />
+          <div style={{ marginBottom: 12 }}>
+            <strong style={{ color: '#FCD34D' }}>Career & Purpose:</strong>
+            <span style={{ fontSize: 14, color: '#fef3c7', marginLeft: 8 }}>{reading.themesSummary.career}</span>
           </div>
-          <p>{reading.currentAnalysis}</p>
-          {currentMaha?.antardashas?.find(a => a.isCurrent) && (
-            <p style={{ marginTop: 10 }}>
-              For the remainder of this period, the native should focus on harnessing the combined energies of the ruling planets.
-              Regular worship of their respective deities and observance of related fasting days will amplify positive results.
-            </p>
-          )}
-        </Section>
+          <div style={{ marginBottom: 12 }}>
+            <strong style={{ color: '#FCD34D' }}>Relationships:</strong>
+            <span style={{ fontSize: 14, color: '#fef3c7', marginLeft: 8 }}>{reading.themesSummary.marriage}</span>
+          </div>
+          <div>
+            <strong style={{ color: '#FCD34D' }}>Spiritual Path:</strong>
+            <span style={{ fontSize: 14, color: '#fef3c7', marginLeft: 8 }}>{reading.themesSummary.spiritual}</span>
+          </div>
+        </div>
 
-        {/* Spiritual */}
-        <Section title="🪷 Moksha — Spiritual Inclinations & Soul Path">
-          <p>{reading.spiritual}</p>
-        </Section>
+        {/* Life Journey */}
+        <div style={{ marginBottom: 40 }}>
+          <SectionTitle icon="🗺️" title="Your Life Journey" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {reading.lifeJourney.map(maha => (
+              <div key={maha.planet} style={{ 
+                background: maha.isCurrent ? '#2E1065' : '#1A1A1A', 
+                border: maha.isCurrent ? '1px solid #7C3AED' : '1px solid #333', 
+                borderRadius: 8, padding: 16, position: 'relative'
+              }}>
+                {maha.isCurrent && (
+                  <div style={{ position: 'absolute', top: 12, right: 12, background: '#7C3AED', color: 'white', fontSize: 11, fontWeight: 'bold', padding: '2px 8px', borderRadius: 12 }}>
+                    NOW
+                  </div>
+                )}
+                <div style={{ marginBottom: 8 }}>
+                  <span style={{ color: '#FCD34D', fontWeight: 700, fontSize: 15, textTransform: 'capitalize' }}>{maha.planet}</span>
+                  <span style={{ color: '#9CA3AF', fontSize: 13, marginLeft: 10 }}>{maha.ageStr}</span>
+                </div>
+                <p style={{ color: '#E5E7EB', fontSize: 13, lineHeight: 1.6, margin: '0 0 12px 0' }}>{maha.description}</p>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: 12, borderRadius: 6 }}>
+                  <div style={{ fontSize: 13, marginBottom: 6 }}>
+                    <strong style={{ color: '#EF4444' }}>Key Challenge:</strong> <span style={{ color: '#D1D5DB' }}>{maha.keyChallenge}</span>
+                  </div>
+                  <div style={{ fontSize: 13 }}>
+                    <strong style={{ color: '#10B981' }}>Guidance:</strong> <span style={{ color: '#D1D5DB' }}>{maha.guidance}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Current Phase: Deep Dive */}
+        <div style={{ marginBottom: 30 }}>
+          <SectionTitle icon="⏳" title="Current Phase: Deep Dive" />
+          <div style={{ background: 'rgba(124, 58, 237, 0.1)', border: '1px solid rgba(124, 58, 237, 0.3)', borderRadius: 8, padding: 20 }}>
+            
+            {/* Mahadasha */}
+            <h5 style={{ margin: '0 0 8px', color: '#FCD34D', fontSize: 15, textTransform: 'capitalize' }}>
+              {reading.deepDive.maha.planet} Mahadasha — {reading.deepDive.maha.start} to {reading.deepDive.maha.end}
+            </h5>
+            <p style={{ color: '#fef3c7', fontSize: 13, lineHeight: 1.6, margin: '0 0 16px 0' }}>
+              {reading.deepDive.maha.description}
+            </p>
+            <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+              <div style={{ flex: 1, background: 'rgba(239, 68, 68, 0.1)', padding: 12, borderRadius: 6, border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                <strong style={{ color: '#F87171', display: 'block', marginBottom: 4, fontSize: 12 }}>Key Challenge</strong>
+                <span style={{ color: '#E5E7EB', fontSize: 12 }}>{reading.deepDive.maha.keyChallenge}</span>
+              </div>
+              <div style={{ flex: 1, background: 'rgba(16, 185, 129, 0.1)', padding: 12, borderRadius: 6, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                <strong style={{ color: '#34D399', display: 'block', marginBottom: 4, fontSize: 12 }}>Core Guidance</strong>
+                <span style={{ color: '#E5E7EB', fontSize: 12 }}>{reading.deepDive.maha.guidance}</span>
+              </div>
+            </div>
+
+            {/* Antardasha */}
+            {reading.deepDive.antar && (
+              <div style={{ borderTop: '1px dashed rgba(252, 211, 77, 0.3)', paddingTop: 16 }}>
+                <h5 style={{ margin: '0 0 8px', color: '#FCD34D', fontSize: 14 }}>
+                  ↳ {reading.deepDive.antar.planet.charAt(0).toUpperCase() + reading.deepDive.antar.planet.slice(1)} Antardasha — {reading.deepDive.antar.start} to {reading.deepDive.antar.end}
+                </h5>
+                <p style={{ color: '#D4B896', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+                  This active sub-period adds its own coloration to the overarching phase: {reading.deepDive.antar.dict.desc} Focus on integrating {reading.deepDive.antar.planet} energies productively to mitigate its challenge: {reading.deepDive.antar.dict.challenge.toLowerCase()}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Disclaimer */}
-        <div style={{ marginTop: 20, padding: '14px 18px', background: '#FFF7ED', borderRadius: 8, border: '1px solid #FDE68A' }}>
-          <p style={{ margin: 0, fontSize: 12, color: '#92400E', lineHeight: 1.6 }}>
-            <strong>Jyotish Vivechanam Note:</strong> This reading is generated using classical Jyotish Shastra principles applied to your computed birth chart. It is intended for self-reflection, personal insight, and spiritual guidance. For major life decisions — particularly marriage, career transitions, or health matters — consultation with an experienced, qualified Jyotishi (Vedic astrologer) is strongly recommended.
+        <div style={{ padding: '14px 18px', background: 'transparent', borderRadius: 8, border: '1px solid rgba(252, 211, 77, 0.3)' }}>
+          <p style={{ margin: 0, fontSize: 12, color: '#D4B896', lineHeight: 1.6 }}>
+            <strong>Note:</strong> This reading is based on classical Parashari Jyotish principles. For a comprehensive personal analysis, consult a qualified Jyotishi.
           </p>
         </div>
       </div>
