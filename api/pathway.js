@@ -30,34 +30,52 @@ Context:
 User's Chart: ${JSON.stringify(kundaliData)}
 
 Task:
-Based on the user's chart, you must return a strict JSON object with two top-level keys: "summary" and "options".
+Return a strict JSON object with "summary" and "options".
 
-1. "summary": A dense 3-4 sentence paragraph evaluating the user's specific chart regarding this Path. State exactly which houses/planets govern this topic based on Brihat Parashara Hora Shastra, and analyze their strength in the user's D1 matrix.
-2. "options": An array of exactly 6 absolute most probable karmic paths/outcomes operating under this specific Pillar right now for the user.
+1. "summary": A dense 2-3 sentence paragraph evaluating the user's specific chart regarding this Path. State exactly which houses/planets govern this topic based on Brihat Parashara Hora Shastra, and analyze their strength in the user's D1 matrix.
+2. "options": Exactly 6 deeply analyzed karmic outcomes operating under this specific Pillar right now for the user. For each outcome, provide a definitive future timeframe (in months or years) and break down the analysis into 2-3 distinct descriptive paragraphs, each with an appropriate subheading.
 
 CRITICAL: EVERY SINGLE STRING VALUE IN THE JSON (except icons) MUST BE IN THE EXACT LANGUAGE SPECIFIED BY THE TARGET UI LANGUAGE CODE (${lang}). NEVER return English unless the code is 'en'.
 
 EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (You must translate the concepts into ${lang}):
 {
-  "summary": "Your Dharma (9th house) lord Guru (Jupiter), exalted in your Lagna, firmly anchors your identity in higher purpose and ethical leadership. The Karma (10th house) lord Mangal (Mars) in the Tritiya Bhava (3rd house) powerfully aspects your professional sphere, demanding courage. Yet, with Chandra (Moon) in the Shashta Bhava (6th house), there is potential emotional friction amidst your daily duties. You must proactively align your immediate work routines to embody your spiritual purpose, heavily prioritizing meticulous, service-oriented action.",
+  "summary": "Your Dharma (9th house) lord Guru (Jupiter), exalted in your Lagna, firmly anchors your identity in higher purpose and ethical leadership...",
   "options": [
     {
       "id": "outcome_1",
       "icon": "🌊",
       "label": "Crossing the Ocean",
-      "synthesis": "Upon rigorous examination of the 12th/9th House Vectors framework regarding crossing the ocean, the karmic unfoldment is unambiguous. The celestial bodies establish a critical temporal vibration affecting the relevant Bhava within your D1 matrix.",
-      "prediction": "Rahu dictates a long journey across the sea. Settlement in a foreign, non-Vedic land is highly indicated for acquiring immense wealth.",
-      "remedy": "Perform a small puja to Varuna before embarking by water."
+      "timeframe": "Over the next 14 to 18 months",
+      "paragraphs": [
+         { 
+           "subheading": "Karmic Synthesis", 
+           "content": "Rahu's transit through your 12th house dictates a long journey across the sea. The celestial bodies establish a critical temporal vibration affecting this relevant Bhava within your D1 matrix." 
+         },
+         { 
+           "subheading": "Financial Implications", 
+           "content": "Settlement in a foreign, non-Vedic land is highly indicated for acquiring immense wealth. However, this transit cannot be bypassed purely through willpower." 
+         }
+      ],
+      "mitigation": "Perform a strict water-offering puja to Varuna before embarking by water."
     },
     {
       "id": "outcome_2",
       "icon": "⚖️",
       "label": "Legal Victory",
-      "synthesis": "Examining the Shashta Bhava (6th house) matrix, Mars casts a dominating 8th aspect onto the 12th house of confinement, mathematically neutralizing any adversarial litigation against your primary assets.",
-      "prediction": "The impending inherited property dispute will swiftly collapse in your favor before reaching trial. Do not entertain any out-of-court settlements.",
-      "remedy": "Recite the Aditya Hrudayam exactly at sunrise on Sundays facing east."
+      "timeframe": "Culminating by mid-2027",
+      "paragraphs": [
+         {
+           "subheading": "Astrological Mechanics",
+           "content": "Examining the Shashta Bhava (6th house) matrix, Mars casts a dominating 8th aspect onto the 12th house of confinement, mathematically neutralizing any adversarial litigation against your primary assets."
+         },
+         {
+           "subheading": "Prophetic Unfoldment",
+           "content": "The impending inherited property dispute will swiftly collapse in your favor before reaching trial. Do not entertain any out-of-court settlements."
+         }
+      ],
+      "mitigation": "Recite the Aditya Hrudayam exactly at sunrise on Sundays facing east."
     }
-  ] // ALWAYS BE SURE TO GENERATE EXACTLY 6 UNIQUE OPTIONS.
+  ]
 }`;
 
     const result = await model.generateContent(systemPrompt);

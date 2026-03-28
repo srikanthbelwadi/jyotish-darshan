@@ -529,115 +529,7 @@ const AstrologicalRemedyBox = ({ alert, remedy, t, lang }) => (
   </div>
 );
 
-const NorthIndianChartSVG = ({ predText, K }) => {
-  const centers = [ {x:100,y:50}, {x:50,y:30}, {x:30,y:50}, {x:50,y:100}, {x:30,y:150}, {x:50,y:170}, {x:100,y:150}, {x:150,y:170}, {x:170,y:150}, {x:150,y:100}, {x:170,y:50}, {x:150,y:30} ];
-  const PLANET_ABBR = { sun: 'Su', moon: 'Mo', mars: 'Ma', mercury: 'Me', jupiter: 'Ju', venus: 'Ve', saturn: 'Sa', rahu: 'Ra', ketu: 'Ke' };
 
-  // Group planets by relative house from Lagna
-  const houseMap = Array(12).fill('');
-  if (K?.planets && K?.lagna) {
-      K.planets.forEach(p => {
-          const hIdx = (p.rashi - K.lagna.rashi + 12) % 12;
-          const abbr = PLANET_ABBR[p.key] || p.key.substring(0, 2);
-          houseMap[hIdx] = houseMap[hIdx] ? houseMap[hIdx] + ',' + abbr : abbr;
-      });
-  }
-
-  return (
-    <svg width="180" height="180" viewBox="0 0 200 200" style={{background:'#fdf5e6', border:'2px solid #8b0000', padding:'4px'}}>
-      <rect x="0" y="0" width="200" height="200" fill="none" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="0" y1="0" x2="200" y2="200" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="200" y1="0" x2="0" y2="200" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="100" y1="0" x2="200" y2="100" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="200" y1="100" x2="100" y2="200" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="100" y1="200" x2="0" y2="100" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="0" y1="100" x2="100" y2="0" stroke="#8b0000" strokeWidth="2"/>
-      {centers.map((c, i) => (
-        <text key={i} x={c.x} y={c.y} fill="#8b0000" fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
-          {houseMap[i] || ''}
-        </text>
-      ))}
-      {/* Ascendant indicator */}
-      {K?.lagna && <text x={100} y={30} fill="#8b0000" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">Asc</text>}
-    </svg>
-  );
-};
-
-const SouthIndianChartSVG = ({ predText, K }) => {
-  const centers = [ {x:75,y:25}, {x:125,y:25}, {x:175,y:25}, {x:175,y:75}, {x:175,y:125}, {x:175,y:175}, {x:125,y:175}, {x:75,y:175}, {x:25,y:175}, {x:25,y:125}, {x:25,y:75}, {x:25,y:25} ];
-  const PLANET_ABBR = { sun: 'Su', moon: 'Mo', mars: 'Ma', mercury: 'Me', jupiter: 'Ju', venus: 'Ve', saturn: 'Sa', rahu: 'Ra', ketu: 'Ke' };
-
-  // Group planets by absolute Rashi
-  const rashiMap = Array(12).fill('');
-  if (K?.planets) {
-      K.planets.forEach(p => {
-          const hIdx = p.rashi;
-          const abbr = PLANET_ABBR[p.key] || p.key.substring(0, 2);
-          rashiMap[hIdx] = rashiMap[hIdx] ? rashiMap[hIdx] + ',' + abbr : abbr;
-      });
-  }
-
-  // Find Lagna location
-  const lagnaRashi = K?.lagna?.rashi;
-
-  return (
-    <svg width="180" height="180" viewBox="0 0 200 200" style={{background:'#fdf5e6', border:'2px solid #8b0000', padding:'4px'}}>
-      <rect x="0" y="0" width="200" height="200" fill="none" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="0" y1="50" x2="200" y2="50" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="0" y1="100" x2="200" y2="100" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="0" y1="150" x2="200" y2="150" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="50" y1="0" x2="50" y2="200" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="100" y1="0" x2="100" y2="200" stroke="#8b0000" strokeWidth="2"/>
-      <line x1="150" y1="0" x2="150" y2="200" stroke="#8b0000" strokeWidth="2"/>
-      <rect x="52" y="52" width="96" height="96" fill="#fdf5e6" />
-      {centers.map((c, i) => (
-        <text key={i} x={c.x} y={c.y} fill="#8b0000" fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
-          {rashiMap[i] || ''}
-        </text>
-      ))}
-      {lagnaRashi !== undefined && (
-          <text x={centers[lagnaRashi].x} y={centers[lagnaRashi].y - 12} fill="#8b0000" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">Asc</text>
-      )}
-    </svg>
-  );
-};
-
-const AstrologicalBasisBox = ({ chartDesc, pillarId, pred, t, lang, K }) => {
-  return (
-    <div style={{ marginTop: '24px', background: 'var(--bg-input)', padding: '24px', border: '1px solid #b8860b', display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', background: '#e8d5b5', padding: '16px', borderRadius: '4px' }}>
-        <div>
-           <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>{t('North Indian format')}</div>
-           <NorthIndianChartSVG predText={pred} K={K} />
-        </div>
-        <div>
-           <div style={{fontSize:'12px', color:'#8b0000', textAlign:'center', marginBottom:'8px', fontWeight:'bold', fontFamily:'"Cinzel"'}}>{t('South Indian format')}</div>
-           <SouthIndianChartSVG predText={pred} K={K} />
-        </div>
-      </div>
-      
-      <div style={{ flex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <span style={{ fontSize: '20px' }}>📜</span><h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '18px', fontFamily: '"Cinzel"' }}>{t('Panchanga Calculation Basis')}</h4>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' }}>
-          <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>{t('Primary Varga')}</div>
-            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>{chartDesc.split(' ')[0]}</div>
-          </div>
-          <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>{t('Panchanga Tithi')}</div>
-            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>{K?.panchanga?.tithi?.name || '---'}</div>
-          </div>
-          <div style={{ background: 'var(--bg-card)', padding: '16px', border: '1px solid rgba(184, 134, 11, 0.5)' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>{t('Governing Nakshatra')}</div>
-            <div style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '16px' }}>{K?.panchanga?.nakshatra?.name || '---'} {K?.panchanga?.yoga?.name ? `(${K.panchanga.yoga.name} Yoga)` : ''}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const MandalVisualizer = ({ selectedOpt }) => {
   return (
@@ -650,18 +542,7 @@ const MandalVisualizer = ({ selectedOpt }) => {
   );
 };
 
-const ShastricExpander = ({ data, opt, t, lang }) => {
-  return (
-    <div style={{ marginTop: '32px', color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.8, borderTop: '2px solid var(--border-light)', paddingTop: '24px', fontFamily: 'serif' }}>
-      <p style={{ marginBottom: '16px' }}>
-        <strong style={{color:'var(--accent-gold)'}}>{t('Shastric Synthesis:')}</strong> {opt.synthesis}
-      </p>
-      <p style={{ margin: 0 }}>
-        <strong style={{color:'var(--accent-gold)'}}>{t('The Oracle reveals: ')}</strong><br/><em>"{opt.prediction}"</em>
-      </p>
-    </div>
-  );
-};
+
 
 const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
   const [opt, setOpt] = useState(null);
@@ -677,35 +558,43 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
 
   return (
     <div className="responsive-grid-2" style={{ alignItems: 'start' }}>
-       <div style={{ background: 'var(--bg-input)', padding: '40px', border: '2px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)' }}>
+       <div style={{ background: 'var(--bg-input)', padding: '40px', border: '2px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)', position: 'sticky', top: '24px' }}>
          <MandalVisualizer selectedOpt={opt} />
-         <ShastricExpander data={data} opt={opt} t={t} lang={lang} />
+         {opt.timeframe && (
+           <div style={{ marginTop: '32px', textAlign: 'center', background: 'var(--bg-card)', padding: '16px', border: '1px solid var(--accent-gold)' }}>
+             <div style={{ color: 'var(--accent-gold)', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>{t('Predictive Trajectory')}</div>
+             <div style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: '"Cinzel", serif' }}>{opt.timeframe}</div>
+           </div>
+         )}
        </div>
        <div>
          <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>{t('Subject: ')} {t(opt.label)}</div>
-         <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '24px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t(data.title)}</h3>
+         <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '32px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t(data.title)}</h3>
          
-         <div style={{ background: 'var(--bg-input)', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
-           <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-             <span style={{ fontSize: '18px' }}>👁️</span> {t('Prophetic Unfoldment')}
-           </div>
-           <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.prediction}</p>
+         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+           {opt.paragraphs && opt.paragraphs.map((para, idx) => (
+             <div key={idx} style={{ background: 'var(--bg-input)', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
+               {para.subheading && (
+                 <div style={{ color: 'var(--text-main)', fontSize: '16px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                   <span style={{ fontSize: '20px', color: 'var(--accent-gold)' }}>✧</span> {para.subheading}
+                 </div>
+               )}
+               <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{para.content}</p>
+             </div>
+           ))}
+           
+           {/* Fallback for old cached format */}
+           {opt.prediction && !opt.paragraphs && (
+             <div style={{ background: 'var(--bg-input)', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
+               <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                 <span style={{ fontSize: '18px' }}>👁️</span> {t('Prophetic Unfoldment')}
+               </div>
+               <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.prediction}</p>
+             </div>
+           )}
          </div>
 
-         <AstrologicalBasisBox chartDesc={data.desc} pillarId={pillarId} pred={opt.prediction} t={t} lang={lang} K={K} />
-         <AstrologicalRemedyBox remedy={opt.remedy} alert={opt.prediction?.includes('afflict') || opt.prediction?.includes('debilitated') || opt.prediction?.includes('danger') ? t("Malefic vibration detected.") : null} t={t} lang={lang} />
-          {/* Synastry Engine temporarily hidden pending LLM upgrade 
-           {partnerKundali && (pillarId === 'vivaha' || pillarId === 'dhana' || pillarId === 'dharma' || pillarId === 'arogya' || pillarId === 'muhurta') && (
-            <div style={{ marginTop: '24px', background: 'rgba(255,215,0,0.05)', padding: '24px', border: '1px solid var(--accent-gold)', borderRadius: '8px', borderLeft: '6px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
-              <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px' }}>💞</span> {t('Synastry Oracle Alignment: ')} {partnerKundali.name || t('Partner')}
-              </div>
-              <p style={{ color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.7, margin: 0, fontFamily: 'serif', fontStyle: 'italic' }}>
-                {t('Awaiting advanced Synastry computations from the pathway nexus...')}
-              </p>
-            </div>
-          )}
-          */}
+         <AstrologicalRemedyBox remedy={opt.mitigation || opt.remedy} alert={null} t={t} lang={lang} />
        </div>
     </div>
   );
