@@ -442,7 +442,7 @@ const PILLAR_DATA = {
 // 2. CLASSICAL MODULAR COMPONENTS
 // ==========================================
 
-const MandalaHero = ({ activeTime, setActiveTime, K }) => {
+const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
 
   const [cache, setCache] = React.useState({});
@@ -518,10 +518,10 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
          <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>Predictions</h2>
+        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Predictions')}</h2>
         <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
-          {timescales.map(t => (
-            <button key={t} onClick={() => setActiveTime(t)} style={{ background: activeTime === t ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === t ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t}</button>
+          {timescales.map(ts => (
+            <button key={ts} onClick={() => setActiveTime(ts)} style={{ background: activeTime === ts ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === ts ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t(ts)}</button>
           ))}
         </div>
         <div style={{ background: 'var(--bg-surface)', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700', minHeight: '100px', display: 'flex', alignItems: 'center' }}>
@@ -556,7 +556,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K }) => {
   );
 };
 
-const EclipticChart = ({ hue, pillarId }) => {
+const EclipticChart = ({ hue, pillarId, t }) => {
    const ALL = ['Su','Mo','Ma','Me','Ju','Ve','Sa','Ra','Ke'];
    const sum = [...(pillarId||'x')].reduce((a,c)=>a+c.charCodeAt(0),0);
    const p1 = ALL[sum % ALL.length];
@@ -644,8 +644,8 @@ const EclipticChart = ({ hue, pillarId }) => {
        
        <circle cx="250" cy="250" r="50" fill="var(--accent-gold)" opacity="0.1" />
        <circle cx="250" cy="250" r="10" fill="var(--accent-gold)" />
-       <text x="250" y="285" fill="var(--text-muted)" fontSize="10" textAnchor="middle" letterSpacing="1">VEDIC</text>
-       <text x="250" y="300" fill="var(--text-muted)" fontSize="10" textAnchor="middle" letterSpacing="1">MANDALA</text>
+       <text x="250" y="285" fill="var(--text-muted)" fontSize="10" textAnchor="middle" letterSpacing="1">{t('VEDIC')}</text>
+       <text x="250" y="300" fill="var(--text-muted)" fontSize="10" textAnchor="middle" letterSpacing="1">{t('MANDALA')}</text>
     </svg>
   );
 };
@@ -754,7 +754,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
              {/* 2. Ecliptic Visualization */}
              <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>{t('Stellar Ecliptic Alignment')}</div>
-               <EclipticChart hue={hue} pillarId={targetPillar} />
+               <EclipticChart hue={hue} pillarId={targetPillar} t={t} />
              </div>
           </div>
        </div>
@@ -1008,7 +1008,7 @@ export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, part
           {t('Reveal Kundali ➔')}
         </button>
       </div>
-      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} />
+      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} t={t} lang={lang} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
         {Object.entries(PILLAR_DATA).map(([key, data]) => (
