@@ -250,7 +250,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
           {loading ? (
              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'var(--text-muted)' }}>
                <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
-               <span style={{ fontFamily: '"Cinzel", serif', fontSize: '16px', letterSpacing: '2px', textTransform: 'uppercase' }}>Consulting Akashic Records...</span>
+               <span style={{ fontFamily: '"Cinzel", serif', fontSize: '16px', letterSpacing: '2px', textTransform: 'uppercase' }}>{t('Consulting Akashic Records...')}</span>
              </div>
           ) : error ? (
              <p style={{ margin: 0, fontSize: '16px', color: 'var(--text-badge-red)', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
@@ -258,7 +258,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
              <div style={{ position: 'relative', width: '100%', minHeight: '50px' }}>
                {typeof cache[activeCacheKey] === 'string' ? (
                  <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', fontStyle: 'italic', paddingRight: '40px' }}>
-                   "{cache[activeCacheKey] || 'Awaiting celestial alignment...'}"
+                   "{cache[activeCacheKey] || t('Awaiting celestial alignment...')}"
                  </p>
                ) : cache[activeCacheKey] ? (
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingRight: '40px' }}>
@@ -291,13 +291,13 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
                  </div>
                ) : (
                  <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', paddingRight: '40px' }}>
-                   Awaiting celestial alignment...
+                   {t('Awaiting celestial alignment...')}
                  </p>
                )}
                {cache[activeCacheKey] && (
                  <button 
                    onClick={() => fetchOracle(true)}
-                   title="Consult again (Override cache)"
+                   title={t('Consult again (Override cache)')}
                    style={{ position: 'absolute', top: '-10px', right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}
                    onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent-gold)'; e.currentTarget.style.color = 'var(--accent-gold)'; e.currentTarget.style.transform = 'rotate(180deg)'; }}
                    onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
