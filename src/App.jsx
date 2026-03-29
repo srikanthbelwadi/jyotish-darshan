@@ -2393,10 +2393,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
         )}
       </div>
       <footer className="no-print" style={{textAlign:'center',padding:'24px',borderTop:'1px solid var(--border-light)',background:'var(--bg-dark)'}}>
-        <p style={{margin:0,fontSize:12,color:'var(--text-muted)'}}>{t('footer',lang)}</p>
-        <div style={{marginTop:12}}>
-          <a href="/terms.html" target="_blank" rel="noreferrer" style={{color:'var(--accent-gold)',textDecoration:'underline',fontSize:12,fontFamily:'inherit',transition:'opacity 0.2s',opacity:0.8}} onMouseOver={e=>e.currentTarget.style.opacity=1} onMouseOut={e=>e.currentTarget.style.opacity=0.8}>Terms of Service</a>
-        </div>
+        <a href="/terms.html" target="_blank" rel="noreferrer" style={{color:'var(--accent-gold)',textDecoration:'underline',fontSize:12,fontFamily:'inherit',transition:'opacity 0.2s',opacity:0.8}} onMouseOver={e=>e.currentTarget.style.opacity=1} onMouseOut={e=>e.currentTarget.style.opacity=0.8}>Terms of Service</a>
       </footer>
     </div>
   );
