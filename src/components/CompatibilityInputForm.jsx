@@ -75,15 +75,32 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
     if (Object.keys(newErrs).length > 0) { setErrs(newErrs); return; }
     
     setLoading(true);
-    const [y, m, d] = form.dob.split('-');
-    const [h, min_] = form.tob.split(':');
+    let y, m, d;
+    if (form.dob.includes('/')) {
+      const dt = new Date(form.dob);
+      y = dt.getFullYear(); m = dt.getMonth() + 1; d = dt.getDate();
+    } else {
+      const parts = form.dob.split('-');
+      y = Number(parts[0]); m = Number(parts[1]); d = Number(parts[2]);
+    }
     
-    const offset = getUTCOffset(form.timezone, Number(y), Number(m), Number(d), Number(h), Number(min_));
+    let h, min_;
+    let rawT = form.tob.trim().toUpperCase();
+    let isPM = rawT.includes('PM');
+    let isAM = rawT.includes('AM');
+    let cleanT = rawT.replace(/[^0-9:]/g, '');
+    const [hh, mm] = cleanT.split(':');
+    h = Number(hh);
+    min_ = Number(mm);
+    if (isPM && h < 12) h += 12;
+    if (isAM && h === 12) h = 0;
+    
+    const offset = getUTCOffset(form.timezone, y, m, d, h, min_);
 
     const inputData = {
       name: form.name || txt('comp.partner', "Partner"),
-      year: Number(y), month: Number(m), day: Number(d),
-      hour: Number(h), minute: Number(min_),
+      year: y, month: m, day: d,
+      hour: h, minute: min_,
       city: form.city, country: form.country,
       lat: form.lat, lng: form.lng, dob: form.dob, tob: form.tob,
       timezone: form.timezone, utcOffset: offset, gender: form.gender
