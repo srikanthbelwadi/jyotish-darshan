@@ -1,6 +1,13 @@
 import { RASHIS } from '../../engine/constants.js';
+import { EXPERT_TRANSLATIONS } from '../../i18n/expertTranslations.js';
+import { DYNAMIC_STRINGS } from '../../i18n/dynamicTranslations.js';
 
-export function buildReading(kundali) {
+export function buildReading(kundali, lang = 'en') {
+  const t = (key) => (EXPERT_TRANSLATIONS[lang] || EXPERT_TRANSLATIONS.en)[key] || 
+                     (DYNAMIC_STRINGS[lang] || DYNAMIC_STRINGS.en)[key] || 
+                     EXPERT_TRANSLATIONS.en[key] || 
+                     DYNAMIC_STRINGS.en[key] || key;
+
   const { lagna, planets, yogas, dasha, shadbala, input } = kundali;
   const moonPlanet = planets.find(p => p.key === 'moon');
   const sunPlanet = planets.find(p => p.key === 'sun');
@@ -66,28 +73,28 @@ export function buildReading(kundali) {
     'Revati': 'completeness, gentle nourishment, Pushan\'s care',
   };
 
-  const nakshatraQuality = NAKSHATRA_READINGS[moonPlanet.nakshatraName] || 'profound depth and spiritual awareness';
+  const nakshatraQuality = NAKSHATRA_READINGS[moonPlanet.nakshatraName] || t('er.profoundDepth');
 
   // 10th Lord / Career
   const careerPlanet = planets.find(p => p.house === 10) || lagnaLord;
-  const careerHint = strongPlanets.includes('jupiter') ? 'Jupiter\'s strength indicates success in teaching, law, finance, or spiritual guidance.' :
-                     strongPlanets.includes('mercury') ? 'Mercury\'s prominence suggests excellence in technology, writing, commerce, or communications.' :
-                     strongPlanets.includes('saturn') ? 'Saturn\'s strength points toward sustained success through discipline in engineering, administration, or service professions.' :
-                     'The career trajectory shows promise through consistent effort and application of natural talents.';
+  const careerHint = strongPlanets.includes('jupiter') ? t('er.careerJupiter') :
+                     strongPlanets.includes('mercury') ? t('er.careerMercury') :
+                     strongPlanets.includes('saturn') ? t('er.careerSaturn') :
+                     t('er.careerDefault');
   
   const yogaText = rajaYogas.length > 0
-    ? `The chart is graced by ${rajaYogas.slice(0, 2).join(' and ')}, powerful combinations that elevate the native's potential for achievement and recognition.`
-    : 'While major named yogas may not be prominently present, the chart holds its own unique constellation of strengths that will express through consistent effort.';
+    ? t('er.yogaGraced').replace('{yogas}', rajaYogas.slice(0, 2).join(' & '))
+    : t('er.yogaDefault');
 
   const careerSummary = `${careerHint} ${yogaText}`;
 
   // 7th House / Relationships
   const venusStatus = planets.find(p => p.key === 'venus');
   const marriageSummary = doshas.includes('Mangal Dosha (Kuja Dosha)')
-    ? 'The presence of Kuja Dosha calls for careful partner selection. Matching with a Manglik native and performing Mangal Shanti before marriage is strongly recommended.'
+    ? t('er.mangalDosha')
     : venusStatus?.isExalted
-    ? 'Venus being exalted promises a devoted, cultured, and affectionate partner. Marital life holds the promise of genuine companionship.'
-    : 'The 7th house configuration suggests a relationship built on mutual respect and shared values.';
+    ? t('er.venusExalted')
+    : t('er.marriageDefault');
 
   // Spiritual / 9th/12th
   const buildSpiritualReading = () => {
@@ -95,21 +102,31 @@ export function buildReading(kundali) {
     const ketu = planets.find(p => p.key === 'ketu');
     const jupHouse = jupiter?.house;
     if (jupHouse === 9 || jupHouse === 12 || jupHouse === 1) {
-      return 'Jupiter\'s placement in a Dharmic or Moksha house indicates a soul deeply oriented toward spiritual evolution. The native is naturally drawn to Vedantic study, philosophical inquiry, and service to others as a path to liberation (Moksha).';
+      return t('er.spiritJupiter');
     }
     if (ketu?.house === 12 || ketu?.house === 9) {
-      return 'Ketu\'s position in a Moksha-oriented house suggests accumulated spiritual merit from past lifetimes. The native may experience profound inner realizations and is drawn toward meditation (Dhyana) and renunciation of attachment.';
+      return t('er.spiritKetu');
     }
-    return 'The chart indicates a gradual unfolding of spiritual awareness through life\'s experiences. Bhakti (devotion), Karma Yoga (selfless action), and regular Sadhana (spiritual practice) are the recommended paths for this native\'s growth.';
+    return t('er.spiritDefault');
   };
 
   const spiritualSummary = buildSpiritualReading();
 
   // Create Soul Blueprint
   const strongPlanetsStr = strongPlanets.length > 0 
-    ? ` Exceptional planetary strength flows through ${strongPlanets.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(', ')}, bestowing natural mastery in those domains.` 
+    ? t('er.strongPlanets').replace('{planets}', strongPlanets.map(p => t(`pl.${p}`) || p.charAt(0).toUpperCase() + p.slice(1)).join(', ')) 
     : '';
-  const soulBlueprint = `${LAGNA_READINGS[lagna.rashi] || ''} This chart is rooted in ${lagnaRashi.name} Lagna — shaping the native\'s core personality, physical constitution, and fundamental approach to life. The Moon in ${moonPlanet.nakshatraName} Nakshatra (${moonRashi.name}) colours the emotional world with ${nakshatraQuality}.${strongPlanetsStr}`;
+    
+  const trRashiName = t(`yo.rashi.${lagna.rashi}`) || lagnaRashi.name;
+  const trMoonRashi = t(`yo.rashi.${moonPlanet.rashi}`) || moonRashi.name;
+
+  const soulBlueprint = t('er.blueprintFormat')
+    .replace('{lagnaReading}', LAGNA_READINGS[lagna.rashi] || '')
+    .replace('{lagnaRashi}', trRashiName)
+    .replace('{nakshatra}', moonPlanet.nakshatraName)
+    .replace('{moonRashi}', trMoonRashi)
+    .replace('{nakshatraQuality}', nakshatraQuality)
+    .replace('{strength}', strongPlanetsStr);
 
   // Build the Dasha Dictionary
   const DASHA_DICT = {
@@ -201,6 +218,7 @@ export function buildReading(kundali) {
     maha: lifeJourney.find(m => m.isCurrent) || lifeJourney[0],
     antar: currentAntar ? {
       planet: currentAntar.planet,
+      trPlanet: t(`pl.${currentAntar.planet}`) || currentAntar.planet,
       start: currentAntar.startStr,
       end: currentAntar.endStr,
       dict: DASHA_DICT[currentAntar.planet] || { desc: '', challenge: '', guidance: '' }
@@ -219,8 +237,12 @@ export function buildReading(kundali) {
   };
 }
 
-export default function ExpertReadingTab({ kundali }) {
-  const reading = buildReading(kundali);
+export default function ExpertReadingTab({ kundali, lang = 'en' }) {
+  const reading = buildReading(kundali, lang);
+  const t = (key) => (EXPERT_TRANSLATIONS[lang] || EXPERT_TRANSLATIONS.en)[key] || 
+                     (DYNAMIC_STRINGS[lang] || DYNAMIC_STRINGS.en)[key] || 
+                     EXPERT_TRANSLATIONS.en[key] || 
+                     DYNAMIC_STRINGS.en[key] || key;
 
   const SectionTitle = ({ icon, title }) => (
     <h4 style={{ margin: '0 0 16px', fontSize: 16, fontWeight: 700, color: 'var(--accent-gold)', borderBottom: '1px solid var(--border-light)', paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -238,14 +260,14 @@ export default function ExpertReadingTab({ kundali }) {
             <span style={{ color: 'white', fontSize: 24 }}>☀</span>
           </div>
           <div>
-            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--accent-gold)', fontWeight: 700 }}>Expert Jyotish Reading</h3>
-            <p style={{ margin: '3px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>Parashara Hora Shastra · Lahiri Ayanamsa</p>
+            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--accent-gold)', fontWeight: 700 }}>{t('er.title')}</h3>
+            <p style={{ margin: '3px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>{t('er.subtitle')}</p>
           </div>
         </div>
 
         {/* Soul Blueprint */}
         <div style={{ marginBottom: 40 }}>
-          <SectionTitle icon="🌟" title="Soul Blueprint" />
+          <SectionTitle icon="🌟" title={t('er.soulBlueprint')} />
           <p style={{ fontSize: 14, color: 'var(--text-main)', lineHeight: 1.85, margin: 0 }}>
             {reading.soulBlueprint}
           </p>
@@ -253,24 +275,24 @@ export default function ExpertReadingTab({ kundali }) {
 
         {/* Thematic Summaries */}
         <div style={{ marginBottom: 40, borderLeft: '3px solid #7C3AED', paddingLeft: 16 }}>
-          <SectionTitle icon="📜" title="Life Themes Overview" />
+          <SectionTitle icon="📜" title={t('er.lifeThemes')} />
           <div style={{ marginBottom: 12 }}>
-            <strong style={{ color: 'var(--accent-gold)' }}>Career & Purpose:</strong>
+            <strong style={{ color: 'var(--accent-gold)' }}>{t('er.career')}</strong>
             <span style={{ fontSize: 14, color: 'var(--text-main)', marginLeft: 8 }}>{reading.themesSummary.career}</span>
           </div>
           <div style={{ marginBottom: 12 }}>
-            <strong style={{ color: 'var(--accent-gold)' }}>Relationships:</strong>
+            <strong style={{ color: 'var(--accent-gold)' }}>{t('er.relationships')}</strong>
             <span style={{ fontSize: 14, color: 'var(--text-main)', marginLeft: 8 }}>{reading.themesSummary.marriage}</span>
           </div>
           <div>
-            <strong style={{ color: 'var(--accent-gold)' }}>Spiritual Path:</strong>
+            <strong style={{ color: 'var(--accent-gold)' }}>{t('er.spiritualPath')}</strong>
             <span style={{ fontSize: 14, color: 'var(--text-main)', marginLeft: 8 }}>{reading.themesSummary.spiritual}</span>
           </div>
         </div>
 
         {/* Life Journey */}
         <div style={{ marginBottom: 40 }}>
-          <SectionTitle icon="🗺️" title="Your Life Journey" />
+          <SectionTitle icon="🗺️" title={t('er.lifeJourney')} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {reading.lifeJourney.map(maha => (
               <div key={maha.planet} style={{ 
@@ -280,20 +302,20 @@ export default function ExpertReadingTab({ kundali }) {
               }}>
                 {maha.isCurrent && (
                   <div style={{ position: 'absolute', top: 12, right: 12, background: '#7C3AED', color: 'white', fontSize: 11, fontWeight: 'bold', padding: '2px 8px', borderRadius: 12 }}>
-                    NOW
+                    {t('er.now')}
                   </div>
                 )}
                 <div style={{ marginBottom: 8 }}>
-                  <span style={{ color: 'var(--accent-gold)', fontWeight: 700, fontSize: 15, textTransform: 'capitalize' }}>{maha.planet}</span>
+                  <span style={{ color: 'var(--accent-gold)', fontWeight: 700, fontSize: 15, textTransform: 'capitalize' }}>{t(`pl.${maha.planet}`) || maha.planet}</span>
                   <span style={{ color: 'var(--text-muted)', fontSize: 13, marginLeft: 10 }}>{maha.ageStr}</span>
                 </div>
                 <p style={{ color: 'var(--text-main)', fontSize: 13, lineHeight: 1.6, margin: '0 0 12px 0' }}>{maha.description}</p>
                 <div style={{ background: 'var(--bg-card)', padding: 12, borderRadius: 6, border: '1px solid var(--border-light)' }}>
                   <div style={{ fontSize: 13, marginBottom: 6 }}>
-                    <strong style={{ color: 'var(--text-badge-red)' }}>Key Challenge:</strong> <span style={{ color: 'var(--text-main)' }}>{maha.keyChallenge}</span>
+                    <strong style={{ color: 'var(--text-badge-red)' }}>{t('er.keyChallenge')}</strong> <span style={{ color: 'var(--text-main)' }}>{maha.keyChallenge}</span>
                   </div>
                   <div style={{ fontSize: 13 }}>
-                    <strong style={{ color: 'var(--text-badge-green)' }}>Guidance:</strong> <span style={{ color: 'var(--text-main)' }}>{maha.guidance}</span>
+                    <strong style={{ color: 'var(--text-badge-green)' }}>{t('er.guidance')}</strong> <span style={{ color: 'var(--text-main)' }}>{maha.guidance}</span>
                   </div>
                 </div>
               </div>
@@ -303,23 +325,23 @@ export default function ExpertReadingTab({ kundali }) {
 
         {/* Current Phase: Deep Dive */}
         <div style={{ marginBottom: 30 }}>
-          <SectionTitle icon="⏳" title="Current Phase: Deep Dive" />
+          <SectionTitle icon="⏳" title={t('er.currentPhase')} />
           <div style={{ background: 'var(--bg-badge-purple)', border: '1px solid var(--border-light)', borderRadius: 8, padding: 20 }}>
             
             {/* Mahadasha */}
             <h5 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 15, textTransform: 'capitalize' }}>
-              {reading.deepDive.maha.planet} Mahadasha — {reading.deepDive.maha.start} to {reading.deepDive.maha.end}
+              {t(`pl.${reading.deepDive.maha.planet}`) || reading.deepDive.maha.planet} Mahadasha — {reading.deepDive.maha.start} to {reading.deepDive.maha.end}
             </h5>
             <p style={{ color: 'var(--text-main)', fontSize: 13, lineHeight: 1.6, margin: '0 0 16px 0' }}>
               {reading.deepDive.maha.description}
             </p>
             <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
               <div style={{ flex: 1, background: 'var(--bg-badge-red)', padding: 12, borderRadius: 6, border: '1px solid var(--border-light)' }}>
-                <strong style={{ color: 'var(--text-badge-red)', display: 'block', marginBottom: 4, fontSize: 12 }}>Key Challenge</strong>
+                <strong style={{ color: 'var(--text-badge-red)', display: 'block', marginBottom: 4, fontSize: 12 }}>{t('er.keyChallenge')}</strong>
                 <span style={{ color: 'var(--text-main)', fontSize: 12 }}>{reading.deepDive.maha.keyChallenge}</span>
               </div>
               <div style={{ flex: 1, background: 'var(--bg-badge-green)', padding: 12, borderRadius: 6, border: '1px solid var(--border-light)' }}>
-                <strong style={{ color: 'var(--text-badge-green)', display: 'block', marginBottom: 4, fontSize: 12 }}>Core Guidance</strong>
+                <strong style={{ color: 'var(--text-badge-green)', display: 'block', marginBottom: 4, fontSize: 12 }}>{t('er.coreGuidance')}</strong>
                 <span style={{ color: 'var(--text-main)', fontSize: 12 }}>{reading.deepDive.maha.guidance}</span>
               </div>
             </div>
@@ -327,11 +349,15 @@ export default function ExpertReadingTab({ kundali }) {
             {/* Antardasha */}
             {reading.deepDive.antar && (
               <div style={{ borderTop: '1px dashed var(--border-light)', paddingTop: 16 }}>
-                <h5 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 14 }}>
-                  ↳ {reading.deepDive.antar.planet.charAt(0).toUpperCase() + reading.deepDive.antar.planet.slice(1)} Antardasha — {reading.deepDive.antar.start} to {reading.deepDive.antar.end}
+                <h5 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 14, textTransform: 'capitalize' }}>
+                  ↳ {reading.deepDive.antar.trPlanet} Antardasha — {reading.deepDive.antar.start} to {reading.deepDive.antar.end}
                 </h5>
                 <p style={{ color: 'var(--text-muted)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
-                  This active sub-period adds its own coloration to the overarching phase: {reading.deepDive.antar.dict.desc} Focus on integrating {reading.deepDive.antar.planet} energies productively to mitigate its challenge: {reading.deepDive.antar.dict.challenge.toLowerCase()}
+                  {t('er.antarFormat')
+                    .replace('{desc}', reading.deepDive.antar.dict.desc)
+                    .replace('{planet}', reading.deepDive.antar.trPlanet)
+                    .replace('{challenge}', reading.deepDive.antar.dict.challenge.toLowerCase())
+                  }
                 </p>
               </div>
             )}
@@ -341,7 +367,7 @@ export default function ExpertReadingTab({ kundali }) {
         {/* Disclaimer */}
         <div style={{ padding: '14px 18px', background: 'var(--bg-badge-yellow)', borderRadius: 8, border: '1px solid var(--border-light)' }}>
           <p style={{ margin: 0, fontSize: 12, color: 'var(--text-badge-yellow)', lineHeight: 1.6 }}>
-            <strong>Note:</strong> This reading is based on classical Parashari Jyotish principles. For a comprehensive personal analysis, consult a qualified Jyotishi.
+            <strong>{t('er.note')}</strong> {t('er.noteText')}
           </p>
         </div>
       </div>

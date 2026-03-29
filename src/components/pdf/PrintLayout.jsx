@@ -304,7 +304,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
            <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: ashtakavarga ? '40px' : '0' }}>{(ashtakavarga ? '7' : '6')}. Your Life Journey (Mahadashas)</h2>
            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {(() => {
-                 const readingData = buildReading(K);
+                 const readingData = buildReading(K, lang);
                  return readingData.lifeJourney.map(maha => (
                     <div key={maha.planet} style={{ background: maha.isCurrent ? '#F3E8FF' : '#FAFAF8', border: maha.isCurrent ? '1px solid #7C3AED' : '1px solid #E5D5C0', borderRadius: '8px', padding: '16px', position: 'relative' }}>
                        {maha.isCurrent && <div style={{ position: 'absolute', top: '10px', right: '10px', background: '#7C3AED', color: 'white', fontSize: '10px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '4px' }}>CURRENT</div>}

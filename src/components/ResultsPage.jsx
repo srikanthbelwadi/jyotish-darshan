@@ -163,7 +163,7 @@ export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDow
         {tab === 'yoga'    && <YogaTab     kundali={kundali} />}
         {tab === 'shadbala' && <ShadbalaTab kundali={kundali} />}
         {tab === 'avarga'  && <AshtakavargaTab kundali={kundali} />}
-        {tab === 'reading' && <ExpertReadingTab kundali={kundali} />}
+        {tab === 'reading' && <ExpertReadingTab kundali={kundali} lang={lang} />}
       </div>
 
       {/* ── Footer ── */}
