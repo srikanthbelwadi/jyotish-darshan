@@ -97,22 +97,24 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
         hour = 12; minute = 0;
       }
       const utcDate = new Date(Date.UTC(year, month - 1, day, hour, minute));
-      const str = new Intl.DateTimeFormat('en-US', {
-        timeZone: tzId,
-        year: 'numeric', month: 'numeric', day: 'numeric',
-        hour: 'numeric', minute: 'numeric', second: 'numeric',
-        hour12: false
-      }).format(utcDate);
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: tzId, year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false
+      });
+      const parts = formatter.formatToParts(utcDate);
+      const getVal = (type) => parts.find(p => p.type === type)?.value || '0';
+      const yStr = getVal('year');
+      const mStr = getVal('month');
+      const dStr = getVal('day');
+      let hStr = getVal('hour');
+      const minStr = getVal('minute');
+      const sStr = getVal('second');
+      if (hStr === '24') hStr = '00';
       
-      const [datePart, timePart] = str.split(', ');
-      const [m, d, y] = datePart.split('/');
-      let [h, min, s] = timePart.split(':');
-      // handle 24h 24:00 edge case from Intl API
-      if (h === '24') h = '00';
-      
-      const targetTimeAsUTC = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d), Number(h), Number(min), Number(s)));
+      const targetTimeAsUTC = new Date(Date.UTC(Number(yStr), Number(mStr) - 1, Number(dStr), Number(hStr), Number(minStr), Number(sStr)));
       const offsetMs = targetTimeAsUTC.getTime() - utcDate.getTime();
-      return offsetMs / 3600000;
+      const diff = offsetMs / 3600000;
+      return isNaN(diff) ? 5.5 : diff;
     } catch (err) {
       return 5.5; 
     } 

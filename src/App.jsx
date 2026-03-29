@@ -1385,11 +1385,16 @@ function InputForm({onSubmit,lang,setLang,onOpenTerms}){
   function getOffset(tz){
     try {
       const d=new Date();
-      const str=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric',hour12:false}).format(d);
-      const[dp,tp]=str.split(', ');const[m,day,y]=dp.split('/');let[h,min,s]=tp.split(':');if(h==='24')h='00';
-      const localTime=new Date(Date.UTC(Number(y),Number(m)-1,Number(day),Number(h),Number(min),Number(s)));
+      const formatter=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric',hour12:false});
+      const parts=formatter.formatToParts(d);
+      const getVal=(type)=>parts.find(p=>p.type===type)?.value||'0';
+      const yStr=getVal('year'),mStr=getVal('month'),dStr=getVal('day');
+      let hStr=getVal('hour');const minStr=getVal('minute'),sStr=getVal('second');
+      if(hStr==='24')hStr='00';
+      const localTime=new Date(Date.UTC(Number(yStr),Number(mStr)-1,Number(dStr),Number(hStr),Number(minStr),Number(sStr)));
       const utcTime=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),d.getUTCHours(),d.getUTCMinutes(),d.getUTCSeconds()));
-      return (localTime.getTime()-utcTime.getTime())/3600000;
+      const diff=(localTime.getTime()-utcTime.getTime())/3600000;
+      return isNaN(diff)?5.5:diff;
     } catch {
       return 5.5;
     }
