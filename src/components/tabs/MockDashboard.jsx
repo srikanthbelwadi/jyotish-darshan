@@ -660,23 +660,29 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
                       <UniversalLoader />
                    </div>
                ) : error ? (
-                   <div style={{ position: 'relative', marginBottom: '32px' }}>
-                     <p style={{ color: 'var(--text-badge-red)', fontSize: '18px', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
-                     <button onClick={() => fetchPathway(true)} style={{ position: 'absolute', top: 0, right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
+                   <div style={{ marginBottom: '32px' }}>
+                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                       <button onClick={() => fetchPathway(true)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
+                     </div>
+                     <p style={{ color: 'var(--text-badge-red)', fontSize: '18px', fontFamily: '"Cinzel", serif', textAlign: 'center' }}>⚠️ {error}</p>
                    </div>
                ) : pathwayData ? (
-                   <div style={{ position: 'relative', marginBottom: '32px' }}>
-                     <p style={{ padding: '24px', background: 'var(--bg-surface)', borderLeft: '4px solid #ffd700', color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: 0, fontStyle: 'italic' }}>
+                   <div style={{ marginBottom: '32px' }}>
+                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                       <button onClick={() => fetchPathway(true)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
+                     </div>
+                     <p style={{ padding: '24px', background: 'var(--bg-surface)', borderTop: '4px solid #ffd700', color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', fontStyle: 'italic', textAlign: 'center' }}>
                        "{pathwayData.summary}"
                      </p>
-                     <button onClick={() => fetchPathway(true)} style={{ position: 'absolute', top: '10px', right: '10px', background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                    </div>
                ) : (
-                   <div style={{ position: 'relative', marginBottom: '32px' }}>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: 0 }}>
+                   <div style={{ marginBottom: '32px' }}>
+                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                       <button onClick={() => fetchPathway(true)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
+                     </div>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
                        This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. {data.prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.
                      </p>
-                     <button onClick={() => fetchPathway(true)} style={{ position: 'absolute', top: 0, right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                    </div>
                )}
              </div>
@@ -783,29 +789,32 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang, user, onRequ
            </div>
          )}
        </div>
-       <div>
+       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+         <button onClick={() => setOpt(null)} style={{ background: 'var(--bg-card)', color: 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', cursor: 'pointer', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '14px', fontFamily: '"Cinzel", serif', transition:'all 0.2s', textTransform:'uppercase' }} onMouseOver={e=>{e.currentTarget.style.background='var(--bg-input)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'}}>
+           {t('← Back to Pathways')}
+         </button>
          <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>{t('Subject:')} {t(opt.label)}</div>
          <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '32px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t(data.title)}</h3>
          
-         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
            {opt.paragraphs && opt.paragraphs.map((para, idx) => (
-             <div key={idx} style={{ background: 'var(--bg-input)', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
+             <div key={idx} style={{ background: 'var(--bg-input)', padding: '24px', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', textAlign: 'center' }}>
                {para.subheading && (
-                 <div style={{ color: 'var(--text-main)', fontSize: '16px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                 <div style={{ color: 'var(--text-main)', fontSize: '16px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                    <span style={{ fontSize: '20px', color: 'var(--accent-gold)' }}>✧</span> {para.subheading}
                  </div>
                )}
-               <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{para.content}</p>
+               <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: '0 auto', fontFamily: 'serif', maxWidth: '800px' }}>{para.content}</p>
              </div>
            ))}
            
            {/* Fallback for old cached format */}
            {opt.prediction && !opt.paragraphs && (
-             <div style={{ background: 'var(--bg-input)', padding: '24px', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
-               <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+             <div style={{ background: 'var(--bg-input)', padding: '24px', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
+               <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                  <span style={{ fontSize: '18px' }}>👁️</span> {t('Prophetic Unfoldment')}
                </div>
-               <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: 0, fontFamily: 'serif' }}>{opt.prediction}</p>
+               <p style={{ color: 'var(--text-main)', fontSize: '18px', lineHeight: 1.7, margin: '0 auto', fontFamily: 'serif', maxWidth: '800px' }}>{opt.prediction}</p>
              </div>
            )}
          </div>
