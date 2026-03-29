@@ -45,6 +45,7 @@ Do NOT hallucinate planetary positions or assume natural rulerships. You MUST st
 CRITICAL: EVERY SINGLE STRING VALUE IN THE JSON (except icons) MUST BE IN THE EXACT LANGUAGE SPECIFIED BY THE TARGET UI LANGUAGE CODE (${lang}).
 
 EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (Translate the text to ${lang}):
+*** NOTE: The astrological facts in this example (e.g., Jupiter in Lagna) are purely illustrative to demonstrate the schema format. DO NOT copy these facts. Use ONLY the data in the provided User Chart. ***
 {
   "summary": "Your Dharma (9th house) lord Guru (Jupiter), exalted in your Lagna, firmly anchors your identity in higher purpose and ethical leadership...",
   "options": [

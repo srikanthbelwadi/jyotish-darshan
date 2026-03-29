@@ -50,7 +50,8 @@ CRITICAL: Return a strict JSON object with exactly these 5 keys answering these 
   "mitigation": "Provide a strict, specific Shastric parihara/remedy to make things go more favorably."
 }
 
-*** CANONICAL EXAMPLE (Translate these styles/tones precisely into the Target Language) ***
+*** CANONICAL EXAMPLE ***
+*** NOTE: The astrological facts in this example are purely illustrative to demonstrate the exact desired schema format. DO NOT copy these facts. Use ONLY the data in the provided User Chart. Translate these styles and tones precisely into the Target Language. ***
 {
   "period": "Over the duration of this Masa (Month).",
   "basis": "Surya and Guru transiting your Lagna in Punarvasu and Ashlesha Nakshatras... Your second Bhava is exceptionally fortified with a robust 49 bindus.",
