@@ -230,11 +230,13 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali }) 
       setCache(prev => ({ ...prev, [cacheKey]: data.prediction }));
       try { localStorage.setItem(cacheKey, JSON.stringify({ text: data.prediction, timestamp: Date.now() })); } catch (e) {}
     } catch (err) {
-      setError(err.message);
+      console.error("[MandalaHero Oracle Fetch Error]:", err);
+      // Determine if it's a frontend ReferenceError vs a Backend 500 JSON response
+      setError(`[${err.name || 'Error'}] ${err.message}`);
     } finally {
       setLoading(false);
     }
-  }, [activeTime, K, lang]); // Added lang dependency
+  }, [activeTime, K, lang, partnerKundali]);
 
   // Clear component-level cache if language explicitly changes
   React.useEffect(() => {
@@ -506,7 +508,8 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
       setPathwayData({ summary: resData.summary, options: resData.options });
       try { localStorage.setItem(cacheKey, JSON.stringify({ summary: resData.summary, options: resData.options, timestamp: Date.now() })); } catch (e) {}
     } catch (err) {
-      setError(err.message);
+      console.error("[InteractionGateway Fetch Error]:", err);
+      setError(`[${err.name || 'Error'}] ${err.message}`);
     } finally {
       setLoading(false);
     }
