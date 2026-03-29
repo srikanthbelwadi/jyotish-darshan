@@ -2143,6 +2143,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
   const[fmt,setFmt]=React.useState('south');
   const[copied,setCopied]=React.useState(false);
   const[menuOpen,setMenuOpen]=React.useState(false);
+  const activeProfilesCount = savedProfiles.filter(p => !p.isDeleted).length;
   const menuRef = React.useRef(null);
   React.useEffect(() => {
     function handleClickOutside(event) {
@@ -2261,7 +2262,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                     </div>
                   )})}
                   
-                  <div onClick={() => { setMenuOpen(false); onBack(); }} style={{padding:'14px 16px', cursor:'pointer', color:'var(--accent-gold)', borderBottom:'1px solid var(--border-light)', display:'flex', alignItems:'center', gap:10, fontWeight:500, transition:'background 0.2s', background:'var(--bg-card)'}} onMouseOver={e=>e.currentTarget.style.background='var(--border-light)'} onMouseOut={e=>e.currentTarget.style.background='var(--bg-card)'}>
+                  <div onClick={() => { if(activeProfilesCount >= 6) return; setMenuOpen(false); onBack(); }} style={{padding:'14px 16px', cursor: activeProfilesCount >= 6 ? 'not-allowed' : 'pointer', color:'var(--accent-gold)', borderBottom:'1px solid var(--border-light)', display:'flex', alignItems:'center', gap:10, fontWeight:500, transition:'background 0.2s', background:'var(--bg-card)', opacity: activeProfilesCount >= 6 ? 0.4 : 1}} onMouseOver={e=>{if(activeProfilesCount < 6) e.currentTarget.style.background='var(--border-light)'}} onMouseOut={e=>e.currentTarget.style.background='var(--bg-card)'} title={activeProfilesCount >= 6 ? "Limit of 6 profiles reached. Please delete one to create a new Kundali." : (t('newChart',lang) || 'New Kundali')}>
                     <span style={{fontSize:16, width:24, textAlign:'center'}}>➕</span> {t('newChart',lang) || 'New Kundali'}
                   </div>
                 </div>
@@ -2296,7 +2297,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
 
             {/* RIGHT GROUP: NEW KUNDALI BUTTON */}
             <div style={{display:'flex', alignItems:'center'}}>
-              <button onClick={() => { setMenuOpen(false); onBack(); }} style={{fontSize:13, fontWeight:500, padding:'6px 14px', borderRadius:20, background:'var(--bg-card)', color:'var(--accent-gold)', border:'1px solid rgba(212, 175, 55, 0.3)', cursor:'pointer', display:'inline-flex', alignItems:'center', gap:6, transition:'all 0.2s', boxShadow:'0 2px 5px rgba(0,0,0,0.2)'}} onMouseOver={e=>{e.currentTarget.style.background='rgba(212, 175, 55, 0.1)'; e.currentTarget.style.borderColor='var(--accent-gold)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'; e.currentTarget.style.borderColor='rgba(212, 175, 55, 0.3)'}} title={t('newChart',lang) || 'New Kundali'}>
+              <button onClick={() => { if(activeProfilesCount >= 6) return; setMenuOpen(false); onBack(); }} style={{fontSize:13, fontWeight:500, padding:'6px 14px', borderRadius:20, background:'var(--bg-card)', color:'var(--accent-gold)', border:'1px solid rgba(212, 175, 55, 0.3)', cursor: activeProfilesCount >= 6 ? 'not-allowed' : 'pointer', display:'inline-flex', alignItems:'center', gap:6, transition:'all 0.2s', boxShadow:'0 2px 5px rgba(0,0,0,0.2)', opacity: activeProfilesCount >= 6 ? 0.4 : 1}} onMouseOver={e=>{if(activeProfilesCount < 6) { e.currentTarget.style.background='rgba(212, 175, 55, 0.1)'; e.currentTarget.style.borderColor='var(--accent-gold)'; }}} onMouseOut={e=>{if(activeProfilesCount < 6) { e.currentTarget.style.background='var(--bg-card)'; e.currentTarget.style.borderColor='rgba(212, 175, 55, 0.3)'; }}} title={activeProfilesCount >= 6 ? "Limit of 6 profiles reached. Please delete one from the dropdown menu first." : (t('newChart',lang) || 'New Kundali')}>
                 <span style={{fontSize:14}}>➕</span> {t('newChart',lang) || 'New Kundali'}
               </button>
             </div>

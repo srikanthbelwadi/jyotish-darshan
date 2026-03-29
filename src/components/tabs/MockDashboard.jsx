@@ -248,7 +248,8 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
     if (!K) return;
     if (!user) return; // Wait for UI interaction on the Guardian Lock
 
-    const cacheKey = `jyotish_oracle_${activeTime}_${lang}`;
+    const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\\s+/g, '_') || 'default';
+    const cacheKey = `jyotish_oracle_${profileId}_${activeTime}_${lang}`;
     if (!forceRegenerate) {
        // Check localStorage for 24h TTK Cache
        let stored = null;
@@ -283,7 +284,10 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
              planets: K.planets.map(p => ({
                id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
              })),
-             dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null,
+             dasha: K.dasha ? { 
+               maha: K.dasha.current?.planet || 'Unknown', 
+               antar: (K.dasha.current?.antars && K.dasha.current.antars.find(a => a.isCurrent)?.planet) || 'Unknown'
+             } : null,
              panchanga: K.panchanga ? {
                tithi: K.panchanga.tithi?.name,
                karana: K.panchanga.karana?.name,
@@ -332,7 +336,8 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
   }, [fetchOracle]);
 
   // Use localized key for retrieving mapped cache
-  const activeCacheKey = `jyotish_oracle_${activeTime}_${lang}`;
+  const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\\s+/g, '_') || 'default';
+  const activeCacheKey = `jyotish_oracle_${profileId}_${activeTime}_${lang}`;
 
   return (
     <div className="mobile-hero-padding" style={{ background: 'var(--bg-input)', backgroundImage: 'radial-gradient(var(--bg-input) 20%, transparent 20%), radial-gradient(var(--bg-input) 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid var(--border-light)', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px var(--bg-surface), 0 10px 30px rgba(0,0,0,0.5)' }}>
@@ -567,7 +572,8 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
   const fetchPathway = React.useCallback(async (force = false) => {
     if (!K) return;
     if (!user) return; // Wait for UI interaction on the Guardian Lock
-    const cacheKey = `jyotish_pathway_${targetPillar}_${lang}`;
+    const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\\s+/g, '_') || 'default';
+    const cacheKey = `jyotish_pathway_${profileId}_${targetPillar}_${lang}`;
     if (!force) {
       let cached = null;
       try { cached = localStorage.getItem(cacheKey); } catch (e) {}
@@ -601,7 +607,10 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
             planets: K.planets.map(p => ({
               id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
             })),
-            dasha: K.dasha ? { maha: K.dasha.maha, antar: K.dasha.antar } : null,
+            dasha: K.dasha ? { 
+              maha: K.dasha.current?.planet || 'Unknown', 
+              antar: (K.dasha.current?.antars && K.dasha.current.antars.find(a => a.isCurrent)?.planet) || 'Unknown'
+            } : null,
             panchanga: K.panchanga ? {
               tithi: K.panchanga.tithi?.name,
               karana: K.panchanga.karana?.name,
@@ -825,6 +834,28 @@ const FullScreenWrapper = ({ title, onBack, children, t, lang }) => (
 export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishDesk, partnerKundali }) => {
   const [activeTime, setActiveTime] = React.useState('Today');
   const [activeView, setActiveView] = useState('grid'); 
+
+  React.useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('jd_profiles') || '[]');
+      const validIds = new Set(saved.map(p => p.id || (p.name || 'default').toLowerCase().replace(/\\s+/g, '_')));
+      
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('jyotish_oracle_') || key.startsWith('jyotish_pathway_'))) {
+          const segments = key.split('_');
+          if (segments.length >= 4) {
+             const cachedProfileId = segments[2];
+             if (!validIds.has(cachedProfileId) && cachedProfileId !== 'default') {
+                 keysToRemove.push(key);
+             }
+          }
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+    } catch(e) { }
+  }, []); 
 
   if (activeView !== 'grid') {
     const data = PILLAR_DATA[activeView];

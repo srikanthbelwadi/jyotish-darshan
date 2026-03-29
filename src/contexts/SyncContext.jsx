@@ -28,10 +28,10 @@ export const SyncProvider = ({ children }) => {
           
           const mergeIn = (profilesArray) => {
             profilesArray.forEach(p => {
-              const key = (p.name || 'User').toLowerCase();
+              const key = p.id || (p.name || 'User').toLowerCase();
               const existing = mergedMap.get(key);
               if (!existing || (p.updatedAt || 0) > (existing.updatedAt || 0)) {
-                mergedMap.set(key, { ...p, updatedAt: p.updatedAt || Date.now() });
+                mergedMap.set(key, { ...p, id: p.id || key, updatedAt: p.updatedAt || Date.now() });
               }
             });
           };
@@ -39,7 +39,7 @@ export const SyncProvider = ({ children }) => {
           if (cloudProfiles && Array.isArray(cloudProfiles)) mergeIn(cloudProfiles);
           mergeIn(prev);
           
-          const newProfiles = Array.from(mergedMap.values()).sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0)).slice(0, 5);
+          const newProfiles = Array.from(mergedMap.values()).sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0)).slice(0, 15);
           
           if (newProfiles.length > 0) {
             localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
@@ -47,12 +47,14 @@ export const SyncProvider = ({ children }) => {
             const success = await syncProfileToCloud(u.uid, newProfiles);
             setSyncStatus(success ? 'synced' : 'error');
             
-            if (cloudProfiles && cloudProfiles.length > 0 && prev.length < newProfiles.length) {
-               const difference = newProfiles.length - prev.length;
-               setSyncToast(`☁️ Restored ${difference} new profile(s) from the cloud.`);
-               setTimeout(() => setSyncToast(null), 4500);
+            // Only toast if the merged payload is significantly different from what was locally there
+            if (cloudProfiles && cloudProfiles.length > 0) {
+               const newlyMergedCount = newProfiles.length - prev.length;
+               if (newlyMergedCount > 0) {
+                 setSyncToast(`☁️ Securely federated ${newlyMergedCount} offline profile(s) into your Cloud Vault.`);
+                 setTimeout(() => setSyncToast(null), 5000);
+               }
             }
-            
             
             const activeProfiles = newProfiles.filter(p => !p.isDeleted);
             if (activeProfiles.length > 0) {
@@ -84,7 +86,7 @@ export const SyncProvider = ({ children }) => {
   const deleteProfile = async (profileToDelete) => {
     if (!profileToDelete) return false;
     const newProfiles = [...(JSON.parse(localStorage.getItem('jd_profiles') || '[]'))];
-    const idx = newProfiles.findIndex(x => (x.name || 'User').toLowerCase() === (profileToDelete.name || 'User').toLowerCase());
+    const idx = newProfiles.findIndex(x => (x.id === profileToDelete.id) || ((x.name || 'User').toLowerCase() === (profileToDelete.name || 'User').toLowerCase()));
     
     if (idx !== -1) {
       newProfiles[idx].isDeleted = true;
@@ -111,9 +113,15 @@ export const SyncProvider = ({ children }) => {
     const saved = localStorage.getItem('jd_profiles');
     let prev = saved ? JSON.parse(saved) : [];
     if (!Array.isArray(prev)) prev = [];
-    const newInp = { ...inp, updatedAt: Date.now() };
-    const withoutCurrent = prev.filter(p => (p.name || 'User').toLowerCase() !== (newInp.name || 'User').toLowerCase());
-    const newProfiles = [newInp, ...withoutCurrent].slice(0, 5);
+    
+    // Inject immutable UUID if it doesn't exist
+    const finalId = inp.id || crypto.randomUUID();
+    const newInp = { ...inp, id: finalId, updatedAt: Date.now() };
+    
+    // Remove the old version matching this ID (or fallback name matching for incredibly old charts)
+    const withoutCurrent = prev.filter(p => p.id !== finalId && (p.name || 'User').toLowerCase() !== (newInp.name || 'User').toLowerCase());
+    
+    const newProfiles = [newInp, ...withoutCurrent].slice(0, 15);
     localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
     
     if (user && user.uid) {
