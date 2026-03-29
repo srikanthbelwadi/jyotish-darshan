@@ -366,7 +366,7 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.11": "मीन राशि",
     'ov.moonsConst': 'चन्द्रमा का नक्षत्र',
     'ov.janmaNak': 'जन्म नक्षत्र',
-    'Unlock Shastric Oracle': 'शास्त्री ओरेकल को अनलॉक करें',
+    'Unlock Shastric Oracle': 'शास्त्रीय फलादेश प्रकट करें',
     'Authenticate to Reveal ➔': 'प्रकट करने के लिए प्रमाणित करें ➔'
   },
   kn: {
@@ -550,7 +550,7 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.11": "ಮೀನ ರಾಶಿ",
     'ov.moonsConst': 'ಚಂದ್ರನ ನಕ್ಷತ್ರಪುಂಜ',
     'ov.janmaNak': 'ಜನ್ಮ ನಕ್ಷತ್ರ',
-    'Unlock Shastric Oracle': 'ಶಾಸ್ತ್ರಿಕ್ ಒರಾಕಲ್ ಅನ್ನು ಅನ್ಲಾಕ್ ಮಾಡಿ',
+    'Unlock Shastric Oracle': 'ಶಾಸ್ತ್ರೀಯ ಭವಿಷ್ಯವಾಣಿಯನ್ನು ತಿಳಿಯಿರಿ',
     'Authenticate to Reveal ➔': 'ಬಹಿರಂಗಪಡಿಸಲು ಪ್ರಮಾಣೀಕರಿಸಿ ➔'
   },
   te: {
@@ -722,7 +722,7 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.11": "మీనరాశి",
     'ov.moonsConst': 'చంద్రుని రాశి',
     'ov.janmaNak': 'జన్మ నక్షత్రం',
-    'Unlock Shastric Oracle': 'శాస్ట్రిక్ ఒరాకిల్‌ను అన్‌లాక్ చేయండి',
+    'Unlock Shastric Oracle': 'శాస్త్రీయ భవిష్యవాణిని తెలుసుకోండి',
     'Authenticate to Reveal ➔': 'బహిర్గతం చేయడానికి ప్రమాణీకరించండి ➔'
   },
   ta: {
@@ -894,7 +894,7 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.11": "மீனம்",
     'ov.moonsConst': 'சந்திரனின் விண்மீன் கூட்டம்',
     'ov.janmaNak': 'ஜென்ம நட்சத்திரம்',
-    'Unlock Shastric Oracle': 'சாஸ்திரி ஆரக்கிளைத் திறக்கவும்',
+    'Unlock Shastric Oracle': 'சாஸ்திரிய பலன்களை அறியவும்',
     'Authenticate to Reveal ➔': 'வெளிப்படுத்த அங்கீகாரம் ➔'
   },
   mr: {
@@ -1056,7 +1056,7 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.11": "मीन",
     'ov.moonsConst': 'चंद्राचे नक्षत्र',
     'ov.janmaNak': 'जन्म नक्षत्र',
-    'Unlock Shastric Oracle': 'शास्त्री ओरॅकल अनलॉक करा',
+    'Unlock Shastric Oracle': 'शास्त्रीय फलादेश उघडा',
     'Authenticate to Reveal ➔': 'प्रकट करण्यासाठी प्रमाणीकृत करा ➔'
   },
   gu: {
@@ -1218,7 +1218,7 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.11": "મીન",
     'ov.moonsConst': 'ચંદ્રનું નક્ષત્ર',
     'ov.janmaNak': 'જન્મ નક્ષત્ર',
-    'Unlock Shastric Oracle': 'શાસ્ત્રિક ઓરેકલને અનલૉક કરો',
+    'Unlock Shastric Oracle': 'શાસ્ત્રીય ફળાદેશ જાણો',
     'Authenticate to Reveal ➔': 'જાહેર કરવા માટે પ્રમાણિત કરો ➔'
   },
   ml: {
@@ -1380,7 +1380,7 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.11": "മീനരാശി",
     'ov.moonsConst': 'ചന്ദ്രൻ്റെ നക്ഷത്രസമൂഹം',
     'ov.janmaNak': 'ജന്മ നക്ഷത്രം',
-    'Unlock Shastric Oracle': 'ശാസ്ത്ര് ഒറാക്കിൾ അൺലോക്ക് ചെയ്യുക',
+    'Unlock Shastric Oracle': 'ശാസ്ത്രീയ പ്രവചനങ്ങൾ സൂക്ഷ്മമായി അറിയുക',
     'Authenticate to Reveal ➔': 'വെളിപ്പെടുത്താൻ പ്രാമാണീകരിക്കുക ➔'
   },
   sa: {
@@ -1674,7 +1674,7 @@ export const DYNAMIC_STRINGS = {
     "comp.manCancelled": "গ্রহগত কারণে মাঙ্গলিক দোষ বাতিল হয়। সংঘর্ষ নেই।",
     'ov.moonsConst': 'চাঁদের নক্ষত্রপুঞ্জ',
     'ov.janmaNak': 'জন্ম নক্ষত্র',
-    'Unlock Shastric Oracle': 'শাস্ত্রিক ওরাকল আনলক করুন',
+    'Unlock Shastric Oracle': 'শাস্ত্রীয় ভবিষ্যদ্বাণী জানুন',
     'Authenticate to Reveal ➔': 'প্রকাশ করার জন্য প্রমাণীকরণ করুন ➔'
   },
 };

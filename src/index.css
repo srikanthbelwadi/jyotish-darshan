@@ -1,6 +1,12 @@
 *, *::before, *::after {
   box-sizing: border-box;
 }
+
+@media (max-width: 480px) {
+  .hide-on-very-small {
+    display: none !important;
+  }
+}
 :root {
   color-scheme: dark;
   --bg-app: #0a0203;       
@@ -27,6 +33,9 @@
   --text-badge-red: #fca5a5;
   --bg-badge-yellow: rgba(254, 240, 138, 0.2);
   --text-badge-yellow: #fde047;
+  --bg-hero-gradient: linear-gradient(135deg, rgba(30,15,5,1) 0%, rgba(74,21,27,1) 100%);
+  --bg-sticky-footer: rgba(10,10,10,0.85);
+  --shadow-hero: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 body[data-theme='light'] {
@@ -56,6 +65,9 @@ body[data-theme='light'] {
   --text-badge-red: #b91c1c;
   --bg-badge-yellow: rgba(234, 179, 8, 0.15);
   --text-badge-yellow: #a16207;
+  --bg-hero-gradient: linear-gradient(135deg, #fffcf5 0%, #fceae8 100%);
+  --bg-sticky-footer: rgba(255,255,255,0.95);
+  --shadow-hero: 0 8px 24px rgba(0,0,0,0.06);
 }
 
 body {

@@ -381,17 +381,15 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
           ) : (
              <div style={{ position: 'relative', width: '100%', minHeight: '50px' }}>
                {cache[activeCacheKey] && (
-                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                   <button 
-                     onClick={() => fetchOracle(true)}
-                     title={t('Consult again (Override cache)')}
-                     style={{ background: 'var(--bg-card)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', fontSize: '18px', cursor: 'pointer', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '40px', height: '40px', boxShadow: '0 4px 15px rgba(212,175,55,0.15)' }}
-                     onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.1)'; e.currentTarget.style.transform = 'rotate(180deg)'; }}
-                     onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
-                   >
-                     ⟳
-                   </button>
-                 </div>
+                 <button 
+                   onClick={() => fetchOracle(true)}
+                   title={t('Consult again (Override cache)')}
+                   style={{ position: 'absolute', top: '16px', right: '16px', background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '18px', cursor: 'pointer', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease', width: '36px', height: '36px', zIndex: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}
+                   onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.1)'; e.currentTarget.style.transform = 'rotate(180deg)'; e.currentTarget.style.color = 'var(--accent-gold)'; e.currentTarget.style.borderColor = 'var(--accent-gold)'; }}
+                   onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.transform = 'rotate(0deg)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
+                 >
+                   ⟳
+                 </button>
                )}
                {typeof cache[activeCacheKey] === 'string' ? (
                  <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', fontStyle: 'italic' }}>
@@ -580,7 +578,8 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
       if (cached) {
          try {
            const parsed = JSON.parse(cached);
-           if (parsed.summary && parsed.options) {
+           const isStale = parsed.timestamp ? (Date.now() - parsed.timestamp > 24 * 60 * 60 * 1000) : false;
+           if (!isStale && parsed.summary && parsed.options) {
              setPathwayData(parsed);
              return;
            }
