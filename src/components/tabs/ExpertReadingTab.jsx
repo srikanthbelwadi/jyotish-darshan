@@ -119,15 +119,15 @@ export function buildReading(kundali, lang = 'en') {
   // Build the Dasha Dictionary
   const dashaLocale = L_DASHA[lang] || L_DASHA.en;
   const DASHA_DICT = {
-    sun: { desc: dashaLocale.sun, challenge: 'Avoid arrogance and ego-driven decisions.', guidance: 'Step into leadership with confidence. Surya Namaskar supports vitality.' },
-    moon: { desc: dashaLocale.moon, challenge: 'Avoid emotional reactivity.', guidance: 'Nurture emotional well-being through creative expression.' },
-    mars: { desc: dashaLocale.mars, challenge: 'Channel drive constructively.', guidance: 'Direct energy into physical fitness or property matters.' },
-    rahu: { desc: dashaLocale.rahu, challenge: 'Ground ambitions in ethical action.', guidance: 'Embrace innovation and transformative opportunities boldly.' },
-    jupiter: { desc: dashaLocale.jupiter, challenge: 'Beware of overconfidence.', guidance: 'Pursue higher education and philosophical inquiry.' },
-    saturn: { desc: dashaLocale.saturn, challenge: 'Patience is paramount.', guidance: 'Build long-term foundations with steady discipline.' },
-    mercury: { desc: dashaLocale.mercury, challenge: 'Avoid mental scatteredness.', guidance: 'Invest in writing, teaching, or skill-building.' },
-    ketu: { desc: dashaLocale.ketu, challenge: 'Avoid excessive withdrawal.', guidance: 'Deepen meditation and spiritual study.' },
-    venus: { desc: dashaLocale.venus, challenge: 'Avoid indulgence.', guidance: 'Invest in relationships, art, and creative expression.' }
+    sun: { desc: dashaLocale.sun, challenge: t('er.chal.sun') || 'Avoid arrogance and ego-driven decisions.', guidance: t('er.guid.sun') || 'Step into leadership with confidence. Surya Namaskar supports vitality.' },
+    moon: { desc: dashaLocale.moon, challenge: t('er.chal.moon') || 'Avoid emotional reactivity.', guidance: t('er.guid.moon') || 'Nurture emotional well-being through creative expression.' },
+    mars: { desc: dashaLocale.mars, challenge: t('er.chal.mars') || 'Channel drive constructively.', guidance: t('er.guid.mars') || 'Direct energy into physical fitness or property matters.' },
+    rahu: { desc: dashaLocale.rahu, challenge: t('er.chal.rahu') || 'Ground ambitions in ethical action.', guidance: t('er.guid.rahu') || 'Embrace innovation and transformative opportunities boldly.' },
+    jupiter: { desc: dashaLocale.jupiter, challenge: t('er.chal.jupiter') || 'Beware of overconfidence.', guidance: t('er.guid.jupiter') || 'Pursue higher education and philosophical inquiry.' },
+    saturn: { desc: dashaLocale.saturn, challenge: t('er.chal.saturn') || 'Patience is paramount.', guidance: t('er.guid.saturn') || 'Build long-term foundations with steady discipline.' },
+    mercury: { desc: dashaLocale.mercury, challenge: t('er.chal.mercury') || 'Avoid mental scatteredness.', guidance: t('er.guid.mercury') || 'Invest in writing, teaching, or skill-building.' },
+    ketu: { desc: dashaLocale.ketu, challenge: t('er.chal.ketu') || 'Avoid excessive withdrawal.', guidance: t('er.guid.ketu') || 'Deepen meditation and spiritual study.' },
+    venus: { desc: dashaLocale.venus, challenge: t('er.chal.venus') || 'Avoid indulgence.', guidance: t('er.guid.venus') || 'Invest in relationships, art, and creative expression.' }
   };
 
   // Map Mahadashas and inject thematic summaries
@@ -159,7 +159,7 @@ export function buildReading(kundali, lang = 'en') {
         start: maha.startStr,
         end: maha.endStr,
         years: maha.years,
-        ageStr: `Ages ${ageStart}-${ageEnd} (${maha.years} yrs)`,
+        ageStr: `${t('er.ages') || 'Ages'} ${ageStart}-${ageEnd} (${maha.years || '?'} ${t('er.yrs') || 'yrs'})`,
         isCurrent: maha.isCurrent,
         description: desc,
         keyChallenge: dict.challenge,
@@ -283,7 +283,7 @@ export default function ExpertReadingTab({ kundali, lang = 'en' }) {
             
             {/* Mahadasha */}
             <h5 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 15, textTransform: 'capitalize' }}>
-              {t(`pl.${reading.deepDive.maha.planet}`) || reading.deepDive.maha.planet} Mahadasha — {reading.deepDive.maha.start} to {reading.deepDive.maha.end}
+              {t(`pl.${reading.deepDive.maha.planet}`) || reading.deepDive.maha.planet} {t('er.mahadasha') || 'Mahadasha'} — {reading.deepDive.maha.start} {t('er.to') || 'to'} {reading.deepDive.maha.end}
             </h5>
             <p style={{ color: 'var(--text-main)', fontSize: 13, lineHeight: 1.6, margin: '0 0 16px 0' }}>
               {reading.deepDive.maha.description}
@@ -301,10 +301,10 @@ export default function ExpertReadingTab({ kundali, lang = 'en' }) {
 
             {/* Antardasha */}
             {reading.deepDive.antar && (
-              <div style={{ borderTop: '1px dashed var(--border-light)', paddingTop: 16 }}>
-                <h5 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 14, textTransform: 'capitalize' }}>
-                  ↳ {reading.deepDive.antar.trPlanet} Antardasha — {reading.deepDive.antar.start} to {reading.deepDive.antar.end}
-                </h5>
+              <div style={{ padding: 16, borderTop: '1px solid rgba(212, 175, 55, 0.2)', background: 'rgba(212, 175, 55, 0.05)', borderRadius: '0 0 8px 8px' }}>
+                <h6 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 13 }}>
+                  ↪ {reading.deepDive.antar.trPlanet} {t('er.antardasha') || 'Antardasha'} — {reading.deepDive.antar.start} {t('er.to') || 'to'} {reading.deepDive.antar.end}
+                </h6>
                 <p style={{ color: 'var(--text-muted)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
                   {t('er.antarFormat')
                     .replace('{desc}', reading.deepDive.antar.dict.desc)
