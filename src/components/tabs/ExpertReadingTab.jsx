@@ -223,30 +223,30 @@ export default function ExpertReadingTab({ kundali }) {
   const reading = buildReading(kundali);
 
   const SectionTitle = ({ icon, title }) => (
-    <h4 style={{ margin: '0 0 16px', fontSize: 16, fontWeight: 700, color: '#1E3A5F', borderBottom: '2px solid #E5D5C0', paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+    <h4 style={{ margin: '0 0 16px', fontSize: 16, fontWeight: 700, color: 'var(--accent-gold)', borderBottom: '1px solid var(--border-light)', paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
       <span>{icon}</span> {title}
     </h4>
   );
 
   return (
     <div style={{ animation: 'slideIn 0.25s ease' }}>
-      <div style={{ background: '#120d00', border: '1px solid #D4B896', borderRadius: 12, padding: '28px' }}>
+      <div className="lux-card" style={{ padding: '28px' }}>
         
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 32, paddingBottom: 18, borderBottom: '1px solid #453412' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 32, paddingBottom: 18, borderBottom: '1px solid var(--border-light)' }}>
           <div style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #7C3AED, #F59E0B)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <span style={{ color: 'white', fontSize: 24 }}>☀</span>
           </div>
           <div>
-            <h3 style={{ margin: 0, fontSize: 18, color: '#FCD34D', fontWeight: 700 }}>Expert Jyotish Reading</h3>
-            <p style={{ margin: '3px 0 0', fontSize: 13, color: '#D4B896' }}>Parashara Hora Shastra · Lahiri Ayanamsa</p>
+            <h3 style={{ margin: 0, fontSize: 18, color: 'var(--accent-gold)', fontWeight: 700 }}>Expert Jyotish Reading</h3>
+            <p style={{ margin: '3px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>Parashara Hora Shastra · Lahiri Ayanamsa</p>
           </div>
         </div>
 
         {/* Soul Blueprint */}
         <div style={{ marginBottom: 40 }}>
           <SectionTitle icon="🌟" title="Soul Blueprint" />
-          <p style={{ fontSize: 14, color: '#fef3c7', lineHeight: 1.85, margin: 0 }}>
+          <p style={{ fontSize: 14, color: 'var(--text-main)', lineHeight: 1.85, margin: 0 }}>
             {reading.soulBlueprint}
           </p>
         </div>
@@ -255,16 +255,16 @@ export default function ExpertReadingTab({ kundali }) {
         <div style={{ marginBottom: 40, borderLeft: '3px solid #7C3AED', paddingLeft: 16 }}>
           <SectionTitle icon="📜" title="Life Themes Overview" />
           <div style={{ marginBottom: 12 }}>
-            <strong style={{ color: '#FCD34D' }}>Career & Purpose:</strong>
-            <span style={{ fontSize: 14, color: '#fef3c7', marginLeft: 8 }}>{reading.themesSummary.career}</span>
+            <strong style={{ color: 'var(--accent-gold)' }}>Career & Purpose:</strong>
+            <span style={{ fontSize: 14, color: 'var(--text-main)', marginLeft: 8 }}>{reading.themesSummary.career}</span>
           </div>
           <div style={{ marginBottom: 12 }}>
-            <strong style={{ color: '#FCD34D' }}>Relationships:</strong>
-            <span style={{ fontSize: 14, color: '#fef3c7', marginLeft: 8 }}>{reading.themesSummary.marriage}</span>
+            <strong style={{ color: 'var(--accent-gold)' }}>Relationships:</strong>
+            <span style={{ fontSize: 14, color: 'var(--text-main)', marginLeft: 8 }}>{reading.themesSummary.marriage}</span>
           </div>
           <div>
-            <strong style={{ color: '#FCD34D' }}>Spiritual Path:</strong>
-            <span style={{ fontSize: 14, color: '#fef3c7', marginLeft: 8 }}>{reading.themesSummary.spiritual}</span>
+            <strong style={{ color: 'var(--accent-gold)' }}>Spiritual Path:</strong>
+            <span style={{ fontSize: 14, color: 'var(--text-main)', marginLeft: 8 }}>{reading.themesSummary.spiritual}</span>
           </div>
         </div>
 
@@ -274,8 +274,8 @@ export default function ExpertReadingTab({ kundali }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {reading.lifeJourney.map(maha => (
               <div key={maha.planet} style={{ 
-                background: maha.isCurrent ? '#2E1065' : '#1A1A1A', 
-                border: maha.isCurrent ? '1px solid #7C3AED' : '1px solid #333', 
+                background: maha.isCurrent ? 'var(--bg-badge-purple)' : 'var(--bg-input)', 
+                border: maha.isCurrent ? '1px solid #7C3AED' : '1px solid var(--border-light)', 
                 borderRadius: 8, padding: 16, position: 'relative'
               }}>
                 {maha.isCurrent && (
@@ -284,16 +284,16 @@ export default function ExpertReadingTab({ kundali }) {
                   </div>
                 )}
                 <div style={{ marginBottom: 8 }}>
-                  <span style={{ color: '#FCD34D', fontWeight: 700, fontSize: 15, textTransform: 'capitalize' }}>{maha.planet}</span>
-                  <span style={{ color: '#9CA3AF', fontSize: 13, marginLeft: 10 }}>{maha.ageStr}</span>
+                  <span style={{ color: 'var(--accent-gold)', fontWeight: 700, fontSize: 15, textTransform: 'capitalize' }}>{maha.planet}</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 13, marginLeft: 10 }}>{maha.ageStr}</span>
                 </div>
-                <p style={{ color: '#E5E7EB', fontSize: 13, lineHeight: 1.6, margin: '0 0 12px 0' }}>{maha.description}</p>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: 12, borderRadius: 6 }}>
+                <p style={{ color: 'var(--text-main)', fontSize: 13, lineHeight: 1.6, margin: '0 0 12px 0' }}>{maha.description}</p>
+                <div style={{ background: 'var(--bg-card)', padding: 12, borderRadius: 6, border: '1px solid var(--border-light)' }}>
                   <div style={{ fontSize: 13, marginBottom: 6 }}>
-                    <strong style={{ color: '#EF4444' }}>Key Challenge:</strong> <span style={{ color: '#D1D5DB' }}>{maha.keyChallenge}</span>
+                    <strong style={{ color: 'var(--text-badge-red)' }}>Key Challenge:</strong> <span style={{ color: 'var(--text-main)' }}>{maha.keyChallenge}</span>
                   </div>
                   <div style={{ fontSize: 13 }}>
-                    <strong style={{ color: '#10B981' }}>Guidance:</strong> <span style={{ color: '#D1D5DB' }}>{maha.guidance}</span>
+                    <strong style={{ color: 'var(--text-badge-green)' }}>Guidance:</strong> <span style={{ color: 'var(--text-main)' }}>{maha.guidance}</span>
                   </div>
                 </div>
               </div>
@@ -304,33 +304,33 @@ export default function ExpertReadingTab({ kundali }) {
         {/* Current Phase: Deep Dive */}
         <div style={{ marginBottom: 30 }}>
           <SectionTitle icon="⏳" title="Current Phase: Deep Dive" />
-          <div style={{ background: 'rgba(124, 58, 237, 0.1)', border: '1px solid rgba(124, 58, 237, 0.3)', borderRadius: 8, padding: 20 }}>
+          <div style={{ background: 'var(--bg-badge-purple)', border: '1px solid var(--border-light)', borderRadius: 8, padding: 20 }}>
             
             {/* Mahadasha */}
-            <h5 style={{ margin: '0 0 8px', color: '#FCD34D', fontSize: 15, textTransform: 'capitalize' }}>
+            <h5 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 15, textTransform: 'capitalize' }}>
               {reading.deepDive.maha.planet} Mahadasha — {reading.deepDive.maha.start} to {reading.deepDive.maha.end}
             </h5>
-            <p style={{ color: '#fef3c7', fontSize: 13, lineHeight: 1.6, margin: '0 0 16px 0' }}>
+            <p style={{ color: 'var(--text-main)', fontSize: 13, lineHeight: 1.6, margin: '0 0 16px 0' }}>
               {reading.deepDive.maha.description}
             </p>
             <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-              <div style={{ flex: 1, background: 'rgba(239, 68, 68, 0.1)', padding: 12, borderRadius: 6, border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                <strong style={{ color: '#F87171', display: 'block', marginBottom: 4, fontSize: 12 }}>Key Challenge</strong>
-                <span style={{ color: '#E5E7EB', fontSize: 12 }}>{reading.deepDive.maha.keyChallenge}</span>
+              <div style={{ flex: 1, background: 'var(--bg-badge-red)', padding: 12, borderRadius: 6, border: '1px solid var(--border-light)' }}>
+                <strong style={{ color: 'var(--text-badge-red)', display: 'block', marginBottom: 4, fontSize: 12 }}>Key Challenge</strong>
+                <span style={{ color: 'var(--text-main)', fontSize: 12 }}>{reading.deepDive.maha.keyChallenge}</span>
               </div>
-              <div style={{ flex: 1, background: 'rgba(16, 185, 129, 0.1)', padding: 12, borderRadius: 6, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                <strong style={{ color: '#34D399', display: 'block', marginBottom: 4, fontSize: 12 }}>Core Guidance</strong>
-                <span style={{ color: '#E5E7EB', fontSize: 12 }}>{reading.deepDive.maha.guidance}</span>
+              <div style={{ flex: 1, background: 'var(--bg-badge-green)', padding: 12, borderRadius: 6, border: '1px solid var(--border-light)' }}>
+                <strong style={{ color: 'var(--text-badge-green)', display: 'block', marginBottom: 4, fontSize: 12 }}>Core Guidance</strong>
+                <span style={{ color: 'var(--text-main)', fontSize: 12 }}>{reading.deepDive.maha.guidance}</span>
               </div>
             </div>
 
             {/* Antardasha */}
             {reading.deepDive.antar && (
-              <div style={{ borderTop: '1px dashed rgba(252, 211, 77, 0.3)', paddingTop: 16 }}>
-                <h5 style={{ margin: '0 0 8px', color: '#FCD34D', fontSize: 14 }}>
+              <div style={{ borderTop: '1px dashed var(--border-light)', paddingTop: 16 }}>
+                <h5 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 14 }}>
                   ↳ {reading.deepDive.antar.planet.charAt(0).toUpperCase() + reading.deepDive.antar.planet.slice(1)} Antardasha — {reading.deepDive.antar.start} to {reading.deepDive.antar.end}
                 </h5>
-                <p style={{ color: '#D4B896', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
                   This active sub-period adds its own coloration to the overarching phase: {reading.deepDive.antar.dict.desc} Focus on integrating {reading.deepDive.antar.planet} energies productively to mitigate its challenge: {reading.deepDive.antar.dict.challenge.toLowerCase()}
                 </p>
               </div>
@@ -339,8 +339,8 @@ export default function ExpertReadingTab({ kundali }) {
         </div>
 
         {/* Disclaimer */}
-        <div style={{ padding: '14px 18px', background: 'transparent', borderRadius: 8, border: '1px solid rgba(252, 211, 77, 0.3)' }}>
-          <p style={{ margin: 0, fontSize: 12, color: '#D4B896', lineHeight: 1.6 }}>
+        <div style={{ padding: '14px 18px', background: 'var(--bg-badge-yellow)', borderRadius: 8, border: '1px solid var(--border-light)' }}>
+          <p style={{ margin: 0, fontSize: 12, color: 'var(--text-badge-yellow)', lineHeight: 1.6 }}>
             <strong>Note:</strong> This reading is based on classical Parashari Jyotish principles. For a comprehensive personal analysis, consult a qualified Jyotishi.
           </p>
         </div>
