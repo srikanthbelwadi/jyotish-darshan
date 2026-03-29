@@ -163,6 +163,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali }) 
 
   const fetchOracle = React.useCallback(async (forceRegenerate = false) => {
     if (!K) return;
+    if (!user) return; // Wait for UI interaction on the Guardian Lock
 
     const cacheKey = `jyotish_oracle_${activeTime}_${lang}`;
     if (!forceRegenerate) {
@@ -262,7 +263,16 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali }) 
             <button key={ts} onClick={() => setActiveTime(ts)} style={{ background: activeTime === ts ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === ts ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t(ts)}</button>
           ))}
         </div>
-        <div style={{ background: 'var(--bg-surface)', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700', minHeight: '100px', display: 'flex', alignItems: 'center' }}>
+        <div style={{ background: 'var(--bg-surface)', position: 'relative', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700', minHeight: '180px', display: 'flex', alignItems: 'center' }}>
+          {!user && (
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+              <div style={{ fontSize: '42px', marginBottom: '12px', filter: 'drop-shadow(0 0 10px rgba(255,215,0,0.6))' }}>🔒</div>
+              <h3 style={{ fontFamily: '"Cinzel", serif', margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('Unlock Shastric Oracle')}</h3>
+              <button style={{ padding: '12px 24px', fontSize: '14px', background: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontFamily: '"Cinzel", serif', fontWeight: 'bold', letterSpacing: '1px' }} onClick={onRequireLogin}>
+                {t('Authenticate to Reveal ➔')}
+              </button>
+            </div>
+          )}
           {loading ? (
              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'var(--text-muted)' }}>
                <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
@@ -444,6 +454,8 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
   }, [targetPillar, data, lang]);
 
   const fetchPathway = React.useCallback(async (force = false) => {
+    if (!K) return;
+    if (!user) return; // Wait for UI interaction on the Guardian Lock
     const cacheKey = `jyotish_pathway_${targetPillar}_${lang}`;
     if (!force) {
       let cached = null;
@@ -571,18 +583,30 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
              return (
                <button 
                  key={opt.id} 
-                 onClick={() => onSelect(opt)}
+                 onClick={() => {
+                    if (!user) {
+                       onRequireLogin();
+                       return;
+                    }
+                    onSelect(opt);
+                 }}
                  style={{ 
                    position: 'relative', height: '240px', overflow: 'hidden', border: '2px solid var(--border-light)', borderRadius: '8px', cursor: 'pointer', transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)', 
-                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', textDecoration: 'none'
+                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', textDecoration: 'none', background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(5px)'
                  }}
                  onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.borderColor = 'var(--accent-gold)'; e.currentTarget.style.boxShadow = '0 20px 40px var(--bg-surface), 0 0 20px rgba(255,215,0,0.2)'; e.currentTarget.querySelector('.card-bg').style.transform = 'scale(1.1)'; e.currentTarget.querySelector('.card-bg').style.opacity = '0.8'; }}
                  onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)'; e.currentTarget.querySelector('.card-bg').style.transform = 'scale(1)'; e.currentTarget.querySelector('.card-bg').style.opacity = '1'; }}
                >
                  <div className="card-bg" style={{ position: 'absolute', inset: 0, background: 'var(--bg-card)', zIndex: 0, transition: 'all 0.6s ease' }}></div>
 
-                 <span style={{ position: 'relative', zIndex: 2, fontSize: '64px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s' }}>{opt.icon}</span>
-                 <span style={{ position: 'relative', zIndex: 2, color: 'var(--text-main)', fontSize: '22px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px var(--bg-surface)', letterSpacing: '1px', textAlign: 'center' }}>
+                 {!user && (
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-surface)', opacity: 0.85, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}>
+                      <span style={{ fontSize: '42px', filter: 'drop-shadow(0 0 15px rgba(255,215,0,0.6))' }}>🔐</span>
+                    </div>
+                 )}
+
+                 <span style={{ position: 'relative', zIndex: 2, fontSize: '64px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s', opacity: user ? 1 : 0.3 }}>{opt.icon}</span>
+                 <span style={{ position: 'relative', zIndex: 2, color: 'var(--text-main)', fontSize: '22px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px var(--bg-surface)', letterSpacing: '1px', textAlign: 'center', opacity: user ? 1 : 0.3 }}>
                    {t(opt.label)}
                  </span>
                </button>
