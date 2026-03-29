@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { timescale, kundaliData, currentDate, lang = 'en' } = req.body;
+    const { timescale, kundaliData, partnerData, currentDate, lang = 'en' } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -33,6 +33,7 @@ Task:
 You must provide a highly specific, immediately actionable forecasting analysis based ONLY on the provided timescale and chart data. 
 - You MUST write the entire response natively in the requested TARGET UI LANGUAGE CODE. Never output in English unless the code is 'en'.
 - Synthesize active Dashas, current transits (Gochar), and Ashtakavarga bindus. 
+${partnerData ? `- SYNARSTRY DETECTED: The user is currently tracking a relationship with a partner having Lagna: ${partnerData.lagna?.rashi || 'Unknown'}, Moon: ${partnerData.moon || 'Unknown'}, Nakshatra: ${partnerData.nakshatra || 'Unknown'}. You MUST organically weave relationship dynamics, compatibility frictions, or joint financial/life impacts into the 'assertions' and 'lifestyle' sections based on how their transits align with the primary user.` : ''}
 - DO NOT use introductory phrases like "Based on your chart" or "I predict". Just state the reading immediately.
 
 CRITICAL: Return a strict JSON object with exactly these 5 keys answering these questions thoroughly:

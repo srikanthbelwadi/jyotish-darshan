@@ -112,12 +112,12 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
       </div>
 
       <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', borderLeft: '4px solid var(--accent-gold)', marginBottom: '16px' }}>
-        <h4 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>Phase 1: Ashta Kuta Verdict</h4>
+        <h4 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>{txt('comp.phase1', 'Phase 1: Ashta Kuta Verdict')}</h4>
         <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', fontFamily: 'serif' }}>{txt(`comp.${match.ashtaKuta.summaryKey}`, match.ashtaKuta.summary)}</p>
       </div>
 
       <div style={{ background: 'var(--bg-dark)', padding: '16px', borderRadius: '8px', borderLeft: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '4px solid #EF4444' : '4px solid #10B981', marginBottom: '16px' }}>
-        <h4 style={{ margin: '0 0 8px', color: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '#EF4444' : '#10B981', fontFamily: '"Cinzel", serif' }}>Phase 2: {txt('comp.kuja', 'Mangal Dosha Analysis')}</h4>
+        <h4 style={{ margin: '0 0 8px', color: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '#EF4444' : '#10B981', fontFamily: '"Cinzel", serif' }}>{txt('comp.phase2Label', 'Phase 2: Mangal Dosha Analysis')}</h4>
         <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', color: 'var(--text-main)', fontFamily: 'serif' }}>{txt(`comp.${match.mangalDosha.manglikKey}`, match.mangalDosha.manglikStatus)}</p>
       </div>
 

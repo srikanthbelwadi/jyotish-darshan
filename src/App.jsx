@@ -2149,22 +2149,25 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuRef]);
-  const getPartnerKey = React.useCallback(() => `jd_partner_${K?.input?.name}_${K?.input?.year}_${K?.input?.month}_${K?.input?.day}`, [K]);
-
   const[partnerKundali, setPartnerKundali]=React.useState(null);
   const[showPartnerForm, setShowPartnerForm]=React.useState(false);
   const[isSynastryExpanded, setIsSynastryExpanded]=React.useState(true);
 
   React.useEffect(() => {
     try {
-      const saved = localStorage.getItem(getPartnerKey());
-      setPartnerKundali(saved ? JSON.parse(saved) : null);
+      if (K?.input?.partner) {
+        const pk = computeKundali(K.input.partner);
+        pk.name = K.input.partner.name;
+        setPartnerKundali(pk);
+      } else {
+        setPartnerKundali(null);
+      }
       setShowPartnerForm(false);
       setIsSynastryExpanded(true);
     } catch(e) { 
       setPartnerKundali(null); 
     }
-  }, [K, getPartnerKey]);
+  }, [K]);
 
 
   const{input,lagna,panchang:pan,ayanamsaDMS,planets}=K;
@@ -2277,7 +2280,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                    <button onClick={() => {
                      setPartnerKundali(null); 
                      setShowPartnerForm(false);
-                     localStorage.removeItem(getPartnerKey());
+                     saveProfile({ ...K.input, partner: null });
                    }} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px', outline: 'none', padding: '0 8px', marginLeft: 4 }} title="Remove Partner">
                      ✕
                    </button>
@@ -2323,7 +2326,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                   const pk = computeKundali(inputParams); 
                   pk.name = inputParams.name;
                   setPartnerKundali(pk); 
-                  localStorage.setItem(getPartnerKey(), JSON.stringify(pk));
+                  saveProfile({ ...K.input, partner: inputParams });
                   setShowPartnerForm(false);
                   setIsSynastryExpanded(true);
                 } catch(e) { 

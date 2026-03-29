@@ -206,7 +206,12 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
                nakshatra: K.panchanga.nakshatra?.name
              } : null,
              ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
-          }
+          },
+          partnerData: partnerKundali ? {
+             lagna: { rashi: partnerKundali.lagna?.rashi },
+             moon: partnerKundali.planets.find(p => p.key === 'moon')?.rashi,
+             nakshatra: partnerKundali.panchanga?.nakshatra?.name || partnerKundali.planets.find(p => p.key === 'moon')?.nakshatraName
+          } : null
         })
       });
 
@@ -657,8 +662,8 @@ const FullScreenWrapper = ({ title, onBack, children, t, lang }) => (
 // ==========================================
 // 3. MAIN DASHBOARD AGGREGATOR
 // ==========================================
-export const MockDashboard = ({ onOpenJyotishDesk, user, onRequireLogin, K, partnerKundali, t, lang }) => {
-  const [activeTime, setActiveTime] = useState('This Masa (Month)');
+export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishDesk, partnerKundali }) => {
+  const [activeTime, setActiveTime] = React.useState('Today');
   const [activeView, setActiveView] = useState('grid'); 
 
   if (activeView !== 'grid') {
