@@ -341,11 +341,24 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
         <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Predictions')}</h2>
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
+        
+        {/* Desktop Buttons */}
+        <div className="desktop-timescale-btns" style={{ gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
           {timescales.map(ts => (
             <button key={ts} onClick={() => setActiveTime(ts)} style={{ background: activeTime === ts ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === ts ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t(ts)}</button>
           ))}
         </div>
+
+        {/* Mobile Dropdown */}
+        <select 
+          className="mobile-timescale-select" 
+          value={activeTime} 
+          onChange={(e) => setActiveTime(e.target.value)}
+        >
+          {timescales.map(ts => (
+            <option key={ts} value={ts}>{t(ts)}</option>
+          ))}
+        </select>
         <div style={{ background: 'var(--bg-surface)', position: 'relative', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700', minHeight: '180px', display: 'flex', alignItems: 'center' }}>
           {!user && (
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
@@ -700,7 +713,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
                     </div>
                  )}
 
-                 <span style={{ position: 'relative', zIndex: 2, fontSize: '64px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s', opacity: user ? 1 : 0.3 }}>{opt.icon}</span>
+                 <span className="mobile-hide-emoji" style={{ position: 'relative', zIndex: 2, fontSize: '64px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s', opacity: user ? 1 : 0.3 }}>{opt.icon}</span>
                  <span style={{ position: 'relative', zIndex: 2, color: 'var(--text-main)', fontSize: '22px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px var(--bg-surface)', letterSpacing: '1px', textAlign: 'center', opacity: user ? 1 : 0.3 }}>
                    {t(opt.label)}
                  </span>

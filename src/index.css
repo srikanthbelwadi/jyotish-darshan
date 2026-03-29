@@ -115,6 +115,11 @@ h1,h2,h3,h4,h5,.serif{
 }
 table{border-collapse:collapse}
 
+/* Timescale & UI Mobile Responsive Logic */
+.desktop-timescale-btns { display: flex; }
+.mobile-timescale-select { display: none; }
+.mobile-hide-emoji { display: inline-block; }
+
 /* Reusable Utility Classes for Luxury App */
 .lux-card {
   background: var(--bg-card);
@@ -226,7 +231,22 @@ table{border-collapse:collapse}
     max-width: 100%;
   }
 
-  /* Specific mobile overrides for heavy dashboard nodes */
+  /* Custom mobile overrides for heavy dashboard nodes */
   .app-header-content { flex-direction: column !important; align-items: stretch !important; }
   .app-header-right { justify-content: space-between !important; margin-top: 10px; width: 100%; }
+
+  .desktop-timescale-btns { display: none !important; }
+  .mobile-hide-emoji { display: none !important; }
+  .mobile-predictive-card { height: 120px !important; padding: 16px !important; }
+  .mobile-timescale-select { 
+      display: block !important; 
+      width: 100%; 
+      padding: 12px; 
+      background: var(--bg-input); 
+      color: var(--accent-gold); 
+      border: 1px solid var(--accent-gold); 
+      font-family: 'Cinzel', serif; 
+      font-size: 16px; 
+      margin-bottom: 24px;
+   }
 }
