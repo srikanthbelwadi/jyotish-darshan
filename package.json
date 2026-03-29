@@ -10,7 +10,8 @@
     "test": "npx playwright test",
     "test:accuracy": "npx playwright test tests/accuracy.spec.js",
     "test:usability": "npx playwright test tests/usability.spec.js",
-    "test:comprehensive": "npx playwright test tests/comprehensiveness.spec.js",
+    "test:comprehensiveness": "npx playwright test tests/comprehensiveness.spec.js",
+    "test:prompts": "npx playwright test tests/eval_prompts.spec.js",
     "test:report": "npx playwright show-report"
   },
   "dependencies": {
