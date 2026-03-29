@@ -893,7 +893,10 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
               setActiveView(key); 
               setTimeout(() => {
                 const el = document.getElementById('mock-dashboard-top');
-                if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                if (el) {
+                  const y = el.getBoundingClientRect().top + window.scrollY - 80;
+                  window.scrollTo({ top: y, behavior: 'smooth' });
+                }
                 else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
               }, 50); 
             }}
