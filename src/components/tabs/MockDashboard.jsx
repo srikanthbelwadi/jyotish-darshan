@@ -375,12 +375,25 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
              <p style={{ margin: 0, fontSize: '16px', color: 'var(--text-badge-red)', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
           ) : (
              <div style={{ position: 'relative', width: '100%', minHeight: '50px' }}>
+               {cache[activeCacheKey] && (
+                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                   <button 
+                     onClick={() => fetchOracle(true)}
+                     title={t('Consult again (Override cache)')}
+                     style={{ background: 'var(--bg-card)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', fontSize: '18px', cursor: 'pointer', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '40px', height: '40px', boxShadow: '0 4px 15px rgba(212,175,55,0.15)' }}
+                     onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.1)'; e.currentTarget.style.transform = 'rotate(180deg)'; }}
+                     onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
+                   >
+                     ⟳
+                   </button>
+                 </div>
+               )}
                {typeof cache[activeCacheKey] === 'string' ? (
-                 <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', fontStyle: 'italic', paddingRight: '40px' }}>
+                 <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', fontStyle: 'italic' }}>
                    "{cache[activeCacheKey] || t('Awaiting celestial alignment...')}"
                  </p>
                ) : cache[activeCacheKey] ? (
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingRight: '40px' }}>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                    <div style={{ padding: '24px', background: 'var(--bg-input)', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Predictive Trajectory')}</div>
                      <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].period}</p>
@@ -409,20 +422,9 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
                    </div>
                  </div>
                ) : (
-                 <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', paddingRight: '40px' }}>
+                 <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif' }}>
                    {t('Awaiting celestial alignment...')}
                  </p>
-               )}
-               {cache[activeCacheKey] && (
-                 <button 
-                   onClick={() => fetchOracle(true)}
-                   title={t('Consult again (Override cache)')}
-                   style={{ position: 'absolute', top: '-10px', right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}
-                   onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent-gold)'; e.currentTarget.style.color = 'var(--accent-gold)'; e.currentTarget.style.transform = 'rotate(180deg)'; }}
-                   onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
-                 >
-                   ⟳
-                 </button>
                )}
              </div>
           )}
