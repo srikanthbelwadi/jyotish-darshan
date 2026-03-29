@@ -154,7 +154,7 @@ const PILLAR_DATA = {
 // 2. CLASSICAL MODULAR COMPONENTS
 // ==========================================
 
-const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali }) => {
+const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, user, onRequireLogin }) => {
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
 
   const [cache, setCache] = React.useState({});
@@ -441,7 +441,7 @@ const EclipticChart = ({ hue, pillarId, t, K }) => {
   );
 };
 
-const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang }) => {
+const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang, user, onRequireLogin }) => {
   const data = PILLAR_DATA[targetPillar];
   const hue = [...targetPillar].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
   
@@ -642,7 +642,7 @@ const MandalVisualizer = ({ selectedOpt }) => {
 
 
 
-const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
+const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang, user, onRequireLogin }) => {
   const [opt, setOpt] = useState(null);
 
   React.useEffect(() => {
@@ -652,7 +652,7 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
   }, [opt, pillarId]);
   const data = PILLAR_DATA[pillarId];
 
-  if(!opt) return <InteractionGateway targetPillar={pillarId} onSelect={setOpt} K={K} t={t} lang={lang} />;
+  if(!opt) return <InteractionGateway targetPillar={pillarId} onSelect={setOpt} K={K} t={t} lang={lang} user={user} onRequireLogin={onRequireLogin} />;
 
   return (
     <div className="responsive-grid-2" style={{ alignItems: 'start' }}>
@@ -721,7 +721,7 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
     return (
       <div id="mock-dashboard-top" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
         <FullScreenWrapper title={`${data.icon} ${t(data.title)}`} onBack={() => setActiveView('grid')} t={t} lang={lang}>
-          <StandardPillarView pillarId={activeView} K={K} partnerKundali={partnerKundali} t={t} lang={lang} />
+          <StandardPillarView pillarId={activeView} K={K} partnerKundali={partnerKundali} t={t} lang={lang} user={user} onRequireLogin={onRequireLogin} />
         </FullScreenWrapper>
       </div>
     );
@@ -743,7 +743,7 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
           {t('Reveal Kundali ➔')}
         </button>
       </div>
-      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} t={t} lang={lang} partnerKundali={partnerKundali} />
+      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} t={t} lang={lang} partnerKundali={partnerKundali} user={user} onRequireLogin={onRequireLogin} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
         {Object.entries(PILLAR_DATA).map(([key, data]) => (
