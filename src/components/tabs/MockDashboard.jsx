@@ -154,7 +154,7 @@ const PILLAR_DATA = {
 // 2. CLASSICAL MODULAR COMPONENTS
 // ==========================================
 
-const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
+const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali }) => {
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
 
   const [cache, setCache] = React.useState({});
@@ -167,7 +167,8 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
     const cacheKey = `jyotish_oracle_${activeTime}_${lang}`;
     if (!forceRegenerate) {
        // Check localStorage for 24h TTK Cache
-       const stored = localStorage.getItem(cacheKey);
+       let stored = null;
+       try { stored = localStorage.getItem(cacheKey); } catch (e) {}
        if (stored) {
          try {
            const parsed = JSON.parse(stored);
@@ -215,11 +216,19 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
         })
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data = {};
+      try {
+        data = JSON.parse(text);
+      } catch(e) {
+        if (!res.ok) throw new Error(res.status === 404 ? 'AI generation requires Vercel Backend (run `vercel dev` instead of `npm run dev`).' : 'Backend returned non-JSON response.');
+        throw e;
+      }
+
       if (!res.ok) throw new Error(data.error || 'Failed to consult the Oracle.');
 
       setCache(prev => ({ ...prev, [cacheKey]: data.prediction }));
-      localStorage.setItem(cacheKey, JSON.stringify({ text: data.prediction, timestamp: Date.now() }));
+      try { localStorage.setItem(cacheKey, JSON.stringify({ text: data.prediction, timestamp: Date.now() })); } catch (e) {}
     } catch (err) {
       setError(err.message);
     } finally {
@@ -432,10 +441,11 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
     fetchPathway(false);
   }, [targetPillar, data, lang]);
 
-  const fetchPathway = async (force = false) => {
+  const fetchPathway = React.useCallback(async (force = false) => {
     const cacheKey = `jyotish_pathway_${targetPillar}_${lang}`;
     if (!force) {
-      const cached = localStorage.getItem(cacheKey);
+      let cached = null;
+      try { cached = localStorage.getItem(cacheKey); } catch (e) {}
       if (cached) {
          try {
            const parsed = JSON.parse(cached);
@@ -477,17 +487,25 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
           }
         })
       });
-      const resData = await res.json();
+      const text = await res.text();
+      let resData = {};
+      try {
+        resData = JSON.parse(text);
+      } catch (e) {
+        if (!res.ok) throw new Error(res.status === 404 ? 'AI generation requires Vercel Backend (run `vercel dev` instead of `npm run dev`).' : 'Backend returned non-JSON response.');
+        throw e;
+      }
+      
       if(!res.ok) throw new Error(resData.error || 'Failed to sync with pathway matrix.');
       
       setPathwayData({ summary: resData.summary, options: resData.options });
-      localStorage.setItem(cacheKey, JSON.stringify({ summary: resData.summary, options: resData.options, timestamp: Date.now() }));
+      try { localStorage.setItem(cacheKey, JSON.stringify({ summary: resData.summary, options: resData.options, timestamp: Date.now() })); } catch (e) {}
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [targetPillar, K, lang]);
 
   return (
     <div style={{ background: 'var(--bg-app)', padding: '0 0 80px 0', border: '1px solid #4a151b', borderRadius: '8px', overflow: 'hidden' }}>
@@ -693,7 +711,7 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
           {t('Reveal Kundali ➔')}
         </button>
       </div>
-      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} t={t} lang={lang} />
+      <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} t={t} lang={lang} partnerKundali={partnerKundali} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
         {Object.entries(PILLAR_DATA).map(([key, data]) => (

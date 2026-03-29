@@ -7,8 +7,16 @@ const PreferencesContext = createContext();
 export const usePreferences = () => useContext(PreferencesContext);
 
 export const PreferencesProvider = ({ children }) => {
-  const [lang, setLangState] = useState(() => localStorage.getItem('jd_lang') || 'en');
-  const [theme, setThemeState] = useState(() => localStorage.getItem('jd_theme') || 'dark');
+  const safeGetItem = (key, fallback) => {
+    try {
+      return localStorage.getItem(key) || fallback;
+    } catch (e) {
+      return fallback;
+    }
+  };
+
+  const [lang, setLangState] = useState(() => safeGetItem('jd_lang', 'en'));
+  const [theme, setThemeState] = useState(() => safeGetItem('jd_theme', 'dark'));
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [user, setUser] = useState(null);
 

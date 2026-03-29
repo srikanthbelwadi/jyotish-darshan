@@ -14,6 +14,7 @@ import ConfirmModal from './components/ConfirmModal.jsx';
 import { usePreferences } from './contexts/PreferencesContext.jsx';
 import UserPreferencesModal from './components/UserPreferencesModal.jsx';
 import { useSync } from './contexts/SyncContext.jsx';
+import UserHub from './components/UserHub.jsx';
 
 // ════════════════════════════════════════════════════════════════
 // ASTRONOMY ENGINE
@@ -2127,7 +2128,10 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
     const fetchProfiles = () => {
       try {
         const saved = localStorage.getItem('jd_profiles');
-        if (saved) setSavedProfiles(JSON.parse(saved));
+        if (saved) {
+           const parsed = JSON.parse(saved);
+           setSavedProfiles(Array.isArray(parsed) ? parsed : []);
+        }
       } catch(e) {}
     };
     fetchProfiles();
@@ -2450,7 +2454,7 @@ function SyncIndicator({ status, onForceSync }) {
   );
 }
 
-function AppHeader({ user, syncStatus, onLoginClick, onLogoutClick, onForceSync, onOpenPrefs }) {
+function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync, onOpenPrefs }) {
   const { lang, theme } = usePreferences();
 
   const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
@@ -2463,17 +2467,18 @@ function AppHeader({ user, syncStatus, onLoginClick, onLogoutClick, onForceSync,
             </div>
             <div style={{minWidth:0}}><h1 className="serif" style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{t('tagline',lang)}</p></div>
           </div>
-          <div className="app-header-right" style={{display:'flex', gap:12, flexShrink:0, alignItems:'center'}}>
-            {!user ? (
-              <button type="button" onClick={onLoginClick} style={{background:'var(--accent-gold)', border:'none', borderRadius:'20px', padding:'6px 16px', color:'#000', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px'}}>Login / Register</button>
-            ) : (
-              <button type="button" onClick={onLogoutClick} style={{background:'transparent', border:'1px solid var(--accent-gold)', borderRadius:'20px', padding:'6px 16px', color:'var(--accent-gold)', fontWeight:'bold', cursor:'pointer', fontSize:'13px', marginRight:'8px', display: 'flex', alignItems: 'center'}}>
-                {user.name} <SyncIndicator status={syncStatus} onForceSync={onForceSync} /> <span style={{marginLeft: 8}}>(Logout)</span>
-              </button>
-            )}
-            <button type="button" onClick={onOpenPrefs} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}} title="Global Preferences">
+          <div className="app-header-right" style={{display:'flex', gap:16, flexShrink:0, alignItems:'center'}}>
+            <button type="button" onClick={onOpenPrefs} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s', boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='scale(1)'} title="Global Preferences">
               <span style={{fontSize:16}}>⚙️</span>
             </button>
+            <UserHub 
+               user={user} 
+               syncStatus={syncStatus} 
+               syncToast={syncToast} 
+               onLoginClick={onLoginClick} 
+               onLogoutClick={onLogoutClick} 
+               onForceSync={onForceSync} 
+            />
           </div>
         </div>
       </header>
@@ -2510,7 +2515,7 @@ function App(){
           const saved = localStorage.getItem('jd_profiles');
           if (saved) {
             const profiles = JSON.parse(saved);
-            const validProfiles = profiles.filter(p => !p.isDeleted);
+            const validProfiles = (Array.isArray(profiles) ? profiles : []).filter(p => !p.isDeleted);
             if (validProfiles.length > 0) {
               setErr(null);
               setKundali(computeKundali(validProfiles[0]));
@@ -2548,9 +2553,22 @@ function App(){
     const deleted = await deleteProfile(profileToDelete);
     
     if (deleted) {
-      if ((kundali?.input?.name || 'User').toLowerCase() === (profileToDelete.name || 'User').toLowerCase()) {
-         setKundali(null);
-         setScreen('input');
+      if ((kundali?.input?.name || 'User').toLowerCase() === (profileToDelete.name || 'User').toLowerCase() || (kundali?.input?.id && kundali.input.id === profileToDelete.id)) {
+         
+         let remaining = [];
+         try {
+           const saved = JSON.parse(localStorage.getItem('jd_profiles') || '[]');
+           remaining = (Array.isArray(saved) ? saved : []).filter(p => !p.isDeleted);
+         } catch(e) {}
+
+         if (remaining.length > 0) {
+           // Auto-load the next available profile in the vault
+           await handleSubmit(remaining[0]);
+         } else {
+           // Vault is totally empty, return to the creation form
+           setKundali(null);
+           setScreen('input');
+         }
       }
     }
     setProfileToDelete(null);
@@ -2629,14 +2647,8 @@ function App(){
   const goBack = () => { setScreen('input'); history.replaceState({},'',location.pathname); };
   return (
     <div style={{minHeight:'100vh', display:'flex', flexDirection:'column'}}>
-      {syncToast && (
-        <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#10B981', color: '#fff', padding: '10px 20px', borderRadius: 20, zIndex: 9999, fontWeight: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.3)', animation: 'slideDown 0.3s ease-out' }}>
-           {syncToast}
-           <style>{`@keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }`}</style>
-        </div>
-      )}
       {showAuthModal && <AuthModal lang={lang} t={t} onLogin={() => setShowAuthModal(false)} onClose={() => setShowAuthModal(false)} />}
-      <AppHeader user={user} syncStatus={syncStatus} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={logoutUser} onForceSync={forceSync} onOpenPrefs={() => setShowPrefModal(true)} />
+      <AppHeader user={user} syncStatus={syncStatus} syncToast={syncToast} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={logoutUser} onForceSync={forceSync} onOpenPrefs={() => setShowPrefModal(true)} />
       <DailyPanchang lang={lang} />
       {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} onForceSync={forceSync} onDeleteProfile={setProfileToDelete} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
       <UserPreferencesModal isOpen={showPrefModal} onClose={() => setShowPrefModal(false)} />
