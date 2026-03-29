@@ -12,6 +12,7 @@
     "test:usability": "npx playwright test tests/usability.spec.js",
     "test:comprehensiveness": "npx playwright test tests/comprehensiveness.spec.js",
     "test:prompts": "npx playwright test tests/eval_prompts.spec.js",
+    "test:judge": "node tests/eval_llm_judge.mjs",
     "test:report": "npx playwright show-report"
   },
   "dependencies": {
