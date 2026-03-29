@@ -429,7 +429,7 @@ const EclipticChart = ({ hue, pillarId, t, K }) => {
   );
 };
 
-const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
+const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang }) => {
   const data = PILLAR_DATA[targetPillar];
   const hue = [...targetPillar].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
   
@@ -484,7 +484,12 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
               nakshatra: K.panchanga.nakshatra?.name
             } : null,
             ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
-          }
+          },
+          partnerData: partnerKundali ? {
+             lagna: { rashi: partnerKundali.lagna?.rashi },
+             moon: partnerKundali.planets.find(p => p.key === 'moon')?.rashi,
+             nakshatra: partnerKundali.panchanga?.nakshatra?.name || partnerKundali.planets.find(p => p.key === 'moon')?.nakshatraName
+          } : null
         })
       });
       const text = await res.text();
@@ -505,7 +510,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, t, lang }) => {
     } finally {
       setLoading(false);
     }
-  }, [targetPillar, K, lang]);
+  }, [targetPillar, K, lang, partnerKundali]);
 
   return (
     <div style={{ background: 'var(--bg-app)', padding: '0 0 80px 0', border: '1px solid #4a151b', borderRadius: '8px', overflow: 'hidden' }}>
