@@ -13,6 +13,9 @@ export default defineConfig({
     baseURL: process.env.TEST_URL || 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    extraHTTPHeaders: process.env.VERCEL_BYPASS_TOKEN ? {
+      'x-vercel-protection-bypass': process.env.VERCEL_BYPASS_TOKEN
+    } : undefined,
   },
   // Skip booting a local dev server if we are testing a deployed URL
   webServer: process.env.TEST_URL ? undefined : {
