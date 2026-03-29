@@ -2293,7 +2293,20 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             {/* PARTNER BUTTON */}
             <div style={{display:'flex', alignItems:'center', gap: 12}}>
               {!partnerKundali ? (
-                  <button onClick={() => {setShowPartnerForm(!showPartnerForm); setIsSynastryExpanded(true);}} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px dashed var(--accent-gold)', padding: '6px 12px', fontSize: '12px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }} onMouseOver={e=>{e.currentTarget.style.opacity=1; e.currentTarget.style.background='rgba(212,175,55,0.1)'}} onMouseOut={e=>{e.currentTarget.style.opacity=0.8; e.currentTarget.style.background='transparent'}}>
+                  <button onClick={() => {
+                     const opening = !showPartnerForm;
+                     setShowPartnerForm(opening); 
+                     setIsSynastryExpanded(true);
+                     if (opening) {
+                       setTimeout(() => {
+                         const el = document.getElementById('synastry-form-ctr');
+                         if (el) {
+                           const y = el.getBoundingClientRect().top + window.scrollY - 80;
+                           window.scrollTo({ top: y, behavior: 'smooth' });
+                         }
+                       }, 100);
+                     }
+                  }} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px dashed var(--accent-gold)', padding: '6px 12px', fontSize: '12px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }} onMouseOver={e=>{e.currentTarget.style.opacity=1; e.currentTarget.style.background='rgba(212,175,55,0.1)'}} onMouseOut={e=>{e.currentTarget.style.opacity=0.8; e.currentTarget.style.background='transparent'}}>
                     {t('comp.addP', lang) || '+ ADD PARTNER'}
                  </button>
               ) : (
@@ -2341,7 +2354,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
 
         {/* Global Synastry Form Dropdown */}
         {(showPartnerForm || (partnerKundali && isSynastryExpanded)) && (
-        <div style={{ position: 'relative', marginBottom: 40, padding: '24px', background: 'var(--bg-input)', border: '1px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.2)', animation: 'fadeIn 0.4s ease' }}>
+        <div id="synastry-form-ctr" style={{ position: 'relative', marginBottom: 40, padding: '24px', background: 'var(--bg-input)', border: '1px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.2)', animation: 'fadeIn 0.4s ease' }}>
           <button onClick={() => { setIsSynastryExpanded(false); setShowPartnerForm(false); }} style={{ position: 'absolute', top: '12px', right: '16px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '20px', cursor: 'pointer', outline: 'none', transition: 'color 0.2s', padding: 0 }} onMouseOver={e=>e.currentTarget.style.color='var(--accent-gold)'} onMouseOut={e=>e.currentTarget.style.color='var(--text-muted)'} title="Close">
             ✕
           </button>
