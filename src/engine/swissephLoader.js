@@ -53,3 +53,7 @@ export function getSwe() {
   if (!sweInstance) throw new Error("Swiss Ephemeris not loaded yet.");
   return sweInstance;
 }
+
+export function setSweTestInstance(instance) {
+  sweInstance = instance;
+}

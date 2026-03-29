@@ -11,9 +11,20 @@ import { dirname, join } from 'path';
 import { getLahiriAyanamsa, toJulianDay, computeAscendant, computePlanetPositions } from '../src/engine/astronomy.js';
 import { nakshatraFromLongitude, rashiFromLongitude, computeVimshottariDasha, computePanchang } from '../src/engine/vedic.js';
 import { DASHA_PERIODS as DASHA_YRS, EXALTATION as EXALT, DEBILITATION as DEBIL } from '../src/engine/constants.js';
+import { setSweTestInstance } from '../src/engine/swissephLoader.js';
+import SwissEph from 'swisseph-wasm';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const referenceCharts = JSON.parse(readFileSync(join(__dirname, 'fixtures/reference-charts.json'), 'utf8'));
+
+test.beforeAll(async () => {
+  const swisseph = new SwissEph();
+  await swisseph.initSwissEph();
+  const root = process.cwd();
+  swisseph.set_ephe_path(root + '/public/sweph');
+  swisseph.SweModule.ccall('swe_set_sid_mode', 'void', ['number', 'number', 'number'], [1, 0, 0]);
+  setSweTestInstance(swisseph);
+});
 
 function norm(lon) {
   return ((lon % 360) + 360) % 360;

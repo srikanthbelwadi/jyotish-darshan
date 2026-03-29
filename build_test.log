@@ -1,0 +1,25 @@
+
+> kundali-app@1.0.0 build
+> NODE_OPTIONS=--max-old-space-size=4096 vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 38 modules transformed.
+x Build failed in 158ms
+error during build:
+src/i18n/dynamicTranslations.js (182:28): Unexpected token `,`. Expected identifier, string literal, numeric literal or [ for the computed key
+file: /Users/belwadisrikanthpersonal/Astrology Game/jyotish-darshan/src/i18n/dynamicTranslations.js:182:28
+
+180:     "yo.rashi.9": "Capricorn",
+181:     "yo.rashi.10": "Aquarius",
+182:     "yo.rashi.11": "Pisces",,
+                                 ^
+183:     'ov.moonsConst': 'Moon\'s Constellation',
+184:     'ov.janmaNak': 'Janma Nakshatra',
+
+    at getRollupError (file:///Users/belwadisrikanthpersonal/Astrology%20Game/jyotish-darshan/node_modules/rollup/dist/es/shared/parseAst.js:402:41)
+    at ParseError.initialise (file:///Users/belwadisrikanthpersonal/Astrology%20Game/jyotish-darshan/node_modules/rollup/dist/es/shared/node-entry.js:14465:28)
+    at convertNode (file:///Users/belwadisrikanthpersonal/Astrology%20Game/jyotish-darshan/node_modules/rollup/dist/es/shared/node-entry.js:16437:10)
+    at convertProgram (file:///Users/belwadisrikanthpersonal/Astrology%20Game/jyotish-darshan/node_modules/rollup/dist/es/shared/node-entry.js:15677:12)
+    at Module.setSource (file:///Users/belwadisrikanthpersonal/Astrology%20Game/jyotish-darshan/node_modules/rollup/dist/es/shared/node-entry.js:17392:24)
+    at async ModuleLoader.addModuleSource (file:///Users/belwadisrikanthpersonal/Astrology%20Game/jyotish-darshan/node_modules/rollup/dist/es/shared/node-entry.js:21497:13)

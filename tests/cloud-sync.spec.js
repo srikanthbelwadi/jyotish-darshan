@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const APP_URL = 'http://localhost:5173';
+const APP_URL = '/index.html';
 
 test.describe('Cloud Sync & Persistence', () => {
 
