@@ -31,6 +31,11 @@ User's Real-Time Astrological Chart Data (JSON): ${JSON.stringify(kundaliData)}
 
 Task:
 You must provide a highly specific, immediately actionable forecasting analysis based ONLY on the provided timescale and chart data. 
+
+*** CRITICAL ASTROLOGICAL HONESTY RULE ***
+Do NOT hallucinate planetary positions or assume natural rulerships. You MUST strictly bind your entire analysis to the exact 'house' and 'rashi' index provided in the User's Chart JSON. Mentally construct your logical deductions in English first to ensure mathematical precision, and ONLY THEN translate the final written paragraphs into the target language (${lang}).
+******************************************
+
 - You MUST write the entire response natively in the requested TARGET UI LANGUAGE CODE. Never output in English unless the code is 'en'.
 - Synthesize active Dashas, current transits (Gochar), and Ashtakavarga bindus. 
 ${partnerData ? `- SYNARSTRY DETECTED: The user is currently tracking a relationship with a partner having Lagna: ${partnerData.lagna?.rashi || 'Unknown'}, Moon: ${partnerData.moon || 'Unknown'}, Nakshatra: ${partnerData.nakshatra || 'Unknown'}. You MUST organically weave relationship dynamics, compatibility frictions, or joint financial/life impacts into the 'assertions' and 'lifestyle' sections based on how their transits align with the primary user.` : ''}

@@ -37,6 +37,10 @@ User's Chart: ${JSON.stringify(MOCK_KUNDALI)}
 Task:
 Return a strict JSON object with "summary" and "options".
 
+*** CRITICAL ASTROLOGICAL HONESTY RULE ***
+Do NOT hallucinate planetary positions or assume natural rulerships. You MUST strictly bind your entire analysis to the exact 'house' and 'rashi' index provided in the User's Chart JSON. Mentally construct your logical deductions in English first to ensure mathematical precision, and ONLY THEN translate the final written paragraphs into the target language (${lang}).
+******************************************
+
 1. "summary": A dense 2-3 sentence paragraph evaluating the user's specific chart regarding this Path. State exactly which houses/planets govern this topic based on Brihat Parashara Hora Shastra, and analyze their strength in the user's D1 matrix.
 2. "options": Exactly 6 deeply analyzed karmic outcomes operating under this specific Pillar right now for the user. For each outcome, provide a definitive future timeframe (in months or years) and break down the analysis into EXACTLY 3 distinct paragraphs, each with an appropriate subheading mapping to these exact concepts:
    - Paragraph 1: The Astrological Basis
