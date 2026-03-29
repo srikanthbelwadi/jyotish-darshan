@@ -122,9 +122,10 @@ table{border-collapse:collapse}
 .desktop-sticky-panel { position: sticky; top: 24px; }
 .mobile-scale-icon { font-size: 64px; margin-bottom: 16px; }
 .desktop-only-flex { display: flex; }
+.desktop-only-block { display: block; }
 .desktop-hidden-tab { display: none; }
 .desktop-active-tab { display: block; }
-.mobile-show-always { display: block; }
+/* .mobile-show-always has no desktop rules */
 .mobile-vertical-tab-stack { display: block; gap: 0; }
 .mobile-loader-box { min-height: 140px; }
 
@@ -226,7 +227,7 @@ table{border-collapse:collapse}
   width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .mobile-col { flex-direction: column !important; }
   .mobile-padding { padding: 20px !important; }
   .mobile-hero-padding { padding: 24px 16px !important; }
@@ -249,6 +250,7 @@ table{border-collapse:collapse}
   .desktop-sticky-panel { position: relative !important; top: 0 !important; }
   .mobile-scale-icon { font-size: 36px !important; margin-bottom: 8px !important; }
   .desktop-only-flex { display: none !important; }
+  .desktop-only-block { display: none !important; }
   .mobile-loader-box { min-height: 60px !important; padding: 12px !important; }
   
   .desktop-hidden-tab.mobile-show-always { display: block !important; }

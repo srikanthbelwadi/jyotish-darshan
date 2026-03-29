@@ -2362,20 +2362,22 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             <div>
               <h2 style={{color:'var(--accent-gold)', borderBottom:'1px solid #b8860b', paddingBottom:'12px', marginBottom: '24px'}}>⌬ {t('headers.desk', lang)}</h2>
               
-              <div className="no-print" style={{background:'var(--bg-card)',border:'1px solid #b8860b', borderRadius: '8px', marginBottom: '24px', overflow:'hidden'}}>
+              {/* ── Tab Bar ── */}
+              <div className="no-print desktop-only-block" style={{background:'var(--bg-card)',border:'1px solid #b8860b', borderRadius: '8px', marginBottom: '24px', overflow:'hidden'}}>
                 <div style={{display:'flex',overflowX:'auto',whiteSpace:'nowrap',scrollbarWidth:'none', padding: '0 8px'}}>
                   {TABS_DEF.map(tb=><button key={tb.id} onClick={()=>setTab(tb.id)} style={{background:tab===tb.id?'var(--bg-input)':'transparent', color:tab===tb.id?'var(--accent-gold)':'var(--text-muted)', border:'none', padding:'12px 24px', cursor:'pointer', fontFamily:'"Cinzel", serif', fontWeight:tab===tb.id?'bold':'normal', transition:'all 0.2s', whiteSpace:'nowrap'}}><span style={{fontSize:14,marginRight:6}}>{tb.icon}</span>{t(`tabs.${tb.id}`,lang)}</button>)}
                 </div>
               </div>
               
-              <div style={{ background: 'var(--bg-card)', padding: '24px', borderRadius: '12px', border: '1px solid #b8860b', color: 'var(--text-main)' }}>
-                {tab==='charts'&&<ChartsTab K={K} fmt={fmt} setFmt={setFmt} lang={lang}/>}
-                {tab==='planets'&&<PlanetsTab K={K} lang={lang}/>}
-                {tab==='dasha'&&<DashaTab K={K} lang={lang}/>}
-                {tab==='yoga'&&<YogaTab K={K} lang={lang}/>}
-                {tab==='shadbala'&&<ShadbalaTab K={K} lang={lang}/>}
-                {tab==='avarga'&&<AshtakavargaTab K={K} lang={lang}/>}
-                {tab==='reading'&&<ExpertReadingTab kundali={K} lang={lang}/>}
+              {/* ── Tab Content ── */}
+              <div className="mobile-vertical-tab-stack" style={{ background: 'var(--bg-card)', padding: '24px', borderRadius: '12px', border: '1px solid #b8860b', color: 'var(--text-main)' }}>
+                 <div className={tab==='charts'?'desktop-active-tab mobile-show-always':'desktop-hidden-tab mobile-show-always'}><ChartsTab K={K} fmt={fmt} setFmt={setFmt} lang={lang}/></div>
+                 <div className={tab==='planets'?'desktop-active-tab mobile-show-always':'desktop-hidden-tab mobile-show-always'}><PlanetsTab K={K} lang={lang}/></div>
+                 <div className={tab==='dasha'?'desktop-active-tab mobile-show-always':'desktop-hidden-tab mobile-show-always'}><DashaTab K={K} lang={lang}/></div>
+                 <div className={tab==='yoga'?'desktop-active-tab mobile-show-always':'desktop-hidden-tab mobile-show-always'}><YogaTab K={K} lang={lang}/></div>
+                 <div className={tab==='shadbala'?'desktop-active-tab mobile-show-always':'desktop-hidden-tab mobile-show-always'}><ShadbalaTab K={K} lang={lang}/></div>
+                 <div className={tab==='avarga'?'desktop-active-tab mobile-show-always':'desktop-hidden-tab mobile-show-always'}><AshtakavargaTab K={K} lang={lang}/></div>
+                 <div className={tab==='reading'?'desktop-active-tab mobile-show-always':'desktop-hidden-tab mobile-show-always'}><ExpertReadingTab kundali={K} lang={lang}/></div>
               </div>
             </div>
           </div>
