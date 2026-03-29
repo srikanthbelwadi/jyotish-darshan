@@ -75,25 +75,46 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
     if (Object.keys(newErrs).length > 0) { setErrs(newErrs); return; }
     
     setLoading(true);
-    let y, m, d;
-    if (form.dob.includes('/')) {
-      const dt = new Date(form.dob);
-      y = dt.getFullYear(); m = dt.getMonth() + 1; d = dt.getDate();
+    let y = 1970, m = 1, d = 1;
+    let dClean = form.dob.trim();
+    if (dClean.includes('/')) {
+      const parts = dClean.split('/');
+      if (parts[2].length === 4) {
+        y = Number(parts[2]);
+        let p0 = Number(parts[0]), p1 = Number(parts[1]);
+        if (p0 > 12) { d = p0; m = p1; } else { m = p0; d = p1; }
+      } else if (parts[0].length === 4) {
+        y = Number(parts[0]); m = Number(parts[1]); d = Number(parts[2]);
+      }
+    } else if (dClean.includes('-')) {
+      const parts = dClean.split('-');
+      if (parts[2].length === 4) {
+        y = Number(parts[2]);
+        let p0 = Number(parts[0]), p1 = Number(parts[1]);
+        if (p0 > 12) { d = p0; m = p1; } else { m = p0; d = p1; }
+      } else {
+        y = Number(parts[0]); m = Number(parts[1]); d = Number(parts[2]);
+      }
     } else {
-      const parts = form.dob.split('-');
-      y = Number(parts[0]); m = Number(parts[1]); d = Number(parts[2]);
+      const dt = new Date(dClean);
+      if (!isNaN(dt)) { y = dt.getFullYear(); m = dt.getMonth() + 1; d = dt.getDate(); }
     }
     
-    let h, min_;
-    let rawT = form.tob.trim().toUpperCase();
-    let isPM = rawT.includes('PM');
-    let isAM = rawT.includes('AM');
-    let cleanT = rawT.replace(/[^0-9:]/g, '');
-    const [hh, mm] = cleanT.split(':');
-    h = Number(hh);
-    min_ = Number(mm);
-    if (isPM && h < 12) h += 12;
-    if (isAM && h === 12) h = 0;
+    // Safety fallback to prevent crashes
+    if (isNaN(y) || isNaN(m) || isNaN(d)) { y = 2000; m = 1; d = 1; }
+    
+    let h = 12, min_ = 0;
+    if (form.tob) {
+      let rawT = form.tob.trim().toUpperCase();
+      let isPM = rawT.includes('PM');
+      let isAM = rawT.includes('AM');
+      let cleanT = rawT.replace(/[^0-9:]/g, '');
+      const parts = cleanT.split(':');
+      h = Number(parts[0]); if (isNaN(h)) h = 12;
+      min_ = Number(parts[1]); if (isNaN(min_)) min_ = 0;
+      if (isPM && h < 12) h += 12;
+      if (isAM && h === 12) h = 0;
+    }
     
     const offset = getUTCOffset(form.timezone, y, m, d, h, min_);
 
