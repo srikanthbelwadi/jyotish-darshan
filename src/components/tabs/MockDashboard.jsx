@@ -154,7 +154,7 @@ const PILLAR_DATA = {
 // 1.5. UNIVERSAL LOADER (NON-LANGUAGE SPECIFIC)
 // ==========================================
 const UniversalLoader = () => (
-  <div className="mobile-loader-box" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '24px' }}>
+  <div className="mobile-loader-box" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
     <svg className="mobile-loader-svg" width="100%" height="100%" viewBox="0 0 450 150" style={{ overflow: 'visible', filter: 'drop-shadow(0 0 15px rgba(212,175,55,0.4))', maxWidth: '450px', maxHeight: '140px' }}>
        <style>
          {`
@@ -188,13 +188,13 @@ const UniversalLoader = () => (
          {/* Background Chart Geometry (Calculations) now isolated leftwards */}
          <g transform="translate(100, 75)">
            <g className="chart-spin-rev" opacity="0.3">
-             <circle cx="0" cy="0" r="60" fill="none" stroke="var(--accent-gold)" strokeWidth="1" strokeDasharray="4 8" />
-             <polygon points="0,-45 40,24 -40,24" fill="none" stroke="var(--accent-gold)" strokeWidth="1" />
-             <polygon points="0,45 -40,-24 40,-24" fill="none" stroke="var(--accent-gold)" strokeWidth="1" />
+             <circle cx="0" cy="0" r="60" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeDasharray="4 8" />
+             <polygon points="0,-45 40,24 -40,24" fill="none" stroke="var(--accent-gold)" strokeWidth="2" />
+             <polygon points="0,45 -40,-24 40,-24" fill="none" stroke="var(--accent-gold)" strokeWidth="2" />
            </g>
 
            <g className="chart-spin" opacity="0.6">
-             <circle cx="0" cy="0" r="50" fill="none" stroke="var(--border-light)" strokeWidth="2" strokeDasharray="10 15" />
+             <circle cx="0" cy="0" r="50" fill="none" stroke="var(--border-light)" strokeWidth="3" strokeDasharray="10 15" />
              {/* Orbiting Planets (Navagraha) */}
              <circle cx="0" cy="-50" r="4.5" fill="#ff4444" filter="drop-shadow(0 0 5px #ff4444)" />
              <circle cx="43" cy="25" r="3.5" fill="#44ccff" />
@@ -205,27 +205,27 @@ const UniversalLoader = () => (
          {/* Nadi Palm Leaves Component split completely to the right */}
          <g transform="translate(310, 75)">
             {/* Static Background Leaves Matrix */}
-            <path d="M-110,-15 Q0,-35 110,-15 Q120,0 110,15 Q0,35 -110,15 Q-120,0 -110,-15 Z" fill="#3a2f20" stroke="#6a5438" strokeWidth="2" opacity="0.5" transform="translate(0, 14) scale(1.08)" />
-            <path d="M-110,-15 Q0,-35 110,-15 Q120,0 110,15 Q0,35 -110,15 Q-120,0 -110,-15 Z" fill="#4b3e2a" stroke="#8c704a" strokeWidth="2" opacity="0.8" transform="translate(0, 7) scale(1.04)" />
+            <path d="M-110,-15 Q0,-35 110,-15 Q120,0 110,15 Q0,35 -110,15 Q-120,0 -110,-15 Z" fill="#3a2f20" stroke="#6a5438" strokeWidth="4" opacity="0.5" transform="translate(0, 14) scale(1.08)" />
+            <path d="M-110,-15 Q0,-35 110,-15 Q120,0 110,15 Q0,35 -110,15 Q-120,0 -110,-15 Z" fill="#4b3e2a" stroke="#8c704a" strokeWidth="4" opacity="0.8" transform="translate(0, 7) scale(1.04)" />
             
             {/* Animated Target Leaf 1 */}
             <g className="leaf-flip-1">
-              <path d="M-110,-15 Q0,-35 110,-15 Q120,0 110,15 Q0,35 -110,15 Q-120,0 -110,-15 Z" fill="#5f4d34" stroke="#d5ac68" strokeWidth="2" />
-              <line x1="-100" y1="-6" x2="100" y2="-6" stroke="#3a2f20" strokeWidth="1.5" opacity="0.4" />
-              <line x1="-105" y1="6" x2="105" y2="6" stroke="#3a2f20" strokeWidth="1.5" opacity="0.4" />
+              <path d="M-110,-15 Q0,-35 110,-15 Q120,0 110,15 Q0,35 -110,15 Q-120,0 -110,-15 Z" fill="#5f4d34" stroke="#d5ac68" strokeWidth="3" />
+              <line x1="-100" y1="-6" x2="100" y2="-6" stroke="#3a2f20" strokeWidth="3" opacity="0.4" />
+              <line x1="-105" y1="6" x2="105" y2="6" stroke="#3a2f20" strokeWidth="3" opacity="0.4" />
               {/* Writing Script Simulation */}
-              <path d="M-80,-10 Q-60,-18 -40,-4 T-10,-10 T20,-4 T40,-10 T60,-4 T80,-10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" className="leaf-write-1" filter="drop-shadow(0 0 4px #fff)"/>
-              <path d="M-70,8 Q-50,2 -30,12 T0,8 T20,12 T40,8 T60,12" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" className="leaf-write-1" filter="drop-shadow(0 0 4px #fff)" />
+              <path d="M-80,-10 Q-60,-18 -40,-4 T-10,-10 T20,-4 T40,-10 T60,-4 T80,-10" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" className="leaf-write-1" filter="drop-shadow(0 0 4px #fff)"/>
+              <path d="M-70,8 Q-50,2 -30,12 T0,8 T20,12 T40,8 T60,12" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" className="leaf-write-1" filter="drop-shadow(0 0 4px #fff)" />
             </g>
 
             {/* Animated Target Leaf 2 */}
             <g className="leaf-flip-2">
-              <path d="M-110,-15 Q0,-35 110,-15 Q120,0 110,15 Q0,35 -110,15 Q-120,0 -110,-15 Z" fill="#5f4d34" stroke="#d5ac68" strokeWidth="2" />
-              <line x1="-100" y1="-6" x2="100" y2="-6" stroke="#3a2f20" strokeWidth="1.5" opacity="0.4" />
-              <line x1="-105" y1="6" x2="105" y2="6" stroke="#3a2f20" strokeWidth="1.5" opacity="0.4" />
+              <path d="M-110,-15 Q0,-35 110,-15 Q120,0 110,15 Q0,35 -110,15 Q-120,0 -110,-15 Z" fill="#5f4d34" stroke="#d5ac68" strokeWidth="3" />
+              <line x1="-100" y1="-6" x2="100" y2="-6" stroke="#3a2f20" strokeWidth="3" opacity="0.4" />
+              <line x1="-105" y1="6" x2="105" y2="6" stroke="#3a2f20" strokeWidth="3" opacity="0.4" />
               {/* Writing Script Simulation (Gold Variant) */}
-              <path d="M-75,-8 Q-55,-16 -35,-2 T-5,-8 T15,-2 T45,-8 T65,-2 T85,-8" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeLinecap="round" className="leaf-write-2" filter="drop-shadow(0 0 4px var(--accent-gold))"/>
-              <path d="M-65,10 Q-45,4 -25,14 T5,10 T25,14 T55,10 T75,14" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeLinecap="round" className="leaf-write-2" filter="drop-shadow(0 0 4px var(--accent-gold))"/>
+              <path d="M-75,-8 Q-55,-16 -35,-2 T-5,-8 T15,-2 T45,-8 T65,-2 T85,-8" fill="none" stroke="var(--accent-gold)" strokeWidth="4" strokeLinecap="round" className="leaf-write-2" filter="drop-shadow(0 0 4px var(--accent-gold))"/>
+              <path d="M-65,10 Q-45,4 -25,14 T5,10 T25,14 T55,10 T75,14" fill="none" stroke="var(--accent-gold)" strokeWidth="4" strokeLinecap="round" className="leaf-write-2" filter="drop-shadow(0 0 4px var(--accent-gold))"/>
             </g>
          </g>
        </g>
@@ -648,7 +648,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
              <div style={{ flex: '1 1 500px', minWidth: 0 }}>
                <h3 style={{ fontSize: '48px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px var(--bg-surface)' }}>{t(data.title)}</h3>
                {loading ? (
-                   <div style={{ marginBottom: '32px' }}>
+                   <div className="mobile-loader-margin">
                       <UniversalLoader />
                    </div>
                ) : error ? (
