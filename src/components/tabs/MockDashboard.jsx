@@ -151,6 +151,35 @@ const PILLAR_DATA = {
 };
 
 // ==========================================
+// 1.5. UNIVERSAL LOADER (NON-LANGUAGE SPECIFIC)
+// ==========================================
+const UniversalLoader = () => (
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: '120px', padding: '24px' }}>
+    <svg width="100" height="100" viewBox="0 0 100 100" style={{ filter: 'drop-shadow(0 0 15px rgba(212,175,55,0.4))' }}>
+       {/* Clockwise Outer Orbit */}
+       <g style={{ animation: 'spin 15s linear infinite', transformOrigin: '50px 50px' }}>
+         <circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent-gold)" strokeWidth="1" strokeDasharray="4 8" opacity="0.4" />
+         <circle cx="50" cy="5" r="3" fill="#fff" filter="drop-shadow(0 0 4px #fff)" />
+         <circle cx="95" cy="50" r="2.5" fill="#ff4444" filter="drop-shadow(0 0 4px #ff4444)" />
+         <circle cx="5" cy="50" r="2" fill="#44ccff" filter="drop-shadow(0 0 4px #44ccff)" />
+       </g>
+       
+       {/* Counter-Clockwise Inner Shri Yantra Matrix */}
+       <g style={{ animation: 'spin 8s linear reverse infinite', transformOrigin: '50px 50px' }}>
+         <circle cx="50" cy="50" r="32" fill="none" stroke="var(--border-light)" strokeWidth="1" opacity="0.5" />
+         <circle cx="50" cy="50" r="28" fill="none" stroke="var(--border-light)" strokeWidth="2" strokeDasharray="10 15" opacity="0.6" />
+         <polygon points="50,22 74,64 26,64" fill="none" stroke="var(--accent-gold)" strokeWidth="1.5" opacity="0.9" />
+         <polygon points="50,78 26,36 74,36" fill="none" stroke="var(--accent-gold)" strokeWidth="1.5" opacity="0.9" />
+       </g>
+       
+       {/* Central Pulsating Bindu */}
+       <circle cx="50" cy="50" r="5" fill="var(--bg-app)" stroke="var(--accent-gold)" strokeWidth="2" />
+       <circle cx="50" cy="50" r="2" fill="var(--accent-gold)" style={{ animation: 'pulseGlow 2s infinite' }} />
+    </svg>
+  </div>
+);
+
+// ==========================================
 // 2. CLASSICAL MODULAR COMPONENTS
 // ==========================================
 
@@ -274,10 +303,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
             </div>
           )}
           {loading ? (
-             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'var(--text-muted)' }}>
-               <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
-               <span style={{ fontFamily: '"Cinzel", serif', fontSize: '16px', letterSpacing: '2px', textTransform: 'uppercase' }}>{t('Consulting Akashic Records...')}</span>
-             </div>
+             <UniversalLoader />
           ) : error ? (
              <p style={{ margin: 0, fontSize: '16px', color: 'var(--text-badge-red)', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
           ) : (
@@ -537,9 +563,8 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
              <div style={{ flex: '1 1 500px', minWidth: 0 }}>
                <h3 style={{ fontSize: '48px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px var(--bg-surface)' }}>{t(data.title)}</h3>
                {loading ? (
-                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'var(--text-muted)', marginBottom: '32px' }}>
-                     <span style={{ fontSize: '24px', animation: 'spin 2s linear infinite', display: 'inline-block' }}>🪔</span>
-                     <span style={{ fontFamily: '"Cinzel", serif', fontSize: '18px', letterSpacing: '2px', textTransform: 'uppercase' }}>{t('Synthesizing Pathway Matrix...')}</span>
+                   <div style={{ marginBottom: '32px' }}>
+                      <UniversalLoader />
                    </div>
                ) : error ? (
                    <div style={{ position: 'relative', marginBottom: '32px' }}>

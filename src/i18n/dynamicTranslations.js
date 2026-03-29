@@ -180,6 +180,10 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.9": "Capricorn",
     "yo.rashi.10": "Aquarius",
     "yo.rashi.11": "Pisces",
+    'ov.moonsConst': 'Moon\'s Constellation',
+    'ov.janmaNak': 'Janma Nakshatra',
+    'Unlock Shastric Oracle': 'Unlock Shastric Oracle',
+    'Authenticate to Reveal ➔': 'Authenticate to Reveal ➔'
   },
   hi: {
     "ov.mantraDesc_mix": "ॐ दुं दुर्गायै नमः",
@@ -360,6 +364,10 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.9": "मकर",
     "yo.rashi.10": "कुम्भ",
     "yo.rashi.11": "मीन राशि",
+    'ov.moonsConst': 'चन्द्रमा का नक्षत्र',
+    'ov.janmaNak': 'जन्म नक्षत्र',
+    'Unlock Shastric Oracle': 'शास्त्री ओरेकल को अनलॉक करें',
+    'Authenticate to Reveal ➔': 'प्रकट करने के लिए प्रमाणित करें ➔'
   },
   kn: {
     "ov.mantraDesc_mix": "ಓಂ ದುಂ ದುರ್ಗಾಯೈ ನಮಃ",
@@ -540,6 +548,10 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.9": "ಮಕರ ಸಂಕ್ರಾಂತಿ",
     "yo.rashi.10": "ಕುಂಭ ರಾಶಿ",
     "yo.rashi.11": "ಮೀನ ರಾಶಿ",
+    'ov.moonsConst': 'ಚಂದ್ರನ ನಕ್ಷತ್ರಪುಂಜ',
+    'ov.janmaNak': 'ಜನ್ಮ ನಕ್ಷತ್ರ',
+    'Unlock Shastric Oracle': 'ಶಾಸ್ತ್ರಿಕ್ ಒರಾಕಲ್ ಅನ್ನು ಅನ್ಲಾಕ್ ಮಾಡಿ',
+    'Authenticate to Reveal ➔': 'ಬಹಿರಂಗಪಡಿಸಲು ಪ್ರಮಾಣೀಕರಿಸಿ ➔'
   },
   te: {
     "ov.mantraDesc_mix": "ఓం దుం దుర్గాయై నమః",
@@ -708,6 +720,10 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.9": "మకరరాశి",
     "yo.rashi.10": "కుంభ రాశి",
     "yo.rashi.11": "మీనరాశి",
+    'ov.moonsConst': 'చంద్రుని రాశి',
+    'ov.janmaNak': 'జన్మ నక్షత్రం',
+    'Unlock Shastric Oracle': 'శాస్ట్రిక్ ఒరాకిల్‌ను అన్‌లాక్ చేయండి',
+    'Authenticate to Reveal ➔': 'బహిర్గతం చేయడానికి ప్రమాణీకరించండి ➔'
   },
   ta: {
     "ov.mantraDesc_mix": "ஓம் தும் துர்காயை நமஹ",
@@ -876,6 +892,10 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.9": "மகரம்",
     "yo.rashi.10": "கும்பம்",
     "yo.rashi.11": "மீனம்",
+    'ov.moonsConst': 'சந்திரனின் விண்மீன் கூட்டம்',
+    'ov.janmaNak': 'ஜென்ம நட்சத்திரம்',
+    'Unlock Shastric Oracle': 'சாஸ்திரி ஆரக்கிளைத் திறக்கவும்',
+    'Authenticate to Reveal ➔': 'வெளிப்படுத்த அங்கீகாரம் ➔'
   },
   mr: {
     "comp.addPartner": "+ जोडीदार जोडा",
@@ -1034,6 +1054,10 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.9": "मकर",
     "yo.rashi.10": "कुंभ",
     "yo.rashi.11": "मीन",
+    'ov.moonsConst': 'चंद्राचे नक्षत्र',
+    'ov.janmaNak': 'जन्म नक्षत्र',
+    'Unlock Shastric Oracle': 'शास्त्री ओरॅकल अनलॉक करा',
+    'Authenticate to Reveal ➔': 'प्रकट करण्यासाठी प्रमाणीकृत करा ➔'
   },
   gu: {
     "comp.addPartner": "+ ભાગીદાર ઉમેરો",
@@ -1192,6 +1216,10 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.9": "મકર",
     "yo.rashi.10": "કુંભ",
     "yo.rashi.11": "મીન",
+    'ov.moonsConst': 'ચંદ્રનું નક્ષત્ર',
+    'ov.janmaNak': 'જન્મ નક્ષત્ર',
+    'Unlock Shastric Oracle': 'શાસ્ત્રિક ઓરેકલને અનલૉક કરો',
+    'Authenticate to Reveal ➔': 'જાહેર કરવા માટે પ્રમાણિત કરો ➔'
   },
   ml: {
     "comp.addPartner": "+ പങ്കാളിയെ ചേർക്കുക",
@@ -1350,6 +1378,10 @@ export const DYNAMIC_STRINGS = {
     "yo.rashi.9": "മകരം",
     "yo.rashi.10": "കുംഭം",
     "yo.rashi.11": "മീനരാശി",
+    'ov.moonsConst': 'ചന്ദ്രൻ്റെ നക്ഷത്രസമൂഹം',
+    'ov.janmaNak': 'ജന്മ നക്ഷത്രം',
+    'Unlock Shastric Oracle': 'ശാസ്ത്ര് ഒറാക്കിൾ അൺലോക്ക് ചെയ്യുക',
+    'Authenticate to Reveal ➔': 'വെളിപ്പെടുത്താൻ പ്രാമാണീകരിക്കുക ➔'
   },
   sa: {
     "ov.mantraDesc_mix": "ॐ दुं दुर्गायै नमः",
@@ -1640,6 +1672,10 @@ export const DYNAMIC_STRINGS = {
     "comp.struct.dashaCaution": "সতর্কতা: উভয় অংশীদারই তীব্র কর্মময় মহাদশা (রাহু/কেতু/শনি) চলছে। সচেতন ধৈর্য অপরিহার্য।",
     "comp.struct.dashaOk": "দশা সময়কাল যুক্তিসঙ্গতভাবে ভারসাম্যপূর্ণ।",
     "comp.manCancelled": "গ্রহগত কারণে মাঙ্গলিক দোষ বাতিল হয়। সংঘর্ষ নেই।",
+    'ov.moonsConst': 'চাঁদের নক্ষত্রপুঞ্জ',
+    'ov.janmaNak': 'জন্ম নক্ষত্র',
+    'Unlock Shastric Oracle': 'শাস্ত্রিক ওরাকল আনলক করুন',
+    'Authenticate to Reveal ➔': 'প্রকাশ করার জন্য প্রমাণীকরণ করুন ➔'
   },
 };
 
