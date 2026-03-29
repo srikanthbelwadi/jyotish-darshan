@@ -251,7 +251,9 @@ table{border-collapse:collapse}
   .mobile-scale-icon { font-size: 36px !important; margin-bottom: 8px !important; }
   .desktop-only-flex { display: none !important; }
   .desktop-only-block { display: none !important; }
-  .mobile-loader-box { min-height: 60px !important; padding: 12px !important; }
+  .mobile-loader-box { min-height: 60px !important; padding: 12px; }
+  .mobile-loader-svg { max-height: 60px !important; }
+  .mobile-oracle-box { min-height: auto !important; padding: 16px !important; }
   
   .desktop-hidden-tab.mobile-show-always { display: block !important; }
   .mobile-vertical-tab-stack { display: flex !important; flex-direction: column !important; gap: 40px !important; }

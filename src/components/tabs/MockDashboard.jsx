@@ -154,8 +154,8 @@ const PILLAR_DATA = {
 // 1.5. UNIVERSAL LOADER (NON-LANGUAGE SPECIFIC)
 // ==========================================
 const UniversalLoader = () => (
-  <div className="mobile-loader-box" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: '140px', padding: '24px' }}>
-    <svg width="100%" height="100%" viewBox="0 0 450 150" style={{ overflow: 'visible', filter: 'drop-shadow(0 0 15px rgba(212,175,55,0.4))', maxWidth: '450px', maxHeight: '140px' }}>
+  <div className="mobile-loader-box" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '24px' }}>
+    <svg className="mobile-loader-svg" width="100%" height="100%" viewBox="0 0 450 150" style={{ overflow: 'visible', filter: 'drop-shadow(0 0 15px rgba(212,175,55,0.4))', maxWidth: '450px', maxHeight: '140px' }}>
        <style>
          {`
            @keyframes writeScript {
@@ -359,7 +359,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
             <option key={ts} value={ts}>{t(ts)}</option>
           ))}
         </select>
-        <div style={{ background: 'var(--bg-surface)', position: 'relative', padding: '24px', borderLeft: '4px solid #ffd700', borderRight: '4px solid #ffd700', minHeight: '180px', display: 'flex', alignItems: 'center' }}>
+        <div className="mobile-oracle-box" style={{ background: 'var(--bg-surface)', position: 'relative', padding: '24px', borderTop: '4px solid #ffd700', minHeight: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {!user && (
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
               <div style={{ fontSize: '42px', marginBottom: '12px', filter: 'drop-shadow(0 0 10px rgba(255,215,0,0.6))' }}>🔒</div>
