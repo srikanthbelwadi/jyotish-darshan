@@ -495,17 +495,33 @@ const EclipticChart = ({ hue, pillarId, t, K }) => {
           const r = 125;
           const isHighlighted = (pl.key === p1Key || pl.key === p2Key);
           const abbr = PLANET_ABBR[pl.key] || pl.key;
+          
+          // Render text slightly pushed radially outward toward the inner Rashi ring
+          const labelDist = isHighlighted ? 22 : 18; 
+          const textX = labelDist * Math.cos(ang);
+          const textY = labelDist * Math.sin(ang);
+          
+          // Short line acting as pointer from the planet dot to its label
+          const lineEndX = textX * 0.65;
+          const lineEndY = textY * 0.65;
+          
           return <g key={pl.key} transform={`translate(${250+r*Math.cos(ang)}, ${250+r*Math.sin(ang)})`}>
+            {/* Pointer Ray */}
+            <line x1="0" y1="0" x2={lineEndX} y2={lineEndY} stroke={isHighlighted ? "var(--accent-gold)" : "var(--text-muted)"} strokeWidth={isHighlighted ? 1.5 : 1} strokeDasharray={isHighlighted ? "" : "2 2"} opacity="0.8" />
+            
             {isHighlighted ? (
                 <>
-                <line x1="0" y1="0" x2={35*Math.cos(ang)} y2={35*Math.sin(ang)} stroke="var(--accent-gold)" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
-                <circle r="18" fill="var(--accent-gold)" stroke="#fff" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
-                <text fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1">{abbr}</text>
+                {/* Highlighted Exact Position Dot */}
+                <circle r="5" fill="var(--bg-app)" stroke="var(--accent-gold)" strokeWidth="2" filter="drop-shadow(0 0 10px #ffd700)" />
+                {/* Large Readable Highlight Label */}
+                <text x={textX} y={textY} fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" style={{ textShadow: '0 2px 6px rgba(0,0,0,0.8), 0 0 8px #ffd700' }} dy="1">{abbr}</text>
                 </>
             ) : (
                 <>
-                <circle r="12" fill="#2c0b0e" stroke="var(--accent-gold)" strokeWidth="1" opacity="0.4" />
-                <text fill="var(--accent-gold)" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" dy="1" opacity="0.6">{abbr}</text>
+                {/* Standard Planet Dot */}
+                <circle r="3" fill="var(--bg-input)" stroke="var(--accent-gold)" strokeWidth="1" opacity="0.7" />
+                {/* Standard Planet Label */}
+                <text x={textX} y={textY} fill="var(--text-main)" fontSize="13" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" opacity="0.85" style={{ textShadow: '0 2px 4px var(--bg-surface)' }} dy="1">{abbr}</text>
                 </>
             )}
           </g>
