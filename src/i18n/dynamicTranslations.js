@@ -183,6 +183,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'Moon\'s Constellation',
     'ov.janmaNak': 'Janma Nakshatra',
     'Unlock Shastric Oracle': 'Unlock Shastric Oracle',
+    'revealLifePathTitle': 'Reveal Life Paths',
+    'revealLifePathDesc': 'Reveal Life dimensions of Dharma, Wealth, Health, and Relationships through precise Shastric Pathways.',
+    'revealKundaliTitle': 'Reveal Kundali',
+    'revealKundaliDesc': 'Dive into your complete Parashari D1 matrix with planetary strengths, dashas, and traditional astrometrics.',
     'Authenticate to Reveal ➔': 'Authenticate to Reveal ➔'
   },
   hi: {
@@ -367,6 +371,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'चन्द्रमा का नक्षत्र',
     'ov.janmaNak': 'जन्म नक्षत्र',
     'Unlock Shastric Oracle': 'शास्त्रीय फलादेश प्रकट करें',
+    'revealLifePathTitle': 'जीवन पथ प्रकट करें',
+    'revealLifePathDesc': 'सटीक शास्त्रीय मार्गों के माध्यम से धर्म, अर्थ, स्वास्थ्य और संबंधों के जीवन आयामों को प्रकट करें।',
+    'revealKundaliTitle': 'कुंडली प्रकट करें',
+    'revealKundaliDesc': 'ग्रहों के बल, दशाओं और पारंपरिक ज्योतिषीय मापदंडों के साथ अपने संपूर्ण पाराशरी D1 मैट्रिक्स में गहराई से जाएं।',
     'Authenticate to Reveal ➔': 'प्रकट करने के लिए प्रमाणित करें ➔'
   },
   kn: {
@@ -551,6 +559,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'ಚಂದ್ರನ ನಕ್ಷತ್ರಪುಂಜ',
     'ov.janmaNak': 'ಜನ್ಮ ನಕ್ಷತ್ರ',
     'Unlock Shastric Oracle': 'ಶಾಸ್ತ್ರೀಯ ಭವಿಷ್ಯವಾಣಿಯನ್ನು ತಿಳಿಯಿರಿ',
+    'revealLifePathTitle': 'ಜೀವನ ಮಾರ್ಗಗಳನ್ನು ತಿಳಿಯಿರಿ',
+    'revealLifePathDesc': 'ನಿಖರವಾದ ಶಾಸ್ತ್ರೀಯ ಮಾರ್ಗಗಳ ಮೂಲಕ ಧರ್ಮ, ಸಂಪತ್ತು, आरोग्य ಮತ್ತು ಸಂಬಂಧಗಳ ಜೀವನ ಆಯಾಮಗಳನ್ನು ಬಹಿರಂಗಪಡಿಸಿ.',
+    'revealKundaliTitle': 'ಕುಂಡಲಿಯನ್ನು ದರುಶನ ಮಾಡಿ',
+    'revealKundaliDesc': 'ಗ್ರಹಗಳ ಬಲ, ದಶೆಗಳು ಮತ್ತು ಸಾಂಪ್ರದಾಯಿಕ ಜ್ಯೋತಿಷ್ಯ ಅಂಕಿಅಂಶಗಳೊಂದಿಗೆ ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಪರಾಶರಿ D1 ಮ್ಯಾಟ್ರಿಕ್ಸ್‌ಗೆ ಧುಮುಕಿರಿ.',
     'Authenticate to Reveal ➔': 'ಬಹಿರಂಗಪಡಿಸಲು ಪ್ರಮಾಣೀಕರಿಸಿ ➔'
   },
   te: {
@@ -723,6 +735,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'చంద్రుని రాశి',
     'ov.janmaNak': 'జన్మ నక్షత్రం',
     'Unlock Shastric Oracle': 'శాస్త్రీయ భవిష్యవాణిని తెలుసుకోండి',
+    'revealLifePathTitle': 'జీవిత మార్గాలను తెలుసుకోండి',
+    'revealLifePathDesc': 'ఖచ్చితమైన శాస్త్రీయ మార్గాల ద్వారా ధర్మం, సంపద, ఆరోగ్యం మరియు సంబంధాల జీవిత కోణాలను బహిర్గతం చేయండి.',
+    'revealKundaliTitle': 'కుండలిని దర్శించండి',
+    'revealKundaliDesc': 'గ్రహ బలాలు, దశలు మరియు సాంప్రదాయ జ్యోతిషశాస్త్ర కొలమానాలతో మీ పూర్తి పరాశరి D1 మ్యాట్రిక్స్‌లోకి ప్రవేశించండి.',
     'Authenticate to Reveal ➔': 'బహిర్గతం చేయడానికి ప్రమాణీకరించండి ➔'
   },
   ta: {
@@ -895,6 +911,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'சந்திரனின் விண்மீன் கூட்டம்',
     'ov.janmaNak': 'ஜென்ம நட்சத்திரம்',
     'Unlock Shastric Oracle': 'சாஸ்திரிய பலன்களை அறியவும்',
+    'revealLifePathTitle': 'வாழ்க்கை பாதைகளை அறியவும்',
+    'revealLifePathDesc': 'துல்லியமான சாஸ்திரிய வழிகள் மூலம் தர்மம், செல்வம், ஆரோக்கியம் மற்றும் உறவுகளின் வாழ்க்கை பரிமாணங்களை வெளிப்படுத்துங்கள்.',
+    'revealKundaliTitle': 'ஜாதகத்தை வெளிப்படுத்துங்கள்',
+    'revealKundaliDesc': 'கிரக பலங்கள், தசாக்கள் மற்றும் பாரம்பரிய ஜோதிட அளவீடுகளுடன் உங்கள் முழுமையான பராஷரி D1 மேட்ரிக்ஸில் மூழ்குங்கள்.',
     'Authenticate to Reveal ➔': 'வெளிப்படுத்த அங்கீகாரம் ➔'
   },
   mr: {
@@ -1057,6 +1077,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'चंद्राचे नक्षत्र',
     'ov.janmaNak': 'जन्म नक्षत्र',
     'Unlock Shastric Oracle': 'शास्त्रीय फलादेश उघडा',
+    'revealLifePathTitle': 'जीवन मार्ग प्रकट करा',
+    'revealLifePathDesc': 'अचूक शास्त्रीय मार्गांद्वारे धर्म, संपत्ती, आरोग्य आणि नातेसंबंधांचे जीवन आयाम प्रकट करा.',
+    'revealKundaliTitle': 'कुंडली उघडा',
+    'revealKundaliDesc': 'ग्रहांचे बळ, दशा आणि पारंपारिक ज्योतिषीय मोजमापांसह आपल्या संपूर्ण पाराशरी D1 मॅट्रिक्समध्ये डोकावून पाहा.',
     'Authenticate to Reveal ➔': 'प्रकट करण्यासाठी प्रमाणीकृत करा ➔'
   },
   gu: {
@@ -1219,6 +1243,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'ચંદ્રનું નક્ષત્ર',
     'ov.janmaNak': 'જન્મ નક્ષત્ર',
     'Unlock Shastric Oracle': 'શાસ્ત્રીય ફળાદેશ જાણો',
+    'revealLifePathTitle': 'જીવન માર્ગો જાણો',
+    'revealLifePathDesc': 'ચોક્કસ શાસ્ત્રીય માર્ગો દ્વારા ધર્મ, સંપત્તિ, સ્વાસ્થ્ય અને સંબંધોના જીવન પરિમાણોને જાહેર કરો.',
+    'revealKundaliTitle': 'કુંડળી જુઓ',
+    'revealKundaliDesc': 'ગ્રહોના બળ, દશાઓ અને પરંપરાગત જ્યોતિષીય માપદંડો સાથે તમારા સંપૂર્ણ પારાશરી D1 મેટ્રિક્સમાં ડૂબકી લગાવો.',
     'Authenticate to Reveal ➔': 'જાહેર કરવા માટે પ્રમાણિત કરો ➔'
   },
   ml: {
@@ -1381,6 +1409,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'ചന്ദ്രൻ്റെ നക്ഷത്രസമൂഹം',
     'ov.janmaNak': 'ജന്മ നക്ഷത്രം',
     'Unlock Shastric Oracle': 'ശാസ്ത്രീയ പ്രവചനങ്ങൾ സൂക്ഷ്മമായി അറിയുക',
+    'revealLifePathTitle': 'ജീവിത പാതകൾ വെളിപ്പെടുത്തുക',
+    'revealLifePathDesc': 'കൃത്യമായ ശാസ്ത്രീയ പാതകളിലൂടെ ധർമ്മം, സമ്പത്ത്, ആരോഗ്യം, ബന്ധങ്ങൾ എന്നിവയുടെ ജീവിത മാനങ്ങൾ വെളിപ്പെടുത്തുക.',
+    'revealKundaliTitle': 'കുണ്ഡലി വെളിപ്പെടുത്തുക',
+    'revealKundaliDesc': 'ഗ്രഹങ്ങളുടെ ശക്തികളും ദശകളും പരമ്പരാഗത ജ്യോതിഷ അളവുകളും ഉപയോഗിച്ച് നിങ്ങളുടെ പൂർണ്ണമായ പരാശരി D1 മാട്രിക്സിലേക്ക് ആഴ്ന്നിറങ്ങുക.',
     'Authenticate to Reveal ➔': 'വെളിപ്പെടുത്താൻ പ്രാമാണീകരിക്കുക ➔'
   },
   sa: {
@@ -1675,6 +1707,10 @@ export const DYNAMIC_STRINGS = {
     'ov.moonsConst': 'চাঁদের নক্ষত্রপুঞ্জ',
     'ov.janmaNak': 'জন্ম নক্ষত্র',
     'Unlock Shastric Oracle': 'শাস্ত্রীয় ভবিষ্যদ্বাণী জানুন',
+    'revealLifePathTitle': 'জীবন পথগুলি প্রকাশ করুন',
+    'revealLifePathDesc': 'সঠিক শাস্ত্রীয় পথের মাধ্যমে ধর্ম, সম্পদ, স্বাস্থ্য এবং সম্পর্কের জীবন মাত্রা প্রকাশ করুন।',
+    'revealKundaliTitle': 'কুণ্ডলী প্রকাশ করুন',
+    'revealKundaliDesc': 'গ্রহের শক্তি, দশা এবং ঐতিহ্যবাহী জ্যোতিষশাস্ত্রীয় মেট্রিক্স সহ আপনার সম্পূর্ণ পরাশরি D1 ম্যাট্রিক্সে ডুব দিন।',
     'Authenticate to Reveal ➔': 'প্রকাশ করার জন্য প্রমাণীকরণ করুন ➔'
   },
 };

@@ -2431,21 +2431,37 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
         )}
 
         {dashboardMode === 'pathways' && (
-          <MockDashboard 
-            K={K} 
-            lang={lang} 
-            t={(k)=>t(k,lang)} 
-            user={user} 
-            onRequireLogin={onRequireLogin} 
-            onOpenJyotishDesk={() => {
-              setDashboardMode('kundali');
-              window.scrollTo({top: 0, behavior: 'smooth'});
-            }} 
-            partnerKundali={partnerKundali}
-          />
+          <div style={{animation:'fadeIn 0.5s ease'}}>
+            <MockDashboard 
+              K={K} 
+              lang={lang} 
+              t={(k)=>t(k,lang)} 
+              user={user} 
+              onRequireLogin={onRequireLogin} 
+              onOpenJyotishDesk={() => {
+                setDashboardMode('kundali');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+              }} 
+              partnerKundali={partnerKundali}
+            />
+            <div style={{ height: '100px' }} className="no-print"></div> {/* spacer for sticky footer */}
+            
+            {/* STICKY FOOTER FOR REVEAL KUNDALI */}
+            <div className="no-print sticky-reveal-footer" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '16px 24px', background: 'var(--bg-sticky-footer)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderTop: '1px solid rgba(212, 175, 55, 0.4)', zIndex: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 -4px 20px rgba(0,0,0,0.1)' }}>
+              <div style={{ display: 'flex', width: '100%', maxWidth: '1400px', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 300px', minWidth: 0 }}>
+                   <h4 style={{ margin: '0 0 4px', fontSize: '15px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', letterSpacing: '1px', textTransform: 'uppercase' }}>{(t('revealKundaliTitle', lang) || 'Reveal Kundali')}</h4>
+                   <p className="hide-on-very-small" style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'serif', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealKundaliDesc', lang) || 'Dive into your complete Parashari D1 matrix with planetary strengths, dashas, and traditional astrometrics.'}</p>
+                </div>
+                <button onClick={()=>{setDashboardMode('kundali');window.scrollTo({top:0,behavior:'smooth'});}} style={{ flexShrink: 0, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 24px', cursor:'pointer', borderRadius:'30px', fontFamily:'"Cinzel", serif', fontSize:'14px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 15px rgba(212, 175, 55, 0.5)' }} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'}}>
+                  <span style={{fontSize: '18px'}}>🌌</span> {(t('revealKundaliTitle', lang) || 'Reveal Kundali')} ➔
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
-      <footer className="no-print" style={{textAlign:'center',padding: dashboardMode === 'kundali' ? '24px 24px 100px' : '24px',borderTop:'1px solid var(--border-light)',background:'var(--bg-dark)'}}>
+      <footer className="no-print" style={{textAlign:'center',padding:'24px 24px 100px',borderTop:'1px solid var(--border-light)',background:'var(--bg-dark)'}}>
         <a href="/terms.html" target="_blank" rel="noreferrer" style={{color:'var(--accent-gold)',textDecoration:'underline',fontSize:12,fontFamily:'inherit',transition:'opacity 0.2s',opacity:0.8}} onMouseOver={e=>e.currentTarget.style.opacity=1} onMouseOut={e=>e.currentTarget.style.opacity=0.8}>Terms of Service</a>
       </footer>
     </div>
