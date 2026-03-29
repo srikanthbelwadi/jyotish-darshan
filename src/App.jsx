@@ -2264,8 +2264,8 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             {/* PARTNER BUTTON */}
             <div style={{display:'flex', alignItems:'center', gap: 12}}>
               {!partnerKundali ? (
-                 <button onClick={() => {setShowPartnerForm(!showPartnerForm); setIsSynastryExpanded(true);}} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px dashed var(--accent-gold)', padding: '6px 12px', fontSize: '12px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }} onMouseOver={e=>{e.currentTarget.style.opacity=1; e.currentTarget.style.background='rgba(212,175,55,0.1)'}} onMouseOut={e=>{e.currentTarget.style.opacity=0.8; e.currentTarget.style.background='transparent'}}>
-                    ＋ ADD PARTNER
+                  <button onClick={() => {setShowPartnerForm(!showPartnerForm); setIsSynastryExpanded(true);}} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px dashed var(--accent-gold)', padding: '6px 12px', fontSize: '12px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }} onMouseOver={e=>{e.currentTarget.style.opacity=1; e.currentTarget.style.background='rgba(212,175,55,0.1)'}} onMouseOut={e=>{e.currentTarget.style.opacity=0.8; e.currentTarget.style.background='transparent'}}>
+                    {t('comp.addP', lang) || '+ ADD PARTNER'}
                  </button>
               ) : (
                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

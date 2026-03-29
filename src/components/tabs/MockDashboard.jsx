@@ -611,7 +611,7 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang }) => {
          )}
        </div>
        <div>
-         <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>{t('Subject: ')} {t(opt.label)}</div>
+         <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>{t('Subject:')} {t(opt.label)}</div>
          <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '32px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t(data.title)}</h3>
          
          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
