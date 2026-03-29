@@ -43,6 +43,18 @@ export const syncProfileToCloud = async (userId, profiles) => {
   }
 };
 
+export const syncSettingsToCloud = async (userId, settings) => {
+  if (!db) return false;
+  try {
+    const userRef = doc(db, "users", userId);
+    await setDoc(userRef, { settings }, { merge: true });
+    return true;
+  } catch (e) {
+    console.error("Failed to sync settings to cloud", e);
+    return false;
+  }
+};
+
 export const fetchCloudProfiles = async (userId) => {
   if (!db) return null;
   try {
@@ -53,6 +65,20 @@ export const fetchCloudProfiles = async (userId) => {
     }
   } catch (e) {
     console.error("Failed to fetch profiles from cloud", e);
+  }
+  return null;
+};
+
+export const fetchCloudUserData = async (userId) => {
+  if (!db) return null;
+  try {
+    const userRef = doc(db, "users", userId);
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    }
+  } catch (e) {
+    console.error("Failed to fetch user data from cloud", e);
   }
   return null;
 };

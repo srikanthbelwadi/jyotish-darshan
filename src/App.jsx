@@ -12,6 +12,9 @@ import { MockDashboard } from './components/tabs/MockDashboard.jsx';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, fetchCloudProfiles, syncProfileToCloud } from './firebase.js';
 import ExpertReadingTab from './components/tabs/ExpertReadingTab.jsx';
+import ConfirmModal from './components/ConfirmModal.jsx';
+import { usePreferences } from './contexts/PreferencesContext.jsx';
+import UserPreferencesModal from './components/UserPreferencesModal.jsx';
 
 // ════════════════════════════════════════════════════════════════
 // ASTRONOMY ENGINE
@@ -2216,7 +2219,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                   <div style={{padding:'12px 16px', fontSize:11, textTransform:'uppercase', letterSpacing:1, color:'var(--text-muted)', borderBottom:'1px solid var(--border-light)', background:'var(--bg-card)'}}>
                     {t('profile',lang) || 'Profiles'}
                   </div>
-                  {savedProfiles && savedProfiles.map((p, i) => {
+                  {savedProfiles && savedProfiles.filter(p => !p.isDeleted).map((p, i) => {
                     let pNak = '';
                     try {
                       const jd = toJD(p.year, p.month, p.day, p.hour, p.minute, p.utcOffset||5.5);
@@ -2224,7 +2227,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                       pNak = (L_NAKS[lang] || L_NAKS.en)[nakshatra(moon).idx];
                     } catch(e){}
                     return (
-                    <div key={i} style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid var(--border-light)', background: i===0?'var(--bg-badge-green)':'transparent', transition:'background 0.2s'}}>
+                    <div key={p.name + i} style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid var(--border-light)', background: i===0?'var(--bg-badge-green)':'transparent', transition:'background 0.2s'}}>
                       <div onClick={() => { if(i!==0 && onSwitchProfile) {onSwitchProfile(p);} setMenuOpen(false); }} style={{padding:'12px 16px', cursor: i===0 ? 'default':'pointer', display:'flex', alignItems:'center', gap:10, flex:1}} onMouseOver={e=>e.currentTarget.style.background=i===0?'':'var(--bg-card)'} onMouseOut={e=>e.currentTarget.style.background=i===0?'':'transparent'}>
                         <div style={{width:22,height:22,borderRadius:'50%',background:i===0?'var(--text-badge-green)':'var(--bg-card)',border:i===0?'none':'1px solid var(--border-light)',display:'flex',alignItems:'center',justifyContent:'center',color:i===0?'var(--bg-app)':'var(--text-muted)',fontSize:11,flexShrink:0}}>{i===0?'✓':i+1}</div>
                         <div style={{flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', color: i===0?'var(--text-badge-green)':'var(--text-main)', fontWeight: i===0?600:400, fontSize:15}}>
@@ -2234,18 +2237,8 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                       
                       <div onClick={(e) => {
                         e.stopPropagation();
-                        const newProfiles = [...savedProfiles];
-                        newProfiles.splice(i, 1);
-                        localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
-                        setSavedProfiles(newProfiles);
-                        if (user && onForceSync) {
-                          onForceSync(newProfiles);
-                        }
-                        if(newProfiles.length === 0) {
-                          window.location.href = "/";
-                        } else if (i === 0 && onSwitchProfile && newProfiles.length > 0) {
-                          onSwitchProfile(newProfiles[0]);
-                        }
+                        setMenuOpen(false);
+                        setProfileToDelete(p);
                       }} style={{padding:'0 16px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'var(--text-muted)', borderLeft:'1px solid var(--border-light)'}} title={t('deleteProfile',lang) || 'Delete Profile'} onMouseOver={e=>{e.currentTarget.style.background='rgba(239, 68, 68, 0.1)'; e.currentTarget.style.color='#ef4444';}} onMouseOut={e=>{e.currentTarget.style.background='transparent'; e.currentTarget.style.color='var(--text-muted)';}}>
                         ✕
                       </div>
@@ -2448,18 +2441,8 @@ function SyncIndicator({ status, onForceSync }) {
   );
 }
 
-function AppHeader({ lang, setLang, user, syncStatus, onLoginClick, onLogoutClick, onForceSync }) {
-  const [theme, setTheme] = React.useState('dark');
-
-  React.useEffect(() => {
-    setTheme(document.body.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    document.body.setAttribute('data-theme', newTheme);
-    setTheme(newTheme);
-  };
+function AppHeader({ user, syncStatus, onLoginClick, onLogoutClick, onForceSync, onOpenPrefs }) {
+  const { lang, theme } = usePreferences();
 
   const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
   return (
@@ -2479,12 +2462,9 @@ function AppHeader({ lang, setLang, user, syncStatus, onLoginClick, onLogoutClic
                 {user.name} <SyncIndicator status={syncStatus} onForceSync={onForceSync} /> <span style={{marginLeft: 8}}>(Logout)</span>
               </button>
             )}
-            <button type="button" onClick={toggleTheme} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}}>
-              <span style={{fontSize:16}}>{theme === 'light' ? '☾' : '☀'}</span>
+            <button type="button" onClick={onOpenPrefs} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}} title="Global Preferences">
+              <span style={{fontSize:16}}>⚙️</span>
             </button>
-            <select value={lang} onChange={e=>setLang(e.target.value)} className="lux-input" style={{width:'auto',padding:'6px 10px',background:'transparent',border:'1px solid var(--border-light)'}}>
-              {LANGS.map(l=><option key={l.code} value={l.code} style={{background:'var(--bg-input)',color:'var(--text-main)'}}>{l.label}</option>)}
-            </select>
           </div>
         </div>
       </header>
@@ -2492,11 +2472,13 @@ function AppHeader({ lang, setLang, user, syncStatus, onLoginClick, onLogoutClic
 }
 
 function App(){
+  const { lang, isRegenerating } = usePreferences();
+  const [showPrefModal, setShowPrefModal] = React.useState(false);
   const[screen,setScreen]=React.useState('input');
+  const [profileToDelete, setProfileToDelete] = React.useState(null);
   const [user, setUser] = React.useState(null);
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const[kundali,setKundali]=React.useState(null);
-  const[lang,setLang]=React.useState(()=>localStorage.getItem('jd_lang')||'en');
   const[err,setErr]=React.useState(null);
   const [syncRequestedProfile, setSyncRequestedProfile] = React.useState(null);
   const [syncStatus, setSyncStatus] = React.useState('offline');
@@ -2637,12 +2619,44 @@ function App(){
     }
     catch(e){console.error(e);setErr(t('computeError',lang))}
   }
-  function handleLang(c){setLang(c);localStorage.setItem('jd_lang',c)}
+  function handleDeleteConfirm() {
+    if (!profileToDelete) return;
+    const newProfiles = [...(JSON.parse(localStorage.getItem('jd_profiles') || '[]'))];
+    const idx = newProfiles.findIndex(x => (x.name || 'User').toLowerCase() === (profileToDelete.name || 'User').toLowerCase());
+    
+    if (idx !== -1) {
+      newProfiles[idx].isDeleted = true;
+      newProfiles[idx].updatedAt = Date.now();
+      
+      localStorage.setItem('jd_profiles', JSON.stringify(newProfiles));
+      
+      // Update local state without triggering full unmount if possible, it relies on re-reading
+      
+      if (user) {
+        setSyncStatus('syncing');
+        syncProfileToCloud(user.uid, newProfiles).then(success => {
+          setSyncStatus(success ? 'synced' : 'error');
+        });
+      }
+
+      // Check if we just deleted the active kundali
+      if ((kundali?.input?.name || 'User').toLowerCase() === (profileToDelete.name || 'User').toLowerCase()) {
+        const remaining = newProfiles.filter(p => !p.isDeleted);
+        if(remaining.length === 0) {
+          window.location.href = "/";
+        } else {
+           setKundali(computeKundali(remaining[0]));
+        }
+      }
+    }
+    setProfileToDelete(null);
+  }
+
   function handleBack(){setScreen('input');history.replaceState({},'',location.pathname)}
 
   if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily:'serif'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
   
-  if (!engineReady) {
+  if (!engineReady || isRegenerating) {
     return (
       <div style={{minHeight:'100vh',background:'var(--bg-main)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-sans)',color:'var(--text-main)',padding:20}}>
         
@@ -2718,9 +2732,19 @@ function App(){
         </div>
       )}
       {showAuthModal && <AuthModal lang={lang} t={t} onLogin={(u) => { setUser(u); setShowAuthModal(false); }} onClose={() => setShowAuthModal(false)} />}
-      <AppHeader lang={lang} setLang={handleLang} user={user} syncStatus={syncStatus} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={() => { auth?.signOut(); setUser(null); setSyncStatus('offline'); }} onForceSync={() => handleForceSync()} />
+      <AppHeader user={user} syncStatus={syncStatus} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={() => { auth?.signOut(); setUser(null); setSyncStatus('offline'); }} onForceSync={() => handleForceSync()} onOpenPrefs={() => setShowPrefModal(true)} />
       <DailyPanchang lang={lang} />
       {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} onForceSync={handleForceSync} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
+      <UserPreferencesModal isOpen={showPrefModal} onClose={() => setShowPrefModal(false)} />
+      <ConfirmModal 
+        isOpen={!!profileToDelete} 
+        title="Delete Kundali Core?" 
+        message={`Are you sure you want to completely erase the astrological chart for ${profileToDelete?.name}? This action will permanently remove it from your cloud profile.`}
+        confirmText="Erase from Cosmos"
+        onConfirm={handleDeleteConfirm}
+        onClose={() => setProfileToDelete(null)}
+        type="danger"
+      />
     </div>
   );
 }
