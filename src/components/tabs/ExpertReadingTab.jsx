@@ -1,4 +1,5 @@
 import { RASHIS } from '../../engine/constants.js';
+import { L_LAGNA, L_DASHA } from '../../App.jsx';
 import { EXPERT_TRANSLATIONS } from '../../i18n/expertTranslations.js';
 import { DYNAMIC_STRINGS } from '../../i18n/dynamicTranslations.js';
 
@@ -27,50 +28,37 @@ export function buildReading(kundali, lang = 'en') {
   const birthYear = input?.dob ? parseInt(input.dob.split('-')[0]) : new Date().getFullYear();
 
   // Lagna-based personality
-  const LAGNA_READINGS = {
-    0: 'The native with Mesha (Aries) Lagna is endowed with courage, enterprise, and an innately pioneering spirit. Ruled by Mangal (Mars), this Lagna bestows a direct, energetic personality with natural leadership instincts. There is a restless creative energy that seeks constant new challenges.',
-    1: 'With Vrishabha (Taurus) Lagna, the native is blessed with endurance, aesthetic sensibility, and a deep appreciation for material comforts. Venus-ruled, this chart promises a love of beauty, music, and refined pleasures, alongside a steadfast and loyal nature.',
-    2: 'Mithuna (Gemini) Lagna, ruled by Budha, gifts the native with an exceptionally agile mind, wit, and communicative brilliance. The native is intellectually curious, adaptable, and often gifted in writing, teaching, or commerce.',
-    3: 'The Karka (Cancer) Lagna native, with Chandra as Lagnesh, is deeply empathetic, nurturing, and emotionally intelligent. There is an intuitive connection to family lineage and the collective consciousness. The native often serves as an emotional anchor for others.',
-    4: 'Simha (Leo) Lagna, graced by Surya, blesses the native with natural charisma, authority, and a magnetic presence. There is a natural inclination toward leadership, creative self-expression, and a generous, noble heart.',
-    5: 'Kanya (Virgo) Lagna, ruled by Budha, produces an analytical, methodical, and highly service-oriented native. Excellence in health, craft, and discernment are hallmarks. The native possesses an exceptional eye for detail and a deep commitment to improvement.',
-    6: 'Tula (Libra) Lagna, governed by Shukra, bestows natural charm, diplomatic finesse, and a deep instinct for harmony and justice. The native navigates relationships with grace and possesses refined artistic and aesthetic sensibilities.',
-    7: 'Vrischika (Scorpio) Lagna, co-ruled by Mangal and Ketu, produces a deeply intense, psychologically perceptive, and transformative personality. There is a magnetic quality and an ability to see beneath the surface of all matters.',
-    8: 'Dhanu (Sagittarius) Lagna, under the benefic guidance of Guru, creates a philosophical, generous, and truth-seeking nature. The native is drawn to wisdom traditions, higher learning, and often becomes a teacher or spiritual guide.',
-    9: 'Makara (Capricorn) Lagna, governed by Shani, produces disciplined, ambitious, and practically minded individuals. The native achieves through persistence and structured effort, earning lasting recognition through dedication.',
-    10: 'Kumbha (Aquarius) Lagna, ruled by Shani, creates a humanitarian, innovative, and socially conscious personality. The native is drawn to collective wellbeing, progressive ideas, and often contributes to society in meaningful ways.',
-    11: 'Meena (Pisces) Lagna, blessed by Guru, produces a deeply spiritual, empathetic, and creative soul. The native carries an innate understanding of the impermanent nature of existence and is naturally drawn toward the transcendent.',
-  };
+  const LAGNA_READINGS = L_LAGNA[lang] || L_LAGNA.en;
 
   // Moon nakshatra reading
   const NAKSHATRA_READINGS = {
-    'Ashwini': 'dynamic, pioneering, healing instincts',
-    'Bharani': 'intense transformation, creative power, Yama\'s discipline',
-    'Krittika': 'sharp intellect, leadership, purifying fire',
-    'Rohini': 'material abundance, artistic gifts, magnetic beauty',
-    'Mrigashira': 'searching mind, love of travel, gentle nature',
-    'Ardra': 'storm of transformation, intellectual intensity',
-    'Punarvasu': 'renewal, optimism, philosophical nature',
-    'Pushya': 'nurturing wisdom, spiritual authority, prosperity',
-    'Ashlesha': 'penetrating insight, kundalini energy, serpentine wisdom',
-    'Magha': 'ancestral blessings, leadership, royal dignity',
-    'Purva Phalguni': 'creative joy, marital happiness, Bhaga\'s grace',
-    'Uttara Phalguni': 'service, organizational skill, solar strength',
-    'Hasta': 'skilled hands, healing, craftsmanship',
-    'Chitra': 'creative brilliance, architectural mind, Vishwakarma\'s gift',
-    'Swati': 'independence, balance, entrepreneurial spirit',
-    'Vishakha': 'focused ambition, transformative power',
-    'Anuradha': 'deep devotion, disciplined friendship, Mitra\'s grace',
-    'Jyeshtha': 'leadership by merit, protective power',
-    'Mula': 'root investigation, liberation from attachments',
-    'Purva Ashadha': 'invincibility, purifying vision',
-    'Uttara Ashadha': 'universal victory, dharmic resolve',
-    'Shravana': 'listening wisdom, Vishnu\'s grace, sacred learning',
-    'Dhanishtha': 'musical gifts, material success, warrior spirit',
-    'Shatabhisha': 'healing secrets, mystical knowledge, independence',
-    'Purva Bhadrapada': 'intense spiritual fire, transformation',
-    'Uttara Bhadrapada': 'depth, cosmic wisdom, serpent of the deep',
-    'Revati': 'completeness, gentle nourishment, Pushan\'s care',
+    'Ashwini': t('naks.read.Ashwini') !== 'naks.read.Ashwini' ? t('naks.read.Ashwini') : 'dynamic, pioneering, healing instincts',
+    'Bharani': t('naks.read.Bharani') !== 'naks.read.Bharani' ? t('naks.read.Bharani') : 'intense transformation, creative power, Yama\'s discipline',
+    'Krittika': t('naks.read.Krittika') !== 'naks.read.Krittika' ? t('naks.read.Krittika') : 'sharp intellect, leadership, purifying fire',
+    'Rohini': t('naks.read.Rohini') !== 'naks.read.Rohini' ? t('naks.read.Rohini') : 'material abundance, artistic gifts, magnetic beauty',
+    'Mrigashira': t('naks.read.Mrigashira') !== 'naks.read.Mrigashira' ? t('naks.read.Mrigashira') : 'searching mind, love of travel, gentle nature',
+    'Ardra': t('naks.read.Ardra') !== 'naks.read.Ardra' ? t('naks.read.Ardra') : 'storm of transformation, intellectual intensity',
+    'Punarvasu': t('naks.read.Punarvasu') !== 'naks.read.Punarvasu' ? t('naks.read.Punarvasu') : 'renewal, optimism, philosophical nature',
+    'Pushya': t('naks.read.Pushya') !== 'naks.read.Pushya' ? t('naks.read.Pushya') : 'nurturing wisdom, spiritual authority, prosperity',
+    'Ashlesha': t('naks.read.Ashlesha') !== 'naks.read.Ashlesha' ? t('naks.read.Ashlesha') : 'penetrating insight, kundalini energy, serpentine wisdom',
+    'Magha': t('naks.read.Magha') !== 'naks.read.Magha' ? t('naks.read.Magha') : 'ancestral blessings, leadership, royal dignity',
+    'Purva Phalguni': t('naks.read.Purva Phalguni') !== 'naks.read.Purva Phalguni' ? t('naks.read.Purva Phalguni') : 'creative joy, marital happiness, Bhaga\'s grace',
+    'Uttara Phalguni': t('naks.read.Uttara Phalguni') !== 'naks.read.Uttara Phalguni' ? t('naks.read.Uttara Phalguni') : 'service, organizational skill, solar strength',
+    'Hasta': t('naks.read.Hasta') !== 'naks.read.Hasta' ? t('naks.read.Hasta') : 'skilled hands, healing, craftsmanship',
+    'Chitra': t('naks.read.Chitra') !== 'naks.read.Chitra' ? t('naks.read.Chitra') : 'creative brilliance, architectural mind, Vishwakarma\'s gift',
+    'Swati': t('naks.read.Swati') !== 'naks.read.Swati' ? t('naks.read.Swati') : 'independence, balance, entrepreneurial spirit',
+    'Vishakha': t('naks.read.Vishakha') !== 'naks.read.Vishakha' ? t('naks.read.Vishakha') : 'focused ambition, transformative power',
+    'Anuradha': t('naks.read.Anuradha') !== 'naks.read.Anuradha' ? t('naks.read.Anuradha') : 'deep devotion, disciplined friendship, Mitra\'s grace',
+    'Jyeshtha': t('naks.read.Jyeshtha') !== 'naks.read.Jyeshtha' ? t('naks.read.Jyeshtha') : 'leadership by merit, protective power',
+    'Mula': t('naks.read.Mula') !== 'naks.read.Mula' ? t('naks.read.Mula') : 'root investigation, liberation from attachments',
+    'Purva Ashadha': t('naks.read.Purva Ashadha') !== 'naks.read.Purva Ashadha' ? t('naks.read.Purva Ashadha') : 'invincibility, purifying vision',
+    'Uttara Ashadha': t('naks.read.Uttara Ashadha') !== 'naks.read.Uttara Ashadha' ? t('naks.read.Uttara Ashadha') : 'universal victory, dharmic resolve',
+    'Shravana': t('naks.read.Shravana') !== 'naks.read.Shravana' ? t('naks.read.Shravana') : 'listening wisdom, Vishnu\'s grace, sacred learning',
+    'Dhanishtha': t('naks.read.Dhanishtha') !== 'naks.read.Dhanishtha' ? t('naks.read.Dhanishtha') : 'musical gifts, material success, warrior spirit',
+    'Shatabhisha': t('naks.read.Shatabhisha') !== 'naks.read.Shatabhisha' ? t('naks.read.Shatabhisha') : 'healing secrets, mystical knowledge, independence',
+    'Purva Bhadrapada': t('naks.read.Purva Bhadrapada') !== 'naks.read.Purva Bhadrapada' ? t('naks.read.Purva Bhadrapada') : 'intense spiritual fire, transformation',
+    'Uttara Bhadrapada': t('naks.read.Uttara Bhadrapada') !== 'naks.read.Uttara Bhadrapada' ? t('naks.read.Uttara Bhadrapada') : 'depth, cosmic wisdom, serpent of the deep',
+    'Revati': t('naks.read.Revati') !== 'naks.read.Revati' ? t('naks.read.Revati') : 'completeness, gentle nourishment, Pushan\'s care',
   };
 
   const nakshatraQuality = NAKSHATRA_READINGS[moonPlanet.nakshatraName] || t('er.profoundDepth');
@@ -129,52 +117,17 @@ export function buildReading(kundali, lang = 'en') {
     .replace('{strength}', strongPlanetsStr);
 
   // Build the Dasha Dictionary
+  const dashaLocale = L_DASHA[lang] || L_DASHA.en;
   const DASHA_DICT = {
-    sun: {
-      desc: 'Sun period elevates authority and spiritual awareness.',
-      challenge: 'Avoid arrogance and excessive need for recognition. Guard against ego-driven decisions in authority roles.',
-      guidance: 'Step into leadership and public service with confidence. Surya Namaskar and morning sun practice strengthen solar energy and vitality.'
-    },
-    moon: {
-      desc: 'Moon period brings emotional depth and public recognition.',
-      challenge: 'Avoid emotional reactivity and over-attachment. Stillness and inner nourishment are essential practices.',
-      guidance: 'Nurture emotional well-being through creative expression, time near water, and family connection. Journaling and meditation bring inner clarity.'
-    },
-    mars: {
-      desc: 'Mars period activates courage, property matters, and competitive drive.',
-      challenge: 'Channel drive constructively — avoid impulsive action, unnecessary conflict, or overexertion.',
-      guidance: 'Direct energy into physical fitness, entrepreneurial ventures, or property matters. Take bold but calculated action — Hanuman puja supports courage and protection.'
-    },
-    rahu: {
-      desc: 'Rahu period creates intense worldly ambition and unconventional breakthroughs.',
-      challenge: 'Ground ambitions in ethical action. Avoid obsessive desire or deception in pursuing goals.',
-      guidance: 'Embrace innovation and transformative opportunities boldly. Study new fields, engage with foreign connections, and take thoughtful unconventional paths.'
-    },
-    jupiter: {
-      desc: 'Jupiter period bestows wisdom, expansion, and spiritual growth.',
-      challenge: 'Beware of overconfidence or moralizing. True wisdom involves listening as much as teaching.',
-      guidance: 'Pursue higher education, teaching, and philosophical inquiry. Expand through travel or study. Charitable giving amplifies Jupiter\'s blessings considerably.'
-    },
-    saturn: {
-      desc: 'Saturn period teaches discipline through challenges and builds lasting structures.',
-      challenge: 'Patience is paramount. Avoid shortcuts and resentment — steady, disciplined effort is the only key.',
-      guidance: 'Build long-term foundations with patience and integrity. Focus on disciplined service and karma yoga. Saturn richly rewards sincere, unglamorous hard work.'
-    },
-    mercury: {
-      desc: 'Mercury period enhances intellect, commerce, and communication.',
-      challenge: 'Avoid mental scatteredness and overthinking. Direct intellectual energy into focused, purposeful work.',
-      guidance: 'Invest in learning, writing, teaching, or skill-building. Launch communication-heavy or analytical projects and strengthen business foundations.'
-    },
-    ketu: {
-      desc: 'Ketu period deepens spiritual insight and detachment from material pursuits.',
-      challenge: 'Avoid excessive withdrawal or self-doubt. Integrate inner gifts with active present-world engagement.',
-      guidance: 'Deepen meditation and spiritual study. Service to the underprivileged brings peace. Ancestral healing practices and pilgrimage are beneficial.'
-    },
-    venus: {
-      desc: 'Venus period brings luxury, relationships, and artistic expression.',
-      challenge: 'Avoid indulgence or emotional dependency. Balance enjoyment with purposeful effort.',
-      guidance: 'Invest in relationships, art, and creative expression. Social connection, diplomacy, and gratitude practices are all highly favoured.'
-    }
+    sun: { desc: dashaLocale.sun, challenge: 'Avoid arrogance and ego-driven decisions.', guidance: 'Step into leadership with confidence. Surya Namaskar supports vitality.' },
+    moon: { desc: dashaLocale.moon, challenge: 'Avoid emotional reactivity.', guidance: 'Nurture emotional well-being through creative expression.' },
+    mars: { desc: dashaLocale.mars, challenge: 'Channel drive constructively.', guidance: 'Direct energy into physical fitness or property matters.' },
+    rahu: { desc: dashaLocale.rahu, challenge: 'Ground ambitions in ethical action.', guidance: 'Embrace innovation and transformative opportunities boldly.' },
+    jupiter: { desc: dashaLocale.jupiter, challenge: 'Beware of overconfidence.', guidance: 'Pursue higher education and philosophical inquiry.' },
+    saturn: { desc: dashaLocale.saturn, challenge: 'Patience is paramount.', guidance: 'Build long-term foundations with steady discipline.' },
+    mercury: { desc: dashaLocale.mercury, challenge: 'Avoid mental scatteredness.', guidance: 'Invest in writing, teaching, or skill-building.' },
+    ketu: { desc: dashaLocale.ketu, challenge: 'Avoid excessive withdrawal.', guidance: 'Deepen meditation and spiritual study.' },
+    venus: { desc: dashaLocale.venus, challenge: 'Avoid indulgence.', guidance: 'Invest in relationships, art, and creative expression.' }
   };
 
   // Map Mahadashas and inject thematic summaries

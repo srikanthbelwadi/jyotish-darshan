@@ -1,3 +1,5 @@
+import dashJSON from './dashboardTranslations.json';
+
 export const DYNAMIC_STRINGS = {
   en: {
     "ov.mantraDesc_mix": "Om Dum Durgayei Namah",
@@ -1640,3 +1642,11 @@ export const DYNAMIC_STRINGS = {
     "comp.manCancelled": "গ্রহগত কারণে মাঙ্গলিক দোষ বাতিল হয়। সংঘর্ষ নেই।",
   },
 };
+
+Object.keys(dashJSON).forEach(lang => {
+  if (DYNAMIC_STRINGS[lang]) {
+    Object.assign(DYNAMIC_STRINGS[lang], dashJSON[lang]);
+  } else {
+    DYNAMIC_STRINGS[lang] = dashJSON[lang];
+  }
+});

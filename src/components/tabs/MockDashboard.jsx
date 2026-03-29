@@ -173,13 +173,13 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
            const parsed = JSON.parse(stored);
            const isStale = Date.now() - parsed.timestamp > 24 * 60 * 60 * 1000;
            if (!isStale && parsed.text) {
-             setCache(prev => ({ ...prev, [activeTime]: parsed.text }));
+             setCache(prev => ({ ...prev, [cacheKey]: parsed.text }));
              return;
            }
          } catch(e) {}
        }
        // Fallback to active session mapping
-       if (cache[activeTime] && !forceRegenerate) return;
+       if (cache[cacheKey] && !forceRegenerate) return;
     }
 
     setLoading(true);
@@ -213,18 +213,26 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to consult the Oracle.');
 
-      setCache(prev => ({ ...prev, [activeTime]: data.prediction }));
+      setCache(prev => ({ ...prev, [cacheKey]: data.prediction }));
       localStorage.setItem(cacheKey, JSON.stringify({ text: data.prediction, timestamp: Date.now() }));
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [activeTime, K, cache]);
+  }, [activeTime, K, lang]); // Added lang dependency
+
+  // Clear component-level cache if language explicitly changes
+  React.useEffect(() => {
+    setCache({});
+  }, [lang]);
 
   React.useEffect(() => {
     fetchOracle();
-  }, [activeTime, K]);
+  }, [fetchOracle]);
+
+  // Use localized key for retrieving mapped cache
+  const activeCacheKey = `jyotish_oracle_${activeTime}_${lang}`;
 
   return (
     <div className="mobile-hero-padding" style={{ background: 'var(--bg-input)', backgroundImage: 'radial-gradient(var(--bg-input) 20%, transparent 20%), radial-gradient(var(--bg-input) 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid var(--border-light)', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px var(--bg-surface), 0 10px 30px rgba(0,0,0,0.5)' }}>
@@ -248,37 +256,37 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
              <p style={{ margin: 0, fontSize: '16px', color: 'var(--text-badge-red)', fontFamily: '"Cinzel", serif' }}>⚠️ {error}</p>
           ) : (
              <div style={{ position: 'relative', width: '100%', minHeight: '50px' }}>
-               {typeof cache[activeTime] === 'string' ? (
+               {typeof cache[activeCacheKey] === 'string' ? (
                  <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', fontStyle: 'italic', paddingRight: '40px' }}>
-                   "{cache[activeTime] || 'Awaiting celestial alignment...'}"
+                   "{cache[activeCacheKey] || 'Awaiting celestial alignment...'}"
                  </p>
-               ) : cache[activeTime] ? (
+               ) : cache[activeCacheKey] ? (
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingRight: '40px' }}>
                    <div style={{ padding: '24px', background: 'var(--bg-input)', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Predictive Trajectory')}</div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeTime].period}</p>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].period}</p>
                    </div>
                    
                    <div style={{ padding: '24px', background: 'var(--bg-input)', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Astrological Basis')}</div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeTime].basis}</p>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].basis}</p>
                    </div>
                    
                    <div style={{ padding: '24px', background: 'var(--bg-input)', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Prophetic Assertions')}</div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif', fontStyle: 'italic' }}>"{cache[activeTime].assertions}"</p>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif', fontStyle: 'italic' }}>"{cache[activeCacheKey].assertions}"</p>
                    </div>
                    
                    <div style={{ padding: '24px', background: 'var(--bg-card)', border: '1px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Lifestyle & Preparedness')}</div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeTime].lifestyle}</p>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].lifestyle}</p>
                    </div>
                    
                    <div style={{ padding: '24px', background: 'var(--bg-card)', border: '2px dashed var(--border-light)', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
                      <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                        <span style={{ fontSize: '18px' }}>🕉️</span> {t('Shastric Mitigation')}
                      </div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeTime].mitigation}</p>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].mitigation}</p>
                    </div>
                  </div>
                ) : (
@@ -286,7 +294,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang }) => {
                    Awaiting celestial alignment...
                  </p>
                )}
-               {cache[activeTime] && (
+               {cache[activeCacheKey] && (
                  <button 
                    onClick={() => fetchOracle(true)}
                    title="Consult again (Override cache)"

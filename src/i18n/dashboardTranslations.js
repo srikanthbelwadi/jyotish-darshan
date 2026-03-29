@@ -1,0 +1,72 @@
+export const DASHBOARD_TRANSLATIONS = {
+  en: {
+    "dash.timescale.0": "Today",
+    "dash.timescale.1": "This Lunar Phase",
+    "dash.timescale.2": "This Masa (Month)",
+    "dash.timescale.3": "This Samvatsara (Year)",
+    "dash.timescale.4": "Mahadasha",
+  },
+  hi: {
+    "dash.timescale.0": "आज",
+    "dash.timescale.1": "यह चंद्र चरण",
+    "dash.timescale.2": "यह मास (महीना)",
+    "dash.timescale.3": "यह संवत्सर (वर्ष)",
+    "dash.timescale.4": "महादशा",
+  },
+  kn: {
+    "dash.timescale.0": "ಇಂದು",
+    "dash.timescale.1": "ಈ ಚಂದ್ರನ ಹಂತ",
+    "dash.timescale.2": "ಈ ಮಾಸ",
+    "dash.timescale.3": "ಈ ಸಂವತ್ಸರ",
+    "dash.timescale.4": "ಮಹಾದಶಾ",
+  },
+  te: {
+    "dash.timescale.0": "నేడు",
+    "dash.timescale.1": "ఈ చంద్ర దశ",
+    "dash.timescale.2": "ఈ మాసం",
+    "dash.timescale.3": "ఈ సంవత్సరం",
+    "dash.timescale.4": "మహాదశ",
+  },
+  ta: {
+    "dash.timescale.0": "இன்று",
+    "dash.timescale.1": "இந்த சந்திர தசை",
+    "dash.timescale.2": "இந்த மாதம்",
+    "dash.timescale.3": "இந்த ஆண்டு",
+    "dash.timescale.4": "மகா தசை",
+  },
+  sa: {
+    "dash.timescale.0": "अद्य",
+    "dash.timescale.1": "अयं चन्द्रपक्षः",
+    "dash.timescale.2": "अयं मासः",
+    "dash.timescale.3": "इदं संवत्सरम्",
+    "dash.timescale.4": "महादशा",
+  },
+  mr: {
+    "dash.timescale.0": "आज",
+    "dash.timescale.1": "हा चंद्र टप्पा",
+    "dash.timescale.2": "हा महिना",
+    "dash.timescale.3": "हे वर्ष",
+    "dash.timescale.4": "महादशा",
+  },
+  gu: {
+    "dash.timescale.0": "આજે",
+    "dash.timescale.1": "આ ચંદ્ર તબક્કો",
+    "dash.timescale.2": "આ માસ",
+    "dash.timescale.3": "આ વર્ષ",
+    "dash.timescale.4": "મહાદશા",
+  },
+  bn: {
+    "dash.timescale.0": "আজ",
+    "dash.timescale.1": "এই চন্দ্র পর্ব",
+    "dash.timescale.2": "এই মাস",
+    "dash.timescale.3": "এই বছর",
+    "dash.timescale.4": "মহাদশা",
+  },
+  ml: {
+    "dash.timescale.0": "ഇന്ന്",
+    "dash.timescale.1": "ഈ ചന്ദ്ര ഘട്ടം",
+    "dash.timescale.2": "ഈ മാസം",
+    "dash.timescale.3": "ഈ വർഷം",
+    "dash.timescale.4": "മഹാദശ",
+  }
+};
