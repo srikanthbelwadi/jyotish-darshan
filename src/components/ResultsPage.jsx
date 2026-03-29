@@ -29,13 +29,6 @@ export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDow
   const [savedProfiles, setSavedProfiles] = useState([]);
   const resultsRef = useRef(null);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   useEffect(() => {
     try {
       const p = localStorage.getItem('jd_profiles');
@@ -144,35 +137,49 @@ export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDow
       </div>
 
       {/* ── Tab Bar ── */}
-      {!isMobile && (
-        <div className="no-print" style={{ background: 'white', borderBottom: '1px solid #E5D5C0', overflowX: 'auto', position: 'sticky', top: 53, zIndex: 15, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
-          <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', padding: '0 20px', whiteSpace: 'nowrap' }}>
-            {TABS.map(t => (
-              <button key={t.id} onClick={() => setTab(t.id)}
-                style={{ padding: '13px 16px', background: 'none', border: 'none',
-                  borderBottom: tab === t.id ? '3px solid #7C3AED' : '3px solid transparent',
-                  color: tab === t.id ? '#7C3AED' : '#6B7280',
-                  fontWeight: tab === t.id ? 700 : 400,
-                  cursor: 'pointer', fontSize: 13, fontFamily: 'inherit',
-                  transition: 'all 0.15s', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ fontSize: 14 }}>{t.icon}</span>
-                {t.label}
-              </button>
-            ))}
-          </div>
+      <div className="no-print desktop-only-flex" style={{ background: 'white', borderBottom: '1px solid #E5D5C0', overflowX: 'auto', position: 'sticky', top: 53, zIndex: 15, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', padding: '0 20px', whiteSpace: 'nowrap' }}>
+          {TABS.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              style={{ padding: '13px 16px', background: 'none', border: 'none',
+                borderBottom: tab === t.id ? '3px solid #7C3AED' : '3px solid transparent',
+                color: tab === t.id ? '#7C3AED' : '#6B7280',
+                fontWeight: tab === t.id ? 700 : 400,
+                cursor: 'pointer', fontSize: 13, fontFamily: 'inherit',
+                transition: 'all 0.15s', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ fontSize: 14 }}>{t.icon}</span>
+              {t.label}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* ── Tab Content ── */}
-      <div ref={resultsRef} style={{ maxWidth: 1000, margin: '0 auto', padding: '24px 20px 48px', display: 'flex', flexDirection: 'column', gap: isMobile ? '40px' : '0' }}>
-        {(!isMobile ? tab === 'overview' : true)   && <OverviewTab kundali={kundali} chartFormat={chartFormat} lang={lang} />}
-        {(!isMobile ? tab === 'charts' : true)     && <ChartsTab   kundali={kundali} chartFormat={chartFormat} onFormatChange={setChartFormat} lang={lang} />}
-        {(!isMobile ? tab === 'planets' : true)    && <PlanetsTab  kundali={kundali} />}
-        {(!isMobile ? tab === 'dasha' : true)      && <DashaTab    kundali={kundali} />}
-        {(!isMobile ? tab === 'yoga' : true)       && <YogaTab     kundali={kundali} />}
-        {(!isMobile ? tab === 'shadbala' : true)   && <ShadbalaTab kundali={kundali} />}
-        {(!isMobile ? tab === 'avarga' : true)     && <AshtakavargaTab kundali={kundali} />}
-        {(!isMobile ? tab === 'reading' : true)    && <ExpertReadingTab kundali={kundali} lang={lang} />}
+      <div ref={resultsRef} className="mobile-vertical-tab-stack" style={{ maxWidth: 1000, margin: '0 auto', padding: '24px 20px 48px' }}>
+        <div className={tab === 'overview' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <OverviewTab kundali={kundali} chartFormat={chartFormat} lang={lang} />
+        </div>
+        <div className={tab === 'charts' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <ChartsTab kundali={kundali} chartFormat={chartFormat} onFormatChange={setChartFormat} lang={lang} />
+        </div>
+        <div className={tab === 'planets' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <PlanetsTab kundali={kundali} />
+        </div>
+        <div className={tab === 'dasha' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <DashaTab kundali={kundali} />
+        </div>
+        <div className={tab === 'yoga' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <YogaTab kundali={kundali} />
+        </div>
+        <div className={tab === 'shadbala' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <ShadbalaTab kundali={kundali} />
+        </div>
+        <div className={tab === 'avarga' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <AshtakavargaTab kundali={kundali} />
+        </div>
+        <div className={tab === 'reading' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <ExpertReadingTab kundali={kundali} lang={lang} />
+        </div>
       </div>
 
       {/* ── Footer ── */}

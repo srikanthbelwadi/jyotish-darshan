@@ -154,8 +154,8 @@ const PILLAR_DATA = {
 // 1.5. UNIVERSAL LOADER (NON-LANGUAGE SPECIFIC)
 // ==========================================
 const UniversalLoader = () => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: '140px', padding: '24px' }}>
-    <svg width="100%" height="140" viewBox="0 0 450 150" style={{ overflow: 'visible', filter: 'drop-shadow(0 0 15px rgba(212,175,55,0.4))', maxWidth: '450px' }}>
+  <div className="mobile-loader-box" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: '140px', padding: '24px' }}>
+    <svg width="100%" height="100%" viewBox="0 0 450 150" style={{ overflow: 'visible', filter: 'drop-shadow(0 0 15px rgba(212,175,55,0.4))', maxWidth: '450px', maxHeight: '140px' }}>
        <style>
          {`
            @keyframes writeScript {
@@ -381,28 +381,28 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
                  </p>
                ) : cache[activeCacheKey] ? (
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingRight: '40px' }}>
-                   <div style={{ padding: '24px', background: 'var(--bg-input)', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
+                   <div style={{ padding: '24px', background: 'var(--bg-input)', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Predictive Trajectory')}</div>
                      <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].period}</p>
                    </div>
                    
-                   <div style={{ padding: '24px', background: 'var(--bg-input)', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
+                   <div style={{ padding: '24px', background: 'var(--bg-input)', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Astrological Basis')}</div>
                      <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].basis}</p>
                    </div>
                    
-                   <div style={{ padding: '24px', background: 'var(--bg-input)', borderLeft: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
+                   <div style={{ padding: '24px', background: 'var(--bg-input)', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Prophetic Assertions')}</div>
                      <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif', fontStyle: 'italic' }}>"{cache[activeCacheKey].assertions}"</p>
                    </div>
                    
-                   <div style={{ padding: '24px', background: 'var(--bg-card)', border: '1px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
+                   <div style={{ padding: '24px', background: 'var(--bg-card)', borderTop: '4px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
                      <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Lifestyle & Preparedness')}</div>
                      <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].lifestyle}</p>
                    </div>
                    
-                   <div style={{ padding: '24px', background: 'var(--bg-card)', border: '2px dashed var(--border-light)', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
-                     <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                   <div style={{ padding: '24px', background: 'var(--bg-card)', borderTop: '2px dashed var(--border-light)', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
+                     <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                        <span style={{ fontSize: '18px' }}>🕉️</span> {t('Shastric Mitigation')}
                      </div>
                      <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].mitigation}</p>
@@ -713,7 +713,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
                     </div>
                  )}
 
-                 <span className="mobile-hide-emoji" style={{ position: 'relative', zIndex: 2, fontSize: '64px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s', opacity: user ? 1 : 0.3 }}>{opt.icon}</span>
+                 <span className="mobile-scale-icon" style={{ position: 'relative', zIndex: 2, filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s', opacity: user ? 1 : 0.3 }}>{opt.icon}</span>
                  <span style={{ position: 'relative', zIndex: 2, color: 'var(--text-main)', fontSize: '22px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px var(--bg-surface)', letterSpacing: '1px', textAlign: 'center', opacity: user ? 1 : 0.3 }}>
                    {t(opt.label)}
                  </span>
@@ -764,7 +764,7 @@ const StandardPillarView = ({ pillarId, K, partnerKundali, t, lang, user, onRequ
 
   return (
     <div className="responsive-grid-2" style={{ alignItems: 'start' }}>
-       <div style={{ background: 'var(--bg-input)', padding: '40px', border: '2px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)', position: 'sticky', top: '24px' }}>
+       <div className="desktop-sticky-panel" style={{ background: 'var(--bg-input)', padding: '40px', border: '2px solid var(--border-light)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)' }}>
          <MandalVisualizer selectedOpt={opt} />
          {opt.timeframe && (
            <div style={{ marginTop: '32px', textAlign: 'center', background: 'var(--bg-card)', padding: '16px', border: '1px solid var(--accent-gold)' }}>

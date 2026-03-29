@@ -119,6 +119,14 @@ table{border-collapse:collapse}
 .desktop-timescale-btns { display: flex; }
 .mobile-timescale-select { display: none; }
 .mobile-hide-emoji { display: inline-block; }
+.desktop-sticky-panel { position: sticky; top: 24px; }
+.mobile-scale-icon { font-size: 64px; margin-bottom: 16px; }
+.desktop-only-flex { display: flex; }
+.desktop-hidden-tab { display: none; }
+.desktop-active-tab { display: block; }
+.mobile-show-always { display: block; }
+.mobile-vertical-tab-stack { display: block; gap: 0; }
+.mobile-loader-box { min-height: 140px; }
 
 /* Reusable Utility Classes for Luxury App */
 .lux-card {
@@ -237,7 +245,15 @@ table{border-collapse:collapse}
 
   .desktop-timescale-btns { display: none !important; }
   .mobile-hide-emoji { display: none !important; }
-  .mobile-predictive-card { height: 120px !important; padding: 16px !important; }
+  .mobile-predictive-card { height: auto !important; min-height: 140px !important; padding: 16px !important; }
+  .desktop-sticky-panel { position: relative !important; top: 0 !important; }
+  .mobile-scale-icon { font-size: 36px !important; margin-bottom: 8px !important; }
+  .desktop-only-flex { display: none !important; }
+  .mobile-loader-box { min-height: 60px !important; padding: 12px !important; }
+  
+  .desktop-hidden-tab.mobile-show-always { display: block !important; }
+  .mobile-vertical-tab-stack { display: flex !important; flex-direction: column !important; gap: 40px !important; }
+
   .mobile-timescale-select { 
       display: block !important; 
       width: 100%; 
