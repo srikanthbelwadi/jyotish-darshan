@@ -166,7 +166,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
           
           <div style={{ marginBottom: '24px' }}>
         <p style={{ margin: '0 0 8px', color: 'var(--text-muted)', fontSize: '14px' }}>{t("Select an Event to cast electional chart:", lang)}</p>
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
            <select 
              value={selectedEvent} 
              onChange={e => {
@@ -174,8 +174,9 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                 setHasGenerated(false);
              }}
              style={{
-               flex: 1, padding: '12px 16px', background: 'var(--bg-input)', border: '1px solid var(--border-light)',
-               color: 'var(--text-main)', borderRadius: '8px', fontSize: '16px', outline: 'none', cursor: 'pointer'
+               flex: '1 1 200px', minWidth: 0, padding: '12px 16px', background: 'var(--bg-input)', border: '1px solid var(--border-light)',
+               color: 'var(--text-main)', borderRadius: '8px', fontSize: '16px', outline: 'none', cursor: 'pointer',
+               textOverflow: 'ellipsis'
              }}
            >
              <option value="" disabled>{t("Select Life Event..", lang)}</option>
@@ -185,7 +186,8 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
               onClick={handleGenerate}
               disabled={!sweInstance || !selectedEvent}
               style={{
-                 padding: '0 24px', background: 'var(--accent-gold)', color: '#000',
+                 flex: '1 1 auto',
+                 padding: '12px 24px', background: 'var(--accent-gold)', color: '#000',
                  border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold',
                  cursor: (sweInstance && selectedEvent) ? 'pointer' : 'not-allowed', boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)', transition: 'all 0.2s'
               }}
@@ -328,16 +330,16 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                          <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{t(mName, lang)} {yr}</h3>
                          <button onClick={() => setMonthOffset(m => Math.min(11, m + 1))} disabled={monthOffset === 11} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', color: monthOffset === 11 ? 'var(--text-muted)' : 'var(--accent-gold)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: monthOffset === 11 ? 'default' : 'pointer', transition: 'all 0.2s' }}>{">"}</button>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', textAlign: 'center', marginBottom: '12px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', marginBottom: '12px' }}>
                          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(w => (
                              <strong key={w} style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{t(w, lang)}</strong>
                          ))}
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
                          {gridCells}
                       </div>
                       
-                      <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '24px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', marginTop: '24px', fontSize: '12px', color: 'var(--text-muted)' }}>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-green, #10B981)' }}></div> 
                              {t("Highly Auspicious", lang)}
