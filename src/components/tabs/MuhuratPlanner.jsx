@@ -51,12 +51,9 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const COUPLE_EVENTS = ["Vivaha (Marriage)", "Sagai / Mangni (Engagement)"];
   const requiresPartner = COUPLE_EVENTS.includes(selectedEvent);
 
-  const handleGenerate = () => {
-    if (!sweInstance) return;
-    if (!user) {
-        onRequireLogin();
-        return;
-    }
+  useEffect(() => {
+    if (!sweInstance || !user) return;
+    
     setHasGenerated(true);
     setCalculating(true);
     setSelectedDateStr(null);
@@ -68,9 +65,12 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
        return;
     }
     
+    // Give UI a tick to show loader, then execute heavy WASM loop
     setTimeout(() => {
        try {
-         const dMap = generateMuhuratCalendar(sweInstance, selectedEvent, natalData, pData, 365);
+         const nData = { ...natalData };
+         const pDataLocal = pData ? { ...pData } : null;
+         const dMap = generateMuhuratCalendar(sweInstance, selectedEvent, nData, pDataLocal, 365);
          setGreenDaysMap(dMap);
        } catch (e) {
          console.error("Muhurat calculation failed:", e);
@@ -78,7 +78,9 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
          setCalculating(false);
        }
     }, 50);
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sweInstance, user, selectedEvent, partnerData?.uid, partnerData?.panchang?.nakIdx]);
+
 
   const handleDateClick = async (dateStr) => {
     setSelectedDateStr(dateStr);
@@ -132,8 +134,16 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
       boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
       position: 'relative', overflow: 'hidden'
     }}>
+
+      <h3 style={{ margin: '0 0 4px', fontSize: '24px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>
+        {t("Auspicious Muhurat", lang)}
+      </h3>
+      <p style={{ margin: '0 0 24px', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+         Suggestions for favorable timings based on classical planetary transits.
+      </p>
+      
       {!user && (
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+        <div style={{ position: 'absolute', top: '105px', left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', borderTop: '1px solid rgba(255,215,0,0.3)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
           <div style={{ fontSize: '42px', marginBottom: '12px', filter: 'drop-shadow(0 0 10px rgba(255,215,0,0.6))' }}>🔒</div>
           <h3 style={{ fontFamily: '"Cinzel", serif', margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('Unlock Shastric Oracle', lang)}</h3>
           <button style={{ padding: '12px 24px', fontSize: '14px', background: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontFamily: '"Cinzel", serif', fontWeight: 'bold', letterSpacing: '1px' }} onClick={onRequireLogin}>
@@ -141,12 +151,6 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
           </button>
         </div>
       )}
-      <h3 style={{ margin: '0 0 4px', fontSize: '24px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>
-        {t("Auspicious Muhurat", lang)}
-      </h3>
-      <p style={{ margin: '0 0 24px', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-         Suggestions for favorable timings based on classical planetary transits.
-      </p>
       
       <div style={{ marginBottom: '24px' }}>
         <p style={{ margin: '0 0 8px', color: 'var(--text-muted)', fontSize: '14px' }}>{t("Select an Event to cast electional chart:", lang)}</p>
@@ -164,20 +168,6 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
         >
           {EVENTS.map(ev => <option key={ev} value={ev}>{t(ev, lang)}</option>)}
         </select>
-        
-        {!hasGenerated && (
-          <button 
-             onClick={handleGenerate}
-             disabled={!sweInstance}
-             style={{
-                width: '100%', padding: '14px', background: 'var(--accent-gold)', color: '#000',
-                border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold',
-                cursor: sweInstance ? 'pointer' : 'not-allowed', boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)'
-             }}
-          >
-             {sweInstance ? t("Reveal Auspicious Dates", lang) : "Loading Engine..."}
-          </button>
-        )}
       </div>
 
       {hasGenerated && (
