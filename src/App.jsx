@@ -2298,7 +2298,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             {/* PARTNER BUTTON */}
             <div style={{display:'flex', alignItems:'center', gap: 12}}>
               {!partnerKundali ? (
-                  <button onClick={() => {
+                  <button id="add-partner-header-btn" onClick={() => {
                      const opening = !showPartnerForm;
                      setShowPartnerForm(opening); 
                      setIsSynastryExpanded(true);

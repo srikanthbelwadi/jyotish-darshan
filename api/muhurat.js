@@ -23,7 +23,8 @@ export default async function handler(req, res) {
 Your task is to provide a brief 2-3 sentence personalized explanation of WHY a specific timeframe is highly auspicious for a specific event based solely on the mathematical data provided.
 Rules:
 1. Explicitly weave the "Recommended Time Window" into your response naturally (e.g., "The cosmic shield is strongest between 08:00 AM and 11:30 AM, providing an ideal...").
-2. Speak directly to the seeker ("Your...", "This period...").
+2. Speak directly to the seeker ("This period..."). DO NOT address the user by name (e.g. avoid 'Srikanth, this is...').
+3. Keep the response entirely focused on the technical astrological/mathematical basis of the transit alignment.
 3. Mention the transit factors (Nakshatra, Tithi, or Ascendant).
 4. If a partner is involved (e.g., Vivaha, Engagement), mention how the alignment supports the union.
 5. DO NOT hallucinate planetary data. Only use the data provided in the prompt.
@@ -36,12 +37,7 @@ Rules:
 Generate a Muhurat explanation for:
 Event: ${event}
 
-Seeker's Details:
-Name: ${kundali?.name || 'Seeker'}
 
-${partner ? `Partner's Details:
-Name: ${partner.name}
-` : ''}
 
 Calculated Transit Alignment:
 Transit Date: ${transit.date}

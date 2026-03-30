@@ -190,11 +190,28 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
       {hasGenerated && (
         <>
           {requiresPartner && !pData ? (
-             <div style={{ padding: '32px', textAlign: 'center', background: 'var(--bg-input)', border: '1px solid var(--border-light)', borderRadius: '12px' }}>
+             <button 
+                onClick={() => {
+                   const btn = document.getElementById('add-partner-header-btn');
+                   if (btn) {
+                     btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                     // Also slightly pulsate or trigger a click on it if needed, but smooth scrolling is best
+                     // to draw attention to it.
+                     btn.style.boxShadow = '0 0 15px var(--accent-gold)';
+                     setTimeout(() => btn.style.boxShadow = 'none', 2000);
+                   } else {
+                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                   }
+                }}
+                style={{ width: '100%', padding: '32px', textAlign: 'center', background: 'var(--bg-input)', border: '1px dashed var(--accent-gold)', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                onMouseOver={e => e.currentTarget.style.background='var(--bg-surface)'}
+                onMouseOut={e => e.currentTarget.style.background='var(--bg-input)'}
+             >
                 <span style={{ fontSize: '32px', display: 'block', marginBottom: '12px' }}>💞</span>
-                <p style={{ color: 'var(--text-main)', fontSize: '16px', margin: 0 }}>{t("This event requires a partner to establish Synastry.", lang)}</p>
-                <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '8px' }}>{t("Please add a partner in the dashboard above.", lang)}</p>
-             </div>
+                <p style={{ color: 'var(--text-main)', fontSize: '18px', fontWeight: 'bold', margin: '0 0 8px', fontFamily: '"Cinzel", serif' }}>
+                  {t("A partner Kundali is required. Please add a partner", lang)}
+                </p>
+             </button>
           ) : calculating ? (
         <div style={{ padding: '40px 0', display: 'flex', justifyContent: 'center', width: '100%' }}>
            {UniversalLoader ? <UniversalLoader /> : (
@@ -300,8 +317,10 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                    )}
                  </div>
               </div>
-          </div>
-       )}
+           </div>
+        )}
+        </>
+      )}
         </div>
       </div>
     </div>
