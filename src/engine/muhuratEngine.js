@@ -1,15 +1,77 @@
 // src/engine/muhuratEngine.js
 
+const NAKSHATRAS = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
+const TITHIS = ["Pratipada","Dwitiya","Tritiya","Chaturthi","Panchami","Shashthi","Saptami","Ashtami","Navami","Dashami","Ekadashi","Dwadashi","Trayodashi","Chaturdashi","Purnima","Pratipada","Dwitiya","Tritiya","Chaturthi","Panchami","Shashthi","Saptami","Ashtami","Navami","Dashami","Ekadashi","Dwadashi","Trayodashi","Chaturdashi","Amavasya"];
+const RASHIS = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+
 // Constants for massive event bans
-const BANNED_SOLAR_MONTHS = [8, 11]; // Sagittarius (Dhanur) and Pisces (Meena) are Khara Masa (inauspicious for major events like Marriage/Griha Pravesh)
+const BANNED_SOLAR_MONTHS = [8, 11]; // Sagittarius (Dhanur) and Pisces (Meena) are Khara Masa
 
 // Rikta Tithis (Empty) - generally banned for auspicious events
 const RIKTA_TITHIS = [4, 9, 14, 19, 24, 29];
 const AMAVASYA = [30];
+const BANNED_YOGAS = [1, 6, 9, 10, 13, 17, 27]; // Vishkumbha, Atiganda, Shula, Ganda, Vyaghata, Vyatipata, Vaidhriti
 
-// The core filtering rules per event category
-// Tara Bala bans: 3 (Vipat), 5 (Pratyak), 7 (Naidhana)
-// Chandra Bala bans: 6, 8, 12 from Natal Moon
+// Event specific constraints
+// naks: 0=Ashwini, 1=Bharani... 26=Revati
+// days: 0=Sunday, 1=Monday... 6=Saturday
+const EVENT_RULES = {
+  "Simantonnayana (Baby Shower / Godh Bharai)": {
+    naks: [3, 4, 7, 21, 6], days: [1, 3, 4, 5], combCheck: false
+  },
+  "Namakarana (Naming Ceremony)": {
+    naks: [0, 3, 4, 7, 12, 14, 16, 21, 23, 26], days: [1, 3, 4, 5], combCheck: false
+  },
+  "Annaprashana (First Solid Food)": {
+    naks: [0, 3, 4, 7, 8, 11, 12, 13, 14, 16, 20, 21, 22, 23, 25, 26], days: [1, 3, 4, 5], combCheck: false
+  },
+  "Mundan / Chudakarana (First Haircut)": {
+    naks: [0, 4, 7, 12, 6, 13, 14, 21, 22, 23], days: [1, 3, 4, 5], combCheck: false 
+  },
+  "Karnavedha (Ear Piercing)": {
+    naks: [4, 5, 6, 7, 12, 13, 21, 22, 0], days: [1, 3, 4, 5], combCheck: false
+  },
+  "Vidyarambha / Aksharabhyasam (Start of Education)": {
+    naks: [0, 6, 7, 12, 13, 14, 21, 26], days: [3, 4, 5], combCheck: false
+  },
+  "Upanayana (Sacred Thread Ceremony)": {
+    naks: [0, 3, 4, 6, 7, 12, 13, 14, 16, 21, 22, 26], days: [3, 4, 5], combCheck: true, reqSolarMonths: [0, 1, 2, 9, 10, 11]
+  },
+  "Vivaha (Marriage)": {
+    naks: [3, 4, 11, 12, 14, 16, 18, 20, 25, 26], days: [1, 3, 4, 5, 6], combCheck: true, banSolarMonths: BANNED_SOLAR_MONTHS
+  },
+  "Sagai / Mangni (Engagement)": {
+    naks: [3, 4, 11, 12, 14, 16, 18, 20, 25, 26], days: [1, 3, 4, 5, 6], combCheck: true
+  },
+  "Bhoomi Puja (Foundation Stone Laying)": {
+    naks: [3, 11, 20, 25], days: [1, 3, 4, 5], combCheck: true, banSolarMonths: BANNED_SOLAR_MONTHS
+  },
+  "Griha Pravesh (Housewarming)": {
+    naks: [3, 4, 11, 20, 25], days: [1, 3, 4, 5, 6], combCheck: true, banSolarMonths: BANNED_SOLAR_MONTHS
+  },
+  "Deva Pratishtha (Idol Installation)": {
+    naks: [3, 7, 11, 20, 25], days: [1, 3, 4, 5], combCheck: true
+  },
+  "Shanti Puja (Pacification Rituals)": {
+    naks: [], days: [], combCheck: false // Allows anything mostly depending on dosha, fallback to basic panchang shuddhi
+  },
+  "Vyapar Arambh (Starting a Business)": {
+    naks: [0, 7, 13, 14, 16, 26], days: [3, 4, 5], combCheck: false
+  },
+  "Sampatti Kharidi (Property Purchase)": {
+    naks: [4, 6, 8, 9, 10, 15, 18, 19, 24, 26], days: [4, 5], combCheck: false
+  },
+  "Vahana Puja (Buying a Vehicle)": {
+    naks: [6, 14, 21, 22, 23], days: [3, 4, 5], combCheck: false
+  },
+  "Swarna / Abhushan Kharidi (Buying Gold)": {
+    naks: [7, 11, 26], days: [3, 4, 5], combCheck: false
+  },
+  "Yatra (Significant Journeys)": {
+    naks: [0, 7, 12, 14, 16, 21, 22, 26], days: [1, 3, 4, 5, 6], combCheck: false // Directional bans are complex, but we filter basic chara naks here
+  }
+};
+
 const isTaraBalaGood = (natalNak, transitNak) => {
     let diff = Math.floor(transitNak) - Math.floor(natalNak);
     if (diff < 0) diff += 27;
@@ -25,19 +87,28 @@ const isChandraBalaGood = (natalMoonRashi, transitMoonRashi) => {
     return ![6, 8, 12].includes(house);
 };
 
+// A small async sleep to allow UI to breathe
+const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
+
 export async function generateMuhuratCalendar(sweInstance, eventName, natalData, partnerData, daysToScan = 365) {
     const validDays = [];
     const now = new Date();
-    now.setHours(12, 0, 0, 0); // Scan exactly 12:00 Noon local time for each day as the macro-anchor
+    now.setHours(12, 0, 0, 0); 
     const baseTime = now.getTime();
     
+    const rules = EVENT_RULES[eventName] || { naks: [], days: [], combCheck: false };
+    
+    // Calculate once for the whole loop
+    let sFlags = 256; // SEFLG_SPEED
+
     for (let i = 0; i < daysToScan; i++) {
+        // Yield to browser every 30 days to render loading animation
+        if (i % 30 === 0) await yieldToMain();
+        
         const timestamp = baseTime + (i * 86400000);
+        const dayOfWeek = new Date(timestamp).getDay(); 
         const jd = (timestamp / 86400000) + 2440587.5;
         
-        let sFlags = 256; // SEFLG_SPEED
-        
-        // sweInstance.calc_ut returns an array: [longitude, latitude, distance, speed...]
         let sun = sweInstance.calc_ut(jd, 0, sFlags); 
         let moon = sweInstance.calc_ut(jd, 1, sFlags);
         
@@ -51,57 +122,78 @@ export async function generateMuhuratCalendar(sweInstance, eventName, natalData,
         
         let tithiDiff = moonSidereal - sunSidereal;
         if (tithiDiff < 0) tithiDiff += 360;
-        let tithi = Math.floor(tithiDiff / 12) + 1; // 1 to 30
+        let tithi = Math.floor(tithiDiff / 12) + 1; 
         
         let yogaSum = (sunSidereal + moonSidereal) % 360;
-        let yoga = Math.floor(yogaSum / (360 / 27)) + 1; // 1 to 27
+        let yoga = Math.floor(yogaSum / (360 / 27)) + 1; 
         
-        // --- 1. Massive Event / Solar Bans ---
-        const massiveEvents = ["Vivaha (Marriage)", "Griha Pravesh (Housewarming)", "Upanayana (Sacred Thread Ceremony)", "Deva Pratishtha (Idol Installation)", "Bhoomi Puja (Foundation Stone Laying)"];
-        let isMassive = massiveEvents.includes(eventName);
-        
-        if (isMassive && BANNED_SOLAR_MONTHS.includes(sunSign)) continue;
-        
-        // --- 2. Lunar / Panchang Bans ---
+        // --- 1. Universal Panchang Bans ---
         if (RIKTA_TITHIS.includes(tithi) || AMAVASYA.includes(tithi)) continue;
-        
-        const BANNED_YOGAS = [1, 6, 9, 10, 13, 17, 27]; // Vishkumbha, Atiganda, Shula, Ganda, Vyaghata, Vyatipata, Vaidhriti
         if (BANNED_YOGAS.includes(yoga)) continue;
         
-        // --- 3. Personal Sync Bans (Tara/Chandra Bala) ---
+        // --- 2. Event Specific Vara (Weekday) Ban ---
+        if (rules.days && rules.days.length > 0 && !rules.days.includes(dayOfWeek)) continue;
+        
+        // --- 3. Event Specific Nakshatra Ban ---
+        if (rules.naks && rules.naks.length > 0 && !rules.naks.includes(nakshatra)) continue;
+        
+        // --- 4. Event Specific Solar Month Ban / Requirement ---
+        if (rules.banSolarMonths && rules.banSolarMonths.includes(sunSign)) continue;
+        if (rules.reqSolarMonths && !rules.reqSolarMonths.includes(sunSign)) continue;
+        
+        // --- 5. Asta (Combustion) Check for Jupiter & Venus ---
+        if (rules.combCheck) {
+            let jup = sweInstance.calc_ut(jd, 5, sFlags); // Jupiter is 5
+            let ven = sweInstance.calc_ut(jd, 3, sFlags); // Venus is 3
+            
+            let jupDist = Math.abs((jup[0] - sun[0] + 180) % 360 - 180);
+            let venDist = Math.abs((ven[0] - sun[0] + 180) % 360 - 180);
+            
+            // Jupiter (<11 deg) or Venus (<10 deg) combust
+            if (jupDist <= 11) continue; 
+            if (venDist <= 10) continue; 
+        }
+
+        // --- 6. Personal Sync Bans (Tara/Chandra Bala) ---
         if (natalData && natalData.nakshatra !== undefined) {
             if (!isTaraBalaGood(natalData.nakshatra, nakshatra)) continue;
             if (!isChandraBalaGood(natalData.moonRashi, moonSign)) continue;
         }
         
-        // --- 4. Synastry Sync Bans ---
+        // --- 7. Synastry Sync Bans ---
         if (partnerData && partnerData.nakshatra !== undefined) {
             if (!isTaraBalaGood(partnerData.nakshatra, nakshatra)) continue;
             if (!isChandraBalaGood(partnerData.moonRashi, moonSign)) continue;
         }
         
-        // Scoring (Soft Locks for Sorting)
+        // Scoring Mechanism
         let score = 0;
         if (tithi < 15) score += 2; // Shukla Paksha
-        if (tithi === 11) score += 3; // Ekadashi is highly auspicious
-        if ([3, 7, 16, 21].includes(nakshatra)) score += 2; 
+        if (tithi === 11) score += 4; // Ekadashi
+        if ([3, 4].includes(dayOfWeek)) score += 2; // Wed/Thu inherently auspicious generally
+        
+        // Score specific to the chosen nakshatras: Give extra points if it's the 1st or 2nd choice in lists generally
+        if (rules.naks && rules.naks.length > 0 && nakshatra === rules.naks[0]) {
+            score += 3;
+        }
         
         const dStr = new Date(timestamp).toISOString().split('T')[0];
         validDays.push({
             date: dStr,
-            tithi,
+            tithi: TITHIS[tithi - 1] + (tithi <= 15 ? ' (Shukla)' : ' (Krishna)'),
             yoga,
-            nakshatra,
-            sunSign,
-            moonSign,
+            nakshatra: NAKSHATRAS[nakshatra],
+            sunSign: RASHIS[sunSign],
+            moonSign: RASHIS[moonSign],
             score
         });
     }
     
-    // Sort by score globally and limit to top 40 days for the year, 
-    // then organize by month so UI doesn't get flooded.
     validDays.sort((a,b) => b.score - a.score);
     const topDays = validDays.slice(0, 45).sort((a,b) => new Date(a.date) - new Date(b.date));
+    
+    // Add artificial delay to guarantee UI perception of work even if fast
+    await new Promise(r => setTimeout(r, 600)); 
     
     const dayMap = {};
     topDays.forEach(day => dayMap[day.date] = day);
@@ -148,7 +240,6 @@ export async function getAuspiciousWindow(sweInstance, dateStr, natalLagnaRashi,
         return { timeBlock: "No auspicious hours", lagnaSign: 0 };
     }
     
-    // Find longest contiguous block
     let longestBlock = [];
     let currentBlock = [validHours[0]];
     
@@ -168,9 +259,8 @@ export async function getAuspiciousWindow(sweInstance, dateStr, natalLagnaRashi,
     let format = h => (h > 12 ? (h-12) + " PM" : (h === 12 ? "12 PM" : h + " AM"));
     let timeBlockStr = `${format(startH)} - ${format(endH)}`;
     
-    // Grab the median ascendant for symbolic representation to the AI
     let medianIdx = Math.floor(longestBlock.length / 2);
     let symbolicLagna = longestBlock[medianIdx].lagnaSign;
     
-    return { timeBlock: timeBlockStr, lagnaSign: symbolicLagna };
+    return { timeBlock: timeBlockStr, lagnaSign: RASHIS[symbolicLagna] };
 }
