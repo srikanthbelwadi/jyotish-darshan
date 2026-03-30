@@ -105,6 +105,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
          event: selectedEvent,
          kundali: kundali.input,
          partner: partnerData?.input,
+         lang: lang,
          transit: {
              date: dateStr,
              goodHours: timeBlockStr,
@@ -148,7 +149,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
           {t("Auspicious Muhurat", lang)}
         </h2>
         <p style={{ margin: '0 0 24px', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic', fontFamily: 'serif' }}>
-           Suggestions for favorable timings based on classical planetary transits.
+           {t("Suggestions for favorable timings based on classical planetary transits.", lang)}
         </p>
 
         <div className="mobile-oracle-box" style={{ background: 'var(--bg-surface)', position: 'relative', padding: '24px', borderTop: '4px solid #ffd700', minHeight: '180px' }}>
@@ -362,7 +363,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                 {t("Auspicious Hours for", lang)} {new Date(selectedDateStr).toLocaleDateString(lang, {weekday:'long', month:'long', day:'numeric'})}
              </h4>
              <p style={{ margin: '0 0 16px', color: 'var(--text-main)', fontSize: '16px', fontWeight: 'bold' }}>
-                Recommended Window: {aiAnalysis.timeBlock}
+                {t("Recommended Window:", lang)} {aiAnalysis.timeBlock}
              </p>
 
              <div style={{ 
