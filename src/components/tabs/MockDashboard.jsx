@@ -246,7 +246,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
   const [error, setError] = React.useState(null);
   const [isMinimized, setIsMinimized] = React.useState(false);
 
-  const fetchOracle = React.useCallback(async (forceRegenerate = false) => {
+  const fetchOracle = React.useCallback(async (forceRegenerate = false, autoFetch = true) => {
     if (!K) return;
     if (!user) return; // Wait for UI interaction on the Guardian Lock
 
@@ -269,6 +269,8 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
        // Fallback to active session mapping
        if (cache[cacheKey] && !forceRegenerate) return;
     }
+
+    if (!autoFetch && !forceRegenerate) return;
 
     setLoading(true);
     setError(null);
@@ -335,7 +337,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
   }, [lang]);
 
   React.useEffect(() => {
-    fetchOracle();
+    fetchOracle(false, false);
   }, [fetchOracle]);
 
   // Use localized key for retrieving mapped cache
@@ -444,11 +446,23 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
                      <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{cache[activeCacheKey].mitigation}</p>
                    </div>
                  </div>
-               ) : (
-                 <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif' }}>
-                   {t('Awaiting celestial alignment...', lang)}
-                 </p>
-               )}
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '32px 0' }}>
+                     <button 
+                       onClick={() => fetchOracle(false, true)}
+                       style={{ 
+                         padding: '16px 32px', fontSize: '16px', background: 'var(--accent-gold)', 
+                         color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', 
+                         fontFamily: '"Cinzel", serif', fontWeight: 'bold', textTransform: 'uppercase',
+                         boxShadow: '0 4px 15px rgba(212,175,55,0.3)', transition: 'all 0.3s ease'
+                       }}
+                       onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(212,175,55,0.5)'; }}
+                       onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(212,175,55,0.3)'; }}
+                     >
+                       {t('Reveal Prediction', lang)}
+                     </button>
+                  </div>
+                )}
              </div>
           )}
         </div>

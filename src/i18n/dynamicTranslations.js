@@ -193,7 +193,8 @@ export const DYNAMIC_STRINGS = {
     'Minimize Results': 'Minimize Results',
     'Oracle Insights Minimized': 'Oracle Insights Minimized',
     'Muhurat Scan Minimized': 'Muhurat Scan Minimized',
-    'Consult again (Override cache)': 'Consult again (Override cache)'
+    'Consult again (Override cache)': 'Consult again (Override cache)',
+    'Reveal Prediction': 'Reveal Prediction'
   },
   hi: {
     "ov.mantraDesc_mix": "ॐ दुं दुर्गायै नमः",
@@ -387,7 +388,8 @@ export const DYNAMIC_STRINGS = {
     'Minimize Results': 'परिणाम न्यूनतम करें',
     'Oracle Insights Minimized': 'Oracle इनसाइट्स को न्यूनतम किया गया',
     'Muhurat Scan Minimized': 'मुहूर्त स्कैन न्यूनतम किया गया',
-    'Consult again (Override cache)': 'पुनः परामर्श करें (कैश को ओवरराइड करें)'
+    'Consult again (Override cache)': 'पुनः परामर्श करें (कैश को ओवरराइड करें)',
+    'Reveal Prediction': 'भविष्यवाणी प्रकट करें'
   },
   kn: {
     "ov.mantraDesc_mix": "ಓಂ ದುಂ ದುರ್ಗಾಯೈ ನಮಃ",
@@ -581,7 +583,8 @@ export const DYNAMIC_STRINGS = {
     'Minimize Results': 'ಫಲಿತಾಂಶಗಳನ್ನು ಕಡಿಮೆ ಮಾಡಿ',
     'Oracle Insights Minimized': 'ಒರಾಕಲ್ ಒಳನೋಟಗಳನ್ನು ಕಡಿಮೆಗೊಳಿಸಲಾಗಿದೆ',
     'Muhurat Scan Minimized': 'ಮುಹೂರ್ತ ಸ್ಕ್ಯಾನ್ ಕಡಿಮೆಗೊಳಿಸಲಾಗಿದೆ',
-    'Consult again (Override cache)': 'ಮತ್ತೊಮ್ಮೆ ಸಮಾಲೋಚಿಸಿ (ಸಂಗ್ರಹವನ್ನು ಅತಿಕ್ರಮಿಸಿ)'
+    'Consult again (Override cache)': 'ಮತ್ತೊಮ್ಮೆ ಸಮಾಲೋಚಿಸಿ (ಸಂಗ್ರಹವನ್ನು ಅತಿಕ್ರಮಿಸಿ)',
+    'Reveal Prediction': 'ಭವಿಷ್ಯವನ್ನು ಬಹಿರಂಗಪಡಿಸಿ'
   },
   te: {
     "ov.mantraDesc_mix": "ఓం దుం దుర్గాయై నమః",
@@ -763,7 +766,8 @@ export const DYNAMIC_STRINGS = {
     'Minimize Results': 'ఫలితాలను తగ్గించండి',
     'Oracle Insights Minimized': 'ఒరాకిల్ అంతర్దృష్టులు కనిష్టీకరించబడ్డాయి',
     'Muhurat Scan Minimized': 'ముహూర్తం స్కాన్ కనిష్టీకరించబడింది',
-    'Consult again (Override cache)': 'మళ్లీ సంప్రదించండి (కాష్‌ని ఓవర్‌రైడ్ చేయండి)'
+    'Consult again (Override cache)': 'మళ్లీ సంప్రదించండి (కాష్‌ని ఓవర్‌రైడ్ చేయండి)',
+    'Reveal Prediction': 'అంచనాను వెల్లడించండి'
   },
   ta: {
     "ov.mantraDesc_mix": "ஓம் தும் துர்காயை நமஹ",
@@ -945,7 +949,8 @@ export const DYNAMIC_STRINGS = {
     'Minimize Results': 'முடிவுகளை குறைக்கவும்',
     'Oracle Insights Minimized': 'ஆரக்கிள் நுண்ணறிவு குறைக்கப்பட்டது',
     'Muhurat Scan Minimized': 'முஹுரத் ஸ்கேன் குறைக்கப்பட்டது',
-    'Consult again (Override cache)': 'மீண்டும் ஆலோசிக்கவும் (கேச் மேலெழுதவும்)'
+    'Consult again (Override cache)': 'மீண்டும் ஆலோசிக்கவும் (கேச் மேலெழுதவும்)',
+    'Reveal Prediction': 'கணிப்பை வெளிப்படுத்துங்கள்'
   },
   mr: {
     "comp.addPartner": "+ जोडीदार जोडा",
@@ -1449,7 +1454,8 @@ export const DYNAMIC_STRINGS = {
     'Minimize Results': 'ഫലങ്ങൾ ചെറുതാക്കുക',
     'Oracle Insights Minimized': 'ഒറാക്കിൾ ഇൻസൈറ്റുകൾ ചെറുതാക്കി',
     'Muhurat Scan Minimized': 'മുഹൂർത്ത സ്കാൻ ചെറുതാക്കി',
-    'Consult again (Override cache)': 'വീണ്ടും പരിശോധിക്കുക (കാഷെ അസാധുവാക്കുക)'
+    'Consult again (Override cache)': 'വീണ്ടും പരിശോധിക്കുക (കാഷെ അസാധുവാക്കുക)',
+    'Reveal Prediction': 'പ്രവചനം വെളിപ്പെടുത്തുക'
   },
   sa: {
     "ov.mantraDesc_mix": "ॐ दुं दुर्गायै नमः",
