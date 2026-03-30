@@ -200,13 +200,41 @@ export async function generateMuhuratCalendar(sweInstance, eventName, natalData,
     return dayMap;
 }
 
-export async function getAuspiciousWindow(sweInstance, dateStr, natalLagnaRashi, partnerLagnaRashi) {
-    const validHours = [];
+export async function getAuspiciousWindow(sweInstance, dateStr, eventName, natalLagnaRashi, partnerLagnaRashi) {
+    const validBlocks = [];
     const baseDate = new Date(dateStr);
     let lat = 23.17, lng = 75.78; 
     
-    for (let h = 6; h <= 21; h++) { 
-        baseDate.setHours(h, 0, 0, 0);
+    const dayOfWeek = baseDate.getDay();
+    
+    // Standard Vedic Offsets from 6:00 AM (in continuous hours)
+    // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+    const RAHU_STARTS = [16.5, 7.5, 15.0, 12.0, 13.5, 10.5, 9.0];
+    const YAM_STARTS = [12.0, 10.5, 9.0, 7.5, 6.0, 15.0, 13.5];
+    
+    let rahuStart = RAHU_STARTS[dayOfWeek];
+    let rahuEnd = rahuStart + 1.5;
+    
+    let yamStart = YAM_STARTS[dayOfWeek];
+    let yamEnd = yamStart + 1.5;
+
+    const isFixedEvent = ["Vivaha (Marriage)", "Sagai / Mangni (Engagement)", "Bhoomi Puja (Foundation Stone Laying)", "Griha Pravesh (Housewarming)", "Deva Pratishtha (Idol Installation)"].includes(eventName);
+    const isMovableEvent = ["Vahana Puja (Buying a Vehicle)", "Yatra (Significant Journeys)"].includes(eventName);
+    
+    const FIXED_SIGNS = [1, 4, 7, 10]; // Taurus, Leo, Scorpio, Aquarius
+    const MOVABLE_SIGNS = [0, 3, 6, 9]; // Aries, Cancer, Libra, Capricorn
+    const DUAL_SIGNS = [2, 5, 8, 11]; // Gemini, Virgo, Sagittarius, Pisces
+
+    // Scan the day in 15-minute intervals from 06:00 AM to 10:00 PM
+    for (let currentHour = 6.0; currentHour <= 22.0; currentHour += 0.25) { 
+        let inRahu = (currentHour >= rahuStart && currentHour < rahuEnd);
+        let inYam = (currentHour >= yamStart && currentHour < yamEnd);
+        if (inRahu || inYam) continue;
+        
+        let h = Math.floor(currentHour);
+        let m = Math.round((currentHour - h) * 60);
+        baseDate.setHours(h, m, 0, 0);
+        
         const timestamp = baseDate.getTime();
         const jd = (timestamp / 86400000) + 2440587.5; 
         
@@ -233,34 +261,58 @@ export async function getAuspiciousWindow(sweInstance, dateStr, natalLagnaRashi,
              if (houseP === 8) continue; 
         }
         
-        validHours.push({ hour: h, lagnaSign: transitLagnaSign });
+        let score = 0;
+        if (isFixedEvent && FIXED_SIGNS.includes(transitLagnaSign)) score += 5;
+        if (isMovableEvent && MOVABLE_SIGNS.includes(transitLagnaSign)) score += 5;
+        if (!isFixedEvent && !isMovableEvent && DUAL_SIGNS.includes(transitLagnaSign)) score += 3;
+        
+        // Benefic lagna fallback
+        if (!isFixedEvent && !isMovableEvent && [1, 2, 3, 5, 6, 8, 11].includes(transitLagnaSign)) score += 1;
+
+        validBlocks.push({ time: currentHour, lagnaSign: transitLagnaSign, score });
     }
     
-    if (validHours.length === 0) {
-        return { timeBlock: "No auspicious hours", lagnaSign: 0 };
+    if (validBlocks.length === 0) {
+        return { timeBlock: "No auspicious hours", lagnaSign: "N/A" };
     }
     
-    let longestBlock = [];
-    let currentBlock = [validHours[0]];
+    // Group into continuous clusters of the exact same rising Lagna
+    let clusters = [];
+    let currentCluster = [validBlocks[0]];
     
-    for (let i = 1; i < validHours.length; i++) {
-        if (validHours[i].hour === validHours[i-1].hour + 1) {
-            currentBlock.push(validHours[i]);
+    for (let i = 1; i < validBlocks.length; i++) {
+        // If consecutive block (difference is 15 mins) and the Lagna Rashi is still the same
+        if (Math.abs(validBlocks[i].time - validBlocks[i-1].time) <= 0.26 && validBlocks[i].lagnaSign === currentCluster[0].lagnaSign) {
+            currentCluster.push(validBlocks[i]);
         } else {
-            if (currentBlock.length > longestBlock.length) longestBlock = currentBlock;
-            currentBlock = [validHours[i]];
+            clusters.push(currentCluster);
+            currentCluster = [validBlocks[i]];
         }
     }
-    if (currentBlock.length > longestBlock.length) longestBlock = currentBlock;
+    clusters.push(currentCluster);
     
-    let startH = longestBlock[0].hour;
-    let endH = longestBlock[longestBlock.length - 1].hour + 1; 
+    // Sort clusters by accumulated score, then length, mapping to optimally requested Lagnas
+    clusters.sort((a,b) => {
+        let scoreA = a.reduce((sum, block) => sum + block.score, 0);
+        let scoreB = b.reduce((sum, block) => sum + block.score, 0);
+        if (scoreA !== scoreB) return scoreB - scoreA;
+        return b.length - a.length;
+    });
     
-    let format = h => (h > 12 ? (h-12) + " PM" : (h === 12 ? "12 PM" : h + " AM"));
-    let timeBlockStr = `${format(startH)} - ${format(endH)}`;
+    let bestCluster = clusters[0];
     
-    let medianIdx = Math.floor(longestBlock.length / 2);
-    let symbolicLagna = longestBlock[medianIdx].lagnaSign;
+    let startT = bestCluster[0].time;
+    let endT = bestCluster[bestCluster.length - 1].time + 0.25; 
     
-    return { timeBlock: timeBlockStr, lagnaSign: RASHIS[symbolicLagna] };
+    let format = t => {
+        let h = Math.floor(t);
+        let m = Math.round((t - h) * 60);
+        let ampm = h >= 12 ? 'PM' : 'AM';
+        let h12 = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+        let mStr = m.toString().padStart(2, '0');
+        return `${h12}:${mStr} ${ampm}`;
+    };
+    
+    let timeBlockStr = `${format(startT)} - ${format(endT)}`;
+    return { timeBlock: timeBlockStr, lagnaSign: RASHIS[bestCluster[0].lagnaSign] };
 }

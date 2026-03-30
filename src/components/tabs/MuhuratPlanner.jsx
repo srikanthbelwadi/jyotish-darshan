@@ -84,7 +84,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const handleDateClick = async (dateStr) => {
     setSelectedDateStr(dateStr);
     
-    const windowData = await getAuspiciousWindow(sweInstance, dateStr, natalData.lagnaRashi, pData?.lagnaRashi);
+    const windowData = await getAuspiciousWindow(sweInstance, dateStr, selectedEvent, natalData.lagnaRashi, pData?.lagnaRashi);
     const timeBlockStr = windowData.timeBlock || "Unknown Time Block";
     const medLagna = windowData.lagnaSign || 0;
     
