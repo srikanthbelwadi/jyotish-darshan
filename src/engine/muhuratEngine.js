@@ -127,21 +127,13 @@ export async function generateMuhuratCalendar(sweInstance, eventName, natalData,
         let yogaSum = (sunSidereal + moonSidereal) % 360;
         let yoga = Math.floor(yogaSum / (360 / 27)) + 1; 
         
-        // --- 1. Universal Panchang Bans ---
-        if (RIKTA_TITHIS.includes(tithi) || AMAVASYA.includes(tithi)) continue;
-        if (BANNED_YOGAS.includes(yoga)) continue;
+        let score = 100;
+        let isAbsoluteBan = false;
         
-        // --- 2. Event Specific Vara (Weekday) Ban ---
-        if (rules.days && rules.days.length > 0 && !rules.days.includes(dayOfWeek)) continue;
+        // --- 1. Absolute Universal Bans ---
+        if (AMAVASYA.includes(tithi)) isAbsoluteBan = true;
         
-        // --- 3. Event Specific Nakshatra Ban ---
-        if (rules.naks && rules.naks.length > 0 && !rules.naks.includes(nakshatra)) continue;
-        
-        // --- 4. Event Specific Solar Month Ban / Requirement ---
-        if (rules.banSolarMonths && rules.banSolarMonths.includes(sunSign)) continue;
-        if (rules.reqSolarMonths && !rules.reqSolarMonths.includes(sunSign)) continue;
-        
-        // --- 5. Asta (Combustion) Check for Jupiter & Venus ---
+        // --- 2. Asta (Combustion) Absolute Ban for Major Events ---
         if (rules.combCheck) {
             let jup = sweInstance.calc_ut(jd, 5, sFlags); // Jupiter is 5
             let ven = sweInstance.calc_ut(jd, 3, sFlags); // Venus is 3
@@ -150,33 +142,55 @@ export async function generateMuhuratCalendar(sweInstance, eventName, natalData,
             let venDist = Math.abs((ven[0] - sun[0] + 180) % 360 - 180);
             
             // Jupiter (<11 deg) or Venus (<10 deg) combust
-            if (jupDist <= 11) continue; 
-            if (venDist <= 10) continue; 
+            if (jupDist <= 11) isAbsoluteBan = true; 
+            if (venDist <= 10) isAbsoluteBan = true; 
         }
 
-        // --- 6. Personal Sync Bans (Tara/Chandra Bala) ---
+        if (isAbsoluteBan) continue;
+
+        // --- 3. Weighted Scoring Framework ---
+        
+        // Panchang Penalties
+        if (RIKTA_TITHIS.includes(tithi)) score -= 20;
+        if (BANNED_YOGAS.includes(yoga)) score -= 15;
+        
+        // Event-Specific Vara (Weekday) Scoring
+        if (rules.days && rules.days.length > 0) {
+            if (rules.days.includes(dayOfWeek)) score += 10;
+            else score -= 15;
+        }
+        
+        // Event-Specific Nakshatra Scoring
+        if (rules.naks && rules.naks.length > 0) {
+            if (rules.naks.includes(nakshatra)) {
+                score += 15;
+                if (nakshatra === rules.naks[0]) score += 5; // Prime choice
+            } else {
+                score -= 25; // Wrong nakshatra is a heavy penalty
+            }
+        }
+        
+        // Solar Month Bans
+        if (rules.banSolarMonths && rules.banSolarMonths.includes(sunSign)) score -= 25;
+        if (rules.reqSolarMonths && !rules.reqSolarMonths.includes(sunSign)) score -= 25;
+        
+        // Personal Sync Bans (Tara/Chandra Bala)
         if (natalData && natalData.nakshatra !== undefined) {
-            if (!isTaraBalaGood(natalData.nakshatra, nakshatra)) continue;
-            if (!isChandraBalaGood(natalData.moonRashi, moonSign)) continue;
+            if (!isTaraBalaGood(natalData.nakshatra, nakshatra)) score -= 15;
+            if (!isChandraBalaGood(natalData.moonRashi, moonSign)) score -= 10;
         }
         
-        // --- 7. Synastry Sync Bans ---
+        // Synastry Sync Bans
         if (partnerData && partnerData.nakshatra !== undefined) {
-            if (!isTaraBalaGood(partnerData.nakshatra, nakshatra)) continue;
-            if (!isChandraBalaGood(partnerData.moonRashi, moonSign)) continue;
+            if (!isTaraBalaGood(partnerData.nakshatra, nakshatra)) score -= 15;
+            if (!isChandraBalaGood(partnerData.moonRashi, moonSign)) score -= 10;
         }
         
-        // Scoring Mechanism
-        let score = 0;
-        if (tithi < 15) score += 2; // Shukla Paksha
-        if (tithi === 11) score += 4; // Ekadashi
-        if ([3, 4].includes(dayOfWeek)) score += 2; // Wed/Thu inherently auspicious generally
-        
-        // Score specific to the chosen nakshatras: Give extra points if it's the 1st or 2nd choice in lists generally
-        if (rules.naks && rules.naks.length > 0 && nakshatra === rules.naks[0]) {
-            score += 3;
-        }
-        
+        // General Auspicious Boosts
+        if (tithi < 15) score += 5; // Shukla Paksha
+        if (tithi === 11) score += 10; // Ekadashi
+        if ([3, 4].includes(dayOfWeek)) score += 2; // Wed/Thu inherently auspicious
+
         const dStr = new Date(timestamp).toISOString().split('T')[0];
         validDays.push({
             date: dStr,
@@ -190,20 +204,37 @@ export async function generateMuhuratCalendar(sweInstance, eventName, natalData,
     }
     
     validDays.sort((a,b) => b.score - a.score);
+    // Grab top 45 scored days regardless of pure rule breaches
     const topDays = validDays.slice(0, 45).sort((a,b) => new Date(a.date) - new Date(b.date));
     
-    // Add artificial delay to guarantee UI perception of work even if fast
+    // Add artificial delay to guarantee UI perception of work
     await new Promise(r => setTimeout(r, 600)); 
     
     const dayMap = {};
-    topDays.forEach(day => dayMap[day.date] = day);
+    if (topDays.length > 0) {
+        // Calculate relative tiering to ensure we always have some visual greens
+        const validScores = topDays.map(d => d.score);
+        const maxScore = Math.max(...validScores);
+        
+        topDays.forEach(day => {
+            let tier = 'yellow';
+            // If it's within 15 points of the maximum possible score found, it's a solid Green day relatively
+            if (day.score >= (maxScore - 15)) {
+                tier = 'green';
+            }
+            dayMap[day.date] = { ...day, tier };
+        });
+    }
     return dayMap;
 }
 
-export async function getAuspiciousWindow(sweInstance, dateStr, eventName, natalLagnaRashi, partnerLagnaRashi) {
+export async function getAuspiciousWindow(sweInstance, dateStr, eventName, natalLagnaRashi, partnerLagnaRashi, userLat, userLng) {
     const validBlocks = [];
     const baseDate = new Date(dateStr);
-    let lat = 23.17, lng = 75.78; 
+    
+    // Default to Ujjain purely as fallback if coords are somehow missing from profile
+    let lat = userLat !== undefined ? userLat : 23.17; 
+    let lng = userLng !== undefined ? userLng : 75.78; 
     
     const dayOfWeek = baseDate.getDay();
     

@@ -33,6 +33,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const [selectedDateStr, setSelectedDateStr] = useState(null);
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [hasGenerated, setHasGenerated] = useState(false);
+  const [monthOffset, setMonthOffset] = useState(0);
   
   const sweInstance = getSwe();
 
@@ -66,6 +67,8 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
        return;
     }
     
+    setMonthOffset(0);
+    
     setTimeout(async () => {
        try {
          const nData = { ...natalData };
@@ -84,7 +87,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const handleDateClick = async (dateStr) => {
     setSelectedDateStr(dateStr);
     
-    const windowData = await getAuspiciousWindow(sweInstance, dateStr, selectedEvent, natalData.lagnaRashi, pData?.lagnaRashi);
+    const windowData = await getAuspiciousWindow(sweInstance, dateStr, selectedEvent, natalData.lagnaRashi, pData?.lagnaRashi, kundali.input.lat, kundali.input.lng);
     const timeBlockStr = windowData.timeBlock || "Unknown Time Block";
     const medLagna = windowData.lagnaSign || 0;
     
@@ -244,59 +247,101 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
             <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '8px' }}>{t("Try a different event or adjust the planetary context.", lang)}</p>
          </div>
       ) : (
-        <div className="muhurat-month-grid" style={{
-           display: 'flex', overflowX: 'auto', gap: '16px', paddingBottom: '16px',
-           msOverflowStyle: 'none', scrollbarWidth: 'none'
-        }}>
-           {Array.from({length: 12}).map((_, i) => {
-              const d = new Date();
-              d.setMonth(d.getMonth() + i);
-              const mName = MONTH_NAMES[d.getMonth()];
-              const yr = d.getFullYear();
-              
-              const monthPrefix = `${yr}-${String(d.getMonth()+1).padStart(2,'0')}`;
-              const matchingDays = Object.keys(greenDaysMap).filter(k => k.startsWith(monthPrefix)).sort();
-              
-              // Skip rendering empty months to simplify UI on mobile if needed, but keeping for scaffolding
-              if(matchingDays.length === 0) return null;
-              
-              return (
-                 <div key={i} style={{ 
-                    minWidth: '180px', flexShrink: 0, background: 'var(--bg-card)', 
-                    border: '1px solid var(--border-light)', borderRadius: '12px', padding: '16px',
-                    boxShadow: 'inset 0 0 10px rgba(0,0,0,0.05)'
-                 }}>
-                    <strong style={{ display: 'block', fontSize: '15px', color: 'var(--text-main)', marginBottom: '12px', borderBottom: '1px solid var(--border-light)', paddingBottom: '6px' }}>
-                       {t(mName, lang)} {yr}
-                    </strong>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                       {matchingDays.map(dateStr => {
-                          const isActive = selectedDateStr === dateStr;
-                          const score = greenDaysMap[dateStr].score;
-                          const dNum = parseInt(dateStr.split('-')[2]);
-                          return (
-                            <button 
-                              key={dateStr}
-                              onClick={() => handleDateClick(dateStr)}
-                              style={{
-                                 width: '32px', height: '32px', borderRadius: '50%', border: 'none', cursor: 'pointer',
-                                 background: isActive ? 'var(--accent-gold)' : 'var(--bg-input)', 
-                                 border: isActive ? 'none' : '1px solid var(--border-light)',
-                                 color: isActive ? 'var(--bg-surface)' : 'var(--text-main)',
-                                 fontWeight: 'bold', fontSize: '13px',
-                                 transition: 'all 0.2s', boxShadow: isActive ? '0 0 10px var(--accent-gold)' : 'none'
-                              }}
-                              title={`Score: ${score}`}
-                            >
-                               {dNum}
-                            </button>
-                          )
-                       })}
-                    </div>
-                 </div>
-              )
-           })}
-        </div>
+         <div style={{ marginTop: '16px', animation: 'fadeIn 0.4s ease' }}>
+            {(() => {
+                const today = new Date();
+                const d = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
+                
+                const mName = MONTH_NAMES[d.getMonth()];
+                const yr = d.getFullYear();
+                const monthPrefix = `${yr}-${String(d.getMonth()+1).padStart(2,'0')}`;
+                
+                const daysInMonth = new Date(yr, d.getMonth() + 1, 0).getDate();
+                const firstDayIndex = d.getDay();
+                
+                const blanks = Array.from({ length: firstDayIndex }).map((_, i) => <div key={`blank-${i}`} style={{ padding: '12px' }} />);
+                
+                const days = Array.from({ length: daysInMonth }).map((_, i) => {
+                  const dayNum = i + 1;
+                  const dateStr = `${monthPrefix}-${String(dayNum).padStart(2,'0')}`;
+                  const dayData = greenDaysMap[dateStr];
+                  const isActive = selectedDateStr === dateStr;
+                  
+                  let bgColor = 'var(--bg-card)';
+                  let border = '1px solid var(--border-light)';
+                  let color = 'var(--text-muted)';
+                  
+                  if (dayData) {
+                      if (dayData.tier === 'green') {
+                         bgColor = 'var(--accent-green, #10B981)'; 
+                         color = '#fff';
+                         border = 'none';
+                      } else if (dayData.tier === 'yellow') {
+                         bgColor = 'var(--accent-gold)'; 
+                         color = 'var(--bg-surface)';
+                         border = 'none';
+                      }
+                  }
+                  
+                  if (isActive) {
+                      border = '2px solid #fff';
+                      bgColor = dayData ? bgColor : 'var(--bg-input)';
+                      color = dayData ? color : 'var(--text-main)';
+                  }
+            
+                  return (
+                     <button 
+                       key={dateStr}
+                       onClick={() => dayData ? handleDateClick(dateStr) : null}
+                       disabled={!dayData}
+                       style={{
+                          width: '100%', aspectRatio: '1', borderRadius: '8px', border, background: bgColor, color,
+                          cursor: dayData ? 'pointer' : 'default', padding: '0',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontWeight: dayData ? 'bold' : 'normal', fontSize: '15px',
+                          transition: 'all 0.2s',
+                          boxShadow: isActive ? '0 0 12px rgba(255,255,255,0.4)' : (dayData ? '0 2px 4px rgba(0,0,0,0.2)' : 'none'),
+                          opacity: dayData ? 1 : 0.3
+                       }}
+                       title={dayData ? `Score: ${dayData.score}` : undefined}
+                     >
+                       {dayNum}
+                     </button>
+                  )
+                });
+            
+                const gridCells = [...blanks, ...days];
+            
+                return (
+                   <div style={{ background: 'var(--bg-surface)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                         <button onClick={() => setMonthOffset(m => Math.max(0, m - 1))} disabled={monthOffset === 0} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', color: monthOffset === 0 ? 'var(--text-muted)' : 'var(--accent-gold)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: monthOffset === 0 ? 'default' : 'pointer', transition: 'all 0.2s' }}>{"<"}</button>
+                         <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{t(mName, lang)} {yr}</h3>
+                         <button onClick={() => setMonthOffset(m => Math.min(11, m + 1))} disabled={monthOffset === 11} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', color: monthOffset === 11 ? 'var(--text-muted)' : 'var(--accent-gold)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: monthOffset === 11 ? 'default' : 'pointer', transition: 'all 0.2s' }}>{">"}</button>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', textAlign: 'center', marginBottom: '12px' }}>
+                         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(w => (
+                             <strong key={w} style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{t(w, lang)}</strong>
+                         ))}
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px' }}>
+                         {gridCells}
+                      </div>
+                      
+                      <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '24px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-green, #10B981)' }}></div> 
+                             {t("Highly Auspicious", lang)}
+                          </span>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-gold)' }}></div> 
+                             {t("Favorable", lang)}
+                          </span>
+                      </div>
+                   </div>
+                );
+            })()}
+         </div>
       )}
 
       {selectedDateStr && aiAnalysis && (
