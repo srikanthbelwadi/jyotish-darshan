@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MuhuratPlanner from './MuhuratPlanner.jsx';
 
 // ==========================================
 // 1. TRADITIONAL TRUTH: 24 PILLARS & 96+ OPTIONS
@@ -893,6 +894,8 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
         </button>
       </div>
       <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} t={t} lang={lang} partnerKundali={partnerKundali} user={user} onRequireLogin={onRequireLogin} />
+
+      <MuhuratPlanner kundali={K} partnerData={partnerKundali} t={t} lang={lang} user={user} onRequireLogin={onRequireLogin} UniversalLoader={UniversalLoader} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
         {Object.entries(PILLAR_DATA).map(([key, data]) => (
