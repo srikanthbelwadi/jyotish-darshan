@@ -239,6 +239,7 @@ const UniversalLoader = () => (
 // ==========================================
 
 const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, user, onRequireLogin }) => {
+  const [visible, setVisible] = React.useState(true);
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
 
   const [cache, setCache] = React.useState({});
@@ -340,8 +341,11 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
   const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\\s+/g, '_') || 'default';
   const activeCacheKey = `jyotish_oracle_${profileId}_${activeTime}_${lang}`;
 
+  if (!visible) return null;
+
   return (
     <div className="mobile-hero-padding" style={{ background: 'var(--bg-input)', backgroundImage: 'radial-gradient(var(--bg-input) 20%, transparent 20%), radial-gradient(var(--bg-input) 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid var(--border-light)', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px var(--bg-surface), 0 10px 30px rgba(0,0,0,0.5)' }}>
+      <button onClick={() => setVisible(false)} style={{ position: 'absolute', top: '24px', right: '24px', background: 'transparent', border: 'none', color: 'var(--accent-gold)', fontSize: '28px', cursor: 'pointer', zIndex: 20 }} title={t("Dismiss", lang)}>×</button>
       <div style={{ position: 'absolute', top: '50%', right: '-5%', transform: 'translateY(-50%)', width: '300px', height: '300px', border: '5px dashed var(--border-light)', borderRadius: '50%', animation: 'spin 120s linear infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
          <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>

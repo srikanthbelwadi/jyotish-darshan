@@ -26,7 +26,8 @@ const EVENTS = [
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, onRequireLogin, UniversalLoader }) {
-  const [selectedEvent, setSelectedEvent] = useState(EVENTS[7]); // Vivaha Default
+  const [visible, setVisible] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState("");
   const [calculating, setCalculating] = useState(false);
   const [greenDaysMap, setGreenDaysMap] = useState({});
   const [selectedDateStr, setSelectedDateStr] = useState(null);
@@ -51,8 +52,8 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const COUPLE_EVENTS = ["Vivaha (Marriage)", "Sagai / Mangni (Engagement)"];
   const requiresPartner = COUPLE_EVENTS.includes(selectedEvent);
 
-  useEffect(() => {
-    if (!sweInstance || !user) return;
+  const handleGenerate = async () => {
+    if (!sweInstance || !user || !selectedEvent) return;
     
     setHasGenerated(true);
     setCalculating(true);
@@ -65,7 +66,6 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
        return;
     }
     
-    // Give UI a tick to show loader, then execute heavy WASM loop
     setTimeout(async () => {
        try {
          const nData = { ...natalData };
@@ -78,8 +78,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
          setCalculating(false);
        }
     }, 50);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sweInstance, user, selectedEvent, partnerData?.uid, partnerData?.panchang?.nakIdx]);
+  };
 
 
   const handleDateClick = async (dateStr) => {
@@ -127,6 +126,8 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
     }
   };
 
+  if (!visible) return null;
+
   return (
     <div style={{
       background: 'var(--bg-card)', padding: '32px', borderRadius: '16px',
@@ -134,6 +135,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
       boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
       position: 'relative', overflow: 'hidden'
     }}>
+      <button onClick={() => setVisible(false)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '24px', cursor: 'pointer', zIndex: 20 }} title={t("Dismiss", lang)}>×</button>
 
       <h3 style={{ margin: '0 0 4px', fontSize: '24px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>
         {t("Auspicious Muhurat", lang)}
@@ -154,20 +156,33 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
       
       <div style={{ marginBottom: '24px' }}>
         <p style={{ margin: '0 0 8px', color: 'var(--text-muted)', fontSize: '14px' }}>{t("Select an Event to cast electional chart:", lang)}</p>
-        <select 
-          value={selectedEvent} 
-          onChange={e => {
-             setSelectedEvent(e.target.value);
-             setHasGenerated(false);
-          }}
-          style={{
-            width: '100%', padding: '12px 16px', background: 'var(--bg-input)', border: '1px solid var(--border-light)',
-            color: 'var(--text-main)', borderRadius: '8px', fontSize: '16px', outline: 'none', cursor: 'pointer',
-            marginBottom: '16px'
-          }}
-        >
-          {EVENTS.map(ev => <option key={ev} value={ev}>{t(ev, lang)}</option>)}
-        </select>
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+           <select 
+             value={selectedEvent} 
+             onChange={e => {
+                setSelectedEvent(e.target.value);
+                setHasGenerated(false);
+             }}
+             style={{
+               flex: 1, padding: '12px 16px', background: 'var(--bg-input)', border: '1px solid var(--border-light)',
+               color: 'var(--text-main)', borderRadius: '8px', fontSize: '16px', outline: 'none', cursor: 'pointer'
+             }}
+           >
+             <option value="" disabled>{t("Select Live Event..", lang)}</option>
+             {EVENTS.map(ev => <option key={ev} value={ev}>{t(ev, lang)}</option>)}
+           </select>
+           <button 
+              onClick={handleGenerate}
+              disabled={!sweInstance || !selectedEvent}
+              style={{
+                 padding: '0 24px', background: 'var(--accent-gold)', color: '#000',
+                 border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold',
+                 cursor: (sweInstance && selectedEvent) ? 'pointer' : 'not-allowed', boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)', transition: 'all 0.2s'
+              }}
+           >
+              {t("Go", lang)}
+           </button>
+        </div>
       </div>
 
       {hasGenerated && (
