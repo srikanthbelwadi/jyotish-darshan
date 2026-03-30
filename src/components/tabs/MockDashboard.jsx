@@ -244,6 +244,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
   const [cache, setCache] = React.useState({});
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
+  const [isMinimized, setIsMinimized] = React.useState(false);
 
   const fetchOracle = React.useCallback(async (forceRegenerate = false) => {
     if (!K) return;
@@ -271,6 +272,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
 
     setLoading(true);
     setError(null);
+    setIsMinimized(false);
 
     try {
       const res = await fetch('/api/oracle', {
@@ -351,7 +353,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
         {/* Desktop Buttons */}
         <div className="desktop-timescale-btns" style={{ gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
           {timescales.map(ts => (
-            <button key={ts} onClick={() => setActiveTime(ts)} style={{ background: activeTime === ts ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === ts ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t(ts)}</button>
+            <button key={ts} onClick={() => { setActiveTime(ts); setIsMinimized(false); }} style={{ background: activeTime === ts ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === ts ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t(ts)}</button>
           ))}
         </div>
 
@@ -359,7 +361,7 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
         <select 
           className="mobile-timescale-select" 
           value={activeTime} 
-          onChange={(e) => setActiveTime(e.target.value)}
+          onChange={(e) => { setActiveTime(e.target.value); setIsMinimized(false); }}
         >
           {timescales.map(ts => (
             <option key={ts} value={ts}>{t(ts)}</option>
@@ -580,6 +582,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
   const [pathwayData, setPathwayData] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
+  const [isMinimized, setIsMinimized] = React.useState(false);
 
   React.useEffect(() => {
     fetchPathway(false);
@@ -609,6 +612,7 @@ const InteractionGateway = ({ targetPillar, onSelect, K, partnerKundali, t, lang
 
     setLoading(true);
     setError(null);
+    setIsMinimized(false);
     try {
       const res = await fetch('/api/pathway', {
         method: 'POST',
