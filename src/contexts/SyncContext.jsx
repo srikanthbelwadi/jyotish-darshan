@@ -51,7 +51,7 @@ export const SyncProvider = ({ children }) => {
             if (cloudProfiles && cloudProfiles.length > 0) {
                const newlyMergedCount = newProfiles.length - prev.length;
                if (newlyMergedCount > 0) {
-                 setSyncToast(`☁️ Securely federated ${newlyMergedCount} offline profile(s) into your Cloud Vault.`);
+                 setSyncToast(`☁️ Securely synchronized your Cloud Vault.`);
                  setTimeout(() => setSyncToast(null), 5000);
                }
             }
