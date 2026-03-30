@@ -77,34 +77,6 @@ export default function AuthModal({ onLogin, onClose, lang, t }) {
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style={{width: 18, height: 18}} />
             Continue with Google
           </button>
-
-          <button 
-            onClick={() => onLogin({ name: 'Seeker', method: 'email' })}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-              background: 'transparent', color: 'var(--text-main, #fff)',
-              border: '1px solid var(--border-light, #444)', padding: '14px', borderRadius: '8px',
-              fontSize: 15, fontWeight: 500, cursor: 'pointer',
-              transition: 'all 0.2s'
-            }}
-          >
-            <span style={{fontSize: 18}}>✉</span>
-            Continue with Email
-          </button>
-
-          <button 
-            onClick={() => onLogin({ name: 'Seeker', method: 'mobile' })}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-              background: 'transparent', color: 'var(--text-main, #fff)',
-              border: '1px solid var(--border-light, #444)', padding: '14px', borderRadius: '8px',
-              fontSize: 15, fontWeight: 500, cursor: 'pointer',
-              transition: 'all 0.2s'
-            }}
-          >
-            <span style={{fontSize: 18}}>📱</span>
-            Continue with Mobile
-          </button>
         </div>
 
         <p style={{ textAlign: 'center', color: 'var(--text-muted, #777)', fontSize: 12, marginTop: 32 }}>
