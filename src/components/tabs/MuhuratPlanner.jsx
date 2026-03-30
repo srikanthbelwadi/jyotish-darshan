@@ -371,9 +371,9 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                 borderLeft: '4px solid var(--accent-gold)', fontSize: '14px', lineHeight: 1.6
              }}>
                 <div style={{ display: 'flex', gap: '24px', marginBottom: '16px', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
-                   <div><strong>{t("Transit Nakshatra:", lang)}</strong> {greenDaysMap[selectedDateStr].nakshatra}</div>
-                   <div><strong>{t("Transit Tithi:", lang)}</strong> {greenDaysMap[selectedDateStr].tithi}</div>
-                   <div><strong>{t("Hourly Ascendant:", lang)}</strong> {aiAnalysis.lagnaSign}</div>
+                   <div><strong>{t("Transit Nakshatra:", lang)}</strong> {t(greenDaysMap[selectedDateStr].nakshatra, lang)}</div>
+                   <div><strong>{t("Transit Tithi:", lang)}</strong> {t(greenDaysMap[selectedDateStr].tithi, lang)}</div>
+                   <div><strong>{t("Hourly Ascendant:", lang)}</strong> {t(aiAnalysis.lagnaSign, lang)}</div>
                 </div>
                 
                 <div style={{ color: 'var(--text-main)' }}>
@@ -382,7 +382,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                          {UniversalLoader ? <UniversalLoader /> : <span style={{ color: 'var(--accent-gold)' }}>{t("Astrologer analyzing alignment...", lang)}</span>}
                       </div>
                    ) : aiAnalysis.error ? (
-                      <span style={{ color: '#ef4444' }}>{aiAnalysis.error}</span>
+                      <span style={{ color: '#ef4444' }}>{t("Failed to fetch LLM analysis.", lang)}</span>
                    ) : (
                       <div style={{ fontFamily: 'serif', fontSize: '14px' }} dangerouslySetInnerHTML={{ __html: aiAnalysis.text?.replace(/\n/g, '<br/>') || '' }} />
                    )}
