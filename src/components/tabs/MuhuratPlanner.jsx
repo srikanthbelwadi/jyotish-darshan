@@ -95,6 +95,10 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
     
     setAiAnalysis({ loading: true, timeBlock: timeBlockStr, lagnaSign: medLagna });
     
+    setTimeout(() => {
+       document.getElementById('muhurat-analysis-scroll-target')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+    
     try {
       const gDay = greenDaysMap[dateStr];
       const payload = {
@@ -349,7 +353,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
       )}
 
       {selectedDateStr && aiAnalysis && (
-         <div style={{
+         <div id="muhurat-analysis-scroll-target" style={{
             marginTop: '24px', background: 'var(--bg-input)', padding: '24px', 
             borderRadius: '12px', border: '1px solid var(--accent-gold)',
             animation: 'fadeIn 0.3s ease'
