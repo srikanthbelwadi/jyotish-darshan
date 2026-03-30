@@ -34,6 +34,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [hasGenerated, setHasGenerated] = useState(false);
   const [monthOffset, setMonthOffset] = useState(0);
+  const [isMinimized, setIsMinimized] = useState(false);
   
   const sweInstance = getSwe();
 
@@ -58,6 +59,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
     
     setHasGenerated(true);
     setCalculating(true);
+    setIsMinimized(false);
     setSelectedDateStr(null);
     setAiAnalysis(null);
     
@@ -171,7 +173,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                color: 'var(--text-main)', borderRadius: '8px', fontSize: '16px', outline: 'none', cursor: 'pointer'
              }}
            >
-             <option value="" disabled>{t("Select Live Event..", lang)}</option>
+             <option value="" disabled>{t("Select Life Event..", lang)}</option>
              {EVENTS.map(ev => <option key={ev} value={ev}>{t(ev, lang)}</option>)}
            </select>
            <button 
@@ -187,27 +189,29 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
            </button>
            {hasGenerated && (
              <button
-                onClick={() => {
-                   setHasGenerated(false);
-                   setSelectedDateStr(null);
-                   setAiAnalysis(null);
-                }}
+                onClick={() => setIsMinimized(!isMinimized)}
                 style={{
                    padding: '0 16px', background: 'transparent', color: 'var(--text-muted)',
-                   border: '2px dashed rgba(239, 68, 68, 0.4)', borderRadius: '8px', fontSize: '18px',
+                   border: '2px dashed var(--border-light)', borderRadius: '8px', fontSize: '18px',
                    cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center'
                 }}
-                title={t("Minimize Results", lang)}
-                onMouseOver={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = '#ef4444'; e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; }}
-                onMouseOut={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)'; e.currentTarget.style.background = 'transparent'; }}
+                title={isMinimized ? t("Expand Results", lang) : t("Minimize Results", lang)}
+                onMouseOver={e => { e.currentTarget.style.color = 'var(--text-main)'; e.currentTarget.style.background = 'rgba(212, 175, 55, 0.1)'; e.currentTarget.style.borderColor = 'var(--accent-gold)'; }}
+                onMouseOut={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
              >
-                ✕
+                {isMinimized ? '+' : '−'}
              </button>
            )}
         </div>
       </div>
 
-      {hasGenerated && (
+      {hasGenerated && isMinimized && (
+         <div style={{ padding: '24px', background: 'var(--bg-input)', border: '1px dashed var(--border-light)', borderRadius: '8px', textAlign: 'center', animation: 'fadeIn 0.3s ease' }}>
+            <p style={{ margin: 0, color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', fontSize: '16px' }}>{t('Muhurat Scan Minimized', lang)}</p>
+         </div>
+      )}
+
+      {hasGenerated && !isMinimized && (
         <>
           {requiresPartner && !pData ? (
              <button 

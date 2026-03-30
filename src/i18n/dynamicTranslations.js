@@ -187,7 +187,13 @@ export const DYNAMIC_STRINGS = {
     'revealLifePathDesc': 'Reveal Life dimensions of Dharma, Wealth, Health, and Relationships through precise Shastric Pathways.',
     'revealKundaliTitle': 'Reveal Kundali',
     'revealKundaliDesc': 'Dive into your complete Parashari D1 matrix with planetary strengths, dashas, and traditional astrometrics.',
-    'Authenticate to Reveal ➔': 'Authenticate to Reveal ➔'
+    'Authenticate to Reveal ➔': 'Authenticate to Reveal ➔',
+    'Select Life Event..': 'Select Life Event..',
+    'Expand Results': 'Expand Results',
+    'Minimize Results': 'Minimize Results',
+    'Oracle Insights Minimized': 'Oracle Insights Minimized',
+    'Muhurat Scan Minimized': 'Muhurat Scan Minimized',
+    'Consult again (Override cache)': 'Consult again (Override cache)'
   },
   hi: {
     "ov.mantraDesc_mix": "ॐ दुं दुर्गायै नमः",
@@ -375,7 +381,13 @@ export const DYNAMIC_STRINGS = {
     'revealLifePathDesc': 'सटीक शास्त्रीय मार्गों के माध्यम से धर्म, अर्थ, स्वास्थ्य और संबंधों के जीवन आयामों को प्रकट करें।',
     'revealKundaliTitle': 'कुंडली प्रकट करें',
     'revealKundaliDesc': 'ग्रहों के बल, दशाओं और पारंपरिक ज्योतिषीय मापदंडों के साथ अपने संपूर्ण पाराशरी D1 मैट्रिक्स में गहराई से जाएं।',
-    'Authenticate to Reveal ➔': 'प्रकट करने के लिए प्रमाणित करें ➔'
+    'Authenticate to Reveal ➔': 'प्रकट करने के लिए प्रमाणित करें ➔',
+    'Select Life Event..': 'जीवन घटना का चयन करें..',
+    'Expand Results': 'परिणाम विस्तृत करें',
+    'Minimize Results': 'परिणाम न्यूनतम करें',
+    'Oracle Insights Minimized': 'Oracle इनसाइट्स को न्यूनतम किया गया',
+    'Muhurat Scan Minimized': 'मुहूर्त स्कैन न्यूनतम किया गया',
+    'Consult again (Override cache)': 'पुनः परामर्श करें (कैश को ओवरराइड करें)'
   },
   kn: {
     "ov.mantraDesc_mix": "ಓಂ ದುಂ ದುರ್ಗಾಯೈ ನಮಃ",
@@ -563,7 +575,13 @@ export const DYNAMIC_STRINGS = {
     'revealLifePathDesc': 'ನಿಖರವಾದ ಶಾಸ್ತ್ರೀಯ ಮಾರ್ಗಗಳ ಮೂಲಕ ಧರ್ಮ, ಸಂಪತ್ತು, आरोग्य ಮತ್ತು ಸಂಬಂಧಗಳ ಜೀವನ ಆಯಾಮಗಳನ್ನು ಬಹಿರಂಗಪಡಿಸಿ.',
     'revealKundaliTitle': 'ಕುಂಡಲಿಯನ್ನು ದರುಶನ ಮಾಡಿ',
     'revealKundaliDesc': 'ಗ್ರಹಗಳ ಬಲ, ದಶೆಗಳು ಮತ್ತು ಸಾಂಪ್ರದಾಯಿಕ ಜ್ಯೋತಿಷ್ಯ ಅಂಕಿಅಂಶಗಳೊಂದಿಗೆ ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಪರಾಶರಿ D1 ಮ್ಯಾಟ್ರಿಕ್ಸ್‌ಗೆ ಧುಮುಕಿರಿ.',
-    'Authenticate to Reveal ➔': 'ಬಹಿರಂಗಪಡಿಸಲು ಪ್ರಮಾಣೀಕರಿಸಿ ➔'
+    'Authenticate to Reveal ➔': 'ಬಹಿರಂಗಪಡಿಸಲು ಪ್ರಮಾಣೀಕರಿಸಿ ➔',
+    'Select Life Event..': 'ಲೈಫ್ ಈವೆಂಟ್ ಆಯ್ಕೆಮಾಡಿ..',
+    'Expand Results': 'ಫಲಿತಾಂಶಗಳನ್ನು ವಿಸ್ತರಿಸಿ',
+    'Minimize Results': 'ಫಲಿತಾಂಶಗಳನ್ನು ಕಡಿಮೆ ಮಾಡಿ',
+    'Oracle Insights Minimized': 'ಒರಾಕಲ್ ಒಳನೋಟಗಳನ್ನು ಕಡಿಮೆಗೊಳಿಸಲಾಗಿದೆ',
+    'Muhurat Scan Minimized': 'ಮುಹೂರ್ತ ಸ್ಕ್ಯಾನ್ ಕಡಿಮೆಗೊಳಿಸಲಾಗಿದೆ',
+    'Consult again (Override cache)': 'ಮತ್ತೊಮ್ಮೆ ಸಮಾಲೋಚಿಸಿ (ಸಂಗ್ರಹವನ್ನು ಅತಿಕ್ರಮಿಸಿ)'
   },
   te: {
     "ov.mantraDesc_mix": "ఓం దుం దుర్గాయై నమః",
@@ -739,7 +757,13 @@ export const DYNAMIC_STRINGS = {
     'revealLifePathDesc': 'ఖచ్చితమైన శాస్త్రీయ మార్గాల ద్వారా ధర్మం, సంపద, ఆరోగ్యం మరియు సంబంధాల జీవిత కోణాలను బహిర్గతం చేయండి.',
     'revealKundaliTitle': 'కుండలిని దర్శించండి',
     'revealKundaliDesc': 'గ్రహ బలాలు, దశలు మరియు సాంప్రదాయ జ్యోతిషశాస్త్ర కొలమానాలతో మీ పూర్తి పరాశరి D1 మ్యాట్రిక్స్‌లోకి ప్రవేశించండి.',
-    'Authenticate to Reveal ➔': 'బహిర్గతం చేయడానికి ప్రమాణీకరించండి ➔'
+    'Authenticate to Reveal ➔': 'బహిర్గతం చేయడానికి ప్రమాణీకరించండి ➔',
+    'Select Life Event..': 'జీవిత ఈవెంట్‌ని ఎంచుకోండి..',
+    'Expand Results': 'ఫలితాలను విస్తరించండి',
+    'Minimize Results': 'ఫలితాలను తగ్గించండి',
+    'Oracle Insights Minimized': 'ఒరాకిల్ అంతర్దృష్టులు కనిష్టీకరించబడ్డాయి',
+    'Muhurat Scan Minimized': 'ముహూర్తం స్కాన్ కనిష్టీకరించబడింది',
+    'Consult again (Override cache)': 'మళ్లీ సంప్రదించండి (కాష్‌ని ఓవర్‌రైడ్ చేయండి)'
   },
   ta: {
     "ov.mantraDesc_mix": "ஓம் தும் துர்காயை நமஹ",
@@ -915,7 +939,13 @@ export const DYNAMIC_STRINGS = {
     'revealLifePathDesc': 'துல்லியமான சாஸ்திரிய வழிகள் மூலம் தர்மம், செல்வம், ஆரோக்கியம் மற்றும் உறவுகளின் வாழ்க்கை பரிமாணங்களை வெளிப்படுத்துங்கள்.',
     'revealKundaliTitle': 'ஜாதகத்தை வெளிப்படுத்துங்கள்',
     'revealKundaliDesc': 'கிரக பலங்கள், தசாக்கள் மற்றும் பாரம்பரிய ஜோதிட அளவீடுகளுடன் உங்கள் முழுமையான பராஷரி D1 மேட்ரிக்ஸில் மூழ்குங்கள்.',
-    'Authenticate to Reveal ➔': 'வெளிப்படுத்த அங்கீகாரம் ➔'
+    'Authenticate to Reveal ➔': 'வெளிப்படுத்த அங்கீகாரம் ➔',
+    'Select Life Event..': 'வாழ்க்கை நிகழ்வைத் தேர்ந்தெடுக்கவும்..',
+    'Expand Results': 'முடிவுகளை விரிவாக்கு',
+    'Minimize Results': 'முடிவுகளை குறைக்கவும்',
+    'Oracle Insights Minimized': 'ஆரக்கிள் நுண்ணறிவு குறைக்கப்பட்டது',
+    'Muhurat Scan Minimized': 'முஹுரத் ஸ்கேன் குறைக்கப்பட்டது',
+    'Consult again (Override cache)': 'மீண்டும் ஆலோசிக்கவும் (கேச் மேலெழுதவும்)'
   },
   mr: {
     "comp.addPartner": "+ जोडीदार जोडा",
@@ -1413,7 +1443,13 @@ export const DYNAMIC_STRINGS = {
     'revealLifePathDesc': 'കൃത്യമായ ശാസ്ത്രീയ പാതകളിലൂടെ ധർമ്മം, സമ്പത്ത്, ആരോഗ്യം, ബന്ധങ്ങൾ എന്നിവയുടെ ജീവിത മാനങ്ങൾ വെളിപ്പെടുത്തുക.',
     'revealKundaliTitle': 'കുണ്ഡലി വെളിപ്പെടുത്തുക',
     'revealKundaliDesc': 'ഗ്രഹങ്ങളുടെ ശക്തികളും ദശകളും പരമ്പരാഗത ജ്യോതിഷ അളവുകളും ഉപയോഗിച്ച് നിങ്ങളുടെ പൂർണ്ണമായ പരാശരി D1 മാട്രിക്സിലേക്ക് ആഴ്ന്നിറങ്ങുക.',
-    'Authenticate to Reveal ➔': 'വെളിപ്പെടുത്താൻ പ്രാമാണീകരിക്കുക ➔'
+    'Authenticate to Reveal ➔': 'വെളിപ്പെടുത്താൻ പ്രാമാണീകരിക്കുക ➔',
+    'Select Life Event..': 'ലൈഫ് ഇവൻ്റ് തിരഞ്ഞെടുക്കുക..',
+    'Expand Results': 'ഫലങ്ങൾ വികസിപ്പിക്കുക',
+    'Minimize Results': 'ഫലങ്ങൾ ചെറുതാക്കുക',
+    'Oracle Insights Minimized': 'ഒറാക്കിൾ ഇൻസൈറ്റുകൾ ചെറുതാക്കി',
+    'Muhurat Scan Minimized': 'മുഹൂർത്ത സ്കാൻ ചെറുതാക്കി',
+    'Consult again (Override cache)': 'വീണ്ടും പരിശോധിക്കുക (കാഷെ അസാധുവാക്കുക)'
   },
   sa: {
     "ov.mantraDesc_mix": "ॐ दुं दुर्गायै नमः",
