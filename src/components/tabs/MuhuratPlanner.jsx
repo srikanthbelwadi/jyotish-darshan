@@ -129,32 +129,34 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   if (!visible) return null;
 
   return (
-    <div style={{
-      background: 'var(--bg-card)', padding: '32px', borderRadius: '16px',
-      border: '1px solid var(--border-light)', margin: '40px 0',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-      position: 'relative', overflow: 'hidden'
-    }}>
-      <button onClick={() => setVisible(false)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '24px', cursor: 'pointer', zIndex: 20 }} title={t("Dismiss", lang)}>×</button>
+    <div className="mobile-hero-padding" style={{ background: 'var(--bg-input)', backgroundImage: 'radial-gradient(var(--bg-input) 20%, transparent 20%), radial-gradient(var(--bg-input) 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid var(--border-light)', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px var(--bg-surface), 0 10px 30px rgba(0,0,0,0.5)' }}>
+      <button onClick={() => setVisible(false)} style={{ position: 'absolute', top: '24px', right: '24px', background: 'transparent', border: 'none', color: 'var(--accent-gold)', fontSize: '28px', cursor: 'pointer', zIndex: 20 }} title={t("Dismiss", lang)}>×</button>
 
-      <h3 style={{ margin: '0 0 4px', fontSize: '24px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif' }}>
-        {t("Auspicious Muhurat", lang)}
-      </h3>
-      <p style={{ margin: '0 0 24px', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-         Suggestions for favorable timings based on classical planetary transits.
-      </p>
+      <div style={{ position: 'absolute', top: '50%', right: '-5%', transform: 'translateY(-50%)', width: '300px', height: '300px', border: '5px dashed var(--border-light)', borderRadius: '50%', animation: 'spin 120s linear infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+         <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
+      </div>
       
-      {!user && (
-        <div style={{ position: 'absolute', top: '105px', left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', borderTop: '1px solid rgba(255,215,0,0.3)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-          <div style={{ fontSize: '42px', marginBottom: '12px', filter: 'drop-shadow(0 0 10px rgba(255,215,0,0.6))' }}>🔒</div>
-          <h3 style={{ fontFamily: '"Cinzel", serif', margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('Unlock Shastric Oracle', lang)}</h3>
-          <button style={{ padding: '12px 24px', fontSize: '14px', background: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontFamily: '"Cinzel", serif', fontWeight: 'bold', letterSpacing: '1px' }} onClick={onRequireLogin}>
-            {t('Authenticate to Reveal ➔', lang)}
-          </button>
-        </div>
-      )}
-      
-      <div style={{ marginBottom: '24px' }}>
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)', textTransform: 'uppercase' }}>
+          {t("Auspicious Muhurat", lang)}
+        </h2>
+        <p style={{ margin: '0 0 24px', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic', fontFamily: 'serif' }}>
+           Suggestions for favorable timings based on classical planetary transits.
+        </p>
+
+        <div className="mobile-oracle-box" style={{ background: 'var(--bg-surface)', position: 'relative', padding: '24px', borderTop: '4px solid #ffd700', minHeight: '180px' }}>
+          
+          {!user && (
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+              <div style={{ fontSize: '42px', marginBottom: '12px', filter: 'drop-shadow(0 0 10px rgba(255,215,0,0.6))' }}>🔒</div>
+              <h3 style={{ fontFamily: '"Cinzel", serif', margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('Unlock Shastric Oracle', lang)}</h3>
+              <button style={{ padding: '12px 24px', fontSize: '14px', background: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontFamily: '"Cinzel", serif', fontWeight: 'bold', letterSpacing: '1px' }} onClick={onRequireLogin}>
+                {t('Authenticate to Reveal ➔', lang)}
+              </button>
+            </div>
+          )}
+          
+          <div style={{ marginBottom: '24px' }}>
         <p style={{ margin: '0 0 8px', color: 'var(--text-muted)', fontSize: '14px' }}>{t("Select an Event to cast electional chart:", lang)}</p>
         <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
            <select 
@@ -294,14 +296,14 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                    ) : aiAnalysis.error ? (
                       <span style={{ color: '#ef4444' }}>{aiAnalysis.error}</span>
                    ) : (
-                      <div style={{ fontFamily: 'serif', fontSize: '16px' }} dangerouslySetInnerHTML={{ __html: aiAnalysis.text?.replace(/\n/g, '<br/>') || '' }} />
+                      <div style={{ fontFamily: 'serif', fontSize: '14px' }} dangerouslySetInnerHTML={{ __html: aiAnalysis.text?.replace(/\n/g, '<br/>') || '' }} />
                    )}
-                </div>
-             </div>
-         </div>
-      )}
-        </>
-      )}
+                 </div>
+              </div>
+          </div>
+       )}
+        </div>
+      </div>
     </div>
   );
 }
