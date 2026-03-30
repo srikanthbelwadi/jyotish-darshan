@@ -36,14 +36,14 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const sweInstance = getSwe();
 
   const natalData = {
-    moonRashi: kundali.planets.find(p => p.key === 'moon')?.sign,
+    moonRashi: kundali.planets.find(p => p.key === 'moon')?.rashi,
     nakshatra: kundali.panchang.nakIdx, // generic index representation 0-26
     lagnaRashi: kundali.lagna?.rashi
   };
   
   // Quick safety parse for the partner if it is synastry mode:
   const pData = partnerData ? {
-    moonRashi: partnerData.planets?.find(p => p.key === 'moon')?.sign,
+    moonRashi: partnerData.planets?.find(p => p.key === 'moon')?.rashi,
     nakshatra: partnerData.panchang?.nakIdx,
     lagnaRashi: partnerData.lagna?.rashi
   } : null;
@@ -66,11 +66,11 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
     }
     
     // Give UI a tick to show loader, then execute heavy WASM loop
-    setTimeout(() => {
+    setTimeout(async () => {
        try {
          const nData = { ...natalData };
          const pDataLocal = pData ? { ...pData } : null;
-         const dMap = generateMuhuratCalendar(sweInstance, selectedEvent, nData, pDataLocal, 365);
+         const dMap = await generateMuhuratCalendar(sweInstance, selectedEvent, nData, pDataLocal, 365);
          setGreenDaysMap(dMap);
        } catch (e) {
          console.error("Muhurat calculation failed:", e);
