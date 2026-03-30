@@ -130,8 +130,6 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
 
   return (
     <div className="mobile-hero-padding" style={{ background: 'var(--bg-input)', backgroundImage: 'radial-gradient(var(--bg-input) 20%, transparent 20%), radial-gradient(var(--bg-input) 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid var(--border-light)', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px var(--bg-surface), 0 10px 30px rgba(0,0,0,0.5)' }}>
-      <button onClick={() => setVisible(false)} style={{ position: 'absolute', top: '24px', right: '24px', background: 'transparent', border: 'none', color: 'var(--accent-gold)', fontSize: '28px', cursor: 'pointer', zIndex: 20 }} title={t("Dismiss", lang)}>×</button>
-
       <div style={{ position: 'absolute', top: '50%', right: '-5%', transform: 'translateY(-50%)', width: '300px', height: '300px', border: '5px dashed var(--border-light)', borderRadius: '50%', animation: 'spin 120s linear infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
          <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>
@@ -184,6 +182,25 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
            >
               {t("Go", lang)}
            </button>
+           {hasGenerated && (
+             <button
+                onClick={() => {
+                   setHasGenerated(false);
+                   setSelectedDateStr(null);
+                   setAiAnalysis(null);
+                }}
+                style={{
+                   padding: '0 16px', background: 'transparent', color: 'var(--text-muted)',
+                   border: '2px dashed rgba(239, 68, 68, 0.4)', borderRadius: '8px', fontSize: '18px',
+                   cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center'
+                }}
+                title={t("Minimize Results", lang)}
+                onMouseOver={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = '#ef4444'; e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; }}
+                onMouseOut={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)'; e.currentTarget.style.background = 'transparent'; }}
+             >
+                ✕
+             </button>
+           )}
         </div>
       </div>
 

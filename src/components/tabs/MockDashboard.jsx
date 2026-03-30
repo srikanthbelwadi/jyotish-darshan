@@ -239,7 +239,6 @@ const UniversalLoader = () => (
 // ==========================================
 
 const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, user, onRequireLogin }) => {
-  const [visible, setVisible] = React.useState(true);
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
 
   const [cache, setCache] = React.useState({});
@@ -341,11 +340,8 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
   const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\\s+/g, '_') || 'default';
   const activeCacheKey = `jyotish_oracle_${profileId}_${activeTime}_${lang}`;
 
-  if (!visible) return null;
-
   return (
     <div className="mobile-hero-padding" style={{ background: 'var(--bg-input)', backgroundImage: 'radial-gradient(var(--bg-input) 20%, transparent 20%), radial-gradient(var(--bg-input) 20%, transparent 20%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 10px 10px', padding: '50px', borderRadius: '4px', border: '2px solid var(--border-light)', marginBottom: '32px', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 50px var(--bg-surface), 0 10px 30px rgba(0,0,0,0.5)' }}>
-      <button onClick={() => setVisible(false)} style={{ position: 'absolute', top: '24px', right: '24px', background: 'transparent', border: 'none', color: 'var(--accent-gold)', fontSize: '28px', cursor: 'pointer', zIndex: 20 }} title={t("Dismiss", lang)}>×</button>
       <div style={{ position: 'absolute', top: '50%', right: '-5%', transform: 'translateY(-50%)', width: '300px', height: '300px', border: '5px dashed var(--border-light)', borderRadius: '50%', animation: 'spin 120s linear infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
          <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>
@@ -386,15 +382,26 @@ const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, us
           ) : (
              <div style={{ position: 'relative', width: '100%', minHeight: '50px' }}>
                {cache[activeCacheKey] && (
-                 <button 
-                   onClick={() => fetchOracle(true)}
-                   title={t('Consult again (Override cache)')}
-                   style={{ position: 'absolute', top: '16px', right: '16px', background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '18px', cursor: 'pointer', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease', width: '36px', height: '36px', zIndex: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}
-                   onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.1)'; e.currentTarget.style.transform = 'rotate(180deg)'; e.currentTarget.style.color = 'var(--accent-gold)'; e.currentTarget.style.borderColor = 'var(--accent-gold)'; }}
-                   onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.transform = 'rotate(0deg)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
-                 >
-                   ⟳
-                 </button>
+                 <>
+                   <button 
+                     onClick={() => setActiveTime('')}
+                     title={t('Minimize Results', lang)}
+                     style={{ position: 'absolute', top: '16px', right: '16px', background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '18px', cursor: 'pointer', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease', width: '36px', height: '36px', zIndex: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}
+                     onMouseOver={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = '#ef4444'; }}
+                     onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
+                   >
+                     ✕
+                   </button>
+                   <button 
+                     onClick={() => fetchOracle(true)}
+                     title={t('Consult again (Override cache)', lang)}
+                     style={{ position: 'absolute', top: '16px', right: '64px', background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '18px', cursor: 'pointer', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease', width: '36px', height: '36px', zIndex: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}
+                     onMouseOver={e => { e.currentTarget.style.background = 'rgba(212,175,55,0.1)'; e.currentTarget.style.transform = 'rotate(180deg)'; e.currentTarget.style.color = 'var(--accent-gold)'; e.currentTarget.style.borderColor = 'var(--accent-gold)'; }}
+                     onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.transform = 'rotate(0deg)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
+                   >
+                     ⟳
+                   </button>
+                 </>
                )}
                {typeof cache[activeCacheKey] === 'string' ? (
                  <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', fontStyle: 'italic' }}>
