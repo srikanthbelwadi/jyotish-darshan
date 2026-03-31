@@ -44,6 +44,7 @@ export default function PanchangTab() {
   const { user } = useSync();
   const [currentDate, setCurrentDate] = useState(new Date());
   const detailsRef = useRef(null);
+  const scrollContainerRef = useRef(null);
   const [isMemorialModalOpen, setIsMemorialModalOpen] = useState(false);
   const [departedSouls, setDepartedSouls] = useState([]);
   const [livingProfiles, setLivingProfiles] = useState([]);
@@ -76,8 +77,14 @@ export default function PanchangTab() {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayIndex = new Date(year, month, 1).getDay();
 
-  const handlePrevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
-  const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(year, month - 1, 1));
+    if (scrollContainerRef.current) scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+  };
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(year, month + 1, 1));
+    if (scrollContainerRef.current) scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+  };
 
   const calendarDays = useMemo(() => {
     const days = [];
@@ -144,7 +151,7 @@ export default function PanchangTab() {
         <span>{t("pc.swipeHint", "Swipe calendar ↔")}</span>
       </div>
 
-      <div style={{ background: 'var(--bg-layer-1)', borderRadius: 12, border: '1px solid var(--border-light)', overflowX: 'auto', overflowY: 'hidden' }}>
+      <div ref={scrollContainerRef} style={{ background: 'var(--bg-layer-1)', borderRadius: 12, border: '1px solid var(--border-light)', overflowX: 'auto', overflowY: 'hidden', WebkitOverflowScrolling: 'touch' }}>
         <div style={{ minWidth: 600 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', background: 'var(--bg-layer-2)', borderBottom: '1px solid var(--border-light)' }}>
             {[t('pc.Sun', 'Sun'), t('pc.Mon', 'Mon'), t('pc.Tue', 'Tue'), t('pc.Wed', 'Wed'), t('pc.Thu', 'Thu'), t('pc.Fri', 'Fri'), t('pc.Sat', 'Sat')].map(day => (
@@ -171,17 +178,19 @@ export default function PanchangTab() {
                             }, 50);
                         }}
                         style={{ 
-                            minHeight: 90, 
+                            minHeight: 110, 
                             borderRight: '1px solid var(--border-light)', 
                             borderBottom: '1px solid var(--border-light)',
                             padding: 8,
-                            background: isSelected ? 'var(--bg-layer-2)' : (isToday ? 'rgba(212, 140, 50, 0.1)' : (hasPersonal ? 'rgba(109, 40, 217, 0.1)' : 'transparent')),
-                            boxShadow: isSelected ? 'inset 0 0 0 2px var(--accent-gold)' : (hasPersonal ? 'inset 0 0 0 2px #6d28d9' : 'none'),
+                            position: 'relative',
+                            background: isSelected ? 'var(--bg-layer-2)' : (isToday ? 'rgba(212, 140, 50, 0.1)' : (hasPersonal ? 'rgba(109, 40, 217, 0.25)' : 'transparent')),
+                            boxShadow: isSelected ? 'inset 0 0 0 2px var(--accent-gold)' : (hasPersonal ? 'inset 0 0 0 3px #8b5cf6' : 'none'),
                             cursor: 'pointer'
                         }}
                         className="panchang-cell-hover"
                     >
-                        <div style={{ fontWeight: 'bold', color: isToday ? 'var(--accent-gold)' : (hasPersonal ? '#a78bfa' : 'var(--text-main)'), marginBottom: 5 }}>
+                        {hasPersonal && <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 4, background: 'linear-gradient(90deg, #8b5cf6, #d8b4fe)' }} />}
+                        <div style={{ fontWeight: 'bold', color: isToday ? 'var(--accent-gold)' : (hasPersonal ? '#d8b4fe' : 'var(--text-main)'), marginBottom: 5 }}>
                             {date}
                         </div>
                         <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 5 }}>
@@ -279,8 +288,8 @@ export default function PanchangTab() {
               
               {selectedDay.panchang.festivalId && (
                 <div style={{ background: 'rgba(212, 140, 50, 0.15)', borderLeft: '3px solid var(--accent-gold)', padding: 10, borderRadius: 4, marginBottom: 10 }}>
-                  <strong style={{ color: 'var(--accent-gold)', display: 'block' }}>{selectedDay.panchang.festivalIcon || '🪔'} {t("pc.fest." + selectedDay.panchang.festivalId + ".n", selectedDay.panchang.festivalId)}</strong>
-                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t("pc.fest." + selectedDay.panchang.festivalId + ".d", "")}</span>
+                  <strong style={{ color: 'var(--accent-gold)', display: 'block', wordBreak: 'break-word', overflowWrap: 'break-word', whiteSpace: 'normal' }}>{selectedDay.panchang.festivalIcon || '🪔'} {t("pc.fest." + selectedDay.panchang.festivalId + ".n", selectedDay.panchang.festivalId)}</strong>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)', display: 'block', wordBreak: 'break-word', overflowWrap: 'break-word', marginTop: 4 }}>{t("pc.fest." + selectedDay.panchang.festivalId + ".d", "")}</span>
                 </div>
               )}
 
