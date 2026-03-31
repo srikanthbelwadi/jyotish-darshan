@@ -130,7 +130,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
     } catch(e) {
       setAiAnalysis(prev => ({
          ...prev, 
-         error: "Failed to fetch LLM analysis.", 
+         error: "Unable to generate astrological guidance.", 
          loading: false 
       }));
     }
@@ -384,7 +384,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                          {UniversalLoader ? <UniversalLoader /> : <span style={{ color: 'var(--accent-gold)' }}>{t("Astrologer analyzing alignment...", lang)}</span>}
                       </div>
                    ) : aiAnalysis.error ? (
-                      <span style={{ color: '#ef4444' }}>{t("Failed to fetch LLM analysis.", lang)}</span>
+                      <span style={{ color: '#ef4444' }}>{t("Unable to generate astrological guidance.", lang)}</span>
                    ) : (
                       <div style={{ fontFamily: 'serif', fontSize: '14px' }} dangerouslySetInnerHTML={{ __html: aiAnalysis.text?.replace(/\n/g, '<br/>') || '' }} />
                    )}

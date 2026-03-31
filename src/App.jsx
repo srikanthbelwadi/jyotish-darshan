@@ -500,7 +500,7 @@ ml:{
   }
 };
 
-function t(path,lang){
+function t(path, lang, defaultText){
   if (UI_STRINGS[path]) {
     const translation = UI_STRINGS[path][lang];
     if (translation) return translation;
@@ -518,7 +518,7 @@ function t(path,lang){
   if(E[path]!==undefined)return E[path];
   let e=E;
   for(const p of k){e=e?.[p];}
-  return(e!==undefined&&typeof e!=='object')?e:path;
+  return(e!==undefined&&typeof e!=='object')?e:(defaultText || path);
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2453,7 +2453,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             <MockDashboard 
               K={K} 
               lang={lang} 
-              t={(k)=>t(k,lang)} 
+              t={(k, def)=>t(k, lang, def)} 
               user={user} 
               onRequireLogin={onRequireLogin} 
               onOpenJyotishDesk={() => {

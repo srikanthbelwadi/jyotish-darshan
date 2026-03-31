@@ -103,3 +103,35 @@ export const callPathway = async (data) => {
   const result = await func(data);
   return result.data;
 };
+
+export const syncDepartedSoulsToCloud = async (userId, departedSouls) => {
+  if (!db) return false;
+  if (!Array.isArray(departedSouls) || departedSouls.length > 5) {
+    console.warn("Departed souls limit reached or invalid list.");
+    departedSouls = departedSouls.slice(0, 5); // Enforce max 5 limit
+  }
+  try {
+    const userRef = doc(db, "users", userId);
+    // Stamp entries with updatedAt if missing 
+    const stamped = departedSouls.map(p => ({ ...p, updatedAt: p.updatedAt || Date.now() }));
+    await setDoc(userRef, { lastSynced: Date.now(), departedSouls: stamped }, { merge: true });
+    return true;
+  } catch (e) {
+    console.error("Failed to sync departed souls to cloud", e);
+    return false;
+  }
+};
+
+export const fetchCloudDepartedSouls = async (userId) => {
+  if (!db) return [];
+  try {
+    const userRef = doc(db, "users", userId);
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists() && docSnap.data().departedSouls) {
+      return docSnap.data().departedSouls;
+    }
+  } catch (e) {
+    console.error("Failed to fetch departed souls from cloud", e);
+  }
+  return [];
+};

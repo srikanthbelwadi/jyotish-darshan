@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import MuhuratPlanner from './MuhuratPlanner.jsx';
+import PanchangTab from './PanchangTab.jsx';
 
 // ==========================================
 // 1. TRADITIONAL TRUTH: 24 PILLARS & 96+ OPTIONS
@@ -22,7 +23,7 @@ const PILLAR_DATA = {
     prompt: 'The D6 map exposes imbalances in the Vata, Pitta, and Kapha doshas. What anomaly requires attention?',
     },
   'muhurta': {
-    title: 'Auspicious Timing', icon: '⏳', desc: 'Panchanga Engine',
+    title: 'Auspicious Events', icon: '⏳', desc: 'Panchanga Engine',
     prompt: 'Muhurta aligns human action with divine time. What auspicious event are you planning?',
     },
   'shanti': {
@@ -902,6 +903,16 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
   }, []); 
 
   if (activeView !== 'grid') {
+    if (activeView === 'panchang') {
+      return (
+        <div id="mock-dashboard-top" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
+          <FullScreenWrapper title="🕉️ Vedic Panchang & Memorials" onBack={() => setActiveView('grid')} t={t} lang={lang}>
+            <PanchangTab />
+          </FullScreenWrapper>
+        </div>
+      );
+    }
+
     const data = PILLAR_DATA[activeView];
     return (
       <div id="mock-dashboard-top" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px' }}>
@@ -931,6 +942,18 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
       <MandalaHero activeTime={activeTime} setActiveTime={setActiveTime} K={K} t={t} lang={lang} partnerKundali={partnerKundali} user={user} onRequireLogin={onRequireLogin} />
 
       <MuhuratPlanner kundali={K} partnerData={partnerKundali} t={t} lang={lang} user={user} onRequireLogin={onRequireLogin} UniversalLoader={UniversalLoader} />
+
+      <div style={{ marginBottom: '40px', marginTop: '40px', border: '1px solid var(--accent-gold)', borderRadius: '12px', padding: '30px', background: 'var(--bg-layer-2)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 4px 15px rgba(255,215,0,0.1)' }}>
+          <h3 style={{ margin: '0 0 10px', color: 'var(--accent-gold)', fontSize: '28px', fontFamily: '"Cinzel", serif' }}>🕉️ {t("pc.title", "Personalized Drik Panchang")}</h3>
+          <p style={{ margin: '0 0 20px', color: 'var(--text-main)', fontSize: '16px' }}>{t("pc.subtitle", "Track daily Tithi, major festivals, living birthdays, and your departed loved ones' Varshika Tithi automatically.")}</p>
+          <button 
+             onClick={() => { if(!user) { onRequireLogin(); return; } setActiveView('panchang'); }} 
+             className="lux-btn" 
+             style={{ padding: '12px 24px', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}
+          >
+              {t("pc.openCal", "Open Lunar Calendar ➔")}
+          </button>
+      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
         {Object.entries(PILLAR_DATA).map(([key, data]) => (
