@@ -140,8 +140,9 @@ export default function PanchangTab() {
         </button>
       </div>
 
-      <div style={{ background: 'var(--bg-layer-1)', borderRadius: 12, border: '1px solid var(--border-light)', overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', background: 'var(--bg-layer-2)', borderBottom: '1px solid var(--border-light)' }}>
+      <div style={{ background: 'var(--bg-layer-1)', borderRadius: 12, border: '1px solid var(--border-light)', overflowX: 'auto', overflowY: 'hidden' }}>
+        <div style={{ minWidth: 600 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', background: 'var(--bg-layer-2)', borderBottom: '1px solid var(--border-light)' }}>
             {[t('pc.Sun', 'Sun'), t('pc.Mon', 'Mon'), t('pc.Tue', 'Tue'), t('pc.Wed', 'Wed'), t('pc.Thu', 'Thu'), t('pc.Fri', 'Fri'), t('pc.Sat', 'Sat')].map(day => (
                 <div key={day} style={{ padding: 12, textAlign: 'center', fontWeight: 'bold', color: 'var(--text-muted)', fontSize: 13 }}>{day}</div>
             ))}
@@ -196,6 +197,7 @@ export default function PanchangTab() {
                     </div>
                 );
             })}
+        </div>
         </div>
       </div>
 
