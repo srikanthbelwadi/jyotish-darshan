@@ -120,7 +120,7 @@ export default function PanchangTab() {
   }
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: '10px', boxSizing: 'border-box', overflowX: 'hidden' }}>
       {/* Header Controls */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 15 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
@@ -203,13 +203,13 @@ export default function PanchangTab() {
 
       {/* Massive 6-Section Detail Panel */}
       {selectedDay && (
-        <div ref={detailsRef} style={{ marginTop: 25, background: 'var(--bg-layer-1)', borderRadius: 12, padding: 25, border: '1px solid var(--border-light)' }}>
-          <h3 style={{ margin: '0 0 5px 0', color: 'var(--accent-gold)', fontSize: '22px', borderBottom: '1px solid var(--border-light)', paddingBottom: 15, display: 'flex', justifyContent: 'space-between' }}>
+        <div ref={detailsRef} style={{ marginTop: 25, background: 'var(--bg-layer-1)', borderRadius: 12, padding: '15px', border: '1px solid var(--border-light)', boxSizing: 'border-box' }}>
+          <h3 style={{ margin: '0 0 5px 0', color: 'var(--accent-gold)', fontSize: '22px', borderBottom: '1px solid var(--border-light)', paddingBottom: 15, display: 'flex', flexDirection: 'column', gap: 5 }}>
             <span>{selectedDay.dateObj.toLocaleDateString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
             {!location && <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 'normal' }}>{t("pc.defaultLocation", "Using Default Location (Delhi). Enable GPS for local timings.")}</span>}
           </h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, paddingTop: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 15, paddingTop: 20 }}>
             
             {/* 1. Core Elements */}
             <div className="lux-card" style={{ padding: 15 }}>
