@@ -166,7 +166,39 @@ export default function PanchangTab() {
                 const { date, panchang, birthdays, memorials } = dayData;
                 const isToday = new Date().toDateString() === dayData.dateObj.toDateString();
                 const isSelected = selectedDay && selectedDay.dateObj.toDateString() === dayData.dateObj.toDateString();
-                const hasPersonal = birthdays.length > 0 || memorials.length > 0;
+                const hasBirthdays = birthdays.length > 0;
+                const hasMemorials = memorials.length > 0;
+
+                let personalBg = 'transparent';
+                let personalShadow = 'none';
+                let gradientBar = null;
+                let dayColor = 'var(--text-main)';
+
+                if (hasBirthdays && hasMemorials) {
+                    personalBg = 'rgba(236, 72, 153, 0.1)';
+                    personalShadow = 'inset 0 0 0 2px #ec4899';
+                    gradientBar = 'linear-gradient(90deg, #ec4899, #94a3b8)';
+                    dayColor = '#f472b6';
+                } else if (hasBirthdays) {
+                    personalBg = 'rgba(236, 72, 153, 0.15)'; // Rose pink
+                    personalShadow = 'inset 0 0 0 3px #db2777';
+                    gradientBar = 'linear-gradient(90deg, #db2777, #f472b6)';
+                    dayColor = '#f472b6';
+                } else if (hasMemorials) {
+                    personalBg = 'rgba(100, 116, 139, 0.2)'; // Slate gray
+                    personalShadow = 'inset 0 0 0 3px #64748b';
+                    gradientBar = 'linear-gradient(90deg, #475569, #94a3b8)';
+                    dayColor = '#cbd5e1';
+                }
+                
+                if (isToday) {
+                    personalBg = 'rgba(212, 140, 50, 0.1)';
+                    dayColor = 'var(--accent-gold)';
+                }
+                if (isSelected) {
+                    personalBg = 'var(--bg-layer-2)';
+                    personalShadow = 'inset 0 0 0 2px var(--accent-gold)';
+                }
 
                 return (
                     <div 
@@ -183,18 +215,18 @@ export default function PanchangTab() {
                             borderBottom: '1px solid var(--border-light)',
                             padding: 8,
                             position: 'relative',
-                            background: isSelected ? 'var(--bg-layer-2)' : (isToday ? 'rgba(212, 140, 50, 0.1)' : (hasPersonal ? 'rgba(109, 40, 217, 0.25)' : 'transparent')),
-                            boxShadow: isSelected ? 'inset 0 0 0 2px var(--accent-gold)' : (hasPersonal ? 'inset 0 0 0 3px #8b5cf6' : 'none'),
+                            background: personalBg,
+                            boxShadow: personalShadow,
                             cursor: 'pointer'
                         }}
                         className="panchang-cell-hover"
                     >
-                        {hasPersonal && <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 4, background: 'linear-gradient(90deg, #8b5cf6, #d8b4fe)' }} />}
-                        <div style={{ fontWeight: 'bold', color: isToday ? 'var(--accent-gold)' : (hasPersonal ? '#d8b4fe' : 'var(--text-main)'), marginBottom: 5 }}>
+                        {gradientBar && !isSelected && <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 4, background: gradientBar }} />}
+                        <div style={{ fontWeight: 'bold', color: dayColor, marginBottom: 5 }}>
                             {date}
                         </div>
                         <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 5 }}>
-                            {panchang.tithi} {t("pc.paksha." + panchang.paksha, panchang.paksha)}<br />
+                            {panchang.tithi} {t("pc.tithi.name." + panchang.tithi, "")} {t("pc.paksha." + panchang.paksha, panchang.paksha)}<br />
                             {t("pc.mas." + MASAS[(panchang.solarMonth - 1) % 12], MASAS[(panchang.solarMonth - 1) % 12])} • {NAKSHATRAS[panchang.nakshatraIndex % 27] ? t("pc.nak." + NAKSHATRAS[panchang.nakshatraIndex % 27], NAKSHATRAS[panchang.nakshatraIndex % 27]) : ''}
                         </div>
                         
@@ -231,7 +263,7 @@ export default function PanchangTab() {
               <h4 style={{ margin: '0 0 10px', color: 'var(--text-main)', display: 'flex', gap: 8 }}><span>1.</span> {t("pc.sec1", "The Five Core Elements")}</h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: 13, color: 'var(--text-muted)', display: 'grid', gap: 8 }}>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.vaar", "Vaar:")}</strong> {selectedDay.dateObj.toLocaleDateString(lang === 'en' ? 'en-US' : `${lang}-IN`, { weekday: 'long' })}</li>
-                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.tithi", "Tithi:")}</strong> {selectedDay.panchang.tithi} {t("pc.paksha." + selectedDay.panchang.paksha, selectedDay.panchang.paksha)}</li>
+                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.tithi", "Tithi:")}</strong> {selectedDay.panchang.tithi} {t("pc.tithi.name." + selectedDay.panchang.tithi, "")} {t("pc.paksha." + selectedDay.panchang.paksha, selectedDay.panchang.paksha)}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.nakshatra", "Nakshatra:")}</strong> {NAKSHATRAS[selectedDay.panchang.nakshatraIndex % 27] ? t("pc.nak." + NAKSHATRAS[selectedDay.panchang.nakshatraIndex % 27], NAKSHATRAS[selectedDay.panchang.nakshatraIndex % 27]) : 'Unknown'}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.yoga", "Yoga:")}</strong> {YOGAS[selectedDay.panchang.yogaIndex % 27] ? t("pc.yog." + YOGAS[selectedDay.panchang.yogaIndex % 27], YOGAS[selectedDay.panchang.yogaIndex % 27]) : 'Unknown'}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.karanas", "Karanas:")}</strong> {t("pc.kar." + getKaranaName(selectedDay.panchang.karana1), getKaranaName(selectedDay.panchang.karana1))} & {t("pc.kar." + getKaranaName(selectedDay.panchang.karana2), getKaranaName(selectedDay.panchang.karana2))}</li>
@@ -320,7 +352,7 @@ export default function PanchangTab() {
 
               {selectedDay.birthdays.length > 0 && (
                 <div style={{ background: 'rgba(109, 40, 217, 0.15)', borderLeft: '3px solid #a78bfa', padding: 10, borderRadius: 4, marginBottom: 10 }}>
-                  <strong style={{ color: '#c4b5fd', display: 'block' }}>🎂 {t("pc.livingBirthday", "Living Birthday (Tithi)")}</strong>
+                  <strong style={{ color: '#c4b5fd', display: 'block' }}>🎂 {t("pc.livingBirthday", "Birthday (Tithi)")}</strong>
                   <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{selectedDay.birthdays.map(b => b.name).join(', ')}</span>
                 </div>
               )}

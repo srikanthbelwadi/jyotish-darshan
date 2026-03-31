@@ -945,7 +945,7 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
 
       <div style={{ marginBottom: '40px', marginTop: '40px', border: '1px solid var(--accent-gold)', borderRadius: '12px', padding: '30px', background: 'var(--bg-layer-2)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 4px 15px rgba(255,215,0,0.1)' }}>
           <h3 style={{ margin: '0 0 10px', color: 'var(--accent-gold)', fontSize: '28px', fontFamily: '"Cinzel", serif' }}>🕉️ {t("pc.title", "Personalized Drik Panchang")}</h3>
-          <p style={{ margin: '0 0 20px', color: 'var(--text-main)', fontSize: '16px' }}>{t("pc.subtitle", "Track daily Tithi, major festivals, living birthdays, and your departed loved ones' Varshika Tithi automatically.")}</p>
+          <p style={{ margin: '0 0 20px', color: 'var(--text-main)', fontSize: '16px' }}>{t("pc.subtitle", "Track daily Tithi, major festivals, birthdays, and your departed loved ones' Varshika Tithi automatically.")}</p>
           <button 
              onClick={() => { if(!user) { onRequireLogin(); return; } setActiveView('panchang'); }} 
              className="lux-btn" 
