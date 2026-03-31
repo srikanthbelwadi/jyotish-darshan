@@ -140,6 +140,10 @@ export default function PanchangTab() {
         </button>
       </div>
 
+      <div style={{ display: 'flex', justifyContent: 'flex-end', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', fontStyle: 'italic' }}>
+        <span>{t("pc.swipeHint", "Swipe calendar ↔")}</span>
+      </div>
+
       <div style={{ background: 'var(--bg-layer-1)', borderRadius: 12, border: '1px solid var(--border-light)', overflowX: 'auto', overflowY: 'hidden' }}>
         <div style={{ minWidth: 600 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', background: 'var(--bg-layer-2)', borderBottom: '1px solid var(--border-light)' }}>

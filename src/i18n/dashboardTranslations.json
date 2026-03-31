@@ -625,7 +625,8 @@
     "pc.fest.holika_dahan_holi.d": "होलिका दहन/होली का पालन।",
     "Auspicious Muhurat": "शुभ मुहूर्त",
     "Select an Event to cast electional chart:": "मुहूर्त (लग्न) चार्ट देखने के लिए एक कार्य चुनें:",
-    "Select Life Event..": "शुभ कार्य चुनें.."
+    "Select Life Event..": "शुभ कार्य चुनें..",
+    "pc.swipeHint": "कैलेंडर स्वाइप करें ↔"
   },
   "te": {
     "pillar.dharma.title": "ధర్మం మరియు కర్తవ్యం",
@@ -1253,7 +1254,8 @@
     "pc.fest.holika_dahan_holi.d": "హోలికా దహన్ / హోలీ ఆచారం.",
     "Auspicious Muhurat": "శుభ ముహూర్తం",
     "Select an Event to cast electional chart:": "ముహూర్త చార్ట్ రూపొందించడానికి ఒక శుభకార్యాన్ని ఎంచుకోండి:",
-    "Select Life Event..": "శుభకార్యం ఎంచుకోండి.."
+    "Select Life Event..": "శుభకార్యం ఎంచుకోండి..",
+    "pc.swipeHint": "క్యాలెండర్‌ని జరపండి ↔"
   },
   "ta": {
     "pillar.dharma.title": "தர்மமும் கடமையும்",
@@ -1881,7 +1883,8 @@
     "pc.fest.holika_dahan_holi.d": "ஹோலிகா தஹான் / ஹோலி அனுசரிப்பு.",
     "Auspicious Muhurat": "சுப முகூர்த்தம்",
     "Select an Event to cast electional chart:": "முகூர்த்தம் கணிக்க ஒரு நிகழ்வைத் தேர்ந்தெடுக்கவும்:",
-    "Select Life Event..": "சுப நிகழ்வைத் தேர்ந்தெடுக்கவும்.."
+    "Select Life Event..": "சுப நிகழ்வைத் தேர்ந்தெடுக்கவும்..",
+    "pc.swipeHint": "நாள்காட்டியை நகர்த்தவும் ↔"
   },
   "kn": {
     "pillar.dharma.title": "ಧರ್ಮ ಮತ್ತು ಕರ್ತವ್ಯ",
@@ -2509,7 +2512,8 @@
     "pc.fest.holika_dahan_holi.d": "ಹೋಲಿಕಾ ದಹನ್ / ಹೋಳಿ ಆಚರಣೆ.",
     "Auspicious Muhurat": "ಶುಭ ಮುಹೂರ್ತ",
     "Select an Event to cast electional chart:": "ಮುಹೂರ್ತ ಚಾರ್ಟ್ ರಚಿಸಲು ಶುಭಕಾರ್ಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ:",
-    "Select Life Event..": "ಶುಭಕಾರ್ಯ ಆಯ್ಕೆಮಾಡಿ.."
+    "Select Life Event..": "ಶುಭಕಾರ್ಯ ಆಯ್ಕೆಮಾಡಿ..",
+    "pc.swipeHint": "ಕ್ಯಾಲೆಂಡರ್ ಸ್ವೈಪ್ ಮಾಡಿ ↔"
   },
   "mr": {
     "pillar.dharma.title": "धर्म आणि कर्तव्य",
@@ -3137,7 +3141,8 @@
     "pc.fest.holika_dahan_holi.d": "होलिका दहन / होळी पाळणे.",
     "Auspicious Muhurat": "शुभ मुहूर्त",
     "Select an Event to cast electional chart:": "मुहूर्त चार्ट तयार करण्यासाठी एक शुभ कार्य निवडा:",
-    "Select Life Event..": "शुभ कार्य निवडा.."
+    "Select Life Event..": "शुभ कार्य निवडा..",
+    "pc.swipeHint": "कॅलेंडर स्वाइप करा ↔"
   },
   "gu": {
     "pillar.dharma.title": "ધર્મ અને ફરજ",
@@ -3765,7 +3770,8 @@
     "pc.fest.holika_dahan_holi.d": "હોલિકા દહન / હોળીનું પાલન.",
     "Auspicious Muhurat": "શુભ મુહૂર્ત",
     "Select an Event to cast electional chart:": "મુહૂર્ત ચાર્ટ અને શુભ સમય જોવા માટે કાર્ય પસંદ કરો:",
-    "Select Life Event..": "શુભ કાર્ય પસંદ કરો.."
+    "Select Life Event..": "શુભ કાર્ય પસંદ કરો..",
+    "pc.swipeHint": "કેલેન્ડર સ્વાઇપ કરો ↔"
   },
   "bn": {
     "pillar.dharma.title": "ধর্ম ও কর্তব্য",
@@ -4393,7 +4399,8 @@
     "pc.fest.holika_dahan_holi.d": "হোলিকা দহন/হোলি পালন।",
     "Auspicious Muhurat": "শুভ মুহূর্ত",
     "Select an Event to cast electional chart:": "শুভ মুহূর্ত দেখতে একটি বিশেষ কাজ নির্বাচন করুন:",
-    "Select Life Event..": "শুভ কাজ নির্বাচন করুন.."
+    "Select Life Event..": "শুভ কাজ নির্বাচন করুন..",
+    "pc.swipeHint": "ক্যালেন্ডার সোয়াইপ করুন ↔"
   },
   "ml": {
     "pillar.dharma.title": "ധർമ്മവും കടമയും",
@@ -5021,7 +5028,8 @@
     "pc.fest.holika_dahan_holi.d": "ഹോളിക ദഹൻ / ഹോളി ആചരണം.",
     "Auspicious Muhurat": "ശുഭ മുഹൂർത്തം",
     "Select an Event to cast electional chart:": "മുഹൂർത്ത ചാർട്ട് പരിശോധിക്കാൻ ഒരു ശുഭകർമ്മം തിരഞ്ഞെടുക്കുക:",
-    "Select Life Event..": "ശുഭകർമ്മം തിരഞ്ഞെടുക്കുക.."
+    "Select Life Event..": "ശുഭകർമ്മം തിരഞ്ഞെടുക്കുക..",
+    "pc.swipeHint": "കലണ്ടർ സ്വൈപ്പ് ചെയ്യുക ↔"
   },
   "en": {
     "pc.title": "Personalized Drik Panchang",
@@ -5478,6 +5486,7 @@
     "pc.fest.bhishma_ashtami.n": "Bhishma Ashtami",
     "pc.fest.bhishma_ashtami.d": "Observance of Bhishma Ashtami.",
     "pc.fest.holika_dahan_holi.n": "Holika Dahan / Holi",
-    "pc.fest.holika_dahan_holi.d": "Observance of Holika Dahan / Holi."
+    "pc.fest.holika_dahan_holi.d": "Observance of Holika Dahan / Holi.",
+    "pc.swipeHint": "Swipe calendar ↔"
   }
 }
