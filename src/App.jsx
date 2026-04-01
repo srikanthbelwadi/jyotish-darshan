@@ -2299,6 +2299,10 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             <div style={{display:'flex', alignItems:'center', gap: 12}}>
               {!partnerKundali ? (
                   <button id="add-partner-header-btn" onClick={() => {
+                     if (!user) {
+                         onRequireLogin();
+                         return;
+                     }
                      const opening = !showPartnerForm;
                      setShowPartnerForm(opening); 
                      setIsSynastryExpanded(true);
@@ -2461,6 +2465,24 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                 window.scrollTo({top: 0, behavior: 'smooth'});
               }} 
               partnerKundali={partnerKundali}
+              onAddPartnerClick={() => {
+                 if (!user) {
+                     onRequireLogin();
+                     return;
+                 }
+                 setDashboardMode('kundali');
+                 setShowPartnerForm(true);
+                 setIsSynastryExpanded(true);
+                 setTimeout(() => {
+                   const el = document.getElementById('synastry-form-ctr');
+                   if (el) {
+                     const y = el.getBoundingClientRect().top + window.scrollY - 80;
+                     window.scrollTo({ top: y, behavior: 'smooth' });
+                   } else {
+                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                   }
+                 }, 100);
+              }}
             />
             <div style={{ height: '100px' }} className="no-print"></div> {/* spacer for sticky footer */}
             

@@ -114,8 +114,9 @@ export const SyncProvider = ({ children }) => {
     let prev = saved ? JSON.parse(saved) : [];
     if (!Array.isArray(prev)) prev = [];
     
-    // Inject immutable UUID if it doesn't exist
-    const finalId = inp.id || crypto.randomUUID();
+    // Inject immutable UUID if it doesn't exist (with safe HTTP fallback)
+    const generateId = () => typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : (Math.random().toString(36).substr(2, 9) + Date.now().toString(36));
+    const finalId = inp.id || generateId();
     const newInp = { ...inp, id: finalId, updatedAt: Date.now() };
     
     // Remove the old version matching this ID (or fallback name matching for incredibly old charts)

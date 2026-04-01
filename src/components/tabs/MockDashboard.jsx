@@ -876,7 +876,7 @@ const FullScreenWrapper = ({ title, onBack, children, t, lang }) => (
 // ==========================================
 // 3. MAIN DASHBOARD AGGREGATOR
 // ==========================================
-export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishDesk, partnerKundali }) => {
+export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishDesk, partnerKundali, onAddPartnerClick }) => {
   const [activeTime, setActiveTime] = React.useState('Today');
   const [activeView, setActiveView] = useState('grid'); 
 
@@ -952,6 +952,25 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
              style={{ padding: '12px 24px', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}
           >
               {t("pc.openCal", "Open Lunar Calendar ➔")}
+          </button>
+      </div>
+
+      <div style={{ marginBottom: '40px', border: '1px solid var(--accent-gold)', borderRadius: '12px', padding: '30px', background: 'var(--bg-layer-2)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 4px 15px rgba(255,215,0,0.1)' }}>
+          <h3 style={{ margin: '0 0 10px', color: 'var(--accent-gold)', fontSize: '28px', fontFamily: '"Cinzel", serif' }}>💞 {t("comp.title", "Companion Compatibility")}</h3>
+          <p style={{ margin: '0 0 20px', color: 'var(--text-main)', fontSize: '16px' }}>{t("comp.subtitle", "Assess celestial resonance, verify Gunas, and uncover deep astrological alignments with your partner.")}</p>
+          <button 
+             onClick={() => { 
+                 if(!user) { onRequireLogin(); return; } 
+                 if(partnerKundali && typeof onOpenJyotishDesk === 'function') {
+                    onOpenJyotishDesk();
+                 } else if (typeof onAddPartnerClick === 'function') {
+                    onAddPartnerClick();
+                 }
+             }} 
+             className="lux-btn" 
+             style={{ padding: '12px 24px', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}
+          >
+              {partnerKundali ? t("comp.view", "View Compatibility ➔") : t("comp.add", "Check Partner Compatibility ➔")}
           </button>
       </div>
 
