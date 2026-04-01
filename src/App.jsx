@@ -2145,7 +2145,7 @@ const TABS_DEF=[
   {id:'reading',label:'Expert Reading',icon:'📜'},
 ];
 
-function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceSync,onOpenTerms,onDeleteProfile}){
+function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceSync,onOpenTerms,onDeleteProfile,saveProfile}){
     React.useEffect(() => { window.scrollTo({top: 0, behavior: 'smooth'}); }, []);
     const [dashboardMode, setDashboardMode] = React.useState('kundali');
 
@@ -2316,7 +2316,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                        }, 100);
                      }
                   }} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px dashed var(--accent-gold)', padding: '6px 12px', fontSize: '12px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }} onMouseOver={e=>{e.currentTarget.style.opacity=1; e.currentTarget.style.background='rgba(212,175,55,0.1)'}} onMouseOut={e=>{e.currentTarget.style.opacity=0.8; e.currentTarget.style.background='transparent'}}>
-                    {t('comp.addP', lang) || '+ ADD PARTNER'}
+                    {t('comp.addP', lang, '+ ADD PARTNER')}
                  </button>
               ) : (
                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -2378,7 +2378,8 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                   setShowPartnerForm(false);
                   setIsSynastryExpanded(true);
                 } catch(e) { 
-                  alert("Celestial misalignment. Please verify the birth coordinates."); 
+                  console.error('Partner computation failed:', e);
+                  alert("Celestial misalignment. Please verify the birth coordinates. Details: " + String(e.message || e)); 
                   setShowPartnerForm(false);
                 } 
               }} onCancel={() => setShowPartnerForm(false)} lang={lang} t={(k)=>t(k,lang)} />
@@ -2755,7 +2756,7 @@ function App(){
       {showAuthModal && <AuthModal lang={lang} t={t} onLogin={() => setShowAuthModal(false)} onClose={() => setShowAuthModal(false)} />}
       <AppHeader user={user} syncStatus={syncStatus} syncToast={syncToast} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={logoutUser} onForceSync={forceSync} onOpenPrefs={() => setShowPrefModal(true)} />
       <DailyPanchang lang={lang} />
-      {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} onForceSync={forceSync} onDeleteProfile={setProfileToDelete} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
+      {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} onForceSync={forceSync} onDeleteProfile={setProfileToDelete} saveProfile={saveProfile} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
       <UserPreferencesModal isOpen={showPrefModal} onClose={() => setShowPrefModal(false)} />
       <ConfirmModal 
         isOpen={!!profileToDelete} 

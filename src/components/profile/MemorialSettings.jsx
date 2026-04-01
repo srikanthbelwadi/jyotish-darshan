@@ -54,7 +54,7 @@ export default function MemorialSettings({ isOpen, onClose }) {
     if (!newName || !newDate) return;
     
     const newEntry = {
-      id: crypto.randomUUID(),
+      id: (typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function') ? window.crypto.randomUUID() : (Math.random().toString(36).substr(2, 9) + Date.now().toString(36)),
       name: newName,
       date: newDate,
       time: newTime || '12:00',

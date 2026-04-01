@@ -111,11 +111,17 @@ export const SyncProvider = ({ children }) => {
 
   const saveProfile = async (inp) => {
     const saved = localStorage.getItem('jd_profiles');
-    let prev = saved ? JSON.parse(saved) : [];
-    if (!Array.isArray(prev)) prev = [];
+    let prev = [];
+    try {
+      if (saved) prev = JSON.parse(saved);
+      if (!Array.isArray(prev)) prev = [];
+    } catch (err) {
+      console.warn('Recovered corrupted jd_profiles in localStorage.');
+      prev = [];
+    }
     
     // Inject immutable UUID if it doesn't exist (with safe HTTP fallback)
-    const generateId = () => typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : (Math.random().toString(36).substr(2, 9) + Date.now().toString(36));
+    const generateId = () => (typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function') ? window.crypto.randomUUID() : (Math.random().toString(36).substr(2, 9) + Date.now().toString(36));
     const finalId = inp.id || generateId();
     const newInp = { ...inp, id: finalId, updatedAt: Date.now() };
     
