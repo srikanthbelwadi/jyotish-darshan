@@ -3,10 +3,8 @@ import { DYNAMIC_STRINGS } from './i18n/dynamicTranslations.js';
 import { UI_STRINGS } from './i18n/uiStrings.js';
 import './index.css';
 import CompatibilityMatch from './components/CompatibilityMatch.jsx';
-import { calculateMatch } from './engine/matchmaking.js';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
 import { NAKSHATRA_LORE } from './data/nakshatra_lore.js';
-import { initializeAstroEngine, getSwe } from './engine/swissephLoader.js';
 import AuthModal from './components/AuthModal.jsx';
 import { MockDashboard } from './components/tabs/MockDashboard.jsx';
 import ExpertReadingTab from './components/tabs/ExpertReadingTab.jsx';
@@ -17,358 +15,34 @@ import { useSync } from './contexts/SyncContext.jsx';
 import UserHub from './components/UserHub.jsx';
 
 // ════════════════════════════════════════════════════════════════
-// ASTRONOMY ENGINE
+// CLOUD API ADAPTER (PROTECTED)
 // ════════════════════════════════════════════════════════════════
-const DEG = Math.PI / 180;
-function norm(d){return((d%360)+360)%360}
-
-function toJD(year,month,day,hour=0,min=0,utc=0){
-  const swe = getSwe();
-  const totalMinutes = hour * 60 + min - Math.round(utc * 60);
-  let uDate = new Date(Date.UTC(year, month - 1, day, 0, totalMinutes, 0));
-  let utHour = uDate.getUTCHours() + uDate.getUTCMinutes() / 60;
-  return swe.julday(uDate.getUTCFullYear(), uDate.getUTCMonth() + 1, uDate.getUTCDate(), utHour, swe.SE_GREG_CAL);
-}
-
-function lahiri(jd){
-  const swe = getSwe();
-  return swe.SweModule.ccall('swe_get_ayanamsa_ut', 'number', ['number'], [jd]);
-}
-
-function computeAsc(jd, lat, lng){
-  const swe = getSwe();
-  const cuspsPtr = swe.SweModule._malloc(13 * 8);
-  const ascmcPtr = swe.SweModule._malloc(10 * 8);
-  swe.SweModule.ccall('swe_houses', 'number', ['number', 'number', 'number', 'number', 'pointer', 'pointer'], [jd, lat, lng, 'P'.charCodeAt(0), cuspsPtr, ascmcPtr]);
-  const asc_trop = new Float64Array(swe.SweModule.HEAPF64.buffer, ascmcPtr, 10)[0];
-  const ay = lahiri(jd);
-  swe.SweModule._free(cuspsPtr); swe.SweModule._free(ascmcPtr);
-  return norm(asc_trop - ay);
-}
-
-function allPlanets(jd){
-  const swe = getSwe();
-  const flags = swe.SEFLG_SWIEPH | swe.SEFLG_SPEED | swe.SEFLG_SIDEREAL;
+export async function fetchKundali(input, user=null, isPanchang=false) {
+  let headers = { 'Content-Type': 'application/json' };
   
-  const calc = (bodyId) => {
-    const res = swe.calc_ut(jd, bodyId, flags);
-    return { lon: norm(res[0]), spd: res[3] || 0 };
-  };
-  
-  const ay = lahiri(jd);
-  const raw = {
-    sun: calc(swe.SE_SUN),
-    moon: calc(swe.SE_MOON),
-    mars: calc(swe.SE_MARS),
-    mercury: calc(swe.SE_MERCURY),
-    jupiter: calc(swe.SE_JUPITER),
-    venus: calc(swe.SE_VENUS),
-    saturn: calc(swe.SE_SATURN),
-    rahu: calc(swe.SE_TRUE_NODE),
-  };
-  raw.ketu = { lon: norm(raw.rahu.lon + 180), spd: raw.rahu.spd };
-  
-  const sid = {};
-  for(const[k,v]of Object.entries(raw)){
-    sid[k] = { ...v, retro: v.spd < 0 };
+  if (!isPanchang && !user) {
+     throw new Error("AUTH_REQUIRED");
   }
-  
-  // combustion
-  const sunL = sid.sun.lon;
-  const thresh = { moon:12, mars:17, mercury:13, jupiter:11, venus:10, saturn:15 };
-  for(const[p,t] of Object.entries(thresh)){
-    if(sid[p]) { let d=Math.abs(sid[p].lon-sunL); if(d>180) d=360-d; sid[p].combust=d<t; }
+
+  if (user) {
+     try {
+       const token = await user.getIdToken(true);
+       headers['Authorization'] = 'Bearer ' + token;
+     } catch(e) { console.warn("Could not retrieve Firebase token"); }
   }
-  return { sid, ay };
-}
 
-// ════════════════════════════════════════════════════════════════
-// VEDIC LOGIC
-// ════════════════════════════════════════════════════════════════
-const RASHIS=['Mesha','Vrishabha','Mithuna','Karka','Simha','Kanya','Tula','Vrischika','Dhanu','Makara','Kumbha','Meena'];
-const RASHI_EN=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-const RASHI_LORD=['mars','venus','mercury','moon','sun','mercury','venus','mars','jupiter','saturn','saturn','jupiter'];
-const NAKS=[
-  'Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha',
-  'Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha',
-  'Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishtha','Shatabhisha',
-  'Purva Bhadrapada','Uttara Bhadrapada','Revati'
-];
-const NAK_LORD=['ketu','venus','sun','moon','mars','rahu','jupiter','saturn','mercury',
-  'ketu','venus','sun','moon','mars','rahu','jupiter','saturn','mercury',
-  'ketu','venus','sun','moon','mars','rahu','jupiter','saturn','mercury'];
-const ABBR={sun:'Su',moon:'Mo',mars:'Ma',mercury:'Bu',jupiter:'Gu',venus:'Sk',saturn:'Sa',rahu:'Ra',ketu:'Ke'};
-const PCOLOR={sun:'#F59E0B',moon:'#8B5CF6',mars:'#EF4444',mercury:'#10B981',jupiter:'#D97706',venus:'#EC4899',saturn:'#6366F1',rahu:'#1E3A5F',ketu:'#7C3AED'};
-const PNAME={sun:'Surya (Sun)',moon:'Chandra (Moon)',mars:'Mangal (Mars)',mercury:'Budha (Mercury)',jupiter:'Guru (Jupiter)',venus:'Shukra (Venus)',saturn:'Shani (Saturn)',rahu:'Rahu',ketu:'Ketu'};
-const DASHA_ORDER=['ketu','venus','sun','moon','mars','rahu','jupiter','saturn','mercury'];
-const DASHA_YRS={ketu:7,venus:20,sun:6,moon:10,mars:7,rahu:18,jupiter:16,saturn:19,mercury:17};
-const EXALT={sun:0,moon:1,mars:9,mercury:5,jupiter:3,venus:11,saturn:6,rahu:2,ketu:8};
-const DEBIL={sun:6,moon:7,mars:3,mercury:11,jupiter:9,venus:5,saturn:0};
-const PLANET_ORDER=['sun','moon','mars','mercury','jupiter','venus','saturn','rahu','ketu'];
-
-function rashi(lon){return Math.floor(norm(lon)/30)}
-function degInSign(lon){return norm(lon)%30}
-function fmtDeg(lon){
-  const d=norm(lon)%30,dg=Math.floor(d),mf=(d-dg)*60,mn=Math.floor(mf),sc=Math.floor((mf-mn)*60);
-  return`${dg}°${String(mn).padStart(2,'0')}'${String(sc).padStart(2,'0')}"`;
-}
-function nakshatra(lon){
-  const n=((norm(lon)/(360/27))|0);
-  const pada=((norm(lon)%(360/27))/(360/108)|0)+1;
-  return{idx:n,name:NAKS[n],lord:NAK_LORD[n],pada};
-}
-
-function dasha_calc(moonLon,jd){
-  const{idx:nIdx,name:nName,lord:nLord}=nakshatra(moonLon);
-  const posInNak=(norm(moonLon)%(360/27))/(360/27);
-  const rem=(1-posInNak)*DASHA_YRS[nLord];
-  const startIdx=DASHA_ORDER.indexOf(nLord);
-  const birth=jd2date(jd);
-  const today=new Date();
-  function addYears(d,y){const r=new Date(d);r.setTime(r.getTime()+y*365.25*86400000);return r}
-  const mahas=[];
-  let cur=new Date(birth);
-  // first partial
-  const fEnd=addYears(cur,rem);
-  mahas.push({planet:nLord,yrs:rem,start:cur,end:fEnd});
-  cur=new Date(fEnd);
-  for(let i=1;i<9;i++){
-    const p=DASHA_ORDER[(startIdx+i)%9];
-    const e=addYears(cur,DASHA_YRS[p]);
-    mahas.push({planet:p,yrs:DASHA_YRS[p],start:new Date(cur),end:e});
-    cur=new Date(e);
-  }
-  mahas.forEach(m=>{
-    m.isCurrent=today>=m.start&&today<m.end;
-    m.startStr=m.start.toISOString().slice(0,10);
-    m.endStr=m.end.toISOString().slice(0,10);
-    const mi=DASHA_ORDER.indexOf(m.planet);
-    const antars=[];
-    let ac=new Date(m.start);
-    for(let i=0;i<9;i++){
-      const ap=DASHA_ORDER[(mi+i)%9];
-      const ay=(DASHA_YRS[ap]/120)*m.yrs;
-      const ae=addYears(ac,ay);
-      antars.push({planet:ap,start:new Date(ac),end:ae,startStr:ac.toISOString().slice(0,10),endStr:ae.toISOString().slice(0,10),isCurrent:today>=ac&&today<ae});
-      ac=new Date(ae);
-    }
-    m.antars=antars;
+  const res = await fetch('/api/kundali', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(input) // Payload for calculating
   });
-  return{nakName:nName,nakLord:nLord,mahadashas:mahas,current:mahas.find(m=>m.isCurrent)||mahas[0]};
-}
-
-function jd2date(jd){
-  let z=Math.floor(jd+0.5);const f=jd+0.5-z;
-  if(z>=2299161){const a=Math.floor((z-1867216.25)/36524.25);z=z+1+a-Math.floor(a/4)}
-  const b=z+1524,c=Math.floor((b-122.1)/365.25),d=Math.floor(365.25*c),e=Math.floor((b-d)/30.6001);
-  const day=b-d-Math.floor(30.6001*e),mo=e<14?e-1:e-13,yr=mo>2?c-4716:c-4715;
-  const h=f*24;
-  return new Date(yr,mo-1,day,Math.floor(h),Math.floor((h%1)*60));
-}
-
-function yogas(pm,lagnaR){
-  const res=[];
-  const p=pm;
-  // Gaj Kesari
-  if(p.moon&&p.jupiter){
-    const d=Math.abs(p.moon.house-p.jupiter.house);
-    if([0,3,6,9].includes(d)||[0,3,6,9].includes(12-d)) {
-      res.push({
-        key: 'gajKesari', type: 'raja',
-        vars: { p1: 'moon', p2: 'jupiter', rel: d===0?'conjunct':'kendra' }
-      });
-    }
+  
+  if (res.status === 401 || res.status === 403) throw new Error("AUTH_REQUIRED");
+  if (!res.ok) {
+     const text = await res.text();
+     throw new Error(text || "Internal Astrology Server Error");
   }
-  // Budhaditya
-  if(p.sun&&p.mercury&&p.sun.rashi===p.mercury.rashi){
-    res.push({
-      key: 'budhaditya', type: 'raja',
-      vars: { p1: 'sun', p2: 'mercury', rashi: p.sun.rashi }
-    });
-  }
-  // Chandra-Mangal
-  if(p.moon&&p.mars&&p.moon.rashi===p.mars.rashi){
-    res.push({
-      key: 'chandraMangal', type: 'dhana',
-      vars: { p1: 'moon', p2: 'mars', rashi: p.moon.rashi }
-    });
-  }
-  // Pancha Mahapurusha - Sasa
-  if(p.saturn){
-    const h=p.saturn.house;
-    if([1,4,7,10].includes(h)&&(p.saturn.rashi===6||p.saturn.rashi===9||p.saturn.rashi===10)){
-      res.push({
-        key: 'sasa', type: 'raja',
-        vars: { p1: 'saturn', house: h, rashi: p.saturn.rashi, state: p.saturn.rashi===6?'exalted':'own' }
-      });
-    }
-  }
-  // Hamsa
-  if(p.jupiter){
-    const h=p.jupiter.house;
-    if([1,4,7,10].includes(h)&&(p.jupiter.rashi===3||p.jupiter.rashi===8||p.jupiter.rashi===11)){
-      res.push({
-        key: 'hamsa', type: 'raja',
-        vars: { p1: 'jupiter', house: h, rashi: p.jupiter.rashi, state: p.jupiter.rashi===3?'exalted':'own' }
-      });
-    }
-  }
-  // Ruchaka
-  if(p.mars){
-    const h=p.mars.house;
-    if([1,4,7,10].includes(h)&&(p.mars.rashi===9||p.mars.rashi===0||p.mars.rashi===7)){
-      res.push({
-        key: 'ruchaka', type: 'raja',
-        vars: { p1: 'mars', house: h, rashi: p.mars.rashi, state: p.mars.rashi===9?'exalted':'own' }
-      });
-    }
-  }
-  // Mangal Dosha (aligned with rigorous compatibility logic: Lagna, Moon, Venus + cancellations)
-  if(p.mars){
-    const fL=p.mars.house;
-    const fM=p.moon?((p.mars.rashi-p.moon.rashi+12)%12+1):0;
-    const fV=p.venus?((p.mars.rashi-p.venus.rashi+12)%12+1):0;
-    const isL=[1,4,7,8,12].includes(fL);
-    const isM=[1,4,7,8,12].includes(fM);
-    const isV=[1,4,7,8,12].includes(fV);
-    const isMan=isL||isM||isV;
-    let cancel=false;
-    let cancelReason='';
-    if(isMan){
-      if(p.mars.rashi===0&&fL===1) { cancel=true; cancelReason='Aries Lagna'; }
-      if(p.mars.rashi===7&&fL===4) { cancel=true; cancelReason='Scorpio in 4th'; }
-      if(p.mars.rashi===9&&fL===7) { cancel=true; cancelReason='Capricorn in 7th'; }
-      if(p.mars.rashi===3&&fL===8) { cancel=true; cancelReason='Gemini in 8th'; }
-    }
-    if(isMan&&!cancel){
-      const primarySource = isL ? 'Lagna' : (isM ? 'Moon' : 'Venus');
-      const primaryHouse = isL ? fL : (isM ? fM : fV);
-      res.push({
-        key: 'mangal', type: 'dosha',
-        vars: { p1: 'mars', house: primaryHouse, source: primarySource }
-      });
-    }
-  }
-  // Kaal Sarp
-  if(p.rahu&&p.ketu){
-    const ra=p.rahu.lon,ke=p.ketu.lon;
-    const mn=Math.min(ra,ke),mx=Math.max(ra,ke);
-    const all=['sun','moon','mars','mercury','jupiter','venus','saturn'];
-    const trapped=all.every(k=>p[k]&&((p[k].lon>=mn&&p[k].lon<=mx)||(p[k].lon>=mx&&p[k].lon<=mn+360)));
-    if(trapped){
-      res.push({
-        key: 'kaalSarp', type: 'dosha',
-        vars: {}
-      });
-    }
-  }
-  return res;
-}
-
-function shadbala(planets,lagnaR){
-  const res={};
-  for(const p of planets){
-    if(['rahu','ketu'].includes(p.key))continue;
-    let sthana=60;
-    if(p.exalted)sthana=150;else if(p.debil)sthana=15;else if(RASHI_LORD[p.rashi]===p.key)sthana=120;
-    const digIdeal={sun:9,mars:9,jupiter:0,moon:3,venus:3,mercury:0,saturn:6};
-    const dig=Math.max(10,60-Math.abs(p.house-1-(digIdeal[p.key]||0))*5);
-    const kala=40+Math.floor(Math.sin(p.lon*DEG)*15+15);
-    const chesta=p.retro?60:30;
-    const natStr={saturn:8.57,mars:17.14,mercury:25.71,jupiter:34.28,venus:42.85,moon:51.42,sun:60};
-    const nais=natStr[p.key]||30;
-    const drik=15+Math.floor(Math.abs(Math.sin(p.lon*0.05))*20);
-    const total=Math.round(sthana+dig+kala+chesta+nais+drik);
-    res[p.key]={planet:p.key,sthana:Math.round(sthana),dig:Math.round(dig),kala:Math.round(kala),chesta,naisargika:Math.round(nais),drik,total,cls:total>=350?'Strong':total>=250?'Moderate':'Weak'};
-  }
-  return res;
-}
-
-function ashtakavarga(planets){
-  const pks=['sun','moon','mars','mercury','jupiter','venus','saturn'];
-  const pm={};for(const p of planets)pm[p.key]=p;
-  const offsets={sun:[1,2,4,7,8,9,10,11],moon:[3,6,7,8,10,11],mars:[1,2,4,7,8,10,11],mercury:[1,3,5,6,9,10,11,12],jupiter:[1,2,3,4,7,8,10,11],venus:[1,2,3,4,5,8,9,10,11],saturn:[3,5,6,11]};
-  const BAV={};
-  for(const tp of pks){
-    BAV[tp]=new Array(12).fill(0);
-    for(const sp of [...pks,'lagna']){
-      const sr=sp==='lagna'?(pm.sun?.rashi||0):(pm[sp]?.rashi||0);
-      const offs=offsets[sp==='lagna'?'sun':sp]||[];
-      for(const o of offs)BAV[tp][(sr+o-1+12)%12]++;
-    }
-  }
-  const SAV=new Array(12).fill(0);
-  for(const p of pks)for(let i=0;i<12;i++)SAV[i]+=BAV[p][i];
-  return{BAV,SAV};
-}
-
-function panchang(sunL,moonL,jd,utcOffset){
-  const raw=((moonL-sunL+360)%360)/12;
-  const tn=Math.floor(raw)+1;
-  const paksha=tn<=15?'Shukla Paksha':'Krishna Paksha';
-  const tnames=['Pratipada','Dwitiya','Tritiya','Chaturthi','Panchami','Shashthi','Saptami','Ashtami','Navami','Dashami','Ekadashi','Dwadashi','Trayodashi','Chaturdashi','Purnima/Amavasya'];
-  const vnames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const localJd=jd+(utcOffset||0)/24;
-  const vara=vnames[(Math.floor(localJd+1.5))%7];
-  const{name:nakName}=nakshatra(moonL);
-  const ynum=Math.floor(((sunL+moonL)%360)/(360/27));
-  const yn=['Vishkambha','Priti','Ayushman','Saubhagya','Shobhana','Atiganda','Sukarma','Dhriti','Shula','Ganda','Vriddhi','Dhruva','Vyaghata','Harshana','Vajra','Siddhi','Vyatipata','Variyan','Parigha','Shiva','Siddha','Sadhya','Shubha','Shukla','Brahma','Indra','Vaidhriti'];
-  const kn=['Bava','Balava','Kaulava','Taitila','Garaja','Vanija','Vishti','Shakuni','Chatushpada','Naga','Kimstughna'];
-  const nakIdx2=nakshatra(moonL).idx;return{tithi:`${tnames[(tn-1)%15]} (${paksha})`,vara,nakshatra:nakName,yoga:yn[ynum%27],karana:kn[Math.floor(raw*2)%11],tithiIdx:(tn-1)%15,pakshaKey:tn<=15?'wax':'wan',varaIdx:(Math.floor(localJd+1.5))%7,nakIdx:nakIdx2,yogaIdx:ynum%27,karanaIdx:Math.floor(raw*2)%11};
-}
-
-function toDMS(d){const dg=Math.floor(d),m=Math.floor((d-dg)*60),s=Math.floor(((d-dg)*60-m)*60);return`${dg}°${String(m).padStart(2,'0')}'${String(s).padStart(2,'0')}"`}
-
-function computeKundali(input){
-  const{year,month,day,hour,minute,utcOffset,lat,lng}=input;
-  const jd=toJD(year,month,day,hour,minute,utcOffset);
-  const{sid,ay}=allPlanets(jd);
-  const ascTrop=computeAsc(jd,lat,lng);
-  const lagnaLon=norm(ascTrop-ay);
-  const lagnaR=rashi(lagnaLon);
-  const planets=PLANET_ORDER.map(k=>{
-    const d=sid[k];
-    const r=rashi(d.lon),dInSign=degInSign(d.lon),{idx:nIdx,name:nName,lord:nLord,pada}=nakshatra(d.lon);
-    const house=((r-lagnaR+12)%12)+1;
-    return{key:k,name:PNAME[k],lon:d.lon,rashi:r,degInSign:dInSign,degFmt:fmtDeg(d.lon),nIdx,nakshatraName:nName,nakshatraLord:nLord,pada,house,retro:d.retro||false,combust:d.combust||false,exalted:EXALT[k]===r,debil:DEBIL[k]===r};
-  });
-  // Vargottama (D9)
-  const d9Rashi=pl=>{const n=rashi(pl.lon),di=pl.degInSign,g=[0,9,6,3][n%4];return(g+Math.floor(di/(30/9)))%12};
-  planets.forEach(p=>p.vargottama=rashi(p.lon)===d9Rashi(p));
-  // Divisional charts
-  function vargas(lon,div){
-    if(div===1)return rashi(lon);
-    const s=rashi(lon),di=norm(lon)%30,ps=30/div,pn=Math.floor(di/ps);
-    if(div===9){const g=[0,9,6,3][s%4];return(g+pn)%12}
-    if(div===3){const b=[0,4,8][pn];return(s+b)%12}
-    return(s*div+pn)%12;
-  }
-  const VDIVS={D1:1,D2:2,D3:3,D4:4,D7:7,D9:9,D10:10,D12:12,D16:16,D20:20,D24:24,D27:27,D30:30,D40:40,D45:45,D60:60};
-  const divCharts={};
-  for(const[vn,dv]of Object.entries(VDIVS)){divCharts[vn]={};for(const p of planets)divCharts[vn][p.key]=vargas(p.lon,dv);}
-  const moon=planets.find(p=>p.key==='moon'),sun=planets.find(p=>p.key==='sun');
-  const pm={};for(const p of planets)pm[p.key]=p;
-  const dashaData=dasha_calc(moon.lon,jd);
-  const yogaList=yogas(pm,lagnaR);
-  const sbala=shadbala(planets,lagnaR);
-  const avarga=ashtakavarga(planets);
-  const panch=panchang(sun.lon,moon.lon,jd,input.utcOffset);
-  const T=(jd-2451545)/36525;
-  const GMST=norm(280.46061837+360.98564736629*(jd-2451545));
-  const LST=norm(GMST+lng);
-  const lh=Math.floor(LST/15),lm=Math.floor((LST/15-lh)*60);
-  const lngCorr=lng/15,noon=12-lngCorr,half=6+Math.abs(lat)*0.04;
-  const fmtT=h=>{const hh=((Math.floor(h)%24)+24)%24,mm=Math.floor((h%1)*60),ap=hh>=12?'PM':'AM';return`${hh%12||12}:${String(mm).padStart(2,'0')} ${ap}`};
-  return{input,jd,ayanamsa:ay.toFixed(4),ayanamsaDMS:toDMS(ay),lagna:{lon:lagnaLon,rashi:lagnaR,degFmt:fmtDeg(lagnaLon)},planets,divCharts,dasha:dashaData,yogas:yogaList,shadbala:sbala,ashtakavarga:avarga,panchang:panch,sunrise:fmtT(noon-half),sunset:fmtT(noon+half),lst:`${String(lh).padStart(2,'0')}h ${String(lm).padStart(2,'0')}m`};
-}
-
-// Expose core math functions for Playwright regression tests
-if (typeof window !== 'undefined') {
-  console.log("EXPOSING MATH FUNCTIONS TO WINDOW");
-  window.toJD = toJD;
-  window.allPlanets = allPlanets;
-  window.computeKundali = computeKundali;
-  console.log("VERIFICATION:", typeof window.toJD);
+  return await res.json();
 }
 
 const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
@@ -1299,7 +973,9 @@ function DailyPanchang({ lang }){
       const lat=location?location.lat:28.6139; // Loc fallback
       const lng=location?location.lng:77.2090;
       const jd=toJD(now.getUTCFullYear(),now.getUTCMonth()+1,now.getUTCDate(),utcH,utcM,0);
-      const K=computeKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng});
+      // Replaced by async fetch
+      fetchKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng}, null, true).then(K => setPanchang(K.panchang)).catch(e => console.error("Panchang load failed", e));
+      return;
       const sunSet=sunRiseSet(jd,lat,lng,utcOff);
       const dayOfWeek=now.getDay();
       const inaus=inauspiciousPeriods(sunSet.rise,sunSet.set,dayOfWeek);
@@ -1966,12 +1642,12 @@ function makeSVGChart(planets,lagnaR,size,lang='en'){
   return s+'</svg>';
 }
 
-function downloadPDF(K,lang,PK){
+async function downloadPDF(K,lang,PK,user){
   try {
 
 
   const browserNow=new Date();
-  const todayK=computeKundali({year:browserNow.getUTCFullYear(),month:browserNow.getUTCMonth()+1,day:browserNow.getUTCDate(),hour:browserNow.getUTCHours(),minute:browserNow.getUTCMinutes(),utcOffset:0,lat:K.input.lat,lng:K.input.lng});
+  const todayK=await fetchKundali({year:browserNow.getUTCFullYear(),month:browserNow.getUTCMonth()+1,day:browserNow.getUTCDate(),hour:browserNow.getUTCHours(),minute:browserNow.getUTCMinutes(),utcOffset:0,lat:K.input.lat,lng:K.input.lng}, user, true);
   const tMoon=todayK.planets.find(p=>p.key==='moon');
   const natMoon=K.planets.find(p=>p.key==='moon');
   const tJup=todayK.planets.find(p=>p.key==='jupiter');
@@ -2023,8 +1699,14 @@ function downloadPDF(K,lang,PK){
   `;
 
   // Compatibility HTML
-  if (PK) {
-    const match = calculateMatch(K, PK);
+  let match = null;
+  if (PK && user) {
+     const token = await user.getIdToken();
+     const r = await fetch('/api/synastry', { method:'POST', headers:{'Content-Type':'application/json', 'Authorization':'Bearer '+token}, body:JSON.stringify({primaryKundali:K, partnerKundali:PK})});
+     if(r.ok) match=await r.json();
+  }
+  
+  if (match) {
     const C = S;
     extraHTML += `<div class="page-break"></div><h2>${C['comp.title']||'Relationship Compatibility'} — ${match.p2.name}</h2>
     <div style="background:#FAFAF8;border:1px solid #E5D5C0;border-radius:8px;padding:16px;margin-bottom:12px;text-align:center">
@@ -2185,20 +1867,20 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
   const[isSynastryExpanded, setIsSynastryExpanded]=React.useState(true);
 
   React.useEffect(() => {
-    try {
-      if (K?.input?.partner) {
-        const pk = computeKundali(K.input.partner);
-        pk.name = K.input.partner.name;
-        setPartnerKundali(pk);
-      } else {
-        setPartnerKundali(null);
-      }
-      setShowPartnerForm(false);
-      setIsSynastryExpanded(true);
-    } catch(e) { 
-      setPartnerKundali(null); 
+    async function load() {
+       try {
+          if (K?.input?.partner) {
+            const pk = await fetchKundali(K.input.partner, user);
+            pk.name = K.input.partner.name;
+            setPartnerKundali(pk);
+          } else {
+            setPartnerKundali(null);
+          }
+          setShowPartnerForm(false);
+       } catch(e) { console.error('Error fetching partner', e); }
     }
-  }, [K]);
+    load();
+  }, [K?.input?.partner, user]);
 
 
   const{input,lagna,panchang:pan,ayanamsaDMS,planets}=K;
@@ -2236,7 +1918,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
           <button onClick={handleShare} className="lux-btn" style={{padding:'8px 16px'}}>
             ⇧ {t('share',lang)}
           </button>
-          <button onClick={()=>downloadPDF(K,lang,partnerKundali)} className="lux-btn" style={{padding:'8px 16px',background:'var(--accent-gold)',color:'#000'}}>
+          <button onClick={()=>downloadPDF(K,lang,partnerKundali,user)} className="lux-btn" style={{padding:'8px 16px',background:'var(--accent-gold)',color:'#000'}}>
             ↓ {t('download',lang)}
           </button>
         </div>
@@ -2369,9 +2051,9 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
           </button>
           {showPartnerForm && (
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', marginBottom: partnerKundali ? '24px' : '0' }}>
-              <CompatibilityInputForm onGeneratePartner={(inputParams) => { 
+              <CompatibilityInputForm onGeneratePartner={async (inputParams) => { 
                 try { 
-                  const pk = computeKundali(inputParams); 
+                  const pk = await fetchKundali(inputParams, user); 
                   pk.name = inputParams.name;
                   setPartnerKundali(pk); 
                   saveProfile({ ...K.input, partner: inputParams });
@@ -2607,9 +2289,8 @@ function App(){
 
   React.useEffect(()=>{
     let mounted = true;
-    initializeAstroEngine((pct, msg) => {
-      if(mounted){ setLoadPct(pct); setLoadMsg(msg); }
-    }).then(() => {
+    if(mounted) { setLoadPct(100); setLoadMsg('Connecting to Cosmic Engine...'); }
+    setTimeout(() => {
       if(!mounted) return;
       setEngineReady(true);
       
@@ -2624,7 +2305,9 @@ function App(){
             const validProfiles = (Array.isArray(profiles) ? profiles : []).filter(p => !p.isDeleted);
             if (validProfiles.length > 0) {
               setErr(null);
-              setKundali(computeKundali(validProfiles[0]));
+              fetchKundali(validProfiles[0], user).then(k => setKundali(k)).catch(e => {
+        if(e.message==='AUTH_REQUIRED') { setShowAuthModal(true); setKundali(null); }
+      });
               setScreen('results');
             }
           }
@@ -2639,16 +2322,24 @@ function App(){
 
   React.useEffect(() => {
     if (engineReady && syncRequestedProfile) {
-      setKundali(computeKundali(syncRequestedProfile));
+      fetchKundali(syncRequestedProfile, user).then(k => setKundali(k)).catch(e => {
+        if(e.message==='AUTH_REQUIRED') { setShowAuthModal(true); setKundali(null); }
+      });
       setScreen('results');
       clearSyncProfile();
     }
   }, [engineReady, syncRequestedProfile]);
 
-  function handleSubmit(inp){
+  async function handleSubmit(inp){
     try{
       setErr(null);
-      setKundali(computeKundali(inp));
+      try {
+        const k = await fetchKundali(inp, user);
+        setKundali(k);
+      } catch(e) {
+        if(e.message==='AUTH_REQUIRED') setShowAuthModal(true);
+        else alert("Failed to generate birth chart from celestial cloud.");
+      }
       setScreen('results');
       saveProfile(inp);
     }

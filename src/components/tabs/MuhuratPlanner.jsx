@@ -1,6 +1,34 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { generateMuhuratCalendar, getAuspiciousWindow } from '../../engine/muhuratEngine';
-import { getSwe } from '../../engine/swissephLoader';
+import { useSync } from '../../contexts/SyncContext.jsx';
+
+// ════════════════════════════════════════════════════════════════
+// CLOUD MUTATION PROXIES
+// ════════════════════════════════════════════════════════════════
+async function generateMuhuratCalendar(sweInstance, selectedEvent, nData, pDataLocal, timeframe) {
+  const payload = {
+    action: 'generateMuhuratCalendar',
+     params: {
+        baseKundali: nData, 
+        partnerKundali: pDataLocal, 
+        eventCategory: selectedEvent, 
+        lat: nData.input.lat, 
+        lng: nData.input.lng, 
+        startDate: Date.now(),
+        tzOffset: 0
+     }
+  };
+  const res = await fetch('/api/muhurat_math', { method: 'POST', body: JSON.stringify(payload), headers: {'Content-Type': 'application/json'} });
+  return await res.json();
+}
+
+async function getAuspiciousWindow(bestJd, sweInstance, lat, lng, tzOffset) {
+  const res = await fetch('/api/muhurat_math', { 
+    method: 'POST', 
+    headers: {'Content-Type': 'application/json'}, 
+    body: JSON.stringify({action: 'getAuspiciousWindow', params: {bestJd, lat, lng, tzOffset}}) 
+  });
+  return await res.json();
+}
 
 const EVENTS = [
   "Simantonnayana (Baby Shower / Godh Bharai)",

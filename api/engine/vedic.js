@@ -2,7 +2,7 @@
  * Vedic Astrology Computation Module
  * Houses, Nakshatras, Divisional Charts, Dasha, Yogas, Shadbala, Ashtakavarga, Panchang
  */
-import { NAKSHATRAS, DASHA_ORDER, DASHA_PERIODS, NAKSHATRA_DASHA_LORD, EXALTATION, DEBILITATION, YOGA_RULES, RASHIS } from './constants.js';
+import { NAKSHATRAS, DASHA_ORDER, DASHA_PERIODS, NAKSHATRA_DASHA_LORD, EXALTATION, DEBILITATION, YOGA_RULES, RASHIS, VARGA_DIVISORS } from '../../src/engine/constants.js';
 import { computePlanetPositions, computeAscendant, checkCombustion, getLahiriAyanamsa, toJulianDay } from './astronomy.js';
 
 // ─── Rashi from longitude ─────────────────────────────────────────────────────
@@ -111,12 +111,6 @@ export function computeDivisionalRashi(lon, divisor) {
   }
   return ((targetSign % 12) + 12) % 12;
 }
-
-export const VARGA_DIVISORS = {
-  D1: 1, D2: 2, D3: 3, D4: 4, D7: 7, D9: 9,
-  D10: 10, D12: 12, D16: 16, D20: 20, D24: 24,
-  D27: 27, D30: 30, D40: 40, D45: 45, D60: 60,
-};
 
 export function computeAllDivisionalCharts(planets) {
   const charts = {};

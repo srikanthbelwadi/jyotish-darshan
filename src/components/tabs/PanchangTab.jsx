@@ -3,7 +3,16 @@ import { usePreferences } from '../../contexts/PreferencesContext';
 import { useSync } from '../../contexts/SyncContext';
 import { fetchCloudDepartedSouls } from '../../firebase';
 import MemorialSettings from '../profile/MemorialSettings';
-import { computeDailyPanchang, findJanmaTithi, findVarshikaTithi, formatTime } from '../../engine/PanchangCalculator';
+function formatTime(decHours) {
+  if (!decHours || isNaN(decHours)) return "--:--";
+  let h = Math.floor(decHours);
+  let m = Math.round((decHours - h) * 60);
+  if (m === 60) { h += 1; m = 0; }
+  let ap = "AM";
+  if (h >= 12) { ap = "PM"; if (h > 12) h -= 12; }
+  if (h === 0) h = 12;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} ${ap}`;
+}
 import { DYNAMIC_STRINGS } from '../../i18n/dynamicTranslations';
 
 const SAMVATSARAS = [
@@ -86,21 +95,39 @@ export default function PanchangTab() {
     if (scrollContainerRef.current) scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
   };
 
-  const calendarDays = useMemo(() => {
-    const days = [];
-    for (let i = 0; i < firstDayIndex; i++) days.push(null);
-    const lat = location ? location.lat : 28.6139; // New Delhi fallback
-    const lng = location ? location.lng : 77.2090;
+  const [calendarDays, setCalendarDays] = useState([]);
 
-    for (let d = 1; d <= daysInMonth; d++) {
-        const dateObj = new Date(year, month, d, 12, 0, 0); 
-        const panchang = computeDailyPanchang(dateObj, lat, lng);
-        const birthdays = findJanmaTithi(panchang, livingProfiles);
-        const memorials = findVarshikaTithi(panchang, departedSouls);
-        days.push({ date: d, panchang, birthdays, memorials, dateObj });
+  useEffect(() => {
+    async function load() {
+       const lat = location ? location.lat : 28.6139; // New Delhi fallback
+       const lng = location ? location.lng : 77.2090;
+       
+       const days = [];
+       for (let i = 0; i < firstDayIndex; i++) days.push(null);
+
+       try {
+           const res = await fetch('/api/panchang', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({
+                   action: 'computeMonthlyCalendar',
+                   params: { lat, lng, daysInMonth, year, month, livingProfiles, departedSouls }
+               })
+           });
+           if (!res.ok) throw new Error('Panchang fetch failed');
+           const computedStrDays = await res.json();
+           
+           computedStrDays.forEach(d => {
+               d.dateObj = new Date(d.dateObjStr);
+               days.push(d);
+           });
+           setCalendarDays(days);
+       } catch(e) {
+           console.error('Panchang load error', e);
+       }
     }
-    return days;
-  }, [year, month, livingProfiles, departedSouls, location]);
+    load();
+  }, [year, month, livingProfiles, departedSouls, location, firstDayIndex, daysInMonth]);
 
   // Auto-select today
   useEffect(() => {

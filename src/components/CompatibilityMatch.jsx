@@ -1,15 +1,36 @@
-import React from 'react';
-import { calculateMatch } from '../engine/matchmaking.js';
+import React, { useState, useEffect } from 'react';
 import { L_NAKS, L_RASHI, localizePanchang } from '../App.jsx';
+import { useSync } from '../contexts/SyncContext.jsx';
 
 export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(x)=>x, lang }) {
+  const { user } = useSync();
+  const [match, setMatch] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function load() {
+       try {
+          const token = user ? await user.getIdToken() : '';
+          const res = await fetch('/api/synastry', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json', ...(token && {'Authorization': `Bearer ${token}`}) },
+             body: JSON.stringify({ primaryKundali, partnerKundali })
+          });
+          if(!res.ok) throw new Error("Failed to consult planetary compatibility from cloud.");
+          setMatch(await res.json());
+       } catch(e) { setError(e.message); }
+    }
+    if (primaryKundali && partnerKundali) load();
+  }, [primaryKundali, partnerKundali, user]);
+
   const txt = (key, fallback) => {
     const r = t(key, lang);
     return r === key ? (fallback || key) : r;
   };
 
-  const match = calculateMatch(primaryKundali, partnerKundali);
-  
+  if (error) return <div style={{padding: '2rem', textAlign:'center', color:'var(--dosha-red)'}}>Celestial Server Error: {error}</div>;
+  if (!match) return <div style={{padding: '2rem', textAlign:'center', color:'var(--text-muted)'}}>Consulting the cloud for cosmic synergy...</div>;
+
   const englishNakshatras = L_NAKS.en;
   const translatedNakshatras = L_NAKS[lang] || L_NAKS.en;
   const p1NakIndex = englishNakshatras.indexOf(match.p1.nakshatra);

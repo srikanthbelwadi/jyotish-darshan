@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SouthIndianChart from '../charts/SouthIndianChart.jsx';
 import NorthIndianChart from '../charts/NorthIndianChart.jsx';
-import { VARGA_DIVISORS } from '../../engine/vedic.js';
+import { VARGA_DIVISORS } from '../../engine/constants.js';
 
 const VARGA_DESCRIPTIONS = {
   D1: 'Rashi · Physical Self', D2: 'Hora · Wealth', D3: 'Drekkana · Siblings',
