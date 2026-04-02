@@ -14,8 +14,6 @@ export const SyncProvider = ({ children }) => {
 
   useEffect(() => {
     if (typeof auth === 'undefined' || !auth) return;
-    getRedirectResult(auth).catch(e => console.error('Redirect error', e));
-    getRedirectResult(auth).catch(e => console.error('Redirect error', e));
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
         setUser(u);

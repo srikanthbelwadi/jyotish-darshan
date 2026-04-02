@@ -27,6 +27,12 @@ try {
   console.error("Firebase initialization failed", e);
 }
 
+// Global invocation to unbox OAuth tokens purely ONCE across the entire app execution
+// This natively prevents 'INTERNAL ASSERTION FAILED: Pending promise was never set' inside StrictMode loops
+if (auth) {
+  getRedirectResult(auth).catch(e => console.error("Firebase Auth redirect unboxing error:", e));
+}
+
 export { auth, googleProvider, db, functions };
 
 export const syncProfileToCloud = async (userId, profiles) => {
