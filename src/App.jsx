@@ -2364,14 +2364,18 @@ function App(){
     return () => { mounted = false; };
   },[]);
 
+  const [isAutoResuming, setIsAutoResuming] = React.useState(() => !!(typeof sessionStorage !== 'undefined' && sessionStorage.getItem('pendingKundaliFetch')));
+
   async function handleSubmit(inp){
     setErr(null);
     try {
       const k = await fetchKundali(inp, user);
+      setIsAutoResuming(false);
       setKundali(k);
       setScreen('results');
       saveProfile(inp);
     } catch(e) {
+      setIsAutoResuming(false);
       console.error(e);
       if(e.message === 'AUTH_REQUIRED') {
         sessionStorage.setItem('pendingKundaliFetch', JSON.stringify(inp));
@@ -2412,7 +2416,7 @@ function App(){
 
   if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily:'serif'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
   
-  if (!engineReady || isRegenerating) {
+  if (!engineReady || isRegenerating || isAutoResuming) {
     return (
       <div style={{minHeight:'100vh',background:'var(--bg-main)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-sans)',color:'var(--text-main)',padding:20}}>
         
@@ -2464,7 +2468,7 @@ function App(){
                <div style={{height:'100%',background:'linear-gradient(90deg, var(--accent-gold), #fff)',width:`${loadPct}%`,transition:'width 0.4s ease-out'}}></div>
             )}
           </div>
-          <p style={{margin:0,fontSize:13,fontWeight:500,color:'var(--text-muted)',letterSpacing:'0.5px'}}>{loadMsg}</p>
+          <p style={{margin:0,fontSize:13,fontWeight:500,color:'var(--text-muted)',letterSpacing:'0.5px'}}>{isAutoResuming ? 'Unboxing Cosmic Profile...' : loadMsg}</p>
         </div>
         
         <style dangerouslySetInnerHTML={{__html:`
