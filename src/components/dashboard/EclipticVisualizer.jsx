@@ -25,7 +25,7 @@ export const EclipticChart = ({ hue, pillarId, t, K }) => {
        <circle cx="250" cy="250" r="190" fill="none" stroke="var(--text-muted)" strokeWidth="2" opacity="0.6" />
        <circle cx="250" cy="250" r="150" fill="none" stroke="var(--accent-gold)" strokeWidth="1" />
        
-       {RASHIS.map((rashi, i) => {
+       {RASHIS.map((rashiDefault, i) => {
          const aAngle = i * 30 * (Math.PI/180);
          const x1 = 250 + 150 * Math.cos(aAngle), y1 = 250 + 150 * Math.sin(aAngle);
          const x2 = 250 + 190 * Math.cos(aAngle), y2 = 250 + 190 * Math.sin(aAngle);
@@ -33,17 +33,19 @@ export const EclipticChart = ({ hue, pillarId, t, K }) => {
          const aMid = (i * 30 + 15) * (Math.PI/180);
          const xText = 250 + 170 * Math.cos(aMid), yText = 250 + 170 * Math.sin(aMid);
          const isRashiHighlighted = (i === rashi1 || i === rashi2);
+         const SYMBOLS = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+         const rashiStr = t(`astro.rashis.${i}`, { defaultValue: rashiDefault.split(' ')[0] }) + ' ' + SYMBOLS[i];
 
          return (
            <g key={`r-${i}`}>
              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--text-muted)" strokeWidth="1" opacity="0.5" />
              {isRashiHighlighted && <circle cx={xText} cy={yText} r="16" fill="var(--accent-gold)" opacity="0.3" filter="drop-shadow(0 0 5px #ffd700)" />}
-             <text x={xText} y={yText} fill={isRashiHighlighted ? "#fff" : "var(--text-main)"} fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" opacity={isRashiHighlighted ? 1 : 0.7} letterSpacing="0.5">{rashi}</text>
+             <text x={xText} y={yText} fill={isRashiHighlighted ? "#fff" : "var(--text-main)"} fontSize="11" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" opacity={isRashiHighlighted ? 1 : 0.7} letterSpacing="0.5">{rashiStr}</text>
            </g>
          )
        })}
 
-       {NAKSHATRAS.map((nak, i) => {
+       {NAKSHATRAS.map((nakDefault, i) => {
          const a1 = i * (360/27) * (Math.PI/180);
          const x1 = 250 + 190 * Math.cos(a1), y1 = 250 + 190 * Math.sin(a1);
          const x2 = 250 + 230 * Math.cos(a1), y2 = 250 + 230 * Math.sin(a1);
@@ -56,10 +58,12 @@ export const EclipticChart = ({ hue, pillarId, t, K }) => {
          let rot = aMidDeg;
          if (rot > 90 && rot < 270) rot += 180;
          
+         const nakStr = t(`astro.nakshatras.${i}`, { defaultValue: nakDefault });
+
          return (
            <g key={`n-${i}`}>
              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--text-main)" strokeWidth="1" strokeDasharray="2 2" opacity="0.4"/>
-             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="var(--text-muted)" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{nak}</text>
+             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="var(--text-muted)" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{nakStr.slice(0, 8)}</text>
            </g>
          )
        })}

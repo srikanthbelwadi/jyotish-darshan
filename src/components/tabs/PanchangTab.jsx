@@ -254,7 +254,7 @@ export default function PanchangTab() {
                         </div>
                         <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 5 }}>
                             {panchang.tithi} {t("pc.tithi.name." + panchang.tithi, "")} {t("pc.paksha." + panchang.paksha, panchang.paksha)}<br />
-                            {t("pc.mas." + MASAS[(panchang.solarMonth - 1) % 12], MASAS[(panchang.solarMonth - 1) % 12])} • {NAKSHATRAS[panchang.nakshatraIndex % 27] ? t("pc.nak." + NAKSHATRAS[panchang.nakshatraIndex % 27], NAKSHATRAS[panchang.nakshatraIndex % 27]) : ''}
+                            {t("astro.masas." + ((panchang.solarMonth - 1) % 12), MASAS[(panchang.solarMonth - 1) % 12])} • {NAKSHATRAS[panchang.nakshatraIndex % 27] ? t("astro.nakshatras." + (panchang.nakshatraIndex % 27), NAKSHATRAS[panchang.nakshatraIndex % 27]) : ''}
                         </div>
                         
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
@@ -291,8 +291,8 @@ export default function PanchangTab() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: 13, color: 'var(--text-muted)', display: 'grid', gap: 8 }}>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.vaar", "Vaar:")}</strong> {selectedDay.dateObj.toLocaleDateString(lang === 'en' ? 'en-US' : `${lang}-IN`, { weekday: 'long' })}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.tithi", "Tithi:")}</strong> {selectedDay.panchang.tithi} {t("pc.tithi.name." + selectedDay.panchang.tithi, "")} {t("pc.paksha." + selectedDay.panchang.paksha, selectedDay.panchang.paksha)}</li>
-                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.nakshatra", "Nakshatra:")}</strong> {NAKSHATRAS[selectedDay.panchang.nakshatraIndex % 27] ? t("pc.nak." + NAKSHATRAS[selectedDay.panchang.nakshatraIndex % 27], NAKSHATRAS[selectedDay.panchang.nakshatraIndex % 27]) : 'Unknown'}</li>
-                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.yoga", "Yoga:")}</strong> {YOGAS[selectedDay.panchang.yogaIndex % 27] ? t("pc.yog." + YOGAS[selectedDay.panchang.yogaIndex % 27], YOGAS[selectedDay.panchang.yogaIndex % 27]) : 'Unknown'}</li>
+                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.nakshatra", "Nakshatra:")}</strong> {NAKSHATRAS[selectedDay.panchang.nakshatraIndex % 27] ? t("astro.nakshatras." + (selectedDay.panchang.nakshatraIndex % 27), NAKSHATRAS[selectedDay.panchang.nakshatraIndex % 27]) : 'Unknown'}</li>
+                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.yoga", "Yoga:")}</strong> {YOGAS[selectedDay.panchang.yogaIndex % 27] ? t("astro.yogas." + (selectedDay.panchang.yogaIndex % 27), YOGAS[selectedDay.panchang.yogaIndex % 27]) : 'Unknown'}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.karanas", "Karanas:")}</strong> {t("pc.kar." + getKaranaName(selectedDay.panchang.karana1), getKaranaName(selectedDay.panchang.karana1))} & {t("pc.kar." + getKaranaName(selectedDay.panchang.karana2), getKaranaName(selectedDay.panchang.karana2))}</li>
               </ul>
             </div>
@@ -303,8 +303,8 @@ export default function PanchangTab() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: 13, color: 'var(--text-muted)', display: 'grid', gap: 8 }}>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.sunrise", "Sunrise:")}</strong> {formatTime(selectedDay.panchang.timings.rise)}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.sunset", "Sunset:")}</strong> {formatTime(selectedDay.panchang.timings.set)}</li>
-                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.sunSign", "Sun Sign:")}</strong> {t("pc.rsh." + RASHIS[selectedDay.panchang.sunSign % 12], RASHIS[selectedDay.panchang.sunSign % 12])}</li>
-                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.moonSign", "Moon Sign:")}</strong> {t("pc.rsh." + RASHIS[selectedDay.panchang.moonSign % 12], RASHIS[selectedDay.panchang.moonSign % 12])}</li>
+                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.sunSign", "Sun Sign:")}</strong> {t("astro.rashis." + (selectedDay.panchang.sunSign % 12), RASHIS[selectedDay.panchang.sunSign % 12])}</li>
+                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.moonSign", "Moon Sign:")}</strong> {t("astro.rashis." + (selectedDay.panchang.moonSign % 12), RASHIS[selectedDay.panchang.moonSign % 12])}</li>
               </ul>
             </div>
 
@@ -313,7 +313,7 @@ export default function PanchangTab() {
               <h4 style={{ margin: '0 0 10px', color: 'var(--text-main)', display: 'flex', gap: 8 }}><span>3.</span> {t("pc.sec3", "Calendar Identifiers")}</h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: 13, color: 'var(--text-muted)', display: 'grid', gap: 8 }}>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.samvat", "Samvat:")}</strong> {t("pc.samv." + getSamvatsara(year), getSamvatsara(year))}</li>
-                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.masa", "Masa:")}</strong> {t("pc.mas." + MASAS[(selectedDay.panchang.solarMonth - 1) % 12], MASAS[(selectedDay.panchang.solarMonth - 1) % 12])}</li>
+                <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.masa", "Masa:")}</strong> {t("astro.masas." + ((selectedDay.panchang.solarMonth - 1) % 12), MASAS[(selectedDay.panchang.solarMonth - 1) % 12])}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.paksha", "Paksha:")}</strong> {t("pc.paksha." + selectedDay.panchang.paksha, selectedDay.panchang.paksha)}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.ritu", "Ritu:")}</strong> {t("pc.ritu." + selectedDay.panchang.ritu, selectedDay.panchang.ritu)}</li>
                 <li><strong style={{ color: 'var(--accent-gold)' }}>{t("pc.ayana", "Ayana:")}</strong> {t("pc.ayana." + selectedDay.panchang.ayana, selectedDay.panchang.ayana)}</li>
