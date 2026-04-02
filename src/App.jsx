@@ -652,8 +652,10 @@ export function localizePanchang(pan, lang) {
   const NAK_LIST = ["Aswini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva", "Uttara", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Bhadrapada", "Revati"];
   
   let na = pan.nakshatra;
-  if (pan.nakIdx != null) { na = nA[pan.nakIdx] || na; }
-  else if (na) {
+  if (typeof na === 'number' || (typeof na === 'string' && !isNaN(na) && String(na).trim() !== '')) {
+     na = nA[Number(na)] || na;
+  } else if (pan.nakIdx != null) { na = nA[pan.nakIdx] || na; }
+  else if (na && typeof na === 'string') {
      for (let i = 0; i < NAK_LIST.length; i++) {
         if (na.includes(NAK_LIST[i])) { 
            // Best effort index derivation for exact astrological match without needing normalized fuzzy matching
@@ -665,24 +667,30 @@ export function localizePanchang(pan, lang) {
   }
 
   let yo = pan.yoga;
-  if (pan.yogaIdx != null) { yo = yA[pan.yogaIdx] || yo; }
-  else if (yo) {
+  if (typeof yo === 'number' || (typeof yo === 'string' && !isNaN(yo) && String(yo).trim() !== '')) {
+     yo = yA[Number(yo)] || yo;
+  } else if (pan.yogaIdx != null) { yo = yA[pan.yogaIdx] || yo; }
+  else if (yo && typeof yo === 'string') {
      const YOGA_LIST = ["Vishkambha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda", "Sukarma", "Dhriti", "Shula", "Ganda", "Vriddhi", "Dhruva", "Vyaghata", "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyan", "Parigha", "Shiva", "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti"];
      const idx = YOGA_LIST.findIndex(y => yo.includes(y));
      if(idx !== -1) yo = yA[idx];
   }
 
   let ka = pan.karana;
-  if (pan.karanaIdx != null) { ka = kA[pan.karanaIdx] || ka; }
-  else if (ka) {
+  if (typeof ka === 'number' || (typeof ka === 'string' && !isNaN(ka) && String(ka).trim() !== '')) {
+     ka = kA[Number(ka)] || ka;
+  } else if (pan.karanaIdx != null) { ka = kA[pan.karanaIdx] || ka; }
+  else if (ka && typeof ka === 'string') {
      const KAR_LIST = ["Bava", "Balava", "Kaulava", "Taitila", "Gara", "Vanija", "Vishti", "Kintughna", "Shakuni", "Chatushpada", "Naga"];
      const idx = KAR_LIST.findIndex(k => ka.includes(k));
      if(idx !== -1) ka = kA[idx];
   }
 
   let va = pan.vara;
-  if (pan.varaIdx != null) { va = vA[pan.varaIdx] || va; }
-  else if (va) {
+  if (typeof va === 'number' || (typeof va === 'string' && !isNaN(va) && String(va).trim() !== '')) {
+     va = vA[Number(va)] || va;
+  } else if (pan.varaIdx != null) { va = vA[pan.varaIdx] || va; }
+  else if (va && typeof va === 'string') {
      const idx = L_VARA.en.findIndex(v => va.includes(v));
      if(idx !== -1) va = vA[idx];
   }
