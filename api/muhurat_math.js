@@ -1,4 +1,4 @@
-import { initializeAstroEngine } from './engine/swissephLoader.js';
+import { initializeAstroEngine, getSwe } from './engine/swissephLoader.js';
 import { generateMuhuratCalendar, getAuspiciousWindow } from './engine/muhuratEngine.js';
 
 export const maxDuration = 30;
@@ -8,25 +8,31 @@ export default async function handler(req, res) {
 
   try {
     await initializeAstroEngine();
+    const sweInstance = getSwe();
     
     const { action, params } = req.body;
     
     if (action === 'generateMuhuratCalendar') {
-       const result = generateMuhuratCalendar(
+       const result = await generateMuhuratCalendar(
+          sweInstance,
+          params.eventCategory, 
           params.baseKundali, 
           params.partnerKundali, 
-          params.eventCategory, 
-          params.lat, 
-          params.lng, 
-          params.startDate, 
-          params.endDate, 
-          params.tzOffset
+          365
        );
        return res.status(200).json(result);
     }
     
     if (action === 'getAuspiciousWindow') {
-       const result = getAuspiciousWindow(params.bestJd, params.lat, params.lng, params.tzOffset);
+       const result = await getAuspiciousWindow(
+          sweInstance, 
+          params.bestJd, 
+          params.eventCategory,
+          params.baseKundali?.lagnaRashi,
+          params.partnerKundali?.lagnaRashi,
+          params.lat, 
+          params.lng
+       );
        return res.status(200).json(result);
     }
 

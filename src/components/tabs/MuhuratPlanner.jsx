@@ -21,11 +21,11 @@ async function generateMuhuratCalendar(selectedEvent, nData, pDataLocal, lat, ln
   return await res.json();
 }
 
-async function getAuspiciousWindow(bestJd, lat, lng, tzOffset) {
+async function getAuspiciousWindow(bestJd, eventCategory, baseKundali, partnerKundali, lat, lng, tzOffset) {
   const res = await fetch('/api/muhurat_math', { 
     method: 'POST', 
     headers: {'Content-Type': 'application/json'}, 
-    body: JSON.stringify({action: 'getAuspiciousWindow', params: {bestJd, lat, lng, tzOffset}}) 
+    body: JSON.stringify({action: 'getAuspiciousWindow', params: {bestJd, eventCategory, baseKundali, partnerKundali, lat, lng, tzOffset}}) 
   });
   return await res.json();
 }
@@ -114,9 +114,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const handleDateClick = async (dateStr) => {
     setSelectedDateStr(dateStr);
     
-    // The previous argument order in original is weird: (sweInstance, dateStr, selectedEvent,...)
-    // Let's pass the date natively. The API actually receives bestJd as the dateStr right now.
-    const windowData = await getAuspiciousWindow(dateStr, kundali.input.lat, kundali.input.lng);
+    const windowData = await getAuspiciousWindow(dateStr, selectedEvent, natalData, pData, kundali.input.lat, kundali.input.lng, 0);
     const timeBlockStr = windowData.timeBlock || "Unknown Time Block";
     const medLagna = windowData.lagnaSign || 0;
     
