@@ -31,10 +31,10 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
   if (error) return <div style={{padding: '2rem', textAlign:'center', color:'var(--dosha-red)'}}>Celestial Server Error: {error}</div>;
   if (!match) return <div style={{padding: '2rem', textAlign:'center', color:'var(--text-muted)'}}>Consulting the cloud for cosmic synergy...</div>;
 
-  const englishNakshatras = L_NAKS.en;
+  const NAK_NAMES = ['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishtha','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
   const translatedNakshatras = L_NAKS[lang] || L_NAKS.en;
-  const p1NakIndex = englishNakshatras.indexOf(match.p1.nakshatra);
-  const p2NakIndex = englishNakshatras.indexOf(match.p2.nakshatra);
+  const p1NakIndex = NAK_NAMES.indexOf(match.p1.nakshatra);
+  const p2NakIndex = NAK_NAMES.indexOf(match.p2.nakshatra);
   const p1NakTranslated = p1NakIndex !== -1 ? translatedNakshatras[p1NakIndex] : match.p1.nakshatra;
   const p2NakTranslated = p2NakIndex !== -1 ? translatedNakshatras[p2NakIndex] : match.p2.nakshatra;
 
