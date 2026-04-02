@@ -26,11 +26,19 @@ export default async function handler(req, res) {
 
   // Auth Gating (Phase 1 implementation as requested by user)
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  const bodyToken = req.body?.firebaseToken;
+  let token = null;
+
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split('Bearer ')[1];
+  } else if (bodyToken) {
+    token = bodyToken;
+  }
+
+  if (!token) {
     return res.status(401).json({ error: 'Unauthorized: Missing Firebase Bearer Token' });
   }
 
-  const token = authHeader.split('Bearer ')[1];
   try {
     if (getApps().length > 0 && process.env.FIREBASE_SERVICE_ACCOUNT) {
       await getAuth().verifyIdToken(token);

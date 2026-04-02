@@ -24,10 +24,12 @@ export async function fetchKundali(input, user=null, isPanchang=false) {
      throw new Error("AUTH_REQUIRED");
   }
 
+  let finalInput = { ...input };
   if (user) {
      try {
        const token = await user.getIdToken(true);
        headers['Authorization'] = 'Bearer ' + token;
+       finalInput.firebaseToken = token;
      } catch(e) { 
        throw new Error(`Token Generation Failed: ${e.message}`);
      }
@@ -37,7 +39,7 @@ export async function fetchKundali(input, user=null, isPanchang=false) {
     method: 'POST',
     credentials: 'include', // Ensures Vercel preview protection cookies are sent
     headers,
-    body: JSON.stringify(input)
+    body: JSON.stringify(finalInput)
   });
   
   if (!res.ok) {
@@ -2313,25 +2315,8 @@ function App(){
       const k=p.get('k');
       if(k){try{const d=JSON.parse(decodeURIComponent(atob(k)));handleSubmit({year:d.y,month:d.mo,day:d.d,hour:d.h,minute:d.mi,utcOffset:d.ut,lat:d.la,lng:d.ln,city:d.ci,country:d.co,timezone:d.tz,gender:d.ge,dob:`${d.y}-${String(d.mo).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`,tob:`${String(d.h).padStart(2,'0')}:${String(d.mi).padStart(2,'0')}`})}catch(e){console.warn('Invalid share link')}}
       else {
-        try {
-          const saved = localStorage.getItem('jd_profiles');
-          if (saved) {
-            const profiles = JSON.parse(saved);
-            const validProfiles = (Array.isArray(profiles) ? profiles : []).filter(p => !p.isDeleted);
-            if (validProfiles.length > 0) {
-              setErr(null);
-              if (user) {
-                fetchKundali(validProfiles[0], user).then(k => {
-                  setKundali(k);
-                  setScreen('results');
-                }).catch(e => {
-                  setKundali(null);
-                });
-              }
-
-            }
-          }
-        } catch (e) {}
+        // Explicitly bypassing forced hydration on load.
+        setErr(null);
       }
     }, 100);
    
