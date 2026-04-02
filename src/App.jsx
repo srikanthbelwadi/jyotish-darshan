@@ -33,7 +33,7 @@ export async function fetchKundali(input, user=null, isPanchang=false) {
 
   const res = await fetch('/api/kundali', {
     method: 'POST',
-    credentials: 'omit', // Vercel API
+    credentials: 'include', // Ensures Vercel preview protection cookies are sent
     headers,
     body: JSON.stringify(input)
   });
