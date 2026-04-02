@@ -38,7 +38,8 @@ export async function fetchKundali(input, paramUser=null, isPanchang=false) {
      }
   }
 
-  const res = await fetch('/api/kundali', {
+  const url = isPanchang ? '/api/kundali?panchang=1' : '/api/kundali';
+  const res = await fetch(url, {
     method: 'POST',
     credentials: 'include', // Ensures Vercel preview protection cookies are sent
     headers,
