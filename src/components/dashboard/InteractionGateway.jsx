@@ -98,7 +98,7 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
                        This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. By decoding the precise planetary transits governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you.
                      </p>
                      <button onClick={() => setIsRevealed(true)} style={{ background: 'var(--accent-gold)', color: '#000', padding: '12px 28px', border: 'none', borderRadius: '4px', fontSize: '18px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', boxShadow: '0 4px 15px rgba(255,215,0,0.3)', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
-                        {t('Show Prediction', lang)} ➔
+                        {t('Show Prediction')} ➔
                      </button>
                    </div>
                ) : (

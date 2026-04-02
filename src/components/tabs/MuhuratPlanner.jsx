@@ -173,10 +173,10 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
       
       <div style={{ position: 'relative', zIndex: 1 }}>
         <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)', textTransform: 'uppercase' }}>
-          {t("Auspicious Muhurat", lang)}
+          {t("Auspicious Muhurat")}
         </h2>
         <p style={{ margin: '0 0 24px', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic', fontFamily: 'serif' }}>
-           {t("Suggestions for favorable timings based on classical planetary transits.", lang)}
+           {t("Suggestions for favorable timings based on classical planetary transits.")}
         </p>
 
         <div className="mobile-oracle-box" style={{ background: 'var(--bg-surface)', position: 'relative', padding: '24px', borderTop: '4px solid #ffd700', minHeight: '180px' }}>
@@ -184,15 +184,15 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
           {!user && (
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
               <div style={{ fontSize: '42px', marginBottom: '12px', filter: 'drop-shadow(0 0 10px rgba(255,215,0,0.6))' }}>🔒</div>
-              <h3 style={{ fontFamily: '"Cinzel", serif', margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('Unlock Shastric Oracle', lang)}</h3>
+              <h3 style={{ fontFamily: '"Cinzel", serif', margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('Unlock Shastric Oracle')}</h3>
               <button style={{ padding: '12px 24px', fontSize: '14px', background: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontFamily: '"Cinzel", serif', fontWeight: 'bold', letterSpacing: '1px' }} onClick={onRequireLogin}>
-                {t('Authenticate to Reveal ➔', lang)}
+                {t('Authenticate to Reveal ➔')}
               </button>
             </div>
           )}
           
           <div style={{ marginBottom: '24px' }}>
-        <p style={{ margin: '0 0 8px', color: 'var(--text-muted)', fontSize: '14px' }}>{t("Select an Event to cast electional chart:", lang)}</p>
+        <p style={{ margin: '0 0 8px', color: 'var(--text-muted)', fontSize: '14px' }}>{t("Select an Event to cast electional chart:")}</p>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
            <select 
              value={selectedEvent} 
@@ -206,8 +206,8 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                textOverflow: 'ellipsis'
              }}
            >
-             <option value="" disabled>{t("Select Life Event..", lang)}</option>
-             {EVENTS.map(ev => <option key={ev} value={ev}>{t(ev, lang)}</option>)}
+             <option value="" disabled>{t("Select Life Event..")}</option>
+             {EVENTS.map(ev => <option key={ev} value={ev}>{t(ev)}</option>)}
            </select>
            <button 
               onClick={handleGenerate}
@@ -219,7 +219,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                  cursor: selectedEvent ? 'pointer' : 'not-allowed', boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)', transition: 'all 0.2s'
               }}
            >
-              {t("Go", lang)}
+              {t("Go")}
            </button>
            {hasGenerated && (
              <button
@@ -229,7 +229,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                    border: '2px dashed var(--border-light)', borderRadius: '8px', fontSize: '18px',
                    cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center'
                 }}
-                title={isMinimized ? t("Expand Results", lang) : t("Minimize Results", lang)}
+                title={isMinimized ? t("Expand Results") : t("Minimize Results")}
                 onMouseOver={e => { e.currentTarget.style.color = 'var(--text-main)'; e.currentTarget.style.background = 'rgba(212, 175, 55, 0.1)'; e.currentTarget.style.borderColor = 'var(--accent-gold)'; }}
                 onMouseOut={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
              >
@@ -241,7 +241,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
 
       {hasGenerated && isMinimized && (
          <div style={{ padding: '24px', background: 'var(--bg-input)', border: '1px dashed var(--border-light)', borderRadius: '8px', textAlign: 'center', animation: 'fadeIn 0.3s ease' }}>
-            <p style={{ margin: 0, color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', fontSize: '16px' }}>{t('Muhurat Scan Minimized', lang)}</p>
+            <p style={{ margin: 0, color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', fontSize: '16px' }}>{t('Muhurat Scan Minimized')}</p>
          </div>
       )}
 
@@ -267,22 +267,22 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
              >
                 <span style={{ fontSize: '32px', display: 'block', marginBottom: '12px' }}>💞</span>
                 <p style={{ color: 'var(--text-main)', fontSize: '18px', fontWeight: 'bold', margin: '0 0 8px', fontFamily: '"Cinzel", serif' }}>
-                  {t("A partner Kundali is required. Please add a partner", lang)}
+                  {t("A partner Kundali is required. Please add a partner")}
                 </p>
              </button>
           ) : calculating ? (
         <div style={{ padding: '40px 0', display: 'flex', justifyContent: 'center', width: '100%' }}>
            {UniversalLoader ? <UniversalLoader /> : (
               <div style={{ textAlign: 'center', color: 'var(--accent-gold)', fontStyle: 'italic' }}>
-                {t("Consulting Ephemeris Transits for", lang)} {t(selectedEvent, lang)}...
+                {t("Consulting Ephemeris Transits for")} {t(selectedEvent)}...
               </div>
            )}
         </div>
       ) : Object.keys(greenDaysMap).length === 0 ? (
          <div style={{ padding: '32px', textAlign: 'center', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '12px' }}>
             <span style={{ fontSize: '32px', display: 'block', marginBottom: '12px' }}>🪐</span>
-            <p style={{ color: 'var(--text-main)', fontSize: '16px', margin: 0 }}>{t("No auspicious alignments found for this event in the next 365 days.", lang)}</p>
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '8px' }}>{t("Try a different event or adjust the planetary context.", lang)}</p>
+            <p style={{ color: 'var(--text-main)', fontSize: '16px', margin: 0 }}>{t("No auspicious alignments found for this event in the next 365 days.")}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '8px' }}>{t("Try a different event or adjust the planetary context.")}</p>
          </div>
       ) : (
          <div style={{ marginTop: '16px', animation: 'fadeIn 0.4s ease' }}>
@@ -354,12 +354,12 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                    <div style={{ background: 'var(--bg-surface)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                          <button onClick={() => setMonthOffset(m => Math.max(0, m - 1))} disabled={monthOffset === 0} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', color: monthOffset === 0 ? 'var(--text-muted)' : 'var(--accent-gold)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: monthOffset === 0 ? 'default' : 'pointer', transition: 'all 0.2s' }}>{"<"}</button>
-                         <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{t(mName, lang)} {yr}</h3>
+                         <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '20px', fontFamily: '"Cinzel", serif' }}>{t(mName)} {yr}</h3>
                          <button onClick={() => setMonthOffset(m => Math.min(11, m + 1))} disabled={monthOffset === 11} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', color: monthOffset === 11 ? 'var(--text-muted)' : 'var(--accent-gold)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: monthOffset === 11 ? 'default' : 'pointer', transition: 'all 0.2s' }}>{">"}</button>
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', marginBottom: '12px' }}>
                          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(w => (
-                             <strong key={w} style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{t(w, lang)}</strong>
+                             <strong key={w} style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{t(w)}</strong>
                          ))}
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
@@ -369,11 +369,11 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', marginTop: '24px', fontSize: '12px', color: 'var(--text-muted)' }}>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-green, #10B981)' }}></div> 
-                             {t("Highly Auspicious", lang)}
+                             {t("Highly Auspicious")}
                           </span>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-gold)' }}></div> 
-                             {t("Favorable", lang)}
+                             {t("Favorable")}
                           </span>
                       </div>
                    </div>
@@ -389,10 +389,10 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
             animation: 'fadeIn 0.3s ease'
          }}>
              <h4 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: '18px', fontFamily: '"Cinzel", serif' }}>
-                {t("Auspicious Hours for", lang)} {new Date(selectedDateStr).toLocaleDateString(lang, {weekday:'long', month:'long', day:'numeric'})}
+                {t("Auspicious Hours for")} {new Date(selectedDateStr).toLocaleDateString(lang, {weekday:'long', month:'long', day:'numeric'})}
              </h4>
              <p style={{ margin: '0 0 16px', color: 'var(--text-main)', fontSize: '16px', fontWeight: 'bold' }}>
-                {t("Recommended Window:", lang)} {aiAnalysis.timeBlock}
+                {t("Recommended Window:")} {aiAnalysis.timeBlock}
              </p>
 
              <div style={{ 
@@ -400,18 +400,18 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                 borderLeft: '4px solid var(--accent-gold)', fontSize: '14px', lineHeight: 1.6
              }}>
                 <div style={{ display: 'flex', gap: '24px', marginBottom: '16px', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
-                   <div><strong>{t("Transit Nakshatra:", lang)}</strong> {t(greenDaysMap[selectedDateStr].nakshatra, lang)}</div>
-                   <div><strong>{t("Transit Tithi:", lang)}</strong> {t(greenDaysMap[selectedDateStr].tithi, lang)}</div>
-                   <div><strong>{t("Hourly Ascendant:", lang)}</strong> {t(aiAnalysis.lagnaSign, lang)}</div>
+                   <div><strong>{t("Transit Nakshatra:")}</strong> {t(greenDaysMap[selectedDateStr].nakshatra)}</div>
+                   <div><strong>{t("Transit Tithi:")}</strong> {t(greenDaysMap[selectedDateStr].tithi)}</div>
+                   <div><strong>{t("Hourly Ascendant:")}</strong> {t(aiAnalysis.lagnaSign)}</div>
                 </div>
                 
                 <div style={{ color: 'var(--text-main)' }}>
                    {aiAnalysis.loading ? (
                       <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
-                         {UniversalLoader ? <UniversalLoader /> : <span style={{ color: 'var(--accent-gold)' }}>{t("Astrologer analyzing alignment...", lang)}</span>}
+                         {UniversalLoader ? <UniversalLoader /> : <span style={{ color: 'var(--accent-gold)' }}>{t("Astrologer analyzing alignment...")}</span>}
                       </div>
                    ) : aiAnalysis.error ? (
-                      <span style={{ color: '#ef4444' }}>{t("Unable to generate astrological guidance.", lang)}</span>
+                      <span style={{ color: '#ef4444' }}>{t("Unable to generate astrological guidance.")}</span>
                    ) : (
                       <div style={{ fontFamily: 'serif', fontSize: '14px' }} dangerouslySetInnerHTML={{ __html: aiAnalysis.text?.replace(/\n/g, '<br/>') || '' }} />
                    )}
