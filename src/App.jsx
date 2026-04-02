@@ -1866,6 +1866,10 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
   const[savedProfiles, setSavedProfiles]=React.useState([]);
   React.useEffect(() => {
     const fetchProfiles = () => {
+      if (!user) {
+        setSavedProfiles([]);
+        return;
+      }
       try {
         const saved = localStorage.getItem('jd_profiles');
         if (saved) {

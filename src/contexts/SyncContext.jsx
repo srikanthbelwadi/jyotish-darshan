@@ -144,6 +144,12 @@ export const SyncProvider = ({ children }) => {
      if (auth) auth.signOut();
      setUser(null);
      setSyncStatus('offline');
+     if (typeof localStorage !== 'undefined') {
+       localStorage.removeItem('jd_profiles');
+       localStorage.removeItem('jd_companions');
+       window.dispatchEvent(new Event('jd_profiles_updated'));
+       window.dispatchEvent(new Event('jd_companions_updated'));
+     }
   };
 
   const value = {
