@@ -28,7 +28,9 @@ export async function fetchKundali(input, user=null, isPanchang=false) {
      try {
        const token = await user.getIdToken(true);
        headers['Authorization'] = 'Bearer ' + token;
-     } catch(e) { console.warn("Could not retrieve Firebase token"); }
+     } catch(e) { 
+       throw new Error(`Token Generation Failed: ${e.message}`);
+     }
   }
 
   const res = await fetch('/api/kundali', {
@@ -2338,13 +2340,15 @@ function App(){
 
   React.useEffect(() => {
     if (engineReady && syncRequestedProfile) {
-      fetchKundali(syncRequestedProfile, user).then(k => setKundali(k)).catch(e => {
-        if(e.message==='AUTH_REQUIRED') { setShowAuthModal(true); setKundali(null); }
-      });
-      setScreen('results');
+      if (user) {
+        fetchKundali(syncRequestedProfile, user).then(k => setKundali(k)).catch(e => {
+          if(e.message==='AUTH_REQUIRED') { setKundali(null); }
+        });
+        setScreen('results');
+      }
       clearSyncProfile();
     }
-  }, [engineReady, syncRequestedProfile]);
+  }, [engineReady, syncRequestedProfile, user]);
 
   async function handleSubmit(inp){
     setErr(null);

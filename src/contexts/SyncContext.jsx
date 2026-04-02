@@ -16,7 +16,6 @@ export const SyncProvider = ({ children }) => {
     if (typeof auth === 'undefined' || !auth) return;
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
-        u.name = u.displayName || 'Seeker';
         setUser(u);
         setSyncStatus('syncing');
         try {
