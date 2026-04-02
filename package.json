@@ -26,10 +26,12 @@
     "firebase-admin": "^13.7.0",
     "firebase-functions": "^7.2.2",
     "html2canvas": "^1.4.1",
+    "i18next": "^26.0.3",
     "jspdf": "^2.5.1",
     "puppeteer": "^24.40.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-i18next": "^17.0.2",
     "swisseph-wasm": "^0.0.5"
   },
   "devDependencies": {

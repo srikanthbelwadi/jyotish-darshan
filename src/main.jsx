@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { PreferencesProvider } from './contexts/PreferencesContext.jsx'
 import { SyncProvider } from './contexts/SyncContext.jsx'
+import './i18n/index.js'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
