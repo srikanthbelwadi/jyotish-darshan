@@ -2337,19 +2337,21 @@ function App(){
   }, [engineReady, syncRequestedProfile]);
 
   async function handleSubmit(inp){
-    try{
-      setErr(null);
-      try {
-        const k = await fetchKundali(inp, user);
-        setKundali(k);
-      } catch(e) {
-        if(e.message==='AUTH_REQUIRED') { setShowAuthModal(true); throw e; }
-        else { alert("Failed to generate birth chart from celestial cloud."); throw e; }
-      }
+    setErr(null);
+    try {
+      const k = await fetchKundali(inp, user);
+      setKundali(k);
       setScreen('results');
       saveProfile(inp);
+    } catch(e) {
+      console.error(e);
+      if(e.message === 'AUTH_REQUIRED') {
+        setShowAuthModal(true);
+      } else {
+        setErr(t('computeError', lang) || 'computeError');
+      }
+      throw e;
     }
-    catch(e){console.error(e);setErr(t('computeError',lang))}
   }
   async function handleDeleteConfirm() {
     if (!profileToDelete) return;
