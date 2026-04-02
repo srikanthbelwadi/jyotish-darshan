@@ -3,9 +3,10 @@ import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } fr
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 
+const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  authDomain: isDev ? import.meta.env.VITE_FIREBASE_AUTH_DOMAIN : (typeof window !== 'undefined' ? window.location.host : import.meta.env.VITE_FIREBASE_AUTH_DOMAIN),
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,

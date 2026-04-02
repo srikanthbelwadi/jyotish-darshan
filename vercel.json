@@ -10,6 +10,10 @@
       "destination": "/api/$1"
     },
     {
+      "source": "/__/auth/(.*)",
+      "destination": "https://jyotish-darshan-ce2a2.firebaseapp.com/__/auth/$1"
+    },
+    {
       "source": "/(.*)swisseph\\.wasm",
       "destination": "/swisseph.wasm"
     },
