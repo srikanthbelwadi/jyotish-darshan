@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync }) {
+export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync, onSelectProfile }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -29,12 +29,12 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
     return 'Offline';
   };
 
-  const savedCount = () => {
+  const savedProfiles = () => {
     try {
       const saved = JSON.parse(localStorage.getItem('jd_profiles') || '[]');
-      return saved.filter(p => !p.isDeleted).length;
+      return saved.filter(p => !p.isDeleted);
     } catch(e) {
-      return 0;
+      return [];
     }
   };
 
@@ -92,12 +92,28 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
           {/* Body */}
           <div style={{ padding: '24px' }}>
              {/* Info Panel */}
-             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
-                <span style={{ fontSize: '20px' }}>👥</span>
-                <div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>Saved Profiles</div>
-                  <div style={{ fontSize: '14px', color: 'var(--text-main)', fontWeight: 'bold' }}>{savedCount()}</div>
-                </div>
+             <div style={{ marginBottom: '24px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold', marginBottom: '8px' }}>Saved Profiles ({savedProfiles().length})</div>
+                {savedProfiles().length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '160px', overflowY: 'auto', paddingRight: '4px' }}>
+                    {savedProfiles().map((p, idx) => (
+                      <button 
+                        key={p.id || idx}
+                        onClick={() => { setIsOpen(false); if(onSelectProfile) onSelectProfile(p); }}
+                        style={{ background: 'var(--bg-input)', border: '1px solid var(--border-light)', padding: '10px 12px', borderRadius: '6px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                        onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent-gold)'; e.currentTarget.style.background = 'var(--bg-card)'; }}
+                        onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.background = 'var(--bg-input)'; }}
+                      >
+                         <span style={{ color: 'var(--text-main)', fontSize: '14px', fontFamily: '"Cinzel", serif', fontWeight: 'bold' }}>{p.name}</span>
+                         <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>➔</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '13px', fontStyle: 'italic', textAlign: 'center' }}>
+                    No saved profiles yet.
+                  </div>
+                )}
              </div>
 
              {/* Action Phase */}

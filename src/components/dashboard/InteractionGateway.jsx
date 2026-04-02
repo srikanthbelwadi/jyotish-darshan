@@ -10,6 +10,8 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
 
   const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\\s+/g, '_') || 'default';
 
+  const [isRevealed, setIsRevealed] = React.useState(false);
+
   const { data: pathwayData, isLoading, error, refetch } = useQuery({
     queryKey: ['pathway', profileId, targetPillar, lang],
     queryFn: async () => {
@@ -58,7 +60,7 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
       if(!res.ok) throw new Error(resData.error || 'Failed to sync with pathway matrix.');
       return resData;
     },
-    enabled: !!(K && user),
+    enabled: !!(K && user && isRevealed),
   });
 
   return (
@@ -89,6 +91,15 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
                      <p style={{ padding: '24px', background: 'var(--bg-surface)', borderTop: '4px solid #ffd700', color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', fontStyle: 'italic', textAlign: 'center' }}>
                        "{pathwayData.summary}"
                      </p>
+                   </div>
+               ) : !isRevealed ? (
+                   <div style={{ marginBottom: '32px', textAlign: 'center' }}>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto 24px auto' }}>
+                       This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. By decoding the precise planetary transits governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you.
+                     </p>
+                     <button onClick={() => setIsRevealed(true)} style={{ background: 'var(--accent-gold)', color: '#000', padding: '12px 28px', border: 'none', borderRadius: '4px', fontSize: '18px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', boxShadow: '0 4px 15px rgba(255,215,0,0.3)', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
+                        {t('Show Prediction', lang)} ➔
+                     </button>
                    </div>
                ) : (
                    <div style={{ marginBottom: '32px' }}>

@@ -2276,7 +2276,7 @@ function SyncIndicator({ status, onForceSync }) {
   );
 }
 
-function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync, onOpenPrefs }) {
+function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync, onOpenPrefs, onSelectProfile }) {
   const { lang, theme } = usePreferences();
 
   const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
@@ -2300,6 +2300,7 @@ function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, o
                onLoginClick={onLoginClick} 
                onLogoutClick={onLogoutClick} 
                onForceSync={onForceSync} 
+               onSelectProfile={onSelectProfile}
             />
           </div>
         </div>
@@ -2336,18 +2337,29 @@ function App(){
   }, [user]);
 
 
+  const hasAutoLoaded = React.useRef(false);
+
   React.useEffect(() => {
     if (user) {
-      const pending = sessionStorage.getItem('pendingKundaliFetch');
+      const pending = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('pendingKundaliFetch') : null;
       if (pending) {
         sessionStorage.removeItem('pendingKundaliFetch');
         try {
           const inp = JSON.parse(pending);
           handleSubmit(inp);
         } catch(e) {}
+      } else if (!hasAutoLoaded.current && !kundali && screen === 'input') {
+          hasAutoLoaded.current = true;
+          try {
+             const saved = JSON.parse(localStorage.getItem('jd_profiles') || '[]');
+             const last = saved.find(p => !p.isDeleted);
+             if (last) {
+                 handleSubmit(last);
+             }
+          } catch(e) {}
       }
     }
-  }, [user]);
+  }, [user, screen]);
 
   React.useEffect(()=>{
     let mounted = true;
@@ -2490,7 +2502,7 @@ function App(){
   return (
     <div style={{minHeight:'100vh', display:'flex', flexDirection:'column'}}>
       {showAuthModal && <AuthModal lang={lang} t={t} onLogin={() => setShowAuthModal(false)} onClose={() => setShowAuthModal(false)} />}
-      <AppHeader user={user} syncStatus={syncStatus} syncToast={syncToast} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={logoutUser} onForceSync={forceSync} onOpenPrefs={() => setShowPrefModal(true)} />
+      <AppHeader user={user} syncStatus={syncStatus} syncToast={syncToast} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={logoutUser} onForceSync={forceSync} onOpenPrefs={() => setShowPrefModal(true)} onSelectProfile={(profile) => handleSubmit(profile)} />
       <DailyPanchang lang={lang} />
       {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} onForceSync={forceSync} onDeleteProfile={setProfileToDelete} saveProfile={saveProfile} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
       <UserPreferencesModal isOpen={showPrefModal} onClose={() => setShowPrefModal(false)} />
