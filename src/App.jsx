@@ -645,14 +645,58 @@ export const RASHIS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra',
 
 export function localizePanchang(pan, lang) {
   if (!pan || lang === 'en') return pan;
+
   const tA=L_TITHI[lang]||L_TITHI.en, vA=L_VARA[lang]||L_VARA.en, pO=L_PAKSHA[lang]||L_PAKSHA.en;
   const yA=L_YOGA_PANCH[lang]||L_YOGA_PANCH.en, kA=L_KARANA[lang]||L_KARANA.en, nA=L_NAKS[lang]||L_NAKS.en;
-  const ti=pan.tithiIdx!=null?(tA[pan.tithiIdx]||pan.tithi.split(' (')[0])+' ('+(pO[pan.pakshaKey]||'')+')':pan.tithi;
-  const va=pan.varaIdx!=null?(vA[pan.varaIdx]||pan.vara):pan.vara;
-  const na=pan.nakIdx!=null?(nA[pan.nakIdx]||pan.nakshatra):pan.nakshatra;
-  const yo=pan.yogaIdx!=null?(yA[pan.yogaIdx]||pan.yoga):pan.yoga;
-  const ka=pan.karanaIdx!=null?(kA[pan.karanaIdx]||pan.karana):pan.karana;
-  return{tithi:ti,vara:va,nakshatra:na,yoga:yo,karana:ka};
+
+  const NAK_LIST = ["Aswini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva", "Uttara", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Bhadrapada", "Revati"];
+  
+  let na = pan.nakshatra;
+  if (pan.nakIdx != null) { na = nA[pan.nakIdx] || na; }
+  else if (na) {
+     for (let i = 0; i < NAK_LIST.length; i++) {
+        if (na.includes(NAK_LIST[i])) { 
+           // Best effort index derivation for exact astrological match without needing normalized fuzzy matching
+           const finalIndex = ["Aswini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"].findIndex(n => n.includes(NAK_LIST[i]));
+           if(finalIndex !== -1) na = nA[finalIndex];
+           break;
+        }
+     }
+  }
+
+  let yo = pan.yoga;
+  if (pan.yogaIdx != null) { yo = yA[pan.yogaIdx] || yo; }
+  else if (yo) {
+     const YOGA_LIST = ["Vishkambha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda", "Sukarma", "Dhriti", "Shula", "Ganda", "Vriddhi", "Dhruva", "Vyaghata", "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyan", "Parigha", "Shiva", "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti"];
+     const idx = YOGA_LIST.findIndex(y => yo.includes(y));
+     if(idx !== -1) yo = yA[idx];
+  }
+
+  let ka = pan.karana;
+  if (pan.karanaIdx != null) { ka = kA[pan.karanaIdx] || ka; }
+  else if (ka) {
+     const KAR_LIST = ["Bava", "Balava", "Kaulava", "Taitila", "Gara", "Vanija", "Vishti", "Kintughna", "Shakuni", "Chatushpada", "Naga"];
+     const idx = KAR_LIST.findIndex(k => ka.includes(k));
+     if(idx !== -1) ka = kA[idx];
+  }
+
+  let va = pan.vara;
+  if (pan.varaIdx != null) { va = vA[pan.varaIdx] || va; }
+  else if (va) {
+     const idx = L_VARA.en.findIndex(v => va.includes(v));
+     if(idx !== -1) va = vA[idx];
+  }
+
+  let ti = pan.tithi;
+  if (pan.tithiIdx != null) {
+      ti = (tA[pan.tithiIdx]||pan.tithi.split(' (')[0])+' ('+(pO[pan.pakshaKey]||'')+')';
+  } else if (ti) {
+      L_TITHI.en.forEach((tName, i) => { if (ti.includes(tName)) ti = ti.replace(tName, tA[i]); });
+      if (ti.includes('Krishna')) ti = ti.replace('Krishna Paksha', pO.wan).replace('Krishna', pO.wan);
+      else if (ti.includes('Shukla')) ti = ti.replace('Shukla Paksha', pO.wax).replace('Shukla', pO.wax);
+  }
+
+  return { tithi: ti, vara: va, nakshatra: na, yoga: yo, karana: ka };
 }
 
 // ════════════════════════════════════════════════════════════════
