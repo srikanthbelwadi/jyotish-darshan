@@ -13,21 +13,25 @@ import { usePreferences } from './contexts/PreferencesContext.jsx';
 import UserPreferencesModal from './components/UserPreferencesModal.jsx';
 import { useSync } from './contexts/SyncContext.jsx';
 import UserHub from './components/UserHub.jsx';
+import { auth } from './firebase.js';
 
 // ════════════════════════════════════════════════════════════════
 // CLOUD API ADAPTER (PROTECTED)
 // ════════════════════════════════════════════════════════════════
-export async function fetchKundali(input, user=null, isPanchang=false) {
+export async function fetchKundali(input, paramUser=null, isPanchang=false) {
   let headers = { 'Content-Type': 'application/json' };
   
-  if (!isPanchang && !user) {
+  // Directly pull current user from global auth state to bypass ANY React closure staleness
+  const activeUser = paramUser || auth?.currentUser;
+
+  if (!isPanchang && !activeUser) {
      throw new Error("AUTH_REQUIRED");
   }
 
   let finalInput = { ...input };
-  if (user) {
+  if (activeUser) {
      try {
-       const token = await user.getIdToken(true);
+       const token = await activeUser.getIdToken(true);
        headers['Authorization'] = 'Bearer ' + token;
        finalInput.firebaseToken = token;
      } catch(e) { 
