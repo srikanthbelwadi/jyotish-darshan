@@ -662,7 +662,7 @@ const SAMVATSARA=['Prabhava','Vibhava','Shukla','Pramoda','Prajapati','Angirasa'
 export const PCOLOR = { sun:'#F59E0B', moon:'#9CA3AF', mars:'#EF4444', mercury:'#10B981', jupiter:'#FCD34D', venus:'#F472B6', saturn:'#374151', rahu:'#4B5563', ketu:'#6B7280' };
 export const DASHA_YRS = { sun:6, moon:10, mars:7, rahu:18, jupiter:16, saturn:19, mercury:17, ketu:7, venus:20 };
 
-function localizePanchang(pan, lang) {
+export function localizePanchang(pan, lang) {
   if (!pan || lang === 'en') return pan;
   const tA=L_TITHI[lang]||L_TITHI.en, vA=L_VARA[lang]||L_VARA.en, pO=L_PAKSHA[lang]||L_PAKSHA.en;
   const yA=L_YOGA_PANCH[lang]||L_YOGA_PANCH.en, kA=L_KARANA[lang]||L_KARANA.en, nA=L_NAKS[lang]||L_NAKS.en;
