@@ -1043,12 +1043,34 @@ function DailyPanchang({ lang }){
            
            setDailyPan({K,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek,jd:K.jd,hasLoc:!!location,year: now.getFullYear()});
         })
-        .catch(e => console.error("Panchang load silently failed:", e));
+        .catch(e => {
+            console.error("Panchang load silently failed:", e);
+            if (isMounted) setDailyPan({ error: true });
+        });
         
         return () => { isMounted = false; };
     }, [location, lang]);
 
-    if(!dailyPan)return null;
+    if(!dailyPan) return (
+      <div style={{background:'var(--bg-card)', borderBottom:'1px solid var(--border-light)'}}>
+        <div style={{maxWidth:1100, margin:'0 auto', padding:'8px 16px', fontSize:11, color:'var(--text-muted)', display:'flex', justifyContent:'center', letterSpacing:0.5}}>
+          <strong style={{color:'var(--accent-gold)'}}>☽ {(LP.title||'Today').toUpperCase()} </strong>
+          <span style={{color:'var(--border-light)', marginLeft: 8}}>| Loading celestial data...</span>
+        </div>
+      </div>
+    );
+
+    if (dailyPan.error) {
+      return (
+        <div style={{background:'var(--bg-card)', borderBottom:'1px solid var(--border-light)'}}>
+          <div style={{maxWidth:1100, margin:'0 auto', padding:'8px 16px', fontSize:11, color:'var(--text-muted)', display:'flex', justifyContent:'center', letterSpacing:0.5}}>
+            <strong style={{color:'var(--accent-gold)'}}>☽ {(LP.title||'Today').toUpperCase()} </strong>
+            <span style={{color:'#EF4444', marginLeft: 8}}>| Cosmic connection interrupted. Using basic celestial tracking.</span>
+          </div>
+        </div>
+      );
+    }
+
     const{K,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,hasLoc,year}=dailyPan;
     const lp = localizePanchang(K.panchang,lang);
     const dateStr = now.toLocaleDateString(lang==='en'?'en-US':lang, {weekday:'short', month:'short', day:'numeric'});

@@ -45,9 +45,16 @@ function getSamvatsara(year) {
   return SAMVATSARAS[offset];
 }
 
+import { useTranslation } from 'react-i18next';
 export default function PanchangTab() {
   const { lang } = usePreferences();
+  const { t: i18n_t } = useTranslation();
   const t = (key, defaultText) => {
+    // If key starts with astro. or pc., try to get it from i18next first
+    if (key.startsWith('astro.') || key.startsWith('pc.')) {
+        const translated = i18n_t(key, { defaultValue: '' });
+        if (translated && translated !== key) return translated;
+    }
     return (DYNAMIC_STRINGS[lang] || DYNAMIC_STRINGS.en)[key] || DYNAMIC_STRINGS.en[key] || defaultText;
   };
   const { user } = useSync();
@@ -108,6 +115,7 @@ export default function PanchangTab() {
        try {
            const res = await fetch('/api/panchang', {
                method: 'POST',
+               credentials: 'include',
                headers: { 'Content-Type': 'application/json' },
                body: JSON.stringify({
                    action: 'computeMonthlyCalendar',
