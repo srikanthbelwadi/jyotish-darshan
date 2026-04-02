@@ -4,7 +4,7 @@ import { useSync } from '../../contexts/SyncContext.jsx';
 // ════════════════════════════════════════════════════════════════
 // CLOUD MUTATION PROXIES
 // ════════════════════════════════════════════════════════════════
-async function generateMuhuratCalendar(sweInstance, selectedEvent, nData, pDataLocal, timeframe) {
+async function generateMuhuratCalendar(selectedEvent, nData, pDataLocal, timeframe) {
   const payload = {
     action: 'generateMuhuratCalendar',
      params: {
@@ -21,7 +21,7 @@ async function generateMuhuratCalendar(sweInstance, selectedEvent, nData, pDataL
   return await res.json();
 }
 
-async function getAuspiciousWindow(bestJd, sweInstance, lat, lng, tzOffset) {
+async function getAuspiciousWindow(bestJd, lat, lng, tzOffset) {
   const res = await fetch('/api/muhurat_math', { 
     method: 'POST', 
     headers: {'Content-Type': 'application/json'}, 
@@ -63,9 +63,6 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const [hasGenerated, setHasGenerated] = useState(false);
   const [monthOffset, setMonthOffset] = useState(0);
   const [isMinimized, setIsMinimized] = useState(false);
-  
-  const sweInstance = getSwe();
-
   const natalData = {
     moonRashi: kundali.planets.find(p => p.key === 'moon')?.rashi,
     nakshatra: kundali.panchang.nakIdx, // generic index representation 0-26
@@ -83,7 +80,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const requiresPartner = COUPLE_EVENTS.includes(selectedEvent);
 
   const handleGenerate = async () => {
-    if (!sweInstance || !user || !selectedEvent) return;
+    if (!user || !selectedEvent) return;
     
     setHasGenerated(true);
     setCalculating(true);
@@ -103,7 +100,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
        try {
          const nData = { ...natalData };
          const pDataLocal = pData ? { ...pData } : null;
-         const dMap = await generateMuhuratCalendar(sweInstance, selectedEvent, nData, pDataLocal, 365);
+         const dMap = await generateMuhuratCalendar(selectedEvent, nData, pDataLocal, 365);
          setGreenDaysMap(dMap);
        } catch (e) {
          console.error("Muhurat calculation failed:", e);
@@ -117,7 +114,9 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
   const handleDateClick = async (dateStr) => {
     setSelectedDateStr(dateStr);
     
-    const windowData = await getAuspiciousWindow(sweInstance, dateStr, selectedEvent, natalData.lagnaRashi, pData?.lagnaRashi, kundali.input.lat, kundali.input.lng);
+    // The previous argument order in original is weird: (sweInstance, dateStr, selectedEvent,...)
+    // Let's pass the date natively. The API actually receives bestJd as the dateStr right now.
+    const windowData = await getAuspiciousWindow(dateStr, kundali.input.lat, kundali.input.lng);
     const timeBlockStr = windowData.timeBlock || "Unknown Time Block";
     const medLagna = windowData.lagnaSign || 0;
     
@@ -212,12 +211,12 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
            </select>
            <button 
               onClick={handleGenerate}
-              disabled={!sweInstance || !selectedEvent}
+              disabled={!selectedEvent}
               style={{
                  flex: '1 1 auto',
                  padding: '12px 24px', background: 'var(--accent-gold)', color: '#000',
                  border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold',
-                 cursor: (sweInstance && selectedEvent) ? 'pointer' : 'not-allowed', boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)', transition: 'all 0.2s'
+                 cursor: selectedEvent ? 'pointer' : 'not-allowed', boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)', transition: 'all 0.2s'
               }}
            >
               {t("Go", lang)}
