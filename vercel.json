@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": ["public/sweph/**", "node_modules/swisseph-wasm/**/*.wasm"]
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
