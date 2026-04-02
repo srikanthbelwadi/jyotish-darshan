@@ -6,7 +6,7 @@ import CompatibilityMatch from './components/CompatibilityMatch.jsx';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
 import { NAKSHATRA_LORE } from './data/nakshatra_lore.js';
 import AuthModal from './components/AuthModal.jsx';
-import { MockDashboard } from './components/tabs/MockDashboard.jsx';
+import { MockDashboard } from './components/dashboard';
 import ExpertReadingTab from './components/tabs/ExpertReadingTab.jsx';
 import ConfirmModal from './components/ConfirmModal.jsx';
 import { usePreferences } from './contexts/PreferencesContext.jsx';
@@ -972,7 +972,6 @@ function DailyPanchang({ lang }){
       const utcOff=now.getTimezoneOffset()/-60;
       const lat=location?location.lat:28.6139; // Loc fallback
       const lng=location?location.lng:77.2090;
-      const jd=toJD(now.getUTCFullYear(),now.getUTCMonth()+1,now.getUTCDate(),utcH,utcM,0);
       // Replaced by async fetch
       fetchKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng}, null, true).then(K => setPanchang(K.panchang)).catch(e => console.error("Panchang load failed", e));
       return;
@@ -1942,9 +1941,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                   {savedProfiles && savedProfiles.filter(p => !p.isDeleted).map((p, i) => {
                     let pNak = '';
                     try {
-                      const jd = toJD(p.year, p.month, p.day, p.hour, p.minute, p.utcOffset||5.5);
-                      const moon = allPlanets(jd).sid.moon.lon;
-                      pNak = (L_NAKS[lang] || L_NAKS.en)[nakshatra(moon).idx];
+                      // Nakshatra is ideally saved in backend, skipping local calculation
                     } catch(e){}
                     return (
                     <div key={p.name + i} style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid var(--border-light)', background: i===0?'var(--bg-badge-green)':'transparent', transition:'background 0.2s'}}>
@@ -2313,10 +2310,8 @@ function App(){
           }
         } catch (e) {}
       }
-    }).catch(err => {
-      if(mounted) setLoadMsg("Error loading astronomy engine: " + err.message);
-    });
-    
+    }, 100);
+   
     return () => { mounted = false; };
   },[]);
 

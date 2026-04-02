@@ -8,10 +8,10 @@ import { test, expect } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { getLahiriAyanamsa, toJulianDay, computeAscendant, computePlanetPositions } from '../src/engine/astronomy.js';
-import { nakshatraFromLongitude, rashiFromLongitude, computeVimshottariDasha, computePanchang } from '../src/engine/vedic.js';
+import { getLahiriAyanamsa, toJulianDay, computeAscendant, computePlanetPositions } from '../api/engine/astronomy.js';
+import { nakshatraFromLongitude, rashiFromLongitude, computeVimshottariDasha, computePanchang } from '../api/engine/vedic.js';
 import { DASHA_PERIODS as DASHA_YRS, EXALTATION as EXALT, DEBILITATION as DEBIL } from '../src/engine/constants.js';
-import { setSweTestInstance } from '../src/engine/swissephLoader.js';
+import { setSweTestInstance } from '../api/engine/swissephLoader.js';
 import SwissEph from 'swisseph-wasm';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

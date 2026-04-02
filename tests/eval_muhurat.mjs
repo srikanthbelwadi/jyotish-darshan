@@ -1,5 +1,5 @@
 import SwissEph from 'swisseph-wasm';
-import { generateMuhuratCalendar, getAuspiciousWindow } from '../src/engine/muhuratEngine.js';
+import { generateMuhuratCalendar, getAuspiciousWindow } from '../api/engine/muhuratEngine.js';
 
 async function runEval() {
   console.log("==========================================");
