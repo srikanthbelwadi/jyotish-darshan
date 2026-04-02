@@ -37,9 +37,12 @@ export async function fetchKundali(input, user=null, isPanchang=false) {
     body: JSON.stringify(input) // Payload for calculating
   });
   
-  if (res.status === 401 || res.status === 403) throw new Error("AUTH_REQUIRED");
+  if (res.status === 401) throw new Error("AUTH_REQUIRED");
   if (!res.ok) {
      const text = await res.text();
+     if (res.status === 403) {
+        throw new Error("AUTH_FORBIDDEN: " + text);
+     }
      throw new Error(text || "Internal Astrology Server Error");
   }
   return await res.json();
@@ -2348,7 +2351,7 @@ function App(){
       if(e.message === 'AUTH_REQUIRED') {
         setShowAuthModal(true);
       } else {
-        setErr(t('computeError', lang) || 'computeError');
+        setErr(e.message.startsWith('AUTH_FORBIDDEN') ? e.message : t('computeError', lang));
       }
       throw e;
     }

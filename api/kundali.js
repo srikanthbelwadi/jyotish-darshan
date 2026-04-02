@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error("Auth verification failed:", error);
-    return res.status(403).json({ error: 'Forbidden: Invalid Token' });
+    return res.status(403).json({ error: 'Auth Verification Failed: ' + error.message });
   }
 
   try {
