@@ -4,15 +4,15 @@ import { useSync } from '../../contexts/SyncContext.jsx';
 // ════════════════════════════════════════════════════════════════
 // CLOUD MUTATION PROXIES
 // ════════════════════════════════════════════════════════════════
-async function generateMuhuratCalendar(selectedEvent, nData, pDataLocal, timeframe) {
+async function generateMuhuratCalendar(selectedEvent, nData, pDataLocal, lat, lng) {
   const payload = {
     action: 'generateMuhuratCalendar',
      params: {
         baseKundali: nData, 
         partnerKundali: pDataLocal, 
         eventCategory: selectedEvent, 
-        lat: nData.input.lat, 
-        lng: nData.input.lng, 
+        lat: lat, 
+        lng: lng, 
         startDate: Date.now(),
         tzOffset: 0
      }
@@ -100,7 +100,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
        try {
          const nData = { ...natalData };
          const pDataLocal = pData ? { ...pData } : null;
-         const dMap = await generateMuhuratCalendar(selectedEvent, nData, pDataLocal, 365);
+         const dMap = await generateMuhuratCalendar(selectedEvent, nData, pDataLocal, kundali.input.lat, kundali.input.lng);
          setGreenDaysMap(dMap);
        } catch (e) {
          console.error("Muhurat calculation failed:", e);
