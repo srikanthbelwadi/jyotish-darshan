@@ -2298,7 +2298,7 @@ function App(){
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const[kundali,setKundali]=React.useState(null);
   const[err,setErr]=React.useState(null);
-  const { user, syncStatus, syncToast, forceSync, syncRequestedProfile, clearSyncProfile, deleteProfile, saveProfile, logoutUser } = useSync();
+  const { user, syncStatus, syncToast, forceSync, deleteProfile, saveProfile, logoutUser } = useSync();
   
   const [engineReady, setEngineReady] = React.useState(false);
   const [loadMsg, setLoadMsg] = React.useState('Synthesizing Ephemeris data...');
@@ -2322,18 +2322,6 @@ function App(){
    
     return () => { mounted = false; };
   },[]);
-
-  React.useEffect(() => {
-    if (engineReady && syncRequestedProfile) {
-      if (user) {
-        fetchKundali(syncRequestedProfile, user).then(k => setKundali(k)).catch(e => {
-          if(e.message==='AUTH_REQUIRED') { setKundali(null); }
-        });
-        setScreen('results');
-      }
-      clearSyncProfile();
-    }
-  }, [engineReady, syncRequestedProfile, user]);
 
   async function handleSubmit(inp){
     setErr(null);
