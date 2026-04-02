@@ -660,7 +660,10 @@ bn:['চৈত্র','বৈশাখ','জ্যৈষ্ঠ','আষাঢ','
 ml:['ചൈത്രം','വൈശാഖം','ജ്യേഷ്ഠം','ആഷാഢം','ശ്രാവണം','ഭാദ്രപദം','ആശ്വിനം','കാർത്തിക','മാർഗശീർഷം','പൗഷം','മാഘം','ഫാൽഗുനം']};
 const SAMVATSARA=['Prabhava','Vibhava','Shukla','Pramoda','Prajapati','Angirasa','Shreemukha','Bhava','Yuva','Dhatri','Ishvara','Bahudhanya','Pramathi','Vikrama','Vrisha','Chitrabhanu','Subhanu','Tarana','Parthiva','Vyaya','Sarvajit','Sarvadharin','Virodhi','Vikrita','Khara','Nandana','Vijaya','Jaya','Manmatha','Durmukhi','Hevilambi','Vilambi','Vikari','Sharvari','Plava','Shubhakruti','Sobhakruti','Krodhi','Vishvavasu','Parabhava','Plavanga','Keelaka','Saumya','Sadharana','Virodhakrit','Paridhaavi','Pramadeecha','Ananda','Rakshasa','Nala','Pingala','Kalayukti','Siddhartha','Raudra','Durmathi','Dundubhi','Rudhirodgari','Raktakshi','Krodhana','Akshaya'];
 export const PCOLOR = { sun:'#F59E0B', moon:'#9CA3AF', mars:'#EF4444', mercury:'#10B981', jupiter:'#FCD34D', venus:'#F472B6', saturn:'#374151', rahu:'#4B5563', ketu:'#6B7280' };
+export const RASHI_LORD = ['mars','venus','mercury','moon','sun','mercury','venus','mars','jupiter','saturn','saturn','jupiter'];
 export const DASHA_YRS = { sun:6, moon:10, mars:7, rahu:18, jupiter:16, saturn:19, mercury:17, ketu:7, venus:20 };
+export const ABBR = { sun:'SU', moon:'MO', mars:'MA', mercury:'ME', jupiter:'JU', venus:'VE', saturn:'SA', rahu:'RA', ketu:'KE' };
+export const RASHIS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 
 export function localizePanchang(pan, lang) {
   if (!pan || lang === 'en') return pan;
@@ -1263,7 +1266,7 @@ function OverviewTab({K,fmt,lang='en'}){
   const moon=planets.find(p=>p.key==='moon'),sun=planets.find(p=>p.key==='sun');
   const cur=dasha.mahadashas.find(m=>m.isCurrent)||dasha.mahadashas[0];
   const curA=cur?.antars?.find(a=>a.isCurrent)||cur?.antars?.[0];
-  const navP=planets.map(p=>({...p,rashi:K.divCharts.D9?.[p.key]??p.rashi}));
+  const navP=planets.map(p=>({...p,rashi:(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]??p.rashi}));
   const C=fmt==='south'?SouthChart:NorthChart;
   const moonNakLore = (NAKSHATRA_LORE[lang] || NAKSHATRA_LORE['en'])[moon.nIdx];
   return(
@@ -1354,7 +1357,7 @@ function ChartsTab({K,fmt,setFmt,lang='en'}){
       </div>
       <div className="responsive-grid-2" style={{marginBottom:20}}>
         <C planets={K.planets} lagnaR={K.lagna.rashi} title={t('ov.rashiChart',lang)||'D1 · Rashi Chart'} size={280} lang={lang}/>
-        <C planets={K.planets.map(p=>({...p,rashi:K.divCharts.D9?.[p.key]??p.rashi}))} lagnaR={K.lagna.rashi} title={t('ov.navamsa',lang)||'D9 · Navamsa'} size={280} lang={lang}/>
+        <C planets={K.planets.map(p=>({...p,rashi:(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]??p.rashi}))} lagnaR={K.lagna.rashi} title={t('ov.navamsa',lang)||'D9 · Navamsa'} size={280} lang={lang}/>
       </div>
       {K.planets.filter(p=>p.vargottama).length>0&&<div style={{background:'rgba(212,175,55,0.05)',borderRadius:8,padding:'8px 12px',marginBottom:16,fontSize:12,color:'var(--accent-gold)'}}>✦ <strong>{t('ch.vargottama',lang)}:</strong> {K.planets.filter(p=>p.vargottama).map(p=>(L_GRAHA[lang]||L_GRAHA.en)[p.key]||p.key).join(', ')}</div>}
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))',gap:10}}>
@@ -1696,7 +1699,7 @@ async function downloadPDF(K,lang,PK,user){
   const moon=planets.find(p=>p.key==='moon'),sun2=planets.find(p=>p.key==='sun');
   const cur=dasha.mahadashas.find(m=>m.isCurrent)||dasha.mahadashas[0];
   const curA=cur?.antars?.find(a=>a.isCurrent)||cur?.antars?.[0];
-  const d9pl=planets.map(p=>({...p,rashi:K.divCharts.D9?.[p.key]??p.rashi}));
+  const d9pl=planets.map(p=>({...p,rashi:(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]??p.rashi}));
   const d1svg=makeSVGChart(planets,lagna.rashi,260,lang);
   const d9svg=makeSVGChart(d9pl,lagna.rashi,260,lang);
   const strong=Object.entries(sb).filter(([,v])=>v?.cls==='Strong').map(([k])=>k);
