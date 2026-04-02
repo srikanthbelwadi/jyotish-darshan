@@ -7,14 +7,8 @@ export default function AuthModal({ onLogin, onClose, lang, t }) {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const result = await signInWithGooglePopup();
-      const user = result.user;
-      onLogin({ 
-        name: user.displayName || 'Seeker', 
-        email: user.email, 
-        photoURL: user.photoURL,
-        method: 'google' 
-      });
+      await signInWithGooglePopup();
+       // Flow is handed to browser redirect. No further execution here.
     } catch (error) {
       console.error("Google Sign-In Error:", error);
       alert("Authentication failed: " + error.message);
