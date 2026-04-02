@@ -1115,7 +1115,13 @@ function InputForm({onSubmit,lang,setLang,onOpenTerms}){
     setLoading(true);
     const[year,month,day]=form.dob.split('-').map(Number);
     const[hour,minute]=form.tob.split(':').map(Number);
-    setTimeout(()=>onSubmit({name:name.trim()||'Anonymous',year,month,day,hour,minute,utcOffset:form.utcOffset,lat:form.lat,lng:form.lng,city:form.city,country:form.country,timezone:form.timezone,gender:form.gender,dob:form.dob,tob:form.tob}),600);
+    setTimeout(async ()=>{
+      try {
+        await onSubmit({name:name.trim()||'Anonymous',year,month,day,hour,minute,utcOffset:form.utcOffset,lat:form.lat,lng:form.lng,city:form.city,country:form.country,timezone:form.timezone,gender:form.gender,dob:form.dob,tob:form.tob});
+      } catch (err) {
+        setLoading(false);
+      }
+    },600);
   }
 
   const IS={};
@@ -2302,10 +2308,15 @@ function App(){
             const validProfiles = (Array.isArray(profiles) ? profiles : []).filter(p => !p.isDeleted);
             if (validProfiles.length > 0) {
               setErr(null);
-              fetchKundali(validProfiles[0], user).then(k => setKundali(k)).catch(e => {
-        if(e.message==='AUTH_REQUIRED') { setShowAuthModal(true); setKundali(null); }
-      });
-              setScreen('results');
+              if (user) {
+                fetchKundali(validProfiles[0], user).then(k => {
+                  setKundali(k);
+                  setScreen('results');
+                }).catch(e => {
+                  setKundali(null);
+                });
+              }
+
             }
           }
         } catch (e) {}
@@ -2332,8 +2343,8 @@ function App(){
         const k = await fetchKundali(inp, user);
         setKundali(k);
       } catch(e) {
-        if(e.message==='AUTH_REQUIRED') setShowAuthModal(true);
-        else alert("Failed to generate birth chart from celestial cloud.");
+        if(e.message==='AUTH_REQUIRED') { setShowAuthModal(true); throw e; }
+        else { alert("Failed to generate birth chart from celestial cloud."); throw e; }
       }
       setScreen('results');
       saveProfile(inp);
