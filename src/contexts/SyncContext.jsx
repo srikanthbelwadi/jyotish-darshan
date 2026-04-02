@@ -16,7 +16,8 @@ export const SyncProvider = ({ children }) => {
     if (typeof auth === 'undefined' || !auth) return;
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
-        setUser(prev => ({ ...prev, name: u.displayName || prev?.name || 'Seeker', email: u.email, photoURL: u.photoURL, uid: u.uid }));
+        u.name = u.displayName || 'Seeker';
+        setUser(u);
         setSyncStatus('syncing');
         try {
           const cloudProfiles = await fetchCloudProfiles(u.uid);
