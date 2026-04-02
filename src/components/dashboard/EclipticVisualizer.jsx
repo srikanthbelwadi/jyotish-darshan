@@ -1,9 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const EclipticChart = ({ hue, pillarId, t, K }) => {
+   const { t: i18nT } = useTranslation();
    const RASHIS = ['Mesha ♈','Vrish ♉','Mith ♊','Kark ♋','Simha ♌','Kanya ♍','Tula ♎','Vrish ♏','Dhanu ♐','Makar ♑','Kumbh ♒','Meen ♓'];
    const NAKSHATRAS = ['Aswini', 'Bharani', 'Krittika', 'Rohini', 'Mrigasira', 'Ardra', 'Punarvasu', 'Pushya', 'Aslesha', 'Magha', 'P.Phal', 'U.Phal', 'Hasta', 'Chitra', 'Swati', 'Visakha', 'Anuradha', 'Jyeshtha', 'Mula', 'P.Ashadha', 'U.Ashadha', 'Sravana', 'Dhanishta', 'Satabhisha', 'P.Bhadra', 'U.Bhadra', 'Revati'];
 
+   // ... planet abbreviation logic truncated here is maintained below ...
    const PLANET_KEYS = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu', 'ketu'];
    const PLANET_ABBR = { sun: 'Su', moon: 'Mo', mars: 'Ma', mercury: 'Me', jupiter: 'Ju', venus: 'Ve', saturn: 'Sa', rahu: 'Ra', ketu: 'Ke' };
    
@@ -34,7 +37,7 @@ export const EclipticChart = ({ hue, pillarId, t, K }) => {
          const xText = 250 + 170 * Math.cos(aMid), yText = 250 + 170 * Math.sin(aMid);
          const isRashiHighlighted = (i === rashi1 || i === rashi2);
          const SYMBOLS = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
-         const rashiStr = t(`astro.rashis.${i}`, { defaultValue: rashiDefault.split(' ')[0] }) + ' ' + SYMBOLS[i];
+         const rashiStr = i18nT(`astro.rashis.${i}`, { defaultValue: rashiDefault.split(' ')[0] }) + ' ' + SYMBOLS[i];
 
          return (
            <g key={`r-${i}`}>
@@ -58,12 +61,12 @@ export const EclipticChart = ({ hue, pillarId, t, K }) => {
          let rot = aMidDeg;
          if (rot > 90 && rot < 270) rot += 180;
          
-         const nakStr = t(`astro.nakshatras.${i}`, { defaultValue: nakDefault });
+         const nakStr = i18nT(`astro.nakshatras.${i}`, { defaultValue: nakDefault });
 
          return (
            <g key={`n-${i}`}>
              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--text-main)" strokeWidth="1" strokeDasharray="2 2" opacity="0.4"/>
-             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="var(--text-muted)" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{nakStr.slice(0, 8)}</text>
+             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="var(--text-muted)" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{typeof nakStr === 'string' ? nakStr.slice(0, 8) : nakDefault}</text>
            </g>
          )
        })}
