@@ -33,13 +33,20 @@ export async function fetchKundali(input, user=null, isPanchang=false) {
 
   const res = await fetch('/api/kundali', {
     method: 'POST',
+    credentials: 'omit', // Vercel API
     headers,
-    body: JSON.stringify(input) // Payload for calculating
+    body: JSON.stringify(input)
   });
   
-  if (res.status === 401) throw new Error("AUTH_REQUIRED");
   if (!res.ok) {
      const text = await res.text();
+     if (res.status === 401) {
+        if (!text.includes("Missing Firebase")) {
+           // It's Vercel Protection or something else returning 401!
+           throw new Error("AUTH_FORBIDDEN: VERCEL 401: " + text.slice(0, 50));
+        }
+        throw new Error("AUTH_REQUIRED");
+     }
      if (res.status === 403) {
         throw new Error("AUTH_FORBIDDEN: " + text);
      }
