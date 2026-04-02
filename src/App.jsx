@@ -1,6 +1,17 @@
 import React from 'react';
 import { DYNAMIC_STRINGS } from './i18n/dynamicTranslations.js';
 import { UI_STRINGS } from './i18n/uiStrings.js';
+import i18next from './i18n/index.js';
+
+const createI18nProxy = (category) => new Proxy({}, {
+  get: (target, lang) => new Proxy({}, {
+    get: (target, key) => {
+      // Proxy requests to the translation engine natively!
+      return i18next.t(`astro.${category}.${key}`, { lng: lang, defaultValue: key });
+    }
+  })
+});
+
 import './index.css';
 import CompatibilityMatch from './components/CompatibilityMatch.jsx';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
