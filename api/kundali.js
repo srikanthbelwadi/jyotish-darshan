@@ -26,11 +26,15 @@ export default async function handler(req, res) {
 
   // Auth Gating (Phase 1 implementation as requested by user)
   const authHeader = req.headers.authorization;
+  let rawBody = req.body;
+  if (Buffer.isBuffer(rawBody)) {
+    rawBody = rawBody.toString('utf8');
+  }
   let parsedBody = {};
-  if (typeof req.body === 'string') {
-    try { parsedBody = JSON.parse(req.body); } catch(e) {}
-  } else if (req.body) {
-    parsedBody = req.body;
+  if (typeof rawBody === 'string') {
+    try { parsedBody = JSON.parse(rawBody); } catch(e) {}
+  } else if (rawBody) {
+    parsedBody = rawBody;
   }
   const bodyToken = parsedBody.firebaseToken;
   
