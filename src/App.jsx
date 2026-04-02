@@ -2317,6 +2317,34 @@ function App(){
   const [loadMsg, setLoadMsg] = React.useState('Synthesizing Ephemeris data...');
   const [loadPct, setLoadPct] = React.useState(0);
 
+
+  React.useEffect(() => {
+    if (user) {
+      const pending = sessionStorage.getItem('pendingKundaliFetch');
+      if (pending) {
+        sessionStorage.removeItem('pendingKundaliFetch');
+        try {
+          const inp = JSON.parse(pending);
+          handleSubmit(inp);
+        } catch(e) {}
+      }
+    }
+  }, [user]);
+
+
+  React.useEffect(() => {
+    if (user) {
+      const pending = sessionStorage.getItem('pendingKundaliFetch');
+      if (pending) {
+        sessionStorage.removeItem('pendingKundaliFetch');
+        try {
+          const inp = JSON.parse(pending);
+          handleSubmit(inp);
+        } catch(e) {}
+      }
+    }
+  }, [user]);
+
   React.useEffect(()=>{
     let mounted = true;
     if(mounted) { setLoadPct(100); setLoadMsg('Connecting to Cosmic Engine...'); }
@@ -2346,6 +2374,7 @@ function App(){
     } catch(e) {
       console.error(e);
       if(e.message === 'AUTH_REQUIRED') {
+        sessionStorage.setItem('pendingKundaliFetch', JSON.stringify(inp));
         setShowAuthModal(true);
       } else {
         setErr(e.message.startsWith('AUTH_FORBIDDEN') ? e.message : t('computeError', lang));
