@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, fetchCloudUserData, syncSettingsToCloud } from '../firebase';
+import i18next from '../i18n';
 
 const PreferencesContext = createContext();
 
@@ -47,6 +48,12 @@ export const PreferencesProvider = ({ children }) => {
     return () => unsub();
   }, []); // Intentionally empty dependency array so it runs once
 
+  useEffect(() => {
+    if (i18next.language !== lang) {
+      i18next.changeLanguage(lang);
+    }
+  }, [lang]);
+
   // Function to deliberately change language and trigger cache clearing
   const setLanguage = async (newLang) => {
     if (newLang === lang) return;
@@ -66,6 +73,7 @@ export const PreferencesProvider = ({ children }) => {
 
     setLangState(newLang);
     localStorage.setItem('jd_lang', newLang);
+    i18next.changeLanguage(newLang);
 
     if (user) {
       await syncSettingsToCloud(user.uid, { lang: newLang, theme });

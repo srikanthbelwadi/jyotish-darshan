@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { DYNAMIC_STRINGS } from './i18n/dynamicTranslations.js';
 import { UI_STRINGS } from './i18n/uiStrings.js';
 import i18next from './i18n/index.js';
@@ -2372,6 +2373,7 @@ function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, o
 }
 
 function App(){
+  useTranslation(); // Subscribe to async translation bundle loads
   const { lang, isRegenerating } = usePreferences();
   const [showPrefModal, setShowPrefModal] = React.useState(false);
   const[screen,setScreen]=React.useState('input');
