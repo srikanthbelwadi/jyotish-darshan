@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 
@@ -87,7 +87,7 @@ export const signInWithGooglePopup = () => {
     if (!auth) {
         return Promise.reject(new Error("Firebase is not configured locally or in Vercel. Please add VITE_FIREBASE_API_KEY environment variables."));
     }
-    return signInWithRedirect(auth, googleProvider);
+    return signInWithPopup(auth, googleProvider);
 };
 
 export const callOracle = async (data) => {
