@@ -1019,14 +1019,17 @@ function DailyPanchang({ lang }){
       const lat=location?location.lat:28.6139; // Loc fallback
       const lng=location?location.lng:77.2090;
       
-      fetchKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng, isPanchang: true}, null, true)
-        .then(K => {
+      const utcOff = now.getTimezoneOffset() / -60;
+      
+      import('./engine/offlinePanchang.js').then(({ computeOfflineDailyPanchang }) => {
+        return computeOfflineDailyPanchang(now.getUTCFullYear(), now.getUTCMonth()+1, now.getUTCDate(), utcH, utcM, lat, lng, utcOff);
+      }).then(K => {
+        import('./engine/offlineAstronomy.js').then(({ getSunriseSunsetOffline, inauspiciousPeriodsOffline, abhijitMuhurtaOffline }) => {
            if (!isMounted) return;
-           const utcOff = now.getTimezoneOffset() / -60;
-           const sunSet = sunRiseSet(K.jd, lat, lng, utcOff);
+           const sunSet = getSunriseSunsetOffline(K.jd, lat, lng, utcOff);
            const dayOfWeek = now.getDay();
-           const inaus = inauspiciousPeriods(sunSet.rise, sunSet.set, dayOfWeek);
-           const abhijit = abhijitMuhurta(sunSet.rise, sunSet.set);
+           const inaus = inauspiciousPeriodsOffline(sunSet.rise, sunSet.set, dayOfWeek);
+           const abhijit = abhijitMuhurtaOffline(sunSet.rise, sunSet.set);
            
            const tMoon = K.planets.find(p=>p.key==='moon');
            const tSun = K.planets.find(p=>p.key==='sun');
@@ -1042,13 +1045,14 @@ function DailyPanchang({ lang }){
            const paksha = pakshaRaw.includes('Shukla') ? 'Shukla' : pakshaRaw.includes('Krishna') ? 'Krishna' : pakshaRaw;
            
            setDailyPan({K,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek,jd:K.jd,hasLoc:!!location,year: now.getFullYear()});
-        })
-        .catch(e => {
-            console.error("Panchang load silently failed:", e);
-            if (isMounted) setDailyPan({ error: true });
         });
+      })
+      .catch(e => {
+          console.error("Panchang load silently failed:", e);
+          if (isMounted) setDailyPan({ error: true });
+      });
         
-        return () => { isMounted = false; };
+      return () => { isMounted = false; };
     }, [location, lang]);
 
     if(!dailyPan) return (
