@@ -149,15 +149,15 @@ export function buildReading(kundali, lang = 'en') {
        desc += ` ${spiritualSummary}`;
      }
 
-     const sYear = parseInt(maha.startStr.split('-')[0]);
-     const eYear = parseInt(maha.endStr.split('-')[0]);
+     const sYear = parseInt(maha.start.split('-')[0]);
+     const eYear = parseInt(maha.end.split('-')[0]);
      const ageStart = Math.max(0, sYear - birthYear);
      const ageEnd = Math.max(0, eYear - birthYear);
 
      return {
         planet: maha.planet,
-        start: maha.startStr,
-        end: maha.endStr,
+        start: maha.start,
+        end: maha.end,
         years: maha.years,
         ageStr: `${t('er.ages') || 'Ages'} ${ageStart}-${ageEnd} (${maha.years || '?'} ${t('er.yrs') || 'yrs'})`,
         isCurrent: maha.isCurrent,
@@ -172,8 +172,8 @@ export function buildReading(kundali, lang = 'en') {
     antar: currentAntar ? {
       planet: currentAntar.planet,
       trPlanet: t(`pl.${currentAntar.planet}`) || currentAntar.planet,
-      start: currentAntar.startStr,
-      end: currentAntar.endStr,
+      start: currentAntar.start,
+      end: currentAntar.end,
       dict: DASHA_DICT[currentAntar.planet] || { desc: '', challenge: '', guidance: '' }
     } : null
   };

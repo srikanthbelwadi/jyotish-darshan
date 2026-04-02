@@ -21,7 +21,6 @@ import { auth } from './firebase.js';
 export async function fetchKundali(input, paramUser=null, isPanchang=false) {
   let headers = { 'Content-Type': 'application/json' };
   
-  // Directly pull current user from global auth state to bypass ANY React closure staleness
   const activeUser = paramUser || auth?.currentUser;
 
   if (!isPanchang && !activeUser) {
@@ -659,7 +658,10 @@ gu:['ચૈત્ર','વૈશાખ','જ્યેષ્ઠ','અષાઢ','
 bn:['চৈত্র','বৈশাখ','জ্যৈষ্ঠ','আষাঢ','শ্রাবণ','ভাদ্র','আশ্বিন','কার্তিক','অগ্রহায়ণ','পৌষ','মাঘ','ফাল্গুন'],
 ml:['ചൈത്രം','വൈശാഖം','ജ്യേഷ്ഠം','ആഷാഢം','ശ്രാവണം','ഭാദ്രപദം','ആശ്വിനം','കാർത്തിക','മാർഗശീർഷം','പൗഷം','മാഘം','ഫാൽഗുനം']};
 const SAMVATSARA=['Prabhava','Vibhava','Shukla','Pramoda','Prajapati','Angirasa','Shreemukha','Bhava','Yuva','Dhatri','Ishvara','Bahudhanya','Pramathi','Vikrama','Vrisha','Chitrabhanu','Subhanu','Tarana','Parthiva','Vyaya','Sarvajit','Sarvadharin','Virodhi','Vikrita','Khara','Nandana','Vijaya','Jaya','Manmatha','Durmukhi','Hevilambi','Vilambi','Vikari','Sharvari','Plava','Shubhakruti','Sobhakruti','Krodhi','Vishvavasu','Parabhava','Plavanga','Keelaka','Saumya','Sadharana','Virodhakrit','Paridhaavi','Pramadeecha','Ananda','Rakshasa','Nala','Pingala','Kalayukti','Siddhartha','Raudra','Durmathi','Dundubhi','Rudhirodgari','Raktakshi','Krodhana','Akshaya'];
-export function localizePanchang(pan, lang) {
+export const PCOLOR = { sun:'#F59E0B', moon:'#9CA3AF', mars:'#EF4444', mercury:'#10B981', jupiter:'#FCD34D', venus:'#F472B6', saturn:'#374151', rahu:'#4B5563', ketu:'#6B7280' };
+export const DASHA_YRS = { sun:6, moon:10, mars:7, rahu:18, jupiter:16, saturn:19, mercury:17, ketu:7, venus:20 };
+
+function localizePanchang(pan, lang) {
   if (!pan || lang === 'en') return pan;
   const tA=L_TITHI[lang]||L_TITHI.en, vA=L_VARA[lang]||L_VARA.en, pO=L_PAKSHA[lang]||L_PAKSHA.en;
   const yA=L_YOGA_PANCH[lang]||L_YOGA_PANCH.en, kA=L_KARANA[lang]||L_KARANA.en, nA=L_NAKS[lang]||L_NAKS.en;
@@ -971,6 +973,7 @@ function NorthChart({planets,lagnaR,size=320,small=false,title,lang='en'}){
 
 function DailyPanchang({ lang }){
     const[location,setLocation]=React.useState(null);
+    const[dailyPan, setDailyPan] = React.useState(null);
     const GRAHA=L_GRAHA[lang]||L_GRAHA.en;
     const RASHI_N=L_RASHI[lang]||L_RASHI.en;
     const LP=L_PANCHANG[lang]||L_PANCHANG.en;
@@ -983,33 +986,35 @@ function DailyPanchang({ lang }){
       }
     },[]);
 
-    const dailyPan=React.useMemo(()=>{
+    React.useEffect(()=>{
+      let isMounted = true;
       const now=new Date();
-      const year=now.getFullYear();
       const utcH=now.getUTCHours(),utcM=now.getUTCMinutes();
-      const utcOff=now.getTimezoneOffset()/-60;
       const lat=location?location.lat:28.6139; // Loc fallback
       const lng=location?location.lng:77.2090;
-      // Replaced by async fetch
-      fetchKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng}, null, true).then(K => setPanchang(K.panchang)).catch(e => console.error("Panchang load failed", e));
-      return;
-      const sunSet=sunRiseSet(jd,lat,lng,utcOff);
-      const dayOfWeek=now.getDay();
-      const inaus=inauspiciousPeriods(sunSet.rise,sunSet.set,dayOfWeek);
-      const abhijit=abhijitMuhurta(sunSet.rise,sunSet.set);
-      const tMoon=K.planets.find(p=>p.key==='moon');
-      const tSun=K.planets.find(p=>p.key==='sun');
-      const moonNakRaw=nakshatra(tMoon.lon);
-      const L_NN = L_PANCHANG[lang]?.nakNames || {};
-      const moonNak = { ...moonNakRaw, name: L_NN[moonNakRaw.name] || moonNakRaw.name };
-      const pMatch=K.panchang.tithi.match(/\((.*?)\)/);
-      const pakshaRaw = pMatch?pMatch[1]:'';
-      const tithiRaw = K.panchang.tithi.split(' (')[0];
-      const L_TN = L_PANCHANG[lang]?.tithiNames || {};
-      const tithiOnly = L_TN[tithiRaw] || tithiRaw;
-      const paksha = pakshaRaw.includes('Shukla') ? t_astro('shukla', lang) : pakshaRaw.includes('Krishna') ? t_astro('krishna', lang) : pakshaRaw;
-      return{K,utcOff,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek,jd,hasLoc:!!location,year};
-    },[location]);
+      
+      fetchKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng, isPanchang: true}, null, true)
+        .then(K => {
+           if (!isMounted) return;
+           const tMoon = K.planets.find(p=>p.key==='moon');
+           const tSun = K.planets.find(p=>p.key==='sun');
+           const L_NN = L_PANCHANG[lang]?.nakNames || {};
+           const moonNakRawName = tMoon.nakshatraName || 'Ashvini';
+           const moonNak = { name: L_NN[moonNakRawName] || moonNakRawName };
+           
+           const pMatch=K.panchang.tithi.match(/\((.*?)\)/);
+           const pakshaRaw = pMatch?pMatch[1]:'';
+           const tithiRaw = K.panchang.tithi.split(' (')[0];
+           const L_TN = L_PANCHANG[lang]?.tithiNames || {};
+           const tithiOnly = L_TN[tithiRaw] || tithiRaw;
+           const paksha = pakshaRaw.includes('Shukla') ? 'Shukla' : pakshaRaw.includes('Krishna') ? 'Krishna' : pakshaRaw;
+           
+           setDailyPan({K,now,sunSet:{rise:K.sunrise,set:K.sunset},inaus:{rahuKala:{str:'—'},yamaghanda:{str:'—'}},abhijit:null,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek:now.getDay(),jd:K.jd,hasLoc:!!location,year: now.getFullYear()});
+        })
+        .catch(e => console.error("Panchang load silently failed:", e));
+        
+        return () => { isMounted = false; };
+    }, [location, lang]);
 
     if(!dailyPan)return null;
     const{K,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,hasLoc,year}=dailyPan;
@@ -1318,8 +1323,8 @@ function OverviewTab({K,fmt,lang='en'}){
       <Card>
         <h3 style={{margin:'0 0 12px',fontSize:14,color:'var(--text-main)',fontWeight:700}}>{t('ov.curDasha',lang)}</h3>
         <div className="responsive-grid-3" style={{gap:12}}>
-          {[{lbl:t('ov.maha',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet,period:`${cur?.startStr}–${cur?.endStr}`,bg:'var(--bg-badge-purple)',clr:'var(--text-badge-purple)'},
-            {lbl:t('ov.antar',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[curA?.planet]||curA?.planet,period:`${curA?.startStr}–${curA?.endStr}`,bg:'var(--bg-badge-orange)',clr:'var(--text-badge-orange)'},
+          {[{lbl:t('ov.maha',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet,period:`${cur?.start}–${cur?.end}`,bg:'var(--bg-badge-purple)',clr:'var(--text-badge-purple)'},
+            {lbl:t('ov.antar',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[curA?.planet]||curA?.planet,period:`${curA?.start}–${curA?.end}`,bg:'var(--bg-badge-orange)',clr:'var(--text-badge-orange)'},
             {lbl:t('ov.birth',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[dasha.nakLord]||dasha.nakLord,period:`${t('ov.nakshatra',lang)}: ${(L_NAKS[lang]||L_NAKS.en)[K.planets.find(p=>p.key==='moon')?.nIdx]||dasha.nakName}`,bg:'var(--bg-badge-green)',clr:'var(--text-badge-green)'}].map(({lbl,p,period,bg,clr})=>(
             <div key={lbl} style={{background:bg,borderRadius:10,padding:12,textAlign:'center'}}>
               <p style={{margin:'0 0 3px',fontSize:10,color:clr,textTransform:'uppercase',letterSpacing:1,fontWeight:600}}>{lbl}</p>
@@ -1448,12 +1453,12 @@ function DashaTab({K,lang='en'}){
       <Card style={{marginBottom:18}}>
         <div style={{display:'flex',height:50,borderRadius:8,overflow:'hidden',border:'1px solid var(--border-light)'}}>
           {mahadashas.map((d,i)=>(
-            <div key={i} style={{flex:DASHA_YRS[d.planet]||d.yrs,background:PCOLOR[d.planet]||'#9CA3AF',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',outline:d.isCurrent?'3px solid #F59E0B':'none',outlineOffset:-3,opacity:d.isCurrent?1:0.75}} onClick={()=>setExp(exp===i?null:i)} title={`${d.planet} ${d.startStr}–${d.endStr}`}>
+            <div key={i} style={{flex:DASHA_YRS[d.planet]||d.yrs,background:PCOLOR[d.planet]||'#9CA3AF',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',outline:d.isCurrent?'3px solid #F59E0B':'none',outlineOffset:-3,opacity:d.isCurrent?1:0.75}} onClick={()=>setExp(exp===i?null:i)} title={`${d.planet} ${d.start}–${d.end}`}>
               <span style={{color:'white',fontSize:(DASHA_YRS[d.planet]||10)>8?12:9,fontWeight:700,textShadow:'0 1px 2px rgba(0,0,0,0.4)',textTransform:'capitalize'}}>{(DASHA_YRS[d.planet]||10)>8?((L_GRAHA[lang]||L_GRAHA.en)[d.planet]||d.planet):((L_ABBR[lang]||L_ABBR.en)[d.planet]||d.planet.slice(0,2))}</span>
             </div>
           ))}
         </div>
-        <p style={{marginTop:8,fontSize:12,color:'var(--accent-gold)',textAlign:'center'}}>{t('da.cur',lang)}: <strong>{(L_GRAHA[lang]||L_GRAHA.en)[current?.planet]||current?.planet}</strong> {t('ov.maha',lang)} ({current?.startStr}–{current?.endStr})</p>
+        <p style={{marginTop:8,fontSize:12,color:'var(--accent-gold)',textAlign:'center'}}>{t('da.cur',lang)}: <strong>{(L_GRAHA[lang]||L_GRAHA.en)[current?.planet]||current?.planet}</strong> {t('ov.maha',lang)} ({current?.start}–{current?.end})</p>
       </Card>
       <div style={{display:'grid',gap:7}}>
         {mahadashas.map((m,i)=>(
@@ -1466,7 +1471,7 @@ function DashaTab({K,lang='en'}){
                   <span style={{fontSize:12,color:'var(--text-muted)'}}>· {DASHA_YRS[m.planet]} {t('da.yrs',lang)}</span>
                   {m.isCurrent&&<span style={{fontSize:10,background:'#F59E0B',color:'white',padding:'1px 7px',borderRadius:8,fontWeight:700}}>{t('da.active',lang)}</span>}
                 </div>
-                <p style={{margin:'1px 0 0',fontSize:12,color:'var(--text-muted)'}}>{m.startStr} → {m.endStr}</p>
+                <p style={{margin:'1px 0 0',fontSize:12,color:'var(--text-muted)'}}>{m.start} → {m.end}</p>
               </div>
               <span style={{color:'var(--text-muted)'}}>{exp===i?'▲':'▼'}</span>
             </div>
@@ -1479,7 +1484,7 @@ function DashaTab({K,lang='en'}){
                     <span style={{fontSize:13,fontWeight:a.isCurrent?700:400,color:a.isCurrent?'#7C3AED':'#4B5563'}}>{(L_GRAHA[lang]||L_GRAHA.en)[m.planet]||m.planet}/{(L_GRAHA[lang]||L_GRAHA.en)[a.planet]||a.planet}</span>
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:7}}>
-                    <span style={{fontSize:11,color:'var(--text-muted)'}}>{a.startStr} – {a.endStr}</span>
+                    <span style={{fontSize:11,color:'var(--text-muted)'}}>{a.start} – {a.end}</span>
                     {a.isCurrent&&<span style={{fontSize:10,background:'#7C3AED',color:'white',padding:'1px 6px',borderRadius:8,fontWeight:700}}>{t('da.now',lang)}</span>}
                   </div>
                 </div>
@@ -1700,7 +1705,7 @@ async function downloadPDF(K,lang,PK,user){
   const DASHA_M=(L_DASHA[lang]||L_DASHA.en);
   const yogaRows=ys.map(y=>{const ly=(L_YOGA[lang]||L_YOGA.en)[y.name]||{name:y.name,effect:y.effect};return`<tr><td style="padding:6px 8px;border:1px solid #E5D5C0;font-weight:600">${ly.name}</td><td style="padding:6px 8px;border:1px solid #E5D5C0;color:${y.type==='dosha'?'#EF4444':y.type==='raja'?'#7C3AED':'#10B981'};font-size:11px;text-transform:uppercase">${y.type}</td><td style="padding:6px 8px;border:1px solid #E5D5C0;font-size:12px">${ly.effect}</td></tr>`}).join('');
   const LS=(L_STATUS[lang]||L_STATUS.en);const planetRows=planets.map(p=>`<tr style="border-bottom:1px solid #F3F4F6"><td style="padding:5px 8px;border:1px solid #E5D5C0;font-weight:600;color:${PCOLOR[p.key]||'#1E3A5F'}">${(L_GRAHA[lang]||L_GRAHA.en)[p.key]||p.name}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${(L_RASHI[lang]||L_RASHI.en)[p.rashi]}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-family:monospace;font-size:11px">${p.degFmt}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-size:12px">${(L_NAKS[lang]||L_NAKS.en)[p.nIdx]||p.nakshatraName}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;text-align:center">${p.pada}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;text-align:center">${p.house}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-size:11px">${[p.exalted?LS.exalted:p.debil?LS.debilitated:'',(p.retro && p.key !== 'rahu' && p.key !== 'ketu')?LS.retrograde:'',p.combust?LS.combust:'',p.vargottama?LS.vargottama:''].filter(Boolean).join(', ')||'—'}</td></tr>`).join('');
-  const dashaRows=dasha.mahadashas.map(m=>`<tr style="${m.isCurrent?'background:#FFF9E6':''}"><td style="padding:5px 8px;border:1px solid #E5D5C0;font-weight:600;color:${PCOLOR[m.planet]||'#1E3A5F'}">${(L_GRAHA[lang]||L_GRAHA.en)[m.planet]||m.planet}${m.isCurrent?' ★':''}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${DASHA_YRS[m.planet]} ${S['da.yrs']||S.da?.yrs||'yrs'}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${m.startStr}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${m.endStr}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-size:11px">${m.isCurrent?(curA?`${S.ov?.antar||S['pdf.antardasha']||'Antardasha'}: ${(L_GRAHA[lang]||L_GRAHA.en)[curA.planet]||curA.planet} (${curA.startStr}–${curA.endStr})`:S['da.active']||'Active'):'—'}</td></tr>`).join('');
+  const dashaRows=dasha.mahadashas.map(m=>`<tr style="${m.isCurrent?'background:#FFF9E6':''}"><td style="padding:5px 8px;border:1px solid #E5D5C0;font-weight:600;color:${PCOLOR[m.planet]||'#1E3A5F'}">${(L_GRAHA[lang]||L_GRAHA.en)[m.planet]||m.planet}${m.isCurrent?' ★':''}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${DASHA_YRS[m.planet]} ${S['da.yrs']||S.da?.yrs||'yrs'}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${m.start}</td><td style="padding:5px 8px;border:1px solid #E5D5C0">${m.end}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;font-size:11px">${m.isCurrent?(curA?`${S.ov?.antar||S['pdf.antardasha']||'Antardasha'}: ${(L_GRAHA[lang]||L_GRAHA.en)[curA.planet]||curA.planet} (${curA.start}–${curA.end})`:S['da.active']||'Active'):'—'}</td></tr>`).join('');
   const sbRows=Object.entries(sb).map(([k,v])=>`<tr><td style="padding:5px 8px;border:1px solid #E5D5C0;font-weight:600">${(L_GRAHA[lang]||L_GRAHA.en)[k]||k}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;text-align:center">${v?.total?.toFixed(1)||'—'}</td><td style="padding:5px 8px;border:1px solid #E5D5C0;text-align:center;color:${v?.cls==='Strong'?'#16A34A':v?.cls==='Weak'?'#DC2626':'#D97706'}">${(v?.cls==='Strong'?(S.shadbala?.strong||S['shadbala.strong']||'Strong'):v?.cls==='Moderate'?(S.shadbala?.moderate||S['shadbala.moderate']||'Moderate'):v?.cls==='Weak'?(S.shadbala?.weak||S['shadbala.weak']||'Weak'):'—')}</td></tr>`).join('');
   
   // Ashtakavarga HTML
@@ -1768,8 +1773,8 @@ async function downloadPDF(K,lang,PK,user){
 </div>
 
 <div style="background:#F5F0FF;border:1px solid #C4B5FD;border-radius:8px;padding:12px;margin-bottom:16px;display:flex;gap:24px">
-  <div><span style="font-size:10px;color:#7C3AED;text-transform:uppercase;letter-spacing:0.5px;display:block">${S.ov.maha}</span><strong style="font-size:16px;color:#1E3A5F">${(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet}</strong> <span style="font-size:12px;color:#6B7280">(${cur?.startStr} – ${cur?.endStr})</span></div>
-  ${curA?`<div><span style="font-size:10px;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;display:block">${S.ov.antar}</span><strong style="font-size:15px;color:#1E3A5F">${(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet}/${(L_GRAHA[lang]||L_GRAHA.en)[curA?.planet]||curA?.planet}</strong> <span style="font-size:12px;color:#6B7280">(${curA?.startStr} – ${curA?.endStr})</span></div>`:''}
+  <div><span style="font-size:10px;color:#7C3AED;text-transform:uppercase;letter-spacing:0.5px;display:block">${S.ov.maha}</span><strong style="font-size:16px;color:#1E3A5F">${(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet}</strong> <span style="font-size:12px;color:#6B7280">(${cur?.start} – ${cur?.end})</span></div>
+  ${curA?`<div><span style="font-size:10px;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;display:block">${S.ov.antar}</span><strong style="font-size:15px;color:#1E3A5F">${(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet}/${(L_GRAHA[lang]||L_GRAHA.en)[curA?.planet]||curA?.planet}</strong> <span style="font-size:12px;color:#6B7280">(${curA?.start} – ${curA?.end})</span></div>`:''}
   <div><span style="font-size:10px;color:#E11D48;text-transform:uppercase;letter-spacing:0.5px;display:block">${S.ov.birth}</span><strong style="font-size:15px;color:#1E3A5F">${(L_GRAHA[lang]||L_GRAHA.en)[dasha.nakLord]||dasha.nakLord}</strong> <span style="font-size:12px;color:#6B7280">${dasha.nakName}</span></div>
 </div>
 
@@ -1796,7 +1801,7 @@ ${ys.length>0?`<h2>${S.yo.title}</h2><table><thead><tr><th>${S['pdf.yogaDosha']|
 <h2>${S.rd.title}</h2>
 <div class="reading-section"><div class="reading-label">${S.rd.lagnaA}</div><p>${LAGNA_R[lagna.rashi]||''}</p></div>
 <div class="reading-section"><div class="reading-label">${S.rd.moonA||S.rd?.chandra||''}</div><p>${(L_READING[lang]||L_READING.en).chandra((L_NAKS[lang]||L_NAKS.en)[moon.nIdx]||moon.nakshatraName,(L_RASHI[lang]||L_RASHI.en)[moon.rashi],moon.exalted,moon.retro)}</p></div>
-<div class="reading-section"><div class="reading-label">${S.rd.dashaR}</div><p><strong>${(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]}</strong> ${S.ov.maha} (${cur?.startStr} – ${cur?.endStr}). ${DASHA_M[cur?.planet]||''}${curA&&DASHA_M[curA?.planet]?` <strong>${(L_GRAHA[lang]||L_GRAHA.en)[curA.planet]}</strong> ${S.ov.antar} (${curA?.startStr}–${curA?.endStr}): ${DASHA_M[curA?.planet]}.`:''}</p></div>
+<div class="reading-section"><div class="reading-label">${S.rd.dashaR}</div><p><strong>${(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]}</strong> ${S.ov.maha} (${cur?.start} – ${cur?.end}). ${DASHA_M[cur?.planet]||''}${curA&&DASHA_M[curA?.planet]?` <strong>${(L_GRAHA[lang]||L_GRAHA.en)[curA.planet]}</strong> ${S.ov.antar} (${curA?.start}–${curA?.end}): ${DASHA_M[curA?.planet]}.`:''}</p></div>
 ${ys.filter(y=>y.type!=='dosha').length>0?`<div class="reading-section"><div class="reading-label">${S.rd.yogaI}</div><p>${ys.filter(y=>y.type!=='dosha').map(y=>{const ly=(L_YOGA[lang]||L_YOGA.en)[y.name]||{name:y.name,effect:y.effect};return`<strong>${ly.name}</strong> — ${ly.effect}`}).join(' &nbsp;·&nbsp; ')}</p></div>`:''}
 ${ys.filter(y=>y.type==='dosha').length>0?`<div class="reading-section" style="border-left:4px solid #EF4444"><div class="reading-label" style="color:#EF4444">${(L_STATUS[lang]||L_STATUS.en).combust?S.yo?.dosha||'Dosha':'Dosha'}</div><p>${ys.filter(y=>y.type==='dosha').map(y=>{const ly=(L_YOGA[lang]||L_YOGA.en)[y.name]||{name:y.name,effect:y.effect};return`<strong>${ly.name}</strong> — ${ly.effect}`}).join(' &nbsp;·&nbsp; ')}</p></div>`:''}
 ${strong.length>0?`<div class="reading-section"><div class="reading-label">${S.rd.strengthR}</div><p>${strong.map(k=>(L_GRAHA[lang]||L_GRAHA.en)[k]).join(', ')}${weak.length>0?' · '+weak.map(k=>(L_GRAHA[lang]||L_GRAHA.en)[k]).join(', '):''}</p></div>`:''}

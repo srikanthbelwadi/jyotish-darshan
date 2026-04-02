@@ -209,7 +209,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
                 {(dasha?.mahadashas || []).map(m => (
                    <tr key={m.planet || Math.random()} style={{ borderBottom: '1px solid #e5d5c0', background: m.isCurrent ? '#fef3c7' : 'transparent' }}>
                       <td style={{ padding: '6px 8px', fontWeight: 'bold' }}>{getGrahaName(m.planet) ? String(getGrahaName(m.planet)).toUpperCase() : ''}</td>
-                      <td style={{ padding: '6px 8px' }}>{m.startStr || ''} to {m.endStr || ''}</td>
+                      <td style={{ padding: '6px 8px' }}>{m.start || ''} to {m.end || ''}</td>
                       <td style={{ padding: '6px 8px' }}>{m.years || ''} Years</td>
                    </tr>
                 ))}

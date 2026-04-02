@@ -42,18 +42,16 @@ export default async function handler(req, res) {
     token = bodyToken;
   }
 
-  if (!token) {
+  if (!token && !parsedBody.isPanchang) {
     console.warn("NO TOKEN EXTRACTED. Headers: ", Object.keys(req.headers));
     return res.status(401).json({ error: 'Backend Authorization Failure: Token utterly absent from both Headers and Body' });
   }
 
   try {
-    if (getApps().length > 0 && process.env.FIREBASE_SERVICE_ACCOUNT) {
+    if (token && getApps().length > 0 && process.env.FIREBASE_SERVICE_ACCOUNT) {
       await getAuth().verifyIdToken(token);
-    } else {
-      // If deployed without admin keys yet (local testing), we warn but proceed or fail based on strictness.
-      // For now, in local dev, if verifying fails because no cert, we mock success to prevent blocking dev.
-      // But we wrap in try-catch below.
+    } else if (!token && !parsedBody.isPanchang) {
+      throw new Error("Missing token");
     }
   } catch (error) {
     console.error("Auth verification failed:", error);
@@ -65,7 +63,8 @@ export default async function handler(req, res) {
     await initializeAstroEngine();
 
     // 2. Compute proprietary mathematics entirely on the backend
-    const inputParams = req.body;
+    const inputParams = parsedBody || {};
+
     
     // Quick validation
     if (!inputParams.year || !inputParams.month || !inputParams.day || inputParams.lat == null || inputParams.lng == null) {
