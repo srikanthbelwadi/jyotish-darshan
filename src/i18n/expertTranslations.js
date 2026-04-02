@@ -55,6 +55,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "Mahadasha",
     "er.antardasha": "Antardasha",
     "er.to": "to",
+    "er.dateRange": "{start} to {end}",
 
     // Antardasha format
     "er.antarFormat": "This active sub-period adds its own coloration to the overarching phase: {desc} Focus on integrating {planet} energies productively to mitigate its challenge: {challenge}"
@@ -116,6 +117,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "महादशा",
     "er.antardasha": "अंतर्दशा",
     "er.to": "से",
+    "er.dateRange": "{start} से {end} तक",
     "er.antarFormat": "यह सक्रिय उप-अवधि अपनी ही ऊर्जा को जोड़ती है: {desc} इस चुनौती को कम करने के लिए {planet} की ऊर्जाओं को उत्पादक रूप से एकीकृत करने पर ध्यान दें: {challenge}"
   },
   kn: {
@@ -175,6 +177,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "ಮಹಾದಶ",
     "er.antardasha": "ಅಂತರ್ದಶ",
     "er.to": "ರಿಂದ",
+    "er.dateRange": "{start} ರಿಂದ {end} ವರೆಗೆ",
     "er.antarFormat": "ಈ ಉಪ-ಹಂತವು ತನ್ನದೇ ಆದ ಪ್ರಭಾವವನ್ನು ಸೇರಿಸುತ್ತದೆ: {desc} ಸವಾಲನ್ನು ತಗ್ಗಿಸಲು {planet} ಶಕ್ತಿಗಳನ್ನು ಸಂಯೋಜಿಸುವತ್ತ ಗಮನಹರಿಸಿ: {challenge}"
   },
   te: {
@@ -234,6 +237,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "మహాదశ",
     "er.antardasha": "అంతర్దశ",
     "er.to": "కు",
+    "er.dateRange": "{start} నుండి {end} వరకు",
     "er.antarFormat": "ఈ అంతర్దశ తన స్వంత ప్రభావాన్ని చూపుతుంది: {desc}. సవాలును తగ్గించడానికి {planet} శక్తిని సరిగ్గా ఉపయోగించండి: {challenge}"
   },
   ta: {
@@ -293,6 +297,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "மகாதிசை",
     "er.antardasha": "புக்தி",
     "er.to": "முதல்",
+    "er.dateRange": "{start} முதல் {end} வரை",
     "er.antarFormat": "இந்த புத்தி தனக்கேயுரிய தனிப்பட்ட தாக்கத்தை ஏற்படுத்தும்: {desc}. சவாலைத் தவிர்க்க {planet} கிரகத்தின் ஆற்றலை சரியாகப் பயன்படுத்துங்கள்: {challenge}"
   },
   gu: {
@@ -350,6 +355,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "મહાદશા",
     "er.antardasha": "અંતર્દશા",
     "er.to": "થી",
+    "er.dateRange": "{start} થી {end} સુધી",
   },
   mr: {
     "er.title": "तज्ञ ज्योतिष वाचन",
@@ -406,6 +412,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "महादशा",
     "er.antardasha": "अंतर्दशा",
     "er.to": "ते",
+    "er.dateRange": "{start} ते {end}",
   },
   bn: {
     "er.title": "विशेषज्ञ জ্যোতিষ ভবিষ্যদ্বাণী",
@@ -462,6 +469,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "মহাদশা",
     "er.antardasha": "অন্তর্দশা",
     "er.to": "থেকে",
+    "er.dateRange": "{start} থেকে {end} পর্যন্ত",
   },
   ml: {
     "er.title": "വിദഗ്ധ ജ്യോതിഷ പ്രവചനം",
@@ -518,6 +526,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.mahadasha": "മഹാദശ",
     "er.antardasha": "അപഹാരം",
     "er.to": "മുതൽ",
+    "er.dateRange": "{start} മുതൽ {end} വരെ",
   },
   sa: {
     "er.title": "विशेषज्ञ ज्योतिष दर्शनम्",
@@ -573,6 +582,7 @@ export const EXPERT_TRANSLATIONS = {
     "er.yrs": "वर्षाणि",
     "er.mahadasha": "महादशा",
     "er.antardasha": "अन्तर्दशा",
-    "er.to": "आ"
+    "er.to": "आ",
+    "er.dateRange": "{start} तः {end} पर्यन्तम्"
   }
 };

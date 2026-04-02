@@ -283,7 +283,7 @@ export default function ExpertReadingTab({ kundali, lang = 'en' }) {
             
             {/* Mahadasha */}
             <h5 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 15, textTransform: 'capitalize' }}>
-              {t(`pl.${reading.deepDive.maha.planet}`) || reading.deepDive.maha.planet} {t('er.mahadasha') || 'Mahadasha'} — {reading.deepDive.maha.start} {t('er.to') || 'to'} {reading.deepDive.maha.end}
+              {t(`pl.${reading.deepDive.maha.planet}`) || reading.deepDive.maha.planet} {t('er.mahadasha') || 'Mahadasha'} — {t('er.dateRange') ? t('er.dateRange').replace('{start}', reading.deepDive.maha.start).replace('{end}', reading.deepDive.maha.end) : `${reading.deepDive.maha.start} to ${reading.deepDive.maha.end}`}
             </h5>
             <p style={{ color: 'var(--text-main)', fontSize: 13, lineHeight: 1.6, margin: '0 0 16px 0' }}>
               {reading.deepDive.maha.description}
@@ -303,7 +303,7 @@ export default function ExpertReadingTab({ kundali, lang = 'en' }) {
             {reading.deepDive.antar && (
               <div style={{ padding: 16, borderTop: '1px solid rgba(212, 175, 55, 0.2)', background: 'rgba(212, 175, 55, 0.05)', borderRadius: '0 0 8px 8px' }}>
                 <h6 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontSize: 13 }}>
-                  ↪ {reading.deepDive.antar.trPlanet} {t('er.antardasha') || 'Antardasha'} — {reading.deepDive.antar.start} {t('er.to') || 'to'} {reading.deepDive.antar.end}
+                  ↪ {reading.deepDive.antar.trPlanet} {t('er.antardasha') || 'Antardasha'} — {t('er.dateRange') ? t('er.dateRange').replace('{start}', reading.deepDive.antar.start).replace('{end}', reading.deepDive.antar.end) : `${reading.deepDive.antar.start} to ${reading.deepDive.antar.end}`}
                 </h6>
                 <p style={{ color: 'var(--text-muted)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
                   {t('er.antarFormat')
