@@ -1000,6 +1000,12 @@ function DailyPanchang({ lang }){
       fetchKundali({year:now.getUTCFullYear(),month:now.getUTCMonth()+1,day:now.getUTCDate(),hour:utcH,minute:utcM,utcOffset:0,lat,lng, isPanchang: true}, null, true)
         .then(K => {
            if (!isMounted) return;
+           const utcOff = now.getTimezoneOffset() / -60;
+           const sunSet = sunRiseSet(K.jd, lat, lng, utcOff);
+           const dayOfWeek = now.getDay();
+           const inaus = inauspiciousPeriods(sunSet.rise, sunSet.set, dayOfWeek);
+           const abhijit = abhijitMuhurta(sunSet.rise, sunSet.set);
+           
            const tMoon = K.planets.find(p=>p.key==='moon');
            const tSun = K.planets.find(p=>p.key==='sun');
            const L_NN = L_PANCHANG[lang]?.nakNames || {};
@@ -1013,7 +1019,7 @@ function DailyPanchang({ lang }){
            const tithiOnly = L_TN[tithiRaw] || tithiRaw;
            const paksha = pakshaRaw.includes('Shukla') ? 'Shukla' : pakshaRaw.includes('Krishna') ? 'Krishna' : pakshaRaw;
            
-           setDailyPan({K,now,sunSet:{rise:K.sunrise,set:K.sunset},inaus:{rahuKala:{str:'—'},yamaghanda:{str:'—'}},abhijit:null,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek:now.getDay(),jd:K.jd,hasLoc:!!location,year: now.getFullYear()});
+           setDailyPan({K,now,sunSet,inaus,abhijit,moonNak,tMoon,tSun,paksha,tithiOnly,dayOfWeek,jd:K.jd,hasLoc:!!location,year: now.getFullYear()});
         })
         .catch(e => console.error("Panchang load silently failed:", e));
         
