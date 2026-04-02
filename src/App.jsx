@@ -1362,7 +1362,7 @@ function ChartsTab({K,fmt,setFmt,lang='en'}){
       {K.planets.filter(p=>p.vargottama).length>0&&<div style={{background:'rgba(212,175,55,0.05)',borderRadius:8,padding:'8px 12px',marginBottom:16,fontSize:12,color:'var(--accent-gold)'}}>✦ <strong>{t('ch.vargottama',lang)}:</strong> {K.planets.filter(p=>p.vargottama).map(p=>(L_GRAHA[lang]||L_GRAHA.en)[p.key]||p.key).join(', ')}</div>}
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))',gap:10}}>
         {VLIST.map(v=>{
-          const ps=K.planets.map(p=>({...p,rashi:K.divCharts[v]?.[p.key]??p.rashi}));
+          const ps=K.planets.map(p=>({...p,rashi:(K.divCharts || K.divisionalCharts)[v]?.[p.key]??p.rashi}));
           return(
             <div key={v} onClick={()=>setExp(exp===v?null:v)} style={{cursor:'pointer'}}
               onMouseEnter={e=>e.currentTarget.style.transform='scale(1.04)'}
@@ -1381,7 +1381,7 @@ function ChartsTab({K,fmt,setFmt,lang='en'}){
           <h3 style={{margin:0,fontSize:15,color:'var(--accent-gold)',fontWeight:700}}>{exp} · {VDESC[exp]}</h3>
           <button onClick={()=>setExp(null)} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
-        <C planets={K.planets.map(p=>({...p,rashi:K.divCharts[exp]?.[p.key]??p.rashi}))} lagnaR={K.lagna.rashi} size={300} lang={lang}/>
+        <C planets={K.planets.map(p=>({...p,rashi:(K.divCharts || K.divisionalCharts)[exp]?.[p.key]??p.rashi}))} lagnaR={K.lagna.rashi} size={300} lang={lang}/>
       </div>}
     </div>
   );
