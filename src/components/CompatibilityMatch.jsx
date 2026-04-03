@@ -147,7 +147,55 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
 
       <h4 style={{ margin: '0 0 16px', fontSize: '18px', color: 'var(--text-main)', fontFamily: 'var(--font-serif)' }}>{txt('comp.breakdown', '8-Koota Breakdown')}</h4>
       <div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-        {match.ashtaKuta.elements.map((el, i) => (
+        {match.ashtaKuta.elements.map((el, i) => {
+          const dictNaks = L_NAKS[lang] || L_NAKS.en;
+          const dictRashi = L_RASHI[lang] || L_RASHI.en;
+          const boyName = match.p1.name || "Boy";
+          const girlName = match.p2.name || "Girl";
+          
+          let basisRows = [];
+          if (el.basis) {
+              if (el.key === 'varna') {
+                 basisRows.push({ label: `${boyName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.bRashi] });
+                 basisRows.push({ label: `${girlName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.gRashi] });
+                 basisRows.push({ label: `${txt('comp.basis.varnaLvl')} (${boyName})`, value: el.basis.bVarna });
+                 basisRows.push({ label: `${txt('comp.basis.varnaLvl')} (${girlName})`, value: el.basis.gVarna });
+              } else if (el.key === 'vashya') {
+                 basisRows.push({ label: `${boyName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.bRashi] });
+                 basisRows.push({ label: `${girlName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.gRashi] });
+              } else if (el.key === 'tara') {
+                 basisRows.push({ label: `${boyName} ${txt('comp.nak')}`, value: dictNaks[el.basis.bNak] });
+                 basisRows.push({ label: `${girlName} ${txt('comp.nak')}`, value: dictNaks[el.basis.gNak] });
+                 basisRows.push({ label: `${txt('comp.basis.taraGrp')} (${boyName})`, value: el.basis.bTaraGrp });
+                 basisRows.push({ label: `${txt('comp.basis.taraGrp')} (${girlName})`, value: el.basis.gTaraGrp });
+              } else if (el.key === 'yoni') {
+                 basisRows.push({ label: `${boyName} ${txt('comp.nak')}`, value: dictNaks[el.basis.bNak] });
+                 basisRows.push({ label: `${girlName} ${txt('comp.nak')}`, value: dictNaks[el.basis.gNak] });
+                 basisRows.push({ label: `${txt('comp.basis.yoniNum')} (${boyName})`, value: el.basis.bYoniRem });
+                 basisRows.push({ label: `${txt('comp.basis.yoniNum')} (${girlName})`, value: el.basis.gYoniRem });
+              } else if (el.key === 'graha') {
+                 basisRows.push({ label: `${boyName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.bRashi] });
+                 basisRows.push({ label: `${girlName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.gRashi] });
+                 basisRows.push({ label: `${boyName} ${txt('comp.basis.lord')}`, value: `${txt(`pl.${el.basis.bLord}`)} (${el.basis.bIsSat ? txt('comp.basis.sat') : txt('comp.basis.nonSat')})` });
+                 basisRows.push({ label: `${girlName} ${txt('comp.basis.lord')}`, value: `${txt(`pl.${el.basis.gLord}`)} (${el.basis.gIsSat ? txt('comp.basis.sat') : txt('comp.basis.nonSat')})` });
+              } else if (el.key === 'gana') {
+                 basisRows.push({ label: `${boyName} ${txt('comp.nak')}`, value: dictNaks[el.basis.bNak] });
+                 basisRows.push({ label: `${girlName} ${txt('comp.nak')}`, value: dictNaks[el.basis.gNak] });
+                 basisRows.push({ label: `${boyName} ${txt('comp.basis.gana')}`, value: el.basis.bGana });
+                 basisRows.push({ label: `${girlName} ${txt('comp.basis.gana')}`, value: el.basis.gGana });
+              } else if (el.key === 'bhakoot') {
+                 basisRows.push({ label: `${boyName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.bRashi] });
+                 basisRows.push({ label: `${girlName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.gRashi] });
+                 basisRows.push({ label: txt('comp.basis.distance'), value: el.basis.bhakDiff });
+              } else if (el.key === 'nadi') {
+                 basisRows.push({ label: `${boyName} ${txt('comp.nak')}`, value: dictNaks[el.basis.bNak] });
+                 basisRows.push({ label: `${girlName} ${txt('comp.nak')}`, value: dictNaks[el.basis.gNak] });
+                 basisRows.push({ label: `${boyName} ${txt('comp.basis.nadi')}`, value: el.basis.bNadi });
+                 basisRows.push({ label: `${girlName} ${txt('comp.basis.nadi')}`, value: el.basis.gNadi });
+              }
+          }
+
+          return (
           <div key={i} style={{ background: 'var(--bg-dark)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)' }}>{txt(`comp.${el.key}`, el.name)}</span>
@@ -156,8 +204,21 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
               </span>
             </div>
             <p style={{ margin: 0, fontSize:   17, color: 'var(--text-secondary)', lineHeight: '1.5', fontFamily: 'var(--font-serif)' }}>{txt(`comp.${el.descKey}`, el.desc)}</p>
+            {basisRows.length > 0 && (
+                <div style={{ marginTop: '8px', padding: '12px', background: 'var(--bg-surface)', borderRadius: '6px', borderLeft: '3px solid var(--border-light)', fontSize: '13px' }}>
+                   <strong style={{ color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>{txt('comp.basis.title', 'Astrological Basis')}</strong>
+                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                      {basisRows.map((r, ri) => (
+                         <div key={ri} style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{r.label}</span> 
+                            <strong style={{ color: 'var(--text-main)', fontSize: '13px' }}>{r.value}</strong>
+                         </div>
+                      ))}
+                   </div>
+                </div>
+            )}
           </div>
-        ))}
+        )})}
       </div>
     </div>
   );
