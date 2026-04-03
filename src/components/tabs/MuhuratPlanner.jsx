@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSync } from '../../contexts/SyncContext.jsx';
+import { L_NAKS, L_RASHI } from '../../App.jsx';
 
 // ════════════════════════════════════════════════════════════════
 // CLOUD MUTATION PROXIES
@@ -117,8 +118,9 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
     const windowData = await getAuspiciousWindow(dateStr, selectedEvent, natalData, pData, kundali.input.lat, kundali.input.lng, 0);
     const timeBlockStr = windowData.timeBlock || "Unknown Time Block";
     const medLagna = windowData.lagnaSign || 0;
+    const medLagnaIndex = windowData.lagnaSignIndex;
     
-    setAiAnalysis({ loading: true, timeBlock: timeBlockStr, lagnaSign: medLagna });
+    setAiAnalysis({ loading: true, timeBlock: timeBlockStr, lagnaSign: medLagna, lagnaSignIndex: medLagnaIndex });
     
     setTimeout(() => {
        document.getElementById('muhurat-analysis-scroll-target')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -398,9 +400,9 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
                 borderLeft: '4px solid var(--accent-gold)', fontSize: '14px', lineHeight: 1.6
              }}>
                 <div style={{ display: 'flex', gap: '24px', marginBottom: '16px', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
-                   <div><strong>{t("Transit Nakshatra:")}</strong> {t(greenDaysMap[selectedDateStr].nakshatra)}</div>
+                   <div><strong>{t("Transit Nakshatra:")}</strong> {greenDaysMap[selectedDateStr].nakshatraIndex !== undefined ? (L_NAKS[lang] || L_NAKS.en)[greenDaysMap[selectedDateStr].nakshatraIndex] : greenDaysMap[selectedDateStr].nakshatra}</div>
                    <div><strong>{t("Transit Tithi:")}</strong> {t(greenDaysMap[selectedDateStr].tithi)}</div>
-                   <div><strong>{t("Hourly Ascendant:")}</strong> {t(aiAnalysis.lagnaSign)}</div>
+                   <div><strong>{t("Hourly Ascendant:")}</strong> {aiAnalysis.lagnaSignIndex !== undefined ? (L_RASHI[lang] || L_RASHI.en)[aiAnalysis.lagnaSignIndex] : aiAnalysis.lagnaSign}</div>
                 </div>
                 
                 <div style={{ color: 'var(--text-main)' }}>
