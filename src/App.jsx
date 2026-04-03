@@ -4,7 +4,7 @@ import { DYNAMIC_STRINGS } from './i18n/dynamicTranslations.js';
 import { UI_STRINGS } from './i18n/uiStrings.js';
 import i18next from './i18n/index.js';
 
-import { L_NAKS, L_YOGA_PANCH, L_KARANA } from './i18n/astroMappings.js';
+import { L_NAKS, L_YOGA_PANCH, L_KARANA, L_GANA, L_NADI, L_YONI } from './i18n/astroMappings.js';
 
 import './index.css';
 import CompatibilityMatch from './components/CompatibilityMatch.jsx';
@@ -261,7 +261,7 @@ bn:{sun:'সূ',moon:'চ',mars:'মং',mercury:'বু',jupiter:'বৃ',venu
 ml:{sun:'സൂ',moon:'ചന്',mars:'ചൊ',mercury:'ബു',jupiter:'വ്യാ',venus:'ശു',saturn:'ශ',rahu:'രാ',ketu:'കേ'}
 };
 
-export { L_NAKS };
+export { L_NAKS, L_GANA, L_NADI, L_YONI };
 const L_STATUS={
 en:{exalted:'Exalted',debilitated:'Debilitated',retrograde:'Retrograde',combust:'Combust',vargottama:'Vargottama'},
 hi:{exalted:'उच्च',debilitated:'नीच',retrograde:'वक्री',combust:'अस्त',vargottama:'वर्गोत्तम'},

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { L_NAKS, L_RASHI, localizePanchang } from '../App.jsx';
+import { L_NAKS, L_RASHI, L_GANA, L_NADI, L_YONI, localizePanchang } from '../App.jsx';
 import { useSync } from '../contexts/SyncContext.jsx';
 
 export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(x)=>x, lang }) {
@@ -150,6 +150,9 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
         {match.ashtaKuta.elements.map((el, i) => {
           const dictNaks = L_NAKS[lang] || L_NAKS.en;
           const dictRashi = L_RASHI[lang] || L_RASHI.en;
+          const dictGana = L_GANA[lang] || L_GANA.en;
+          const dictNadi = L_NADI[lang] || L_NADI.en;
+          const dictYoni = L_YONI[lang] || L_YONI.en;
           const boyName = match.p1.name || "Boy";
           const girlName = match.p2.name || "Girl";
           
@@ -169,31 +172,35 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
                  basisRows.push({ label: `${txt('comp.basis.taraGrp')} (${boyName})`, value: el.basis.bTaraGrp });
                  basisRows.push({ label: `${txt('comp.basis.taraGrp')} (${girlName})`, value: el.basis.gTaraGrp });
               } else if (el.key === 'yoni') {
-                 const YONI_NAMES = ["Ashva (Horse)", "Gaja (Elephant)", "Chaga (Sheep)", "Sarpa (Serpent)", "Shvan (Dog)", "Marjala (Cat)", "Mushaka (Rat)", "Gau (Cow)", "Mahisha (Buffalo)", "Vyaghra (Tiger)", "Mriga (Deer)", "Vanara (Monkey)", "Nakula (Mongoose)", "Simha (Lion)"];
                  basisRows.push({ label: `${boyName} ${txt('comp.nak')}`, value: dictNaks[el.basis.bNak] || 'Unknown' });
                  basisRows.push({ label: `${girlName} ${txt('comp.nak')}`, value: dictNaks[el.basis.gNak] || 'Unknown' });
-                 basisRows.push({ label: `${txt('comp.basis.yoniNum')} (${boyName})`, value: `${el.basis.bYoniRem} - ${YONI_NAMES[el.basis.bYoniRem] || 'Unknown'}` });
-                 basisRows.push({ label: `${txt('comp.basis.yoniNum')} (${girlName})`, value: `${el.basis.gYoniRem} - ${YONI_NAMES[el.basis.gYoniRem] || 'Unknown'}` });
+                 basisRows.push({ label: `${txt('comp.basis.yoniNum')} (${boyName})`, value: `${el.basis.bYoniRem} - ${dictYoni[el.basis.bYoniRem] || 'Unknown'}` });
+                 basisRows.push({ label: `${txt('comp.basis.yoniNum')} (${girlName})`, value: `${el.basis.gYoniRem} - ${dictYoni[el.basis.gYoniRem] || 'Unknown'}` });
               } else if (el.key === 'graha') {
                  basisRows.push({ label: `${boyName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.bRashi] });
                  basisRows.push({ label: `${girlName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.gRashi] });
                  basisRows.push({ label: `${boyName} ${txt('comp.basis.lord')}`, value: `${txt(`pl.${el.basis.bLord}`)} (${el.basis.bIsSat ? txt('comp.basis.sat') : txt('comp.basis.nonSat')})` });
                  basisRows.push({ label: `${girlName} ${txt('comp.basis.lord')}`, value: `${txt(`pl.${el.basis.gLord}`)} (${el.basis.gIsSat ? txt('comp.basis.sat') : txt('comp.basis.nonSat')})` });
               } else if (el.key === 'gana') {
+                 
+                 // Normalize Dev, Gana mapping
+                 const ganaMap = { "Deva": 0, "Manushya": 1, "Rakshasa": 2 };
+                 const bG = ganaMap[el.basis.bGana] ?? el.basis.bGana;
+                 const gG = ganaMap[el.basis.gGana] ?? el.basis.gGana;
+                 
                  basisRows.push({ label: `${boyName} ${txt('comp.nak')}`, value: dictNaks[el.basis.bNak] || 'Unknown' });
                  basisRows.push({ label: `${girlName} ${txt('comp.nak')}`, value: dictNaks[el.basis.gNak] || 'Unknown' });
-                 basisRows.push({ label: `${boyName} ${txt('comp.basis.gana')}`, value: el.basis.bGana });
-                 basisRows.push({ label: `${girlName} ${txt('comp.basis.gana')}`, value: el.basis.gGana });
+                 basisRows.push({ label: `${boyName} ${txt('comp.basis.gana')}`, value: dictGana[bG] || el.basis.bGana });
+                 basisRows.push({ label: `${girlName} ${txt('comp.basis.gana')}`, value: dictGana[gG] || el.basis.gGana });
               } else if (el.key === 'bhakoot') {
                  basisRows.push({ label: `${boyName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.bRashi] });
                  basisRows.push({ label: `${girlName} ${txt('comp.moonR')}`, value: dictRashi[el.basis.gRashi] });
                  basisRows.push({ label: txt('comp.basis.distance'), value: el.basis.bhakDiff });
               } else if (el.key === 'nadi') {
-                 const NADI_NAMES = { 0: 'Aadi (Vata)', 1: 'Madhya (Pitta)', 2: 'Antya (Kapha)' };
                  basisRows.push({ label: `${boyName} ${txt('comp.nak')}`, value: dictNaks[el.basis.bNak] || 'Unknown' });
                  basisRows.push({ label: `${girlName} ${txt('comp.nak')}`, value: dictNaks[el.basis.gNak] || 'Unknown' });
-                 basisRows.push({ label: `${boyName} ${txt('comp.basis.nadi')}`, value: `${el.basis.bNadi} - ${NADI_NAMES[el.basis.bNadi] || ''}` });
-                 basisRows.push({ label: `${girlName} ${txt('comp.basis.nadi')}`, value: `${el.basis.gNadi} - ${NADI_NAMES[el.basis.gNadi] || ''}` });
+                 basisRows.push({ label: `${boyName} ${txt('comp.basis.nadi')}`, value: `${el.basis.bNadi} - ${dictNadi[el.basis.bNadi] || ''}` });
+                 basisRows.push({ label: `${girlName} ${txt('comp.basis.nadi')}`, value: `${el.basis.gNadi} - ${dictNadi[el.basis.gNadi] || ''}` });
               }
           }
 
