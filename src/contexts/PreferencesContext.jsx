@@ -17,7 +17,7 @@ export const PreferencesProvider = ({ children }) => {
   };
 
   const [lang, setLangState] = useState(() => safeGetItem('jd_lang', 'en'));
-  const [theme, setThemeState] = useState(() => safeGetItem('jd_theme', 'dark'));
+  const [theme, setThemeState] = useState(() => safeGetItem('jd_theme', 'light'));
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [user, setUser] = useState(null);
 
