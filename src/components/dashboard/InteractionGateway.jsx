@@ -93,29 +93,25 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
                      </p>
                    </div>
                ) : !isRevealed ? (
-                   <div style={{ marginBottom: '32px', textAlign: 'center' }}>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto 24px auto' }}>
-                       This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. By decoding the precise planetary transits governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you.
-                     </p>
-                     <button onClick={() => setIsRevealed(true)} style={{ background: 'var(--accent-gold)', color: '#000', padding: '12px 28px', border: 'none', borderRadius: '4px', fontSize: '18px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', boxShadow: '0 4px 15px rgba(255,215,0,0.3)', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
-                        {t('Show Prediction')} ➔
-                     </button>
-                   </div>
+                    <div style={{ marginBottom: '32px', textAlign: 'center' }}>
+                      <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto 24px auto' }} dangerouslySetInnerHTML={{ __html: t('ig.desc1', { desc: t(data.desc), defaultValue: `This sacred pathway delves deep into the <strong>${t(data.desc)}</strong> of your existence. By decoding the precise planetary transits governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you.` }) }} />
+                      <button onClick={() => setIsRevealed(true)} style={{ background: 'var(--accent-gold)', color: '#000', padding: '12px 28px', border: 'none', borderRadius: '4px', fontSize: '18px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', boxShadow: '0 4px 15px rgba(255,215,0,0.3)', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
+                         {t('ig.showPrediction', { defaultValue: 'SHOW PREDICTION' })} ➔
+                      </button>
+                    </div>
                ) : (
-                   <div style={{ marginBottom: '32px' }}>
-                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
-                       <button onClick={() => refetch()} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
-                     </div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-                       This sacred pathway delves deep into the <strong>{data.desc}</strong> of your existence. {data.prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.
-                     </p>
-                   </div>
+                    <div style={{ marginBottom: '32px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                        <button onClick={() => refetch()} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
+                      </div>
+                      <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }} dangerouslySetInnerHTML={{ __html: t('ig.desc2', { desc: t(data.desc), prompt: data.prompt, defaultValue: `This sacred pathway delves deep into the <strong>${t(data.desc)}</strong> of your existence. ${data.prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.` }) }} />
+                    </div>
                )}
              </div>
              
              {/* 2. Ecliptic Visualization */}
              <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-               <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>{t('Stellar Ecliptic Alignment')}</div>
+               <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>{t('ig.stellarEcliptic', { defaultValue: 'Stellar Ecliptic Alignment' })}</div>
                <EclipticChart hue={hue} pillarId={targetPillar} t={t} K={K} />
              </div>
           </div>
@@ -124,7 +120,7 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
        {/* 3. 6 Shastric Outcome Cards with Images */}
        <div className="mobile-hero-padding" style={{ padding: '60px 40px 0 40px' }}>
          {pathwayData?.options?.length > 0 && (
-           <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>{t('Select an Outcome to Reveal Prophecy')}</h4>
+           <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>{t('ig.selectOutcome', { defaultValue: 'Select an Outcome to Reveal Prophecy' })}</h4>
          )}
          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '32px' }}>
            {(pathwayData?.options || []).map((opt, i) => {
