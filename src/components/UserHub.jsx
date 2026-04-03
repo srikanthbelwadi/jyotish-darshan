@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync, onSelectProfile }) {
+export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync, onSelectProfile, onTriggerAdmin }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -139,6 +139,12 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
                     </button>
                  </div>
                  
+                 {user?.email?.toLowerCase() === 'srikanthbelwadi@gmail.com' && (
+                    <button onClick={() => { setIsOpen(false); if(onTriggerAdmin) onTriggerAdmin(); }} style={{ width: '100%', padding: '12px', border: 'none', background: '#10B981', color: '#fff', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: '"Cinzel", serif', letterSpacing: '1px', marginBottom: '12px', boxShadow: '0 4px 15px rgba(16,185,129,0.3)' }} onMouseOver={e => e.currentTarget.style.opacity = '0.8'} onMouseOut={e => e.currentTarget.style.opacity = '1'}>
+                       ★ CPO Admin Console
+                    </button>
+                 )}
+
                  <button onClick={() => { setIsOpen(false); onLogoutClick(); }} style={{ width: '100%', padding: '12px', border: '1px solid var(--border-light)', background: 'transparent', color: 'var(--text-muted)', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: '"Cinzel", serif', letterSpacing: '1px' }} onMouseOver={e => { e.currentTarget.style.borderColor = '#EF4444'; e.currentTarget.style.color = '#EF4444'; }} onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
                     Logout
                  </button>

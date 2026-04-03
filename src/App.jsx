@@ -2356,7 +2356,7 @@ function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, o
             <div style={{minWidth:0}}><h1 className="serif" onClick={() => { if(user?.email === 'srikanthbelwadi@gmail.com' && onTriggerAdmin) onTriggerAdmin(); }} style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap', cursor: user?.email === 'srikanthbelwadi@gmail.com' ? 'pointer' : 'default'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{t('tagline',lang)}</p></div>
           </div>
           <div className="app-header-right" style={{display:'flex', gap:16, flexShrink:0, alignItems:'center'}}>
-            {user?.email === 'srikanthbelwadi@gmail.com' && (
+            {user?.email?.toLowerCase() === 'srikanthbelwadi@gmail.com' && (
               <button type="button" onClick={onTriggerAdmin} style={{background:'#10B981', border:'none', borderRadius:'20px', padding:'6px 16px', color:'#fff', cursor:'pointer', fontWeight:'bold', fontSize:'13px', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s', boxShadow:'0 2px 8px rgba(16,185,129,0.3)'}} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='scale(1)'}>
                 CPO Admin
               </button>
@@ -2372,6 +2372,7 @@ function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, o
                onLogoutClick={onLogoutClick} 
                onForceSync={onForceSync} 
                onSelectProfile={onSelectProfile}
+               onTriggerAdmin={onTriggerAdmin}
             />
           </div>
         </div>
@@ -2504,7 +2505,7 @@ function App(){
 
   if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily:'serif'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
   
-  if (screen === 'admin' && user?.email === 'srikanthbelwadi@gmail.com') {
+  if (screen === 'admin' && user?.email?.toLowerCase() === 'srikanthbelwadi@gmail.com') {
      return <SuperAdminDashboard user={user} onBack={() => setScreen('input')} lang={lang} />;
   }
 
