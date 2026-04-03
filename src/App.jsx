@@ -7,14 +7,13 @@ import i18next from './i18n/index.js';
 const createI18nProxy = (category) => new Proxy({}, {
   get: (target, lang) => new Proxy({}, {
     get: (target, key) => {
-      // Proxy requests to the translation engine natively!
+      // The key might be numeric or a symbol under React loops
+      if (typeof key !== 'string' && typeof key !== 'number') return undefined;
       const fullKey = `astro.${category}.${key}`;
-      if (i18next.exists(fullKey, { lng: lang })) {
-        return i18next.t(fullKey, { lng: lang });
-      }
-      if (lang !== 'en' && i18next.exists(fullKey, { lng: 'en' })) {
-        return i18next.t(fullKey, { lng: 'en' });
-      }
+      const val = i18next.t(fullKey, { lng: lang });
+      if (val && val !== fullKey) return val;
+      const enVal = i18next.t(fullKey, { lng: 'en' });
+      if (enVal && enVal !== fullKey) return enVal;
       return null;
     }
   })
