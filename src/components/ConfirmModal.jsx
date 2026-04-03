@@ -11,7 +11,7 @@ export default function ConfirmModal({ isOpen, title, message, confirmText = "Co
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <div className="lux-card" style={{ width: '100%', maxWidth: 360, animation: 'slideIn 0.2s ease', border: '1px solid var(--border-light)' }}>
         <h3 style={{ margin: '0 0 12px', color: 'var(--text-main)', fontSize: 18, fontWeight: 600 }}>{title}</h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: '0 0 24px', lineHeight: 1.5 }}>
+        <p style={{ color: 'var(--text-muted)', fontSize:  16, margin: '0 0 24px', lineHeight: 1.5 }}>
           {message}
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>

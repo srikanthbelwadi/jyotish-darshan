@@ -21,11 +21,11 @@ export default function PlanetsTab({ kundali }) {
         </div>
         <div>
           <p style={{ margin: 0, fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1 }}>Degree</p>
-          <p style={{ margin: '4px 0 0', fontSize: 15, fontWeight: 600, color: '#1E3A5F', fontFamily: 'var(--font-mono)' }}>{lagna.degreeFormatted}</p>
+          <p style={{ margin: '4px 0 0', fontSize:  17, fontWeight: 600, color: '#1E3A5F', fontFamily: 'var(--font-mono)' }}>{lagna.degreeFormatted}</p>
         </div>
         <div>
           <p style={{ margin: 0, fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1 }}>Lagna Lord</p>
-          <p style={{ margin: '4px 0 0', fontSize: 15, fontWeight: 600, color: '#1E3A5F', textTransform: 'capitalize' }}>{RASHIS[lagna.rashi].lord}</p>
+          <p style={{ margin: '4px 0 0', fontSize:  17, fontWeight: 600, color: '#1E3A5F', textTransform: 'capitalize' }}>{RASHIS[lagna.rashi].lord}</p>
         </div>
       </div>
 
@@ -93,7 +93,7 @@ export default function PlanetsTab({ kundali }) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
                   <div>
                     <span style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600 }}>HOUSE {house}</span>
-                    <p style={{ margin: '2px 0 0', fontSize: 13, fontWeight: 600, color: '#1E3A5F' }}>{HOUSE_NAMES[house - 1]}</p>
+                    <p style={{ margin: '2px 0 0', fontSize:   17, fontWeight: 600, color: '#1E3A5F' }}>{HOUSE_NAMES[house - 1]}</p>
                   </div>
                   <span style={{ fontSize: 11, color: '#7C3AED', fontWeight: 600 }}>{RASHIS[houseRashi].name}</span>
                 </div>

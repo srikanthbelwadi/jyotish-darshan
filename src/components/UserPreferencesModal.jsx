@@ -58,7 +58,7 @@ export default function UserPreferencesModal({ isOpen, onClose }) {
         {warning && (
           <div style={{ background: 'var(--bg-badge-orange)', padding: '12px 16px', borderRadius: 8, marginBottom: 20, border: '1px solid rgba(212, 140, 50, 0.4)' }}>
             <strong style={{ color: 'var(--text-badge-orange)', display: 'block', marginBottom: 6, fontSize: 14 }}>⚠️ Language Regeneration</strong>
-            <p style={{ color: 'var(--text-main)', fontSize: 13, margin: 0, lineHeight: 1.5 }}>
+            <p style={{ color: 'var(--text-main)', fontSize:   17, margin: 0, lineHeight: 1.5 }}>
               Changing the global language will require the system to re-align the profound astrological cosmos. The entire chart, life path, and predictive intelligence will be flushed and re-translated.
             </p>
           </div>

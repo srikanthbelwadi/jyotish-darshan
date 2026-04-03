@@ -79,12 +79,12 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
              {user ? (
                <>
                  <h3 style={{ margin: '0 0 4px 0', color: 'var(--accent-gold)', fontSize: '18px', fontFamily: 'var(--font-serif)', textTransform: 'uppercase' }}>{user.name}</h3>
-                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)' }}>{user.email}</p>
+                 <p style={{ margin: 0, fontSize:   16, color: 'var(--text-muted)' }}>{user.email}</p>
                </>
              ) : (
                <>
                  <h3 style={{ margin: '0 0 4px 0', color: 'var(--text-main)', fontSize: '18px', fontFamily: 'var(--font-serif)', textTransform: 'uppercase' }}>Guest Mode</h3>
-                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)' }}>Not logged in</p>
+                 <p style={{ margin: 0, fontSize:   16, color: 'var(--text-muted)' }}>Not logged in</p>
                </>
              )}
           </div>
@@ -151,7 +151,7 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
                </>
              ) : (
                <>
-                 <p style={{ color: 'var(--text-main)', fontSize: '13px', lineHeight: 1.6, marginBottom: '24px' }}>
+                 <p style={{ color: 'var(--text-main)', fontSize:   17, lineHeight: 1.6, marginBottom: '24px' }}>
                    Log in to safely backup and access your profiles across all your devices.
                  </p>
                  <button onClick={() => { setIsOpen(false); onLoginClick(); }} style={{ width: '100%', padding: '12px', border: 'none', background: 'var(--accent-gold)', color: '#000', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'var(--font-serif)', letterSpacing: '1px', boxShadow: '0 4px 15px rgba(255,215,0,0.3)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>

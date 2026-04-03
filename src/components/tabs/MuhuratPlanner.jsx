@@ -173,7 +173,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
         <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: 'var(--font-serif)', textShadow: '0 2px 4px var(--bg-surface)', textTransform: 'uppercase' }}>
           {t("Auspicious Muhurat")}
         </h2>
-        <p style={{ margin: '0 0 24px', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic', fontFamily: 'var(--font-serif)' }}>
+        <p style={{ margin: '0 0 24px', fontSize:   17, color: 'var(--text-muted)', fontStyle: 'italic', fontFamily: 'var(--font-serif)' }}>
            {t("Suggestions for favorable timings based on classical planetary transits.")}
         </p>
 
@@ -190,7 +190,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
           )}
           
           <div style={{ marginBottom: '24px' }}>
-        <p style={{ margin: '0 0 8px', color: 'var(--text-muted)', fontSize: '14px' }}>{t("Select an Event to cast electional chart:")}</p>
+        <p style={{ margin: '0 0 8px', color: 'var(--text-muted)', fontSize:  16 }}>{t("Select an Event to cast electional chart:")}</p>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
            <select 
              value={selectedEvent} 
@@ -280,7 +280,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
          <div style={{ padding: '32px', textAlign: 'center', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '12px' }}>
             <span style={{ fontSize: '32px', display: 'block', marginBottom: '12px' }}>🪐</span>
             <p style={{ color: 'var(--text-main)', fontSize: '16px', margin: 0 }}>{t("No auspicious alignments found for this event in the next 365 days.")}</p>
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '8px' }}>{t("Try a different event or adjust the planetary context.")}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize:  16, marginTop: '8px' }}>{t("Try a different event or adjust the planetary context.")}</p>
          </div>
       ) : (
          <div style={{ marginTop: '16px', animation: 'fadeIn 0.4s ease' }}>

@@ -7,7 +7,7 @@ export const AstrologicalRemedyBox = ({ alert, remedy, t }) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
       <span style={{ fontSize: '24px' }}>🕉️</span><h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '20px', fontFamily: 'var(--font-serif)' }}>{t('Shastric Mitigation Protocol')}</h4>
     </div>
-    {alert && <p style={{ color: 'var(--text-badge-red)', fontSize: '15px', marginBottom: '16px', background: 'rgba(255,0,0,0.1)', padding: '12px', border: '1px solid #ff6b6b' }}><strong>{t('Dosha Identified:')}</strong> {alert}</p>}
+    {alert && <p style={{ color: 'var(--text-badge-red)', fontSize:  17, marginBottom: '16px', background: 'rgba(255,0,0,0.1)', padding: '12px', border: '1px solid #ff6b6b' }}><strong>{t('Dosha Identified:')}</strong> {alert}</p>}
     <p style={{ color: 'var(--text-main)', fontSize: '16px', lineHeight: 1.6, margin: 0, fontFamily: 'var(--font-serif)' }}><strong>{t('Prescribed Parihara (Action):')}</strong> {remedy}</p>
   </div>
 );

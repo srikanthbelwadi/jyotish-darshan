@@ -122,7 +122,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
               <h3 style={{ fontSize: '28px', color: '#1E3A5F', margin: '0 0 10px 0' }}>{input?.name || 'Native'}</h3>
               <p style={{ margin: '5px 0', fontSize: '16px' }}><strong>DOB:</strong> {input?.dob} at {input?.tob}</p>
               <p style={{ margin: '5px 0', fontSize: '16px' }}><strong>Place:</strong> {input?.city}, {input?.country}</p>
-              <p style={{ margin: '5px 0', fontSize: '14px', color: '#6b7280' }}>Coordinates: {input?.lat?.toFixed(4) || ''}°N, {input?.lng?.toFixed(4) || ''}°E</p>
+              <p style={{ margin: '5px 0', fontSize:  16, color: '#6b7280' }}>Coordinates: {input?.lat?.toFixed(4) || ''}°N, {input?.lng?.toFixed(4) || ''}°E</p>
            </div>
 
            <div style={{ position: 'absolute', bottom: 40, textAlign: 'center', fontSize: '11px', color: '#9CA3AF' }}>
@@ -196,7 +196,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
            </div>
 
            <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: '40px' }}>4. Vimshottari Dasha Overviews</h2>
-           <p style={{ fontSize: '12px', color: '#6b7280', fontStyle: 'italic', marginBottom: '10px' }}>Major planetary periods dictating the focus of life phases.</p>
+           <p style={{ fontSize:   16, color: '#6b7280', fontStyle: 'italic', marginBottom: '10px' }}>Major planetary periods dictating the focus of life phases.</p>
            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
              <thead>
                 <tr style={{ background: '#f3e8ff', color: '#1e3a5f' }}>
@@ -244,7 +244,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
                    })}
                 </tbody>
              </table>
-           ) : <p style={{ fontSize: '12px', color: '#6b7280' }}>No major Yogas or Doshas identified in this chart.</p>}
+           ) : <p style={{ fontSize:   16, color: '#6b7280' }}>No major Yogas or Doshas identified in this chart.</p>}
 
            <h3 style={{ color: '#1e3a5f', marginTop: '20px', marginBottom: '10px' }}>Shadbala (Planetary Strengths)</h3>
            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
@@ -272,7 +272,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
            {ashtakavarga && (
            <>
            <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: 0 }}>6. Ashtakavarga Points</h2>
-           <p style={{ fontSize: '12px', color: '#6b7280', fontStyle: 'italic', marginBottom: '10px' }}>Planetary transits yield favorable results when moving through signs with 28+ bindus.</p>
+           <p style={{ fontSize:   16, color: '#6b7280', fontStyle: 'italic', marginBottom: '10px' }}>Planetary transits yield favorable results when moving through signs with 28+ bindus.</p>
            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center', marginBottom: '40px' }}>
              <thead>
                 <tr style={{ background: '#f3e8ff', color: '#1e3a5f' }}>
@@ -311,7 +311,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
                        <h3 style={{ margin: '0 0 8px', color: '#1e3a5f', fontSize: '14px', textTransform: 'capitalize' }}>
                           {maha.planet} Mahadasha ({maha.ageStr})
                        </h3>
-                       <p style={{ margin: '0 0 10px', fontSize: '13px', lineHeight: '1.5', color: '#374151' }}>
+                       <p style={{ margin: '0 0 10px', fontSize:   17, lineHeight: '1.5', color: '#374151' }}>
                           {maha.description}
                        </p>
                        <div style={{ background: '#fff', padding: '10px', borderRadius: '4px', border: '1px solid #e5d5c0', fontSize: '12px' }}>
@@ -329,13 +329,13 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
         {partnerKundali && (
            <div className="print-page" style={{ padding: '20mm', boxSizing: 'border-box', pageBreakBefore: 'always' }}>
               <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: 0 }}>{(ashtakavarga ? 8 : 7)}. Relationship Compatibility</h2>
-              <p style={{ fontSize: '14px', marginBottom: '20px' }}>Match evaluation between <strong>{input?.name || 'Native'}</strong> and <strong>{partnerKundali?.input?.name || 'Partner'}</strong>.</p>
+              <p style={{ fontSize:  16, marginBottom: '20px' }}>Match evaluation between <strong>{input?.name || 'Native'}</strong> and <strong>{partnerKundali?.input?.name || 'Partner'}</strong>.</p>
               <div style={{ background: '#fff', border: '1px solid #1e3a5f', padding: '20px', borderRadius: '8px' }}>
                  <h3 style={{ margin: '0 0 10px', color: '#1e3a5f' }}>Ashtakoota Milan (36-Point System)</h3>
-                 <p style={{ fontSize: '13px', lineHeight: '1.6', color: '#374151' }}>
+                 <p style={{ fontSize:   17, lineHeight: '1.6', color: '#374151' }}>
                     The traditional Ashtakoota methodology evaluates mental, physical, and emotional compatibility. A score above 18 is considered viable, and above 26 is excellent.
                  </p>
-                 <p style={{ fontSize: '13px', lineHeight: '1.6', marginTop: '10px' }}>
+                 <p style={{ fontSize:   17, lineHeight: '1.6', marginTop: '10px' }}>
                     <strong>{input?.name || 'Native'}:</strong> Moon in {getMoonNaks(planets)} ({getMoonName(planets)})<br/>
                     <strong>{partnerKundali?.input?.name || 'Partner'}:</strong> Moon in {getMoonNaks(partnerKundali?.planets)} ({getMoonName(partnerKundali?.planets)})
                  </p>
@@ -343,7 +343,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
               
               <div style={{ marginTop: '20px', background: '#fef2f2', border: '1px solid #ef4444', padding: '15px', borderRadius: '8px' }}>
                  <h4 style={{ margin: '0 0 8px', color: '#b91c1c' }}>Manglik (Kuja) Dosha Advisory</h4>
-                 <p style={{ margin: 0, fontSize: '13px', lineHeight: '1.6', color: '#7f1d1d' }}>
+                 <p style={{ margin: 0, fontSize:   17, lineHeight: '1.6', color: '#7f1d1d' }}>
                    If Manglik Dosha is present in either chart, astrological remedies and careful consideration are advised before proceeding with marital commitments.
                  </p>
               </div>
@@ -387,12 +387,12 @@ export default class PrintLayout extends React.Component {
           <p style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '20px' }}>👉 PLEASE COPY AND PASTE THIS ENTIRE RED SCREEN BACK TO THE AI:</p>
           
           <h2 style={{ marginTop: '30px' }}>Error Details:</h2>
-          <pre style={{ background: '#450a0a', color: '#fecaca', padding: '16px', borderRadius: '8px', whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: '14px' }}>
+          <pre style={{ background: '#450a0a', color: '#fecaca', padding: '16px', borderRadius: '8px', whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize:  16 }}>
             {this.state.error && this.state.error.toString()}
           </pre>
 
           <h2 style={{ marginTop: '20px' }}>Component Stack Trace:</h2>
-          <pre style={{ background: '#450a0a', color: '#fca5a5', padding: '16px', borderRadius: '8px', whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: '14px' }}>
+          <pre style={{ background: '#450a0a', color: '#fca5a5', padding: '16px', borderRadius: '8px', whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize:  16 }}>
             {this.state.errorInfo && this.state.errorInfo.componentStack}
           </pre>
         </div>

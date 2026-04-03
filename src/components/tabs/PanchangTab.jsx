@@ -400,7 +400,7 @@ export default function PanchangTab() {
               )}
 
               {!selectedDay.panchang.festival && !selectedDay.panchang.isPurnima && !selectedDay.panchang.isAmavasya && !selectedDay.panchang.isEkadashi && !selectedDay.panchang.isSankashti && selectedDay.birthdays.length === 0 && selectedDay.memorials.length === 0 && (
-                <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '0 0 5px 0' }}>{t("pc.noEvents", "No major festivals or personalized events today.")}</p>
+                <p style={{ fontSize:   17, color: 'var(--text-muted)', margin: '0 0 5px 0' }}>{t("pc.noEvents", "No major festivals or personalized events today.")}</p>
               )}
             </div>
 

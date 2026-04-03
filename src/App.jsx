@@ -1231,13 +1231,13 @@ function InputForm({onSubmit,lang,setLang,onOpenTerms}){
       <div style={{textAlign:'center',padding:'50px 24px 20px'}}>
         
         <h2 className="serif" style={{margin:'0 0 10px',fontSize:32,color:'var(--text-main)',letterSpacing:1}}>{t('inputTitle',lang)}</h2>
-        <p style={{margin:0,color:'var(--text-muted)',fontSize:14,maxWidth:500,marginInline:'auto',lineHeight:1.7}}>{t('inputSubtitle',lang)}</p>
+        <p style={{margin:0,color:'var(--text-muted)',fontSize: 16,maxWidth:500,marginInline:'auto',lineHeight:1.7}}>{t('inputSubtitle',lang)}</p>
       </div>
       <main style={{flex:1,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'20px 24px 60px'}}>
         <div className="lux-card" style={{width:'100%',maxWidth:580,padding:0,overflow:'visible'}}>
           <div style={{padding:'24px 34px',borderBottom:'1px solid var(--border-light)'}}>
             <h3 className="serif" style={{margin:0,fontSize:20,fontWeight:400,color:'var(--accent-gold)',letterSpacing:1.5}}>{t('birthDetails',lang)}</h3>
-            <p style={{margin:'6px 0 0',fontSize:13,color:'var(--text-muted)'}}>{t('formNote',lang)}</p>
+            <p style={{margin:'6px 0 0',fontSize:  17,color:'var(--text-muted)'}}>{t('formNote',lang)}</p>
           </div>
           <form onSubmit={submit} style={{padding:'34px'}}>
             <div style={{marginBottom:24}}>
@@ -1261,7 +1261,7 @@ function InputForm({onSubmit,lang,setLang,onOpenTerms}){
                 {errs.tob&&<p style={{color:'#EF4444',fontSize:11,marginTop:4}}>{errs.tob}</p>}
               </div>
             </div>
-            <p style={{margin:'-10px 0 16px',fontSize:12,color:'var(--text-muted)'}}>{t('inputAccuracy',lang)}</p>
+            <p style={{margin:'-10px 0 16px',fontSize:  16,color:'var(--text-muted)'}}>{t('inputAccuracy',lang)}</p>
             <div style={{marginBottom:20,position:'relative'}}>
               <label style={LS}>{t('city',lang)}</label>
               <input type="text" placeholder={t('cityPlaceholder',lang)} value={cityQ}
@@ -1282,7 +1282,7 @@ function InputForm({onSubmit,lang,setLang,onOpenTerms}){
                   ))}
                 </div>
               )}
-              {form.lat&&<p style={{fontSize:12,color:'#10B981',marginTop:6}}>✓ {form.lat.toFixed(3)}°, {form.lng.toFixed(3)}° · {form.timezone}</p>}
+              {form.lat&&<p style={{fontSize:  16,color:'#10B981',marginTop:6}}>✓ {form.lat.toFixed(3)}°, {form.lng.toFixed(3)}° · {form.timezone}</p>}
             </div>
             {form.country&&<div style={{marginBottom:24}}>
               <label style={LS}>{t('country',lang)}</label>
@@ -1352,7 +1352,7 @@ function OverviewTab({K,fmt,lang='en'}){
           [`${(L_RASHI[lang]||L_RASHI.en)[sun.rashi]}`,`${(L_NAKS[lang]||L_NAKS.en)[sun.nIdx]||sun.nakshatraName} ${t('pdf.pada',lang)||'Pd'} ${sun.pada}`,t('ov.sun',lang),'#D97706']].map(([val,sub,lbl,clr])=>(
           <Card key={lbl} style={{textAlign:'center',borderTop:`3px solid ${clr}`}}>
             <p style={{margin:'0 0 3px',fontSize:10,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:1}}>{lbl}</p>
-            <p style={{margin:'0 0 2px',fontSize:15,fontWeight:700,color:clr}}>{val}</p>
+            <p style={{margin:'0 0 2px',fontSize: 17,fontWeight:700,color:clr}}>{val}</p>
             <p style={{margin:0,fontSize:11,color:'var(--text-muted)'}}>{sub}</p>
           </Card>
         ))}
@@ -1370,7 +1370,7 @@ function OverviewTab({K,fmt,lang='en'}){
             </span>
           </div>
           
-          <p style={{ fontSize: 13, lineHeight: 1.5, color: '#CBD5E1', margin: '0 0 16px' }}>
+          <p style={{ fontSize:   17, lineHeight: 1.5, color: '#CBD5E1', margin: '0 0 16px' }}>
             {moonNakLore.myth}
           </p>
           
@@ -1506,7 +1506,7 @@ function PlanetsTab({K,lang='en'}){
           const ps=planets.filter(p=>p.house===h);
           return<div key={h} style={{background:'var(--bg-card)',border:'1px solid var(--border-light)',borderRadius:8,padding:'10px 12px'}}>
             <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
-              <div><span style={{fontSize:10,color:'var(--text-muted)',fontWeight:600}}>{t('pl.house',lang)} {h} · {HNAMES[h-1]}</span><p style={{margin:0,fontSize:12,fontWeight:600,color:'var(--text-main)'}}>{(L_RASHI[lang]||L_RASHI.en)[hr]}</p></div>
+              <div><span style={{fontSize:10,color:'var(--text-muted)',fontWeight:600}}>{t('pl.house',lang)} {h} · {HNAMES[h-1]}</span><p style={{margin:0,fontSize:  16,fontWeight:600,color:'var(--text-main)'}}>{(L_RASHI[lang]||L_RASHI.en)[hr]}</p></div>
               <span style={{fontSize:11,color:'var(--accent-gold)',fontWeight:600}}>{t('pl.lord',lang)}: {(L_GRAHA[lang]||L_GRAHA.en)[RASHI_LORD[hr]]||RASHI_LORD[hr]}</span>
             </div>
             {ps.length>0?<div style={{display:'flex',flexWrap:'wrap',gap:4,marginTop:4}}>{ps.map(p=><span key={p.key} style={{padding:'1px 7px',borderRadius:12,fontSize:11,fontWeight:600,background:PCOLOR[p.key]+'22',color:PCOLOR[p.key],border:`1px solid ${PCOLOR[p.key]}44`}}>{(L_GRAHA[lang]||L_GRAHA.en)[p.key]||p.key}</span>)}</div>:<p style={{margin:'4px 0 0',fontSize:11,color:'var(--text-muted)'}}>{t('pl.empty',lang)}</p>}
@@ -1532,7 +1532,7 @@ function DashaTab({K,lang='en'}){
             </div>
           ))}
         </div>
-        <p style={{marginTop:8,fontSize:12,color:'var(--accent-gold)',textAlign:'center'}}>{t('da.cur',lang)}: <strong>{(L_GRAHA[lang]||L_GRAHA.en)[current?.planet]||current?.planet}</strong> {t('ov.maha',lang)} ({current?.start}–{current?.end})</p>
+        <p style={{marginTop:8,fontSize:  16,color:'var(--accent-gold)',textAlign:'center'}}>{t('da.cur',lang)}: <strong>{(L_GRAHA[lang]||L_GRAHA.en)[current?.planet]||current?.planet}</strong> {t('ov.maha',lang)} ({current?.start}–{current?.end})</p>
       </Card>
       <div style={{display:'grid',gap:7}}>
         {mahadashas.map((m,i)=>(
@@ -1545,7 +1545,7 @@ function DashaTab({K,lang='en'}){
                   <span style={{fontSize:12,color:'var(--text-muted)'}}>· {DASHA_YRS[m.planet]} {t('da.yrs',lang)}</span>
                   {m.isCurrent&&<span style={{fontSize:10,background:'#F59E0B',color:'white',padding:'1px 7px',borderRadius:8,fontWeight:700}}>{t('da.active',lang)}</span>}
                 </div>
-                <p style={{margin:'1px 0 0',fontSize:12,color:'var(--text-muted)'}}>{m.start} → {m.end}</p>
+                <p style={{margin:'1px 0 0',fontSize:  16,color:'var(--text-muted)'}}>{m.start} → {m.end}</p>
               </div>
               <span style={{color:'var(--text-muted)'}}>{exp===i?'▲':'▼'}</span>
             </div>
@@ -1597,14 +1597,14 @@ function YogaTab({K,lang='en'}){
         <h4 style={{margin:0,fontSize:14,fontWeight:700,color:y.type==='dosha'?'var(--text-badge-red)':'var(--text-main)'}}>{t(`yo.name.${y.key}`, lang)}</h4>
         <span style={{fontSize:10,padding:'2px 9px',borderRadius:10,fontWeight:700,textTransform:'uppercase',background:y.type==='dosha'?'var(--bg-badge-red)':y.type==='dhana'?'var(--bg-badge-green)':'var(--bg-badge-purple)',color:y.type==='dosha'?'var(--text-badge-red)':y.type==='dhana'?'var(--text-badge-green)':'var(--text-badge-purple)'}}>{y.type==='dosha'?t('yo.doshaLabel',lang):y.type==='dhana'?t('yo.dhanaYoga',lang):t('yo.rajaYoga',lang)}</span>
       </div>
-      <p style={{margin:'0 0 7px',fontSize:12,color:'var(--accent-gold)'}}>
+      <p style={{margin:'0 0 7px',fontSize:  16,color:'var(--accent-gold)'}}>
         {t('yo.formedBy',lang)}: <span style={{color:'var(--text-muted)'}}>{calcStr}</span>
       </p>
-      <p style={{margin:0,fontSize:13,color:'var(--text-main)',lineHeight:1.75}}>{t(`yo.eff.${y.key}`, lang)}</p>
+      <p style={{margin:0,fontSize:  17,color:'var(--text-main)',lineHeight:1.75}}>{t(`yo.eff.${y.key}`, lang)}</p>
       {y.type === 'dosha' && (
         <div style={{ marginTop: 12, padding: 12, background: 'var(--bg-badge-red)', borderRadius: 6, border: '1px dashed var(--text-badge-red)' }}>
           <strong style={{ color: 'var(--text-badge-red)', fontSize: 12 }}>{t('yo.remedyLabel', lang) || 'Remedies'}:</strong>
-          <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-main)', lineHeight: 1.5 }}>
+          <p style={{ margin: '4px 0 0', fontSize:   17, color: 'var(--text-main)', lineHeight: 1.5 }}>
             {t(`yo.rem.${y.key}`, lang)}
           </p>
         </div>
@@ -1687,7 +1687,7 @@ function AshtakavargaTab({K,lang='en'}){
   return(
     <div style={{animation:'slideIn 0.2s ease'}}>
       <h3 style={{margin:'0 0 6px',fontSize:15,color:'var(--text-main)',fontWeight:700}}>{t('av.title',lang)} — {t('av.bindu',lang)}</h3>
-      <p style={{margin:'0 0 18px',fontSize:13,color:'var(--text-muted)'}}>{t('av.binduDesc',lang)}</p>
+      <p style={{margin:'0 0 18px',fontSize:  17,color:'var(--text-muted)'}}>{t('av.binduDesc',lang)}</p>
       {PKS.map(p=>{
         const row=BAV[p]||new Array(12).fill(0),tot=row.reduce((a,b)=>a+b,0);
         return<div key={p} style={{background:'var(--bg-card)',border:'1px solid var(--border-light)',borderRadius:10,overflow:'hidden',marginBottom:12}}>
@@ -2229,7 +2229,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
               <div style={{ display: 'flex', width: '100%', maxWidth: '1400px', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <div style={{ flex: '1 1 300px', minWidth: 0 }}>
                    <h4 style={{ margin: '0 0 4px', fontSize: '15px', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)', letterSpacing: '1px', textTransform: 'uppercase' }}>{(t('revealLifePathTitle', lang) || 'Reveal Life Paths')}</h4>
-                   <p className="hide-on-very-small" style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font-serif)', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealLifePathDesc', lang) || 'Reveal Life dimensions of Dharma, Wealth, Health, and Relationships through precise Shastric Pathways.'}</p>
+                   <p className="hide-on-very-small" style={{ margin: 0, fontSize:   17, color: 'var(--text-muted)', fontFamily: 'var(--font-serif)', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealLifePathDesc', lang) || 'Reveal Life dimensions of Dharma, Wealth, Health, and Relationships through precise Shastric Pathways.'}</p>
                 </div>
                 <button onClick={()=>{setDashboardMode('pathways'); setTimeout(() => { const el = document.getElementById('mock-dashboard-top'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({top: y, behavior: 'smooth'}); } else { window.scrollTo({top:0, behavior:'smooth'}); }}, 100); }} style={{ flexShrink: 0, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 24px', cursor:'pointer', borderRadius:'30px', fontFamily: 'var(--font-serif)', fontSize:'14px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 15px rgba(212, 175, 55, 0.5)' }} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'}}>
                   {(t('revealLifePathTitle', lang) || 'Reveal Life Paths')} ➔
@@ -2278,7 +2278,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
               <div style={{ display: 'flex', width: '100%', maxWidth: '1400px', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <div style={{ flex: '1 1 300px', minWidth: 0 }}>
                    <h4 style={{ margin: '0 0 4px', fontSize: '15px', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)', letterSpacing: '1px', textTransform: 'uppercase' }}>{(t('revealKundaliTitle', lang) || 'Reveal Kundali')}</h4>
-                   <p className="hide-on-very-small" style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font-serif)', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealKundaliDesc', lang) || 'Dive into your complete Parashari D1 matrix with planetary strengths, dashas, and traditional astrometrics.'}</p>
+                   <p className="hide-on-very-small" style={{ margin: 0, fontSize:   17, color: 'var(--text-muted)', fontFamily: 'var(--font-serif)', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealKundaliDesc', lang) || 'Dive into your complete Parashari D1 matrix with planetary strengths, dashas, and traditional astrometrics.'}</p>
                 </div>
                 <button onClick={()=>{setDashboardMode('kundali');window.scrollTo({top:0,behavior:'smooth'});}} style={{ flexShrink: 0, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 24px', cursor:'pointer', borderRadius:'30px', fontFamily: 'var(--font-serif)', fontSize:'14px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 15px rgba(212, 175, 55, 0.5)' }} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'}}>
                   <span style={{fontSize: '18px'}}>🌌</span> {(t('revealKundaliTitle', lang) || 'Reveal Kundali')} ➔
@@ -2515,7 +2515,7 @@ function App(){
 
   function handleBack(){setScreen('input');history.replaceState({},'',location.pathname)}
 
-  if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily: 'var(--font-serif)'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
+  if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily: 'var(--font-serif)'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize: 16,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
   
   if (screen === 'admin' && user?.email?.toLowerCase() === 'srikanthbelwadi@gmail.com') {
      return <SuperAdminDashboard user={user} onBack={() => setScreen('input')} lang={lang} />;
@@ -2557,7 +2557,7 @@ function App(){
             <h1 style={{margin:0, fontSize:36, fontWeight:700, fontFamily: 'var(--font-serif)', color:'var(--accent-gold)', letterSpacing:'2px', textShadow:'0 2px 4px rgba(0,0,0,0.5)'}}>
               JYOTISH DARSHAN
             </h1>
-            <p style={{margin:'4px 0 0 0', fontSize:14, color:'#9ca3af', letterSpacing:'4px', textTransform:'uppercase', fontWeight:500, display:'flex', alignItems:'center', gap:8}}>
+            <p style={{margin:'4px 0 0 0', fontSize: 16, color:'#9ca3af', letterSpacing:'4px', textTransform:'uppercase', fontWeight:500, display:'flex', alignItems:'center', gap:8}}>
               VEDIC BIRTH CHART <span style={{fontSize:10}}>•</span> <span style={{letterSpacing:'1px', fontFamily: 'var(--font-sans)'}}>ज्योतिष दर्शन</span>
             </p>
           </div>
@@ -2573,7 +2573,7 @@ function App(){
                <div style={{height:'100%',background:'linear-gradient(90deg, var(--accent-gold), #fff)',width:`${loadPct}%`,transition:'width 0.4s ease-out'}}></div>
             )}
           </div>
-          <p style={{margin:0,fontSize:13,fontWeight:500,color:'var(--text-muted)',letterSpacing:'0.5px'}}>{isAutoResuming ? 'Unboxing Cosmic Profile...' : loadMsg}</p>
+          <p style={{margin:0,fontSize:  17,fontWeight:500,color:'var(--text-muted)',letterSpacing:'0.5px'}}>{isAutoResuming ? 'Unboxing Cosmic Profile...' : loadMsg}</p>
         </div>
         
         <style dangerouslySetInnerHTML={{__html:`

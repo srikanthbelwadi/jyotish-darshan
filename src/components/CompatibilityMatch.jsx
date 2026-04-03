@@ -134,17 +134,17 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
 
       <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '8px', borderLeft: '4px solid var(--accent-gold)', marginBottom: '16px' }}>
         <h4 style={{ margin: '0 0 8px', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)' }}>{txt('comp.phase1', 'Phase 1: Ashta Kuta Verdict')}</h4>
-        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', fontFamily: 'var(--font-serif)' }}>{txt(`comp.${match.ashtaKuta.summaryKey}`, match.ashtaKuta.summary)}</p>
+        <p style={{ margin: 0, fontSize:  17, lineHeight: '1.6', fontFamily: 'var(--font-serif)' }}>{txt(`comp.${match.ashtaKuta.summaryKey}`, match.ashtaKuta.summary)}</p>
       </div>
 
       <div style={{ background: 'var(--bg-dark)', padding: '16px', borderRadius: '8px', borderLeft: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '4px solid #EF4444' : '4px solid #10B981', marginBottom: '16px' }}>
         <h4 style={{ margin: '0 0 8px', color: match.mangalDosha.manglikStatus.toLowerCase().includes('mismatch') || match.mangalDosha.manglikStatus.toLowerCase().includes('significant') ? '#EF4444' : '#10B981', fontFamily: 'var(--font-serif)' }}>{txt('comp.phase2Label', 'Phase 2: Mangal Dosha Analysis')}</h4>
-        <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6', color: 'var(--text-main)', fontFamily: 'var(--font-serif)' }}>{txt(`comp.${match.mangalDosha.manglikKey}`, match.mangalDosha.manglikStatus)}</p>
+        <p style={{ margin: 0, fontSize:  17, lineHeight: '1.6', color: 'var(--text-main)', fontFamily: 'var(--font-serif)' }}>{txt(`comp.${match.mangalDosha.manglikKey}`, match.mangalDosha.manglikStatus)}</p>
       </div>
 
       <div style={{ background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(245, 158, 11, 0.05))', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', marginBottom: '32px' }}>
         <h4 style={{ margin: '0 0 8px', color: '#7C3AED', fontFamily: 'var(--font-serif)' }}>{txt('comp.phase34', 'Phase 3 & 4: Structural Chart & Dasha Synthesis')}</h4>
-        <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text-main)', fontFamily: 'var(--font-serif)' }}>
+        <p style={{ margin: 0, fontSize:  16, lineHeight: '1.6', color: 'var(--text-main)', fontFamily: 'var(--font-serif)' }}>
           {txt(match.structural.synthesis.lordsPart.key, "The core anchor of {1}'s 7th House connects structurally with {3}'s chart, binding their fundamental relationship ideals.").replace('{0}', txt(`pl.${match.structural.synthesis.lordsPart.vars.lord1}`, match.structural.synthesis.lordsPart.vars.lord1)).replace('{1}', match.structural.synthesis.lordsPart.vars.p1).replace('{2}', txt(`pl.${match.structural.synthesis.lordsPart.vars.lord2}`, match.structural.synthesis.lordsPart.vars.lord2)).replace('{3}', match.structural.synthesis.lordsPart.vars.p2)}
           {' '}{txt(match.structural.synthesis.venusPart.key, "Venus, the ultimate significator of romance, sits in a supportive dignity across both charts, seeding natural devotion, aesthetic harmony, and deep mutual affection.")}
           {' '}{txt(match.structural.synthesis.dashaPart.key, "Furthermore, both individuals are currently traversing supportive planetary periods (Dashas), meaning the cosmic timing actively endorses the formation of this bond.")}
@@ -161,7 +161,7 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
                 {el.score} / {el.max}
               </span>
             </div>
-            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', fontFamily: 'var(--font-serif)' }}>{txt(`comp.${el.descKey}`, el.desc)}</p>
+            <p style={{ margin: 0, fontSize:   17, color: 'var(--text-secondary)', lineHeight: '1.5', fontFamily: 'var(--font-serif)' }}>{txt(`comp.${el.descKey}`, el.desc)}</p>
           </div>
         ))}
       </div>

@@ -53,21 +53,21 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
           <p style={{ margin: '0 0 2px', fontSize: 17, fontWeight: 700, color: '#7C3AED' }}>
             {lagnaRashi.name}
           </p>
-          <p style={{ margin: 0, fontSize: 12, color: '#6B7280' }}>{lagnaRashi.en} · {lagna.degreeFormatted}</p>
+          <p style={{ margin: 0, fontSize:   16, color: '#6B7280' }}>{lagnaRashi.en} · {lagna.degreeFormatted}</p>
         </Card>
         <Card style={{ textAlign: 'center', borderTop: '3px solid #8B5CF6' }}>
           <p style={{ margin: '0 0 4px', fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1 }}>Chandra Rashi (Moon Sign)</p>
           <p style={{ margin: '0 0 2px', fontSize: 17, fontWeight: 700, color: '#8B5CF6' }}>
             {RASHIS[moonPlanet.rashi].name}
           </p>
-          <p style={{ margin: 0, fontSize: 12, color: '#6B7280' }}>{moonPlanet.nakshatraName} · Pada {moonPlanet.pada}</p>
+          <p style={{ margin: 0, fontSize:   16, color: '#6B7280' }}>{moonPlanet.nakshatraName} · Pada {moonPlanet.pada}</p>
         </Card>
         <Card style={{ textAlign: 'center', borderTop: '3px solid #F59E0B' }}>
           <p style={{ margin: '0 0 4px', fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1 }}>Surya Rashi (Sun Sign)</p>
           <p style={{ margin: '0 0 2px', fontSize: 17, fontWeight: 700, color: '#D97706' }}>
             {RASHIS[sunPlanet.rashi].name}
           </p>
-          <p style={{ margin: 0, fontSize: 12, color: '#6B7280' }}>{sunPlanet.nakshatraName} · Pada {sunPlanet.pada}</p>
+          <p style={{ margin: 0, fontSize:   16, color: '#6B7280' }}>{sunPlanet.nakshatraName} · Pada {sunPlanet.pada}</p>
         </Card>
       </div>
 
@@ -84,7 +84,7 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
             </span>
           </div>
           
-          <p style={{ fontSize: 13, lineHeight: 1.5, color: '#CBD5E1', margin: '0 0 16px' }}>
+          <p style={{ fontSize:   17, lineHeight: 1.5, color: '#CBD5E1', margin: '0 0 16px' }}>
             {moonNakLore.myth}
           </p>
           
