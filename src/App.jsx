@@ -4,20 +4,7 @@ import { DYNAMIC_STRINGS } from './i18n/dynamicTranslations.js';
 import { UI_STRINGS } from './i18n/uiStrings.js';
 import i18next from './i18n/index.js';
 
-const createI18nProxy = (category) => new Proxy({}, {
-  get: (target, lang) => new Proxy({}, {
-    get: (target, key) => {
-      // The key might be numeric or a symbol under React loops
-      if (typeof key !== 'string' && typeof key !== 'number') return undefined;
-      const fullKey = `astro.${category}.${key}`;
-      const val = i18next.t(fullKey, { lng: lang });
-      if (val && val !== fullKey) return val;
-      const enVal = i18next.t(fullKey, { lng: 'en' });
-      if (enVal && enVal !== fullKey) return enVal;
-      return null;
-    }
-  })
-});
+import { L_NAKS, L_YOGA_PANCH, L_KARANA } from './i18n/astroMappings.js';
 
 import './index.css';
 import CompatibilityMatch from './components/CompatibilityMatch.jsx';
@@ -274,8 +261,7 @@ bn:{sun:'সূ',moon:'চ',mars:'মং',mercury:'বু',jupiter:'বৃ',venu
 ml:{sun:'സൂ',moon:'ചന്',mars:'ചൊ',mercury:'ബു',jupiter:'വ്യാ',venus:'ശു',saturn:'ශ',rahu:'രാ',ketu:'കേ'}
 };
 
-export const L_NAKS = createI18nProxy('nakshatras');
-
+export { L_NAKS };
 const L_STATUS={
 en:{exalted:'Exalted',debilitated:'Debilitated',retrograde:'Retrograde',combust:'Combust',vargottama:'Vargottama'},
 hi:{exalted:'उच्च',debilitated:'नीच',retrograde:'वक्री',combust:'अस्त',vargottama:'वर्गोत्तम'},
@@ -394,9 +380,8 @@ bn:{wax:'শুক্ল পক্ষ',wan:'কৃষ্ণ পক্ষ'},
 ml:{wax:'ശുക്ല പക്ഷം',wan:'കൃഷ്ണ പക്ഷം'}
 };
 
-const L_YOGA_PANCH = createI18nProxy('yogas');
+// Exported from astroMappings.js
 
-const L_KARANA = createI18nProxy('karanas');
 
 const L_READING={
 en:{
