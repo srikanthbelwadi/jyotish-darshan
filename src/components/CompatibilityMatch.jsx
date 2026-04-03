@@ -31,19 +31,13 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
   if (error) return <div style={{padding: '2rem', textAlign:'center', color:'var(--dosha-red)'}}>Celestial Server Error: {error}</div>;
   if (!match) return <div style={{padding: '2rem', textAlign:'center', color:'var(--text-muted)'}}>Consulting the cloud for cosmic synergy...</div>;
 
-  const NAK_NAMES = ['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishtha','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
   const translatedNakshatras = L_NAKS[lang] || L_NAKS.en;
-  const p1NakIndex = NAK_NAMES.indexOf(match.p1.nakshatra);
-  const p2NakIndex = NAK_NAMES.indexOf(match.p2.nakshatra);
-  const p1NakTranslated = p1NakIndex !== -1 ? translatedNakshatras[p1NakIndex] : match.p1.nakshatra;
-  const p2NakTranslated = p2NakIndex !== -1 ? translatedNakshatras[p2NakIndex] : match.p2.nakshatra;
+  const p1NakTranslated = match.p1.nakshatraIndex !== undefined ? translatedNakshatras[match.p1.nakshatraIndex] : match.p1.nakshatra;
+  const p2NakTranslated = match.p2.nakshatraIndex !== undefined ? translatedNakshatras[match.p2.nakshatraIndex] : match.p2.nakshatra;
 
-  const englishRashis = L_RASHI.en;
   const translatedRashis = L_RASHI[lang] || L_RASHI.en;
-  const p1RashiIndex = englishRashis.indexOf(match.p1.rashi);
-  const p2RashiIndex = englishRashis.indexOf(match.p2.rashi);
-  const p1RashiTranslated = p1RashiIndex !== -1 ? translatedRashis[p1RashiIndex] : match.p1.rashi;
-  const p2RashiTranslated = p2RashiIndex !== -1 ? translatedRashis[p2RashiIndex] : match.p2.rashi;
+  const p1RashiTranslated = match.p1.rashiIndex !== undefined ? translatedRashis[match.p1.rashiIndex] : match.p1.rashi;
+  const p2RashiTranslated = match.p2.rashiIndex !== undefined ? translatedRashis[match.p2.rashiIndex] : match.p2.rashi;
 
   return (
     <div style={{

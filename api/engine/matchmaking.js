@@ -1,13 +1,23 @@
 
 export function calculateMatch(k1, k2) {
   const getMoonData = (k) => {
-    const moon = k.planets ? k.planets.find(p => p.key === 'moon') : { rashi: 1, nIdx: 1 };
+    const moon = k.planets ? k.planets.find(p => p.key === 'moon' || p.name === 'Moon' || p.name === 'Chandra') : null;
+    let fallbackRashi = 1;
+    let fallbackNIdx = 1;
+    let fallbackPada = 1;
+
+    if (moon && moon.longitude !== undefined) {
+       fallbackRashi = Math.floor(moon.longitude / 30) % 12;
+       fallbackNIdx = Math.floor(moon.longitude / (360/27)) % 27;
+       fallbackPada = Math.floor((moon.longitude % (360/27)) / (360/108)) + 1;
+    }
+
     return {
       name: k.name || (k.input && k.input.name) || 'User',
       gender: k.input?.gender || 'male',
-      rashi: moon.rashi,
-      nakshatra: moon.nIdx,
-      pada: moon.pada
+      rashi: moon ? (moon.rashi !== undefined ? moon.rashi : fallbackRashi) : fallbackRashi,
+      nakshatra: moon ? (moon.nIdx ?? moon.nakshatraIndex ?? fallbackNIdx) : fallbackNIdx,
+      pada: moon ? (moon.pada ?? fallbackPada) : fallbackPada
     };
   };
 
@@ -43,7 +53,7 @@ export function calculateMatch(k1, k2) {
   // 3. Tara (3 pts)
   const bTara = (girl.nakshatra - boy.nakshatra + 27) % 27;
   const gTara = (boy.nakshatra - girl.nakshatra + 27) % 27;
-  const badTaras = [2, 4, 6, 8]; // measured in 1-9 blocks: 3rd, 5th, 7th are usually malefic
+  const badTaras = [2, 4, 6]; // measured in 0-8 blocks: 3rd (2), 5th (4), 7th (6) are malefic. 9th (8) is Ati Mitra (highly favorable).
   // Using simplified 0-8 scale: 2 (Vipat), 4 (Pratyari), 6 (Vadha) are bad.
   const bTaraGrp = bTara % 9;
   const gTaraGrp = gTara % 9;
@@ -214,8 +224,8 @@ export function calculateMatch(k1, k2) {
   const RASHI_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 
   return {
-    p1: { name: p1.name, rashi: RASHI_NAMES[p1.rashi], nakshatra: NAK_NAMES[p1.nakshatra], isManglik: m1.isManglik },
-    p2: { name: p2.name, rashi: RASHI_NAMES[p2.rashi], nakshatra: NAK_NAMES[p2.nakshatra], isManglik: m2.isManglik },
+    p1: { name: p1.name, rashiIndex: p1.rashi, nakshatraIndex: p1.nakshatra, rashi: RASHI_NAMES[p1.rashi], nakshatra: NAK_NAMES[p1.nakshatra], isManglik: m1.isManglik },
+    p2: { name: p2.name, rashiIndex: p2.rashi, nakshatraIndex: p2.nakshatra, rashi: RASHI_NAMES[p2.rashi], nakshatra: NAK_NAMES[p2.nakshatra], isManglik: m2.isManglik },
     ashtaKuta: {
         totalScore,
         maxScore: 36,
