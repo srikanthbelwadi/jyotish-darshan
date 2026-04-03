@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { PreferencesProvider } from './contexts/PreferencesContext.jsx'
 import { SyncProvider } from './contexts/SyncContext.jsx'
+import { Analytics } from '@vercel/analytics/react'
 import './i18n/index.js'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')).render(
       <SyncProvider>
         <Suspense fallback={<div style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0F172A', color: '#FFF'}}>Loading Jyotish Darshan Shastric Dictionaries...</div>}>
           <App />
+          <Analytics />
         </Suspense>
       </SyncProvider>
     </PreferencesProvider>

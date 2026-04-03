@@ -1,5 +1,8 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const admin = require("firebase-admin");
+
+admin.initializeApp();
 
 // Validate initialization of genAI (assumes GEMINI_API_KEY is available in Firebase environment params or standard process.env depending on deployment setup)
 function getGenAI() {
@@ -18,6 +21,14 @@ exports.generateOracle = onCall(async (request) => {
     // Auth Check
     if (!request.auth) {
       throw new HttpsError('unauthenticated', 'The endpoint requires authentication.');
+    }
+
+    const uid = request.auth.uid;
+    const userDocRef = admin.firestore().collection('users').doc(uid);
+    const userSnap = await userDocRef.get();
+    
+    if (userSnap.exists && userSnap.data().isBanned === true) {
+      throw new HttpsError('permission-denied', 'Administrator has suspended this account.');
     }
 
     const genAI = getGenAI();
@@ -79,7 +90,15 @@ If timescale is "Mahadasha": "You are currently operating within the profound ev
       }
     }
 
-    return { prediction: responseText.trim() };
+    const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    if (tokenCount > 0) {
+      await userDocRef.set({
+        llmTokensRun: admin.firestore.FieldValue.increment(tokenCount),
+        lastActivity: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).catch(err => console.error("Token sync failed:", err));
+    }
+
+    return { prediction: responseText.trim(), tokenCount };
 
   } catch (error) {
     console.error('Oracle Node Generation Error:', error);
@@ -94,6 +113,14 @@ exports.generatePathway = onCall(async (request) => {
     // Auth Check
     if (!request.auth) {
       throw new HttpsError('unauthenticated', 'The endpoint requires authentication.');
+    }
+
+    const uid = request.auth.uid;
+    const userDocRef = admin.firestore().collection('users').doc(uid);
+    const userSnap = await userDocRef.get();
+    
+    if (userSnap.exists && userSnap.data().isBanned === true) {
+      throw new HttpsError('permission-denied', 'Administrator has suspended this account.');
     }
 
     const genAI = getGenAI();
@@ -149,7 +176,15 @@ If Pathway is "Wealth & Assets": "Your second house of accumulated wealth is hea
       }
     }
 
-    return { prediction: responseText.trim() };
+    const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    if (tokenCount > 0) {
+      await userDocRef.set({
+        llmTokensRun: admin.firestore.FieldValue.increment(tokenCount),
+        lastActivity: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).catch(err => console.error("Token sync failed:", err));
+    }
+
+    return { prediction: responseText.trim(), tokenCount };
 
   } catch (error) {
     console.error('Pathway Node Generation Error:', error);

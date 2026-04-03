@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 const firebaseConfig = {
@@ -13,7 +14,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-let app, auth, googleProvider, db, functions;
+let app, auth, googleProvider, db, functions, analytics;
 
 try {
   // Only initialize if the API key is present to prevent blank screen crashes
@@ -23,6 +24,9 @@ try {
     googleProvider = new GoogleAuthProvider();
     db = getFirestore(app);
     functions = getFunctions(app);
+    if (typeof window !== 'undefined') {
+      analytics = getAnalytics(app);
+    }
   }
 } catch (e) {
   console.error("Firebase initialization failed", e);
@@ -34,7 +38,17 @@ if (auth) {
   getRedirectResult(auth).catch(e => console.error("Firebase Auth redirect unboxing error:", e));
 }
 
-export { auth, googleProvider, db, functions };
+export { auth, googleProvider, db, functions, analytics };
+
+export const trackEvent = (eventName, eventParams = {}) => {
+  if (analytics) {
+    try {
+      logEvent(analytics, eventName, eventParams);
+    } catch (e) {
+      console.warn("Analytics error", e);
+    }
+  }
+};
 
 export const syncProfileToCloud = async (userId, profiles) => {
   if (!db) return false;

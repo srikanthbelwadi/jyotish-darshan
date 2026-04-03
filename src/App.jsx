@@ -18,6 +18,7 @@ import CompatibilityMatch from './components/CompatibilityMatch.jsx';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
 import { NAKSHATRA_LORE } from './data/nakshatra_lore.js';
 import AuthModal from './components/AuthModal.jsx';
+import SuperAdminDashboard from './components/admin/SuperAdminDashboard.jsx';
 import { MockDashboard } from './components/dashboard';
 import ExpertReadingTab from './components/tabs/ExpertReadingTab.jsx';
 import ConfirmModal from './components/ConfirmModal.jsx';
@@ -25,6 +26,7 @@ import { usePreferences } from './contexts/PreferencesContext.jsx';
 import UserPreferencesModal from './components/UserPreferencesModal.jsx';
 import { useSync } from './contexts/SyncContext.jsx';
 import UserHub from './components/UserHub.jsx';
+import SuperAdminDashboard from './components/admin/SuperAdminDashboard.jsx';
 import { auth } from './firebase.js';
 
 // ════════════════════════════════════════════════════════════════
@@ -2340,7 +2342,7 @@ function SyncIndicator({ status, onForceSync }) {
   );
 }
 
-function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync, onOpenPrefs, onSelectProfile }) {
+function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, onForceSync, onOpenPrefs, onSelectProfile, onTriggerAdmin }) {
   const { lang, theme } = usePreferences();
 
   const LANGS=[{code:'en',label:'English'},{code:'hi',label:'हिन्दी'},{code:'kn',label:'ಕನ್ನಡ'},{code:'te',label:'తెలుగు'},{code:'ta',label:'தமிழ்'},{code:'sa',label:'संस्कृतम्'},{code:'mr',label:'मराठी'},{code:'gu',label:'ગુજરાતી'},{code:'bn',label:'বাংলা'},{code:'ml',label:'മലയാളം'}];
@@ -2351,7 +2353,7 @@ function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, o
             <div style={{width:40,height:40,flexShrink:0,background:'transparent',border:'1px solid var(--accent-gold)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 12px var(--accent-glow)'}}>
               <span style={{color:'var(--accent-gold)',fontSize:20}}>☀</span>
             </div>
-            <div style={{minWidth:0}}><h1 className="serif" style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{t('tagline',lang)}</p></div>
+            <div style={{minWidth:0}}><h1 className="serif" onClick={() => { if(user?.email === 'srikanthbelwadi@gmail.com' && onTriggerAdmin) onTriggerAdmin(); }} style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap', cursor: user?.email === 'srikanthbelwadi@gmail.com' ? 'pointer' : 'default'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{t('tagline',lang)}</p></div>
           </div>
           <div className="app-header-right" style={{display:'flex', gap:16, flexShrink:0, alignItems:'center'}}>
             <button type="button" onClick={onOpenPrefs} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s', boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='scale(1)'} title="Global Preferences">
@@ -2497,6 +2499,10 @@ function App(){
 
   if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily:'serif'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
   
+  if (screen === 'admin' && user?.email === 'srikanthbelwadi@gmail.com') {
+     return <SuperAdminDashboard user={user} onBack={() => setScreen('input')} lang={lang} />;
+  }
+
   if (!engineReady || isRegenerating || isAutoResuming) {
     return (
       <div style={{minHeight:'100vh',background:'var(--bg-main)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-sans)',color:'var(--text-main)',padding:20}}>
