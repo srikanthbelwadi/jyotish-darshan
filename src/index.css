@@ -9,7 +9,8 @@
 }
 :root {
   --font-sans: 'Inter', 'Noto Sans Devanagari', 'Noto Sans Kannada', 'Noto Sans Telugu', 'Noto Sans Tamil', 'Noto Sans Malayalam', 'Noto Sans Bengali', 'Noto Sans Gujarati', sans-serif;
-  --font-serif: 'Cinzel', 'Playfair Display', 'Noto Serif Devanagari', 'Noto Serif Kannada', 'Noto Serif Telugu', 'Noto Serif Tamil', 'Noto Serif Malayalam', 'Noto Serif Bengali', 'Noto Serif Gujarati', serif;
+  --font-heading: 'Cinzel', 'Playfair Display', 'Noto Serif Devanagari', 'Noto Serif Kannada', 'Noto Serif Telugu', 'Noto Serif Tamil', 'Noto Serif Malayalam', 'Noto Serif Bengali', 'Noto Serif Gujarati', serif;
+  --font-serif: 'Playfair Display', 'Noto Serif Devanagari', 'Noto Serif Kannada', 'Noto Serif Telugu', 'Noto Serif Tamil', 'Noto Serif Malayalam', 'Noto Serif Bengali', 'Noto Serif Gujarati', serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 
   color-scheme: dark;
@@ -111,7 +112,10 @@ body {
 .badge-green {  background: var(--bg-badge-green); color: var(--text-badge-green); }
 .badge-neutral { background: var(--bg-badge-neutral); color: var(--text-badge-neutral); }
 
-h1,h2,h3,h4,h5,.serif{
+h1,h2,h3,h4,h5 {
+  font-family: var(--font-heading) !important;
+}
+.serif {
   font-family: var(--font-serif);
 }
 ::-webkit-scrollbar{width:4px;height:4px}
