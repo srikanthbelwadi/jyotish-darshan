@@ -8,7 +8,14 @@ const createI18nProxy = (category) => new Proxy({}, {
   get: (target, lang) => new Proxy({}, {
     get: (target, key) => {
       // Proxy requests to the translation engine natively!
-      return i18next.t(`astro.${category}.${key}`, { lng: lang, defaultValue: key });
+      const fullKey = `astro.${category}.${key}`;
+      if (i18next.exists(fullKey, { lng: lang })) {
+        return i18next.t(fullKey, { lng: lang });
+      }
+      if (lang !== 'en' && i18next.exists(fullKey, { lng: 'en' })) {
+        return i18next.t(fullKey, { lng: 'en' });
+      }
+      return null;
     }
   })
 });
