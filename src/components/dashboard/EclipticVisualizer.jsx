@@ -75,7 +75,7 @@ export const EclipticChart = ({ hue, pillarId, t, K }) => {
           const ang = pl.longitude * (Math.PI/180);
           const r = 125;
           const isHighlighted = (pl.key === p1Key || pl.key === p2Key);
-          const abbr = i18nT(`pl.abbr.${pl.key}`, { defaultValue: PLANET_ABBR[pl.key] || pl.key });
+          const abbr = t(`pl.abbr.${pl.key}`, PLANET_ABBR[pl.key] || pl.key);
           
           const labelDist = isHighlighted ? 22 : 18; 
           const textX = labelDist * Math.cos(ang);
