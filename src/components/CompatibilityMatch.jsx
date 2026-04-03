@@ -69,18 +69,18 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '18px', color: 'var(--text-secondary)', fontSize: '13px', fontFamily: 'var(--font-serif)', alignItems: 'center' }}>
             <div>📅 {new Date(primaryKundali.input.year, primaryKundali.input.month - 1, primaryKundali.input.day).toLocaleDateString(lang === 'en' ? 'en-IN' : lang, { day: 'numeric', month: 'long', year: 'numeric' })}, {primaryKundali.input.tob || String(primaryKundali.input.hour).padStart(2,'0')+':'+String(primaryKundali.input.minute).padStart(2,'0')}</div>
             <div style={{display:'flex', gap: 6}}><span> {primaryKundali.input.lat?.toFixed(3)}°N, {primaryKundali.input.lng?.toFixed(3)}°E</span></div>
-            <div>🔹 {txt('ayanamsa', 'Ayanamsa')}: {primaryKundali.ayanamsaDMS}</div>
-            <div>♑ {txt('lagna', 'Lagna')}: {(L_RASHI[lang] || L_RASHI.en)[primaryKundali.lagna?.rashi]} {primaryKundali.lagna?.degFmt}</div>
+            <div>🔹 {txt('comp.ayanamsa', 'Ayanamsa')}: {primaryKundali.ayanamsaDMS}</div>
+            <div>♑ {txt('comp.lagna', 'Lagna')}: {(L_RASHI[lang] || L_RASHI.en)[primaryKundali.lagna?.rashi]} {primaryKundali.lagna?.degFmt}</div>
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '18px', flex: 1 }}>
             {[
               { k: 'comp.moonR', label: 'Moon Sign', v: p1RashiTranslated },
               { k: 'comp.nak', label: 'Nakshatra', v: p1NakTranslated },
-              { k: 'tithi', label: 'Tithi', v: localizePanchang(primaryKundali.panchang, lang)?.tithi?.split(' (')[0] },
-              { k: 'vara', label: 'Vara', v: localizePanchang(primaryKundali.panchang, lang)?.vara },
-              { k: 'yoga', label: 'Yoga', v: localizePanchang(primaryKundali.panchang, lang)?.yoga },
-              { k: 'karana', label: 'Karana', v: localizePanchang(primaryKundali.panchang, lang)?.karana }
+              { k: 'comp.tithi', label: 'Tithi', v: localizePanchang(primaryKundali.panchang, lang)?.tithi?.split(' (')[0] },
+              { k: 'comp.vara', label: 'Vara', v: localizePanchang(primaryKundali.panchang, lang)?.vara },
+              { k: 'comp.yoga', label: 'Yoga', v: localizePanchang(primaryKundali.panchang, lang)?.yoga },
+              { k: 'comp.karana', label: 'Karana', v: localizePanchang(primaryKundali.panchang, lang)?.karana }
             ].map((item, idx) => (
               <div key={idx} style={{ border: '1px solid var(--border-light)', borderRadius: '4px', padding: '4px 10px', fontSize: '13px', background: 'var(--bg-card)' }}>
                 <span style={{ color: 'var(--accent-gold)' }}>{txt(item.k, item.label)}:</span> <span style={{color:'var(--text-main)'}}>{item.v}</span>
@@ -100,18 +100,18 @@ export default function CompatibilityMatch({ primaryKundali, partnerKundali, t=(
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '18px', color: 'var(--text-secondary)', fontSize: '13px', fontFamily: 'var(--font-serif)', alignItems: 'center' }}>
             <div>📅 {new Date(partnerKundali.input.year, partnerKundali.input.month - 1, partnerKundali.input.day).toLocaleDateString(lang === 'en' ? 'en-IN' : lang, { day: 'numeric', month: 'long', year: 'numeric' })}, {partnerKundali.input.tob || String(partnerKundali.input.hour).padStart(2,'0')+':'+String(partnerKundali.input.minute).padStart(2,'0')}</div>
             <div style={{display:'flex', gap: 6}}><span> {partnerKundali.input.lat?.toFixed(3)}°N, {partnerKundali.input.lng?.toFixed(3)}°E</span></div>
-            <div>🔹 {txt('ayanamsa', 'Ayanamsa')}: {partnerKundali.ayanamsaDMS}</div>
-            <div>♑ {txt('lagna', 'Lagna')}: {(L_RASHI[lang] || L_RASHI.en)[partnerKundali.lagna?.rashi]} {partnerKundali.lagna?.degFmt}</div>
+            <div>🔹 {txt('comp.ayanamsa', 'Ayanamsa')}: {partnerKundali.ayanamsaDMS}</div>
+            <div>♑ {txt('comp.lagna', 'Lagna')}: {(L_RASHI[lang] || L_RASHI.en)[partnerKundali.lagna?.rashi]} {partnerKundali.lagna?.degFmt}</div>
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '18px', flex: 1 }}>
             {[
               { k: 'comp.moonR', label: 'Moon Sign', v: p2RashiTranslated },
               { k: 'comp.nak', label: 'Nakshatra', v: p2NakTranslated },
-              { k: 'tithi', label: 'Tithi', v: localizePanchang(partnerKundali.panchang, lang)?.tithi?.split(' (')[0] },
-              { k: 'vara', label: 'Vara', v: localizePanchang(partnerKundali.panchang, lang)?.vara },
-              { k: 'yoga', label: 'Yoga', v: localizePanchang(partnerKundali.panchang, lang)?.yoga },
-              { k: 'karana', label: 'Karana', v: localizePanchang(partnerKundali.panchang, lang)?.karana }
+              { k: 'comp.tithi', label: 'Tithi', v: localizePanchang(partnerKundali.panchang, lang)?.tithi?.split(' (')[0] },
+              { k: 'comp.vara', label: 'Vara', v: localizePanchang(partnerKundali.panchang, lang)?.vara },
+              { k: 'comp.yoga', label: 'Yoga', v: localizePanchang(partnerKundali.panchang, lang)?.yoga },
+              { k: 'comp.karana', label: 'Karana', v: localizePanchang(partnerKundali.panchang, lang)?.karana }
             ].map((item, idx) => (
               <div key={idx} style={{ border: '1px solid var(--border-light)', borderRadius: '4px', padding: '4px 10px', fontSize: '13px', background: 'var(--bg-card)' }}>
                 <span style={{ color: 'var(--accent-gold)' }}>{txt(item.k, item.label)}:</span> <span style={{color:'var(--text-main)'}}>{item.v}</span>
