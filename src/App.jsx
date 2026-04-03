@@ -1579,9 +1579,18 @@ function YogaTab({K,lang='en'}){
   const getTranslatedVars = (vars) => {
     const res = {};
     for (const [k, v] of Object.entries(vars || {})) {
-      if (['p1', 'p2'].includes(k)) res[k] = t(`pl.${v}`, lang) || v;
-      else if (k === 'rashi') res[k] = t(`yo.rashi.${v}`, lang) || v;
-      else res[k] = t(`yo.val.${v}`, lang) || v;
+      if (['p1', 'p2'].includes(k)) {
+        const tr = t(`pl.${v}`, lang);
+        res[k] = tr === `pl.${v}` ? v : tr;
+      } else if (k === 'rashi') {
+        const tr = t(`yo.rashi.${v}`, lang);
+        res[k] = tr === `yo.rashi.${v}` ? v : tr;
+      } else if (k === 'house') {
+        res[k] = v;
+      } else {
+        const tr = t(`yo.val.${v}`, lang);
+        res[k] = tr === `yo.val.${v}` ? v : tr;
+      }
     }
     return res;
   };
