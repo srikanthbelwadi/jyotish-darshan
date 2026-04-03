@@ -2573,7 +2573,7 @@ function App(){
   return (
     <div style={{minHeight:'100vh', display:'flex', flexDirection:'column'}}>
       {showAuthModal && <AuthModal lang={lang} t={t} onLogin={() => setShowAuthModal(false)} onClose={() => setShowAuthModal(false)} />}
-      <AppHeader user={user} syncStatus={syncStatus} syncToast={syncToast} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={logoutUser} onForceSync={forceSync} onOpenPrefs={() => setShowPrefModal(true)} onSelectProfile={(profile) => handleSubmit(profile)} />
+      <AppHeader user={user} syncStatus={syncStatus} syncToast={syncToast} onLoginClick={() => setShowAuthModal(true)} onLogoutClick={logoutUser} onForceSync={forceSync} onOpenPrefs={() => setShowPrefModal(true)} onTriggerAdmin={() => setScreen('admin')} onSelectProfile={(profile) => handleSubmit(profile)} />
       <DailyPanchang lang={lang} />
       {screen==='results'&&kundali ? <ResultsPage K={kundali} onBack={goBack} lang={lang} onSwitchProfile={handleSubmit} user={user} onRequireLogin={() => setShowAuthModal(true)} onForceSync={forceSync} onDeleteProfile={setProfileToDelete} saveProfile={saveProfile} /> : <InputForm onSubmit={handleSubmit} lang={lang} />}
       <UserPreferencesModal isOpen={showPrefModal} onClose={() => setShowPrefModal(false)} />
