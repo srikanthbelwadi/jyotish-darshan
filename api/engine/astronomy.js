@@ -10,10 +10,16 @@ function norm360(d) { return ((d % 360) + 360) % 360; }
 
 export function toJulianDay(year, month, day, hour = 0, minute = 0, utcOffsetHours = 0) {
   const swe = getSwe();
-  const totalMinutes = hour * 60 + minute - Math.round(utcOffsetHours * 60);
-  let uDate = new Date(Date.UTC(year, month - 1, day, 0, totalMinutes, 0));
-  let utHour = uDate.getUTCHours() + uDate.getUTCMinutes() / 60;
-  return swe.julday(uDate.getUTCFullYear(), uDate.getUTCMonth() + 1, uDate.getUTCDate(), utHour, swe.SE_GREG_CAL);
+  const localMsFromEpoch = Date.UTC(year, month - 1, day, Math.floor(hour), Math.floor(minute), Math.floor((minute % 1) * 60));
+  const utcMs = localMsFromEpoch - (utcOffsetHours * 3600 * 1000);
+  
+  const uDate = new Date(utcMs);
+  const utYear = uDate.getUTCFullYear();
+  const utMonth = uDate.getUTCMonth() + 1;
+  const utDay = uDate.getUTCDate();
+  const exactUtHour = uDate.getUTCHours() + (uDate.getUTCMinutes() / 60) + (uDate.getUTCSeconds() / 3600);
+
+  return swe.julday(utYear, utMonth, utDay, exactUtHour, swe.SE_GREG_CAL);
 }
 
 export function julianToDate(jd) {

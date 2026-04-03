@@ -403,8 +403,7 @@ export function computeKundali(input) {
   const { sidereal, ayanamsa } = computePlanetPositions(jd);
   checkCombustion(sidereal);
 
-  const ascTropical = computeAscendant(jd, lat, lng);
-  const lagnaLon = ((ascTropical - ayanamsa) % 360 + 360) % 360;
+  const lagnaLon = computeAscendant(jd, lat, lng);
   const lagnaRashi = rashiFromLongitude(lagnaLon);
   const lagna = {
     longitude: lagnaLon,
