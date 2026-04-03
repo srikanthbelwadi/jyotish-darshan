@@ -71,7 +71,7 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
           
           <div className="mobile-hero-padding" style={{ position: 'relative', zIndex: 10, padding: '40px', display: 'flex', gap: '40px', flexWrap: 'wrap', alignItems: 'center', minHeight: '400px', boxSizing: 'border-box' }}>
              <div style={{ flex: '1 1 500px', minWidth: 0 }}>
-               <h3 style={{ fontSize: '48px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 4px 20px var(--bg-surface)' }}>{t(data.title)}</h3>
+               <h3 style={{ fontSize: '48px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: 'var(--font-serif)', textShadow: '0 4px 20px var(--bg-surface)' }}>{t(data.title)}</h3>
                {isLoading ? (
                    <div className="mobile-loader-margin">
                       <UniversalLoader />
@@ -81,21 +81,21 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
                        <button onClick={() => refetch()} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                      </div>
-                     <p style={{ color: 'var(--text-badge-red)', fontSize: '18px', fontFamily: '"Cinzel", serif', textAlign: 'center' }}>⚠️ {error.message}</p>
+                     <p style={{ color: 'var(--text-badge-red)', fontSize: '18px', fontFamily: 'var(--font-serif)', textAlign: 'center' }}>⚠️ {error.message}</p>
                    </div>
                ) : pathwayData?.summary ? (
                    <div style={{ marginBottom: '32px' }}>
                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
                        <button onClick={() => refetch()} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                      </div>
-                     <p style={{ padding: '24px', background: 'var(--bg-surface)', borderTop: '4px solid #ffd700', color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', fontStyle: 'italic', textAlign: 'center' }}>
+                     <p style={{ padding: '24px', background: 'var(--bg-surface)', borderTop: '4px solid #ffd700', color: 'var(--text-main)', fontSize: '18px', fontFamily: 'var(--font-serif)', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', fontStyle: 'italic', textAlign: 'center' }}>
                        "{pathwayData.summary}"
                      </p>
                    </div>
                ) : !isRevealed ? (
                     <div style={{ marginBottom: '32px', textAlign: 'center' }}>
-                      <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto 24px auto' }} dangerouslySetInnerHTML={{ __html: t('ig.desc1', `This sacred pathway delves deep into the <strong>{desc}</strong> of your existence. By decoding the precise planetary transits governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you.`).replace('{desc}', t(data.desc)) }} />
-                      <button onClick={() => setIsRevealed(true)} style={{ background: 'var(--accent-gold)', color: '#000', padding: '12px 28px', border: 'none', borderRadius: '4px', fontSize: '18px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', boxShadow: '0 4px 15px rgba(255,215,0,0.3)', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
+                      <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'var(--font-serif)', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto 24px auto' }} dangerouslySetInnerHTML={{ __html: t('ig.desc1', `This sacred pathway delves deep into the <strong>{desc}</strong> of your existence. By decoding the precise planetary transits governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you.`).replace('{desc}', t(data.desc)) }} />
+                      <button onClick={() => setIsRevealed(true)} style={{ background: 'var(--accent-gold)', color: '#000', padding: '12px 28px', border: 'none', borderRadius: '4px', fontSize: '18px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', cursor: 'pointer', boxShadow: '0 4px 15px rgba(255,215,0,0.3)', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
                          {t('ig.showPrediction', 'SHOW PREDICTION')} ➔
                       </button>
                     </div>
@@ -104,14 +104,14 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
                       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
                         <button onClick={() => refetch()} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', width: '32px', height: '32px' }}>⟳</button>
                       </div>
-                      <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'serif', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }} dangerouslySetInnerHTML={{ __html: t('ig.desc2', `This sacred pathway delves deep into the <strong>{desc}</strong> of your existence. {prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.`).replace('{desc}', t(data.desc)).replace('{prompt}', data.prompt) }} />
+                      <p style={{ color: 'var(--text-main)', fontSize: '18px', fontFamily: 'var(--font-serif)', lineHeight: 1.8, textShadow: '0 2px 10px var(--bg-surface)', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }} dangerouslySetInnerHTML={{ __html: t('ig.desc2', `This sacred pathway delves deep into the <strong>{desc}</strong> of your existence. {prompt} By decoding the precise planetary transits and stellar coordinates governing this dimension within your D1 matrix, we unveil the karmic trajectory designed exclusively for you. The ancient Parashari logic binds these 6 potential realities directly to your soul's resonance.`).replace('{desc}', t(data.desc)).replace('{prompt}', data.prompt) }} />
                     </div>
                )}
              </div>
              
              {/* 2. Ecliptic Visualization */}
              <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-               <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: '"Cinzel", serif', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>{t('ig.stellarEcliptic', 'Stellar Ecliptic Alignment')}</div>
+               <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font-serif)', letterSpacing: '2px', marginBottom: '16px', textTransform: 'uppercase' }}>{t('ig.stellarEcliptic', 'Stellar Ecliptic Alignment')}</div>
                <EclipticChart hue={hue} pillarId={targetPillar} t={t} K={K} />
              </div>
           </div>
@@ -120,7 +120,7 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
        {/* 3. 6 Shastric Outcome Cards with Images */}
        <div className="mobile-hero-padding" style={{ padding: '60px 40px 0 40px' }}>
          {pathwayData?.options?.length > 0 && (
-           <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: '"Cinzel", serif', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>{t('ig.selectOutcome', 'Select an Outcome to Reveal Prophecy')}</h4>
+           <h4 style={{ color: 'var(--text-main)', fontSize: '28px', fontFamily: 'var(--font-serif)', textAlign: 'center', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '4px' }}>{t('ig.selectOutcome', 'Select an Outcome to Reveal Prophecy')}</h4>
          )}
          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '32px' }}>
            {(pathwayData?.options || []).map((opt, i) => {
@@ -150,7 +150,7 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
                  )}
 
                  <span className="mobile-scale-icon" style={{ position: 'relative', zIndex: 2, filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))', transition: 'transform 0.3s', opacity: user ? 1 : 0.3 }}>{opt.icon}</span>
-                 <span style={{ position: 'relative', zIndex: 2, color: 'var(--text-main)', fontSize: 'clamp(14px, 4.5vw, 20px)', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', textShadow: '0 4px 10px var(--bg-surface)', letterSpacing: '1px', textAlign: 'center', opacity: user ? 1 : 0.3, wordBreak: 'break-word', padding: '0 8px' }}>
+                 <span style={{ position: 'relative', zIndex: 2, color: 'var(--text-main)', fontSize: 'clamp(14px, 4.5vw, 20px)', fontWeight: 'bold', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', textShadow: '0 4px 10px var(--bg-surface)', letterSpacing: '1px', textAlign: 'center', opacity: user ? 1 : 0.3, wordBreak: 'break-word', padding: '0 8px' }}>
                    {t(opt.label)}
                  </span>
                </button>

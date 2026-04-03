@@ -13,7 +13,7 @@ const PremiumPanel = ({ title, subtitle, icon, children }) => (
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
       <span style={{ fontSize: '24px', filter: 'drop-shadow(0 0 8px var(--accent-gold))' }}>{icon}</span>
-      <h2 style={{ margin: 0, fontSize: '20px', fontFamily: 'serif', color: 'var(--accent-gold)' }}>{title}</h2>
+      <h2 style={{ margin: 0, fontSize: '20px', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>{title}</h2>
     </div>
     <p style={{ margin: '0 0 24px 0', fontSize: '13px', color: 'var(--text-muted)' }}>{subtitle}</p>
     {children}
@@ -157,7 +157,7 @@ export const MockRemediesTab = () => (
       <div style={{ background: '#000', padding: '20px', borderRadius: '8px', border: '1px solid #333' }}>
         <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'var(--accent-gold)' }}>Prescribed Mantra</h4>
         <div style={{ background: '#111', padding: '16px', borderRadius: '6px', border: '1px solid #222', textAlign: 'center' }}>
-          <div style={{ fontSize: '18px', fontFamily: 'serif', color: '#fff', marginBottom: '8px' }}>ॐ बृं बृहस्पतये नमः</div>
+          <div style={{ fontSize: '18px', fontFamily: 'var(--font-serif)', color: '#fff', marginBottom: '8px' }}>ॐ बृं बृहस्पतये नमः</div>
           <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px' }}>Om Brihm Brihaspataye Namah</div>
           <button style={{ background: 'var(--accent-gold)', color: '#000', border: 'none', padding: '6px 16px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto' }}>
             <span>▶</span> Listen to Pronunciation
@@ -179,7 +179,7 @@ export const MockPurposeTab = () => (
         ☽
       </div>
       
-      <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', color: 'var(--accent-gold)', fontFamily: 'serif' }}>The Moon as Atmakaraka</h3>
+      <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)' }}>The Moon as Atmakaraka</h3>
       <div style={{ fontSize: '13px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '24px' }}>Your Soul's Primary Directive</div>
       
       <p style={{ fontSize: '15px', lineHeight: 1.7, color: '#d1d5db', maxWidth: '600px', margin: '0 auto 32px auto' }}>

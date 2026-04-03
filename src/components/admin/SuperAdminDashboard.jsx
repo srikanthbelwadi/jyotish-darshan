@@ -50,14 +50,14 @@ export default function SuperAdminDashboard({ user, onBack, lang }) {
   const dollars = (totalTokens / 1000000) * 0.075; // Approx flash pricing
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-dark)', padding: '40px 24px', fontFamily: '"Cinzel", serif', color: 'var(--text-main)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-dark)', padding: '40px 24px', fontFamily: 'var(--font-serif)', color: 'var(--text-main)' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <button onClick={onBack} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px solid var(--accent-gold)', padding: '8px 16px', borderRadius: 4, cursor: 'pointer', marginBottom: 24 }}>
           ← Back to Jyotish Darshan
         </button>
 
         <h1 style={{ color: 'var(--accent-gold)', fontSize: 32, marginBottom: 8 }}>CPO Analytics Console</h1>
-        <p style={{ color: 'var(--text-muted)', marginBottom: 32, fontFamily: 'sans-serif' }}>
+        <p style={{ color: 'var(--text-muted)', marginBottom: 32, fontFamily: 'var(--font-sans)' }}>
           Monitoring total platform generative usage securely.
         </p>
 
@@ -76,7 +76,7 @@ export default function SuperAdminDashboard({ user, onBack, lang }) {
           <h2 style={{ fontSize: 20, color: 'var(--accent-gold)', marginBottom: 24 }}>Top Authorized Users</h2>
           
           {loading ? <p>Loading telemetry...</p> : (
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'sans-serif', fontSize: 14 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'var(--font-sans)', fontSize: 14 }}>
               <thead>
                 <tr style={{ background: 'var(--bg-dark)', textAlign: 'left', color: 'var(--text-muted)' }}>
                   <th style={{ padding: 12 }}>User ID</th>
@@ -89,7 +89,7 @@ export default function SuperAdminDashboard({ user, onBack, lang }) {
               <tbody>
                 {usersInfo.map(u => (
                   <tr key={u.id} style={{ borderBottom: '1px solid var(--border-light)', background: u.isBanned ? 'rgba(239, 68, 68, 0.05)' : 'transparent' }}>
-                    <td style={{ padding: 12, fontFamily: 'monospace' }}>{u.id}</td>
+                    <td style={{ padding: 12, fontFamily: 'var(--font-mono)' }}>{u.id}</td>
                     <td style={{ padding: 12 }}>{u.lastSynced ? new Date(u.lastSynced).toLocaleString() : 'N/A'}</td>
                     <td style={{ padding: 12, color: 'var(--accent-gold)', fontWeight: 'bold' }}>{u.llmTokensRun?.toLocaleString() || 0}</td>
                     <td style={{ padding: 12 }}>

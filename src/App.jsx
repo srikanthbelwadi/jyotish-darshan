@@ -1480,7 +1480,7 @@ function PlanetsTab({K,lang='en'}){
                 onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                 <td style={{padding:'10px 10px'}}><span style={{width:8,height:8,borderRadius:'50%',background:PCOLOR[p.key],display:'inline-block',marginRight:6}}/><strong>{(L_GRAHA[lang]||L_GRAHA.en)[p.key]||p.name}</strong></td>
                 <td style={{padding:'10px 10px',color:'var(--text-main)'}}>{(L_RASHI[lang]||L_RASHI.en)[p.rashi]}</td>
-                <td style={{padding:'10px 10px',fontFamily:'monospace',color:'var(--text-main)',fontSize:11}}>{p.degFmt}</td>
+                <td style={{padding:'10px 10px',fontFamily: 'var(--font-mono)',color:'var(--text-main)',fontSize:11}}>{p.degFmt}</td>
                 <td style={{padding:'10px 10px',color:'var(--text-main)'}}>{(L_NAKS[lang]||L_NAKS.en)[p.nIdx]||p.nakshatraName}</td>
                 <td style={{padding:'10px 10px',textAlign:'center',color:'var(--text-main)'}}>{p.pada}</td>
                 <td style={{padding:'10px 10px',color:'var(--text-main)'}}>{(L_GRAHA[lang]||L_GRAHA.en)[p.nakshatraLord]||p.nakshatraLord}</td>
@@ -2101,12 +2101,12 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
                          }
                        }, 100);
                      }
-                  }} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px dashed var(--accent-gold)', padding: '6px 12px', fontSize: '12px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }} onMouseOver={e=>{e.currentTarget.style.opacity=1; e.currentTarget.style.background='rgba(212,175,55,0.1)'}} onMouseOut={e=>{e.currentTarget.style.opacity=0.8; e.currentTarget.style.background='transparent'}}>
+                  }} style={{ background: 'transparent', color: 'var(--accent-gold)', border: '1px dashed var(--accent-gold)', padding: '6px 12px', fontSize: '12px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', cursor: 'pointer', borderRadius: '4px', transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }} onMouseOver={e=>{e.currentTarget.style.opacity=1; e.currentTarget.style.background='rgba(212,175,55,0.1)'}} onMouseOut={e=>{e.currentTarget.style.opacity=0.8; e.currentTarget.style.background='transparent'}}>
                     {t('comp.addP', lang, '+ ADD PARTNER')}
                  </button>
               ) : (
                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                   <span style={{color: 'var(--accent-gold)', fontSize: 28, fontFamily: '"Cinzel", serif', opacity: 0.5}}>&</span>
+                   <span style={{color: 'var(--accent-gold)', fontSize: 28, fontFamily: 'var(--font-serif)', opacity: 0.5}}>&</span>
                    <h2 className="serif" onClick={() => setIsSynastryExpanded(!isSynastryExpanded)} style={{margin:0,fontSize:28,fontWeight:400,color:'var(--accent-gold)',letterSpacing:1, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:10, paddingBottom: 4, borderBottom: '1px dashed rgba(212, 175, 55, 0.4)', userSelect:'none', transition:'opacity 0.2s'}} title="Toggle Compatibility Details" onMouseOver={e=>e.currentTarget.style.opacity=0.8} onMouseOut={e=>e.currentTarget.style.opacity=1}>
                      {partnerKundali.name || 'Partner'}
                      <span style={{fontSize:12, opacity:0.8, color:'var(--text-muted)', transform: isSynastryExpanded ? 'rotate(180deg)' : 'none', transition:'transform 0.2s'}}>▼</span>
@@ -2145,7 +2145,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
         </div>
       </div>
 
-      <div style={{maxWidth:1100,margin:'0 auto',padding:'40px 24px 80px', fontFamily:'"Cinzel", serif'}}>
+      <div style={{maxWidth:1100,margin:'0 auto',padding:'40px 24px 80px', fontFamily: 'var(--font-serif)'}}>
 
         {/* Global Synastry Form Dropdown */}
         {(showPartnerForm || (partnerKundali && isSynastryExpanded)) && (
@@ -2180,7 +2180,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
         {dashboardMode === 'kundali' && (
           <div style={{animation:'fadeIn 0.5s ease'}}>
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'40px', borderBottom:'1px solid #b8860b', paddingBottom:'16px', flexWrap:'wrap', gap:'16px'}}>
-              <h2 style={{ fontSize: '42px', margin: 0, fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Kundali',lang)}</h2>
+              <h2 style={{ fontSize: '42px', margin: 0, fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Kundali',lang)}</h2>
             </div>
 
             
@@ -2193,9 +2193,9 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             <div className="no-print reveal-hero-banner" style={{ background: 'var(--bg-hero-gradient)', borderRadius: '12px', border: '1px solid var(--accent-gold)', padding: '40px 24px', marginBottom: '60px', position: 'relative', overflow: 'hidden', boxShadow: 'var(--shadow-hero)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                <div style={{ position: 'absolute', opacity: 0.05, fontSize: '200px', top: '-50px', left: '-50px', pointerEvents: 'none' }}>🌀</div>
                <div style={{ position: 'absolute', opacity: 0.05, fontSize: '200px', bottom: '-80px', right: '-40px', pointerEvents: 'none' }}>✨</div>
-               <h3 style={{ fontSize: '32px', fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', margin: '0 0 16px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '2px' }}>{t('revealLifePathTitle', lang) || 'Reveal Life Paths'}</h3>
-               <p style={{ fontSize: '18px', color: 'var(--text-main)', margin: '0 0 32px', maxWidth: '700px', lineHeight: 1.6, fontFamily: 'serif', zIndex: 2, fontStyle: 'italic' }}>{t('revealLifePathDesc', lang) || 'Reveal Life dimensions of Dharma, Wealth, Health, and Relationships through precise Shastric Pathways.'}</p>
-               <button onClick={()=>{setDashboardMode('pathways'); setTimeout(() => { const el = document.getElementById('mock-dashboard-top'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({top: y, behavior: 'smooth'}); } else { window.scrollTo({top:0, behavior:'smooth'}); }}, 100); }} style={{ zIndex: 2, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'14px 40px', cursor:'pointer', borderRadius:'30px', fontFamily:'"Cinzel", serif', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'12px', transition:'all 0.3s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 20px rgba(212, 175, 55, 0.4)' }} onMouseOver={e=>{e.currentTarget.style.transform='scale(1.03)'; e.currentTarget.style.boxShadow='0 0 25px rgba(212, 175, 55, 0.8)'}} onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.boxShadow='0 0 20px rgba(212, 175, 55, 0.4)'}}>
+               <h3 style={{ fontSize: '32px', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)', margin: '0 0 16px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '2px' }}>{t('revealLifePathTitle', lang) || 'Reveal Life Paths'}</h3>
+               <p style={{ fontSize: '18px', color: 'var(--text-main)', margin: '0 0 32px', maxWidth: '700px', lineHeight: 1.6, fontFamily: 'var(--font-serif)', zIndex: 2, fontStyle: 'italic' }}>{t('revealLifePathDesc', lang) || 'Reveal Life dimensions of Dharma, Wealth, Health, and Relationships through precise Shastric Pathways.'}</p>
+               <button onClick={()=>{setDashboardMode('pathways'); setTimeout(() => { const el = document.getElementById('mock-dashboard-top'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({top: y, behavior: 'smooth'}); } else { window.scrollTo({top:0, behavior:'smooth'}); }}, 100); }} style={{ zIndex: 2, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'14px 40px', cursor:'pointer', borderRadius:'30px', fontFamily: 'var(--font-serif)', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'12px', transition:'all 0.3s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 20px rgba(212, 175, 55, 0.4)' }} onMouseOver={e=>{e.currentTarget.style.transform='scale(1.03)'; e.currentTarget.style.boxShadow='0 0 25px rgba(212, 175, 55, 0.8)'}} onMouseOut={e=>{e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.boxShadow='0 0 20px rgba(212, 175, 55, 0.4)'}}>
                  <span style={{fontSize: '20px'}}>👁️</span> {(t('revealLifePathTitle', lang) || 'Reveal Life Paths')} ➔
                </button>
             </div>
@@ -2207,7 +2207,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
               {/* ── Tab Bar ── */}
               <div className="no-print desktop-only-block" style={{background:'var(--bg-card)',border:'1px solid #b8860b', borderRadius: '8px', marginBottom: '24px', overflow:'hidden'}}>
                 <div style={{display:'flex',overflowX:'auto',whiteSpace:'nowrap',scrollbarWidth:'none', padding: '0 8px'}}>
-                  {TABS_DEF.map(tb=><button key={tb.id} onClick={()=>setTab(tb.id)} style={{background:tab===tb.id?'var(--bg-input)':'transparent', color:tab===tb.id?'var(--accent-gold)':'var(--text-muted)', border:'none', padding:'12px 24px', cursor:'pointer', fontFamily:'"Cinzel", serif', fontWeight:tab===tb.id?'bold':'normal', transition:'all 0.2s', whiteSpace:'nowrap'}}><span style={{fontSize:14,marginRight:6}}>{tb.icon}</span>{t(`tabs.${tb.id}`,lang)}</button>)}
+                  {TABS_DEF.map(tb=><button key={tb.id} onClick={()=>setTab(tb.id)} style={{background:tab===tb.id?'var(--bg-input)':'transparent', color:tab===tb.id?'var(--accent-gold)':'var(--text-muted)', border:'none', padding:'12px 24px', cursor:'pointer', fontFamily: 'var(--font-serif)', fontWeight:tab===tb.id?'bold':'normal', transition:'all 0.2s', whiteSpace:'nowrap'}}><span style={{fontSize:14,marginRight:6}}>{tb.icon}</span>{t(`tabs.${tb.id}`,lang)}</button>)}
                 </div>
               </div>
               
@@ -2228,10 +2228,10 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             <div className="no-print sticky-reveal-footer" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '16px 24px', background: 'var(--bg-sticky-footer)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderTop: '1px solid rgba(212, 175, 55, 0.4)', zIndex: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 -4px 20px rgba(0,0,0,0.1)' }}>
               <div style={{ display: 'flex', width: '100%', maxWidth: '1400px', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <div style={{ flex: '1 1 300px', minWidth: 0 }}>
-                   <h4 style={{ margin: '0 0 4px', fontSize: '15px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', letterSpacing: '1px', textTransform: 'uppercase' }}>{(t('revealLifePathTitle', lang) || 'Reveal Life Paths')}</h4>
-                   <p className="hide-on-very-small" style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'serif', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealLifePathDesc', lang) || 'Reveal Life dimensions of Dharma, Wealth, Health, and Relationships through precise Shastric Pathways.'}</p>
+                   <h4 style={{ margin: '0 0 4px', fontSize: '15px', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)', letterSpacing: '1px', textTransform: 'uppercase' }}>{(t('revealLifePathTitle', lang) || 'Reveal Life Paths')}</h4>
+                   <p className="hide-on-very-small" style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font-serif)', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealLifePathDesc', lang) || 'Reveal Life dimensions of Dharma, Wealth, Health, and Relationships through precise Shastric Pathways.'}</p>
                 </div>
-                <button onClick={()=>{setDashboardMode('pathways'); setTimeout(() => { const el = document.getElementById('mock-dashboard-top'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({top: y, behavior: 'smooth'}); } else { window.scrollTo({top:0, behavior:'smooth'}); }}, 100); }} style={{ flexShrink: 0, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 24px', cursor:'pointer', borderRadius:'30px', fontFamily:'"Cinzel", serif', fontSize:'14px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 15px rgba(212, 175, 55, 0.5)' }} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'}}>
+                <button onClick={()=>{setDashboardMode('pathways'); setTimeout(() => { const el = document.getElementById('mock-dashboard-top'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({top: y, behavior: 'smooth'}); } else { window.scrollTo({top:0, behavior:'smooth'}); }}, 100); }} style={{ flexShrink: 0, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 24px', cursor:'pointer', borderRadius:'30px', fontFamily: 'var(--font-serif)', fontSize:'14px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 15px rgba(212, 175, 55, 0.5)' }} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'}}>
                   {(t('revealLifePathTitle', lang) || 'Reveal Life Paths')} ➔
                 </button>
               </div>
@@ -2277,10 +2277,10 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
             <div className="no-print sticky-reveal-footer" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '16px 24px', background: 'var(--bg-sticky-footer)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderTop: '1px solid rgba(212, 175, 55, 0.4)', zIndex: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 -4px 20px rgba(0,0,0,0.1)' }}>
               <div style={{ display: 'flex', width: '100%', maxWidth: '1400px', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <div style={{ flex: '1 1 300px', minWidth: 0 }}>
-                   <h4 style={{ margin: '0 0 4px', fontSize: '15px', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', letterSpacing: '1px', textTransform: 'uppercase' }}>{(t('revealKundaliTitle', lang) || 'Reveal Kundali')}</h4>
-                   <p className="hide-on-very-small" style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'serif', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealKundaliDesc', lang) || 'Dive into your complete Parashari D1 matrix with planetary strengths, dashas, and traditional astrometrics.'}</p>
+                   <h4 style={{ margin: '0 0 4px', fontSize: '15px', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)', letterSpacing: '1px', textTransform: 'uppercase' }}>{(t('revealKundaliTitle', lang) || 'Reveal Kundali')}</h4>
+                   <p className="hide-on-very-small" style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font-serif)', paddingRight: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('revealKundaliDesc', lang) || 'Dive into your complete Parashari D1 matrix with planetary strengths, dashas, and traditional astrometrics.'}</p>
                 </div>
-                <button onClick={()=>{setDashboardMode('kundali');window.scrollTo({top:0,behavior:'smooth'});}} style={{ flexShrink: 0, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 24px', cursor:'pointer', borderRadius:'30px', fontFamily:'"Cinzel", serif', fontSize:'14px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 15px rgba(212, 175, 55, 0.5)' }} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'}}>
+                <button onClick={()=>{setDashboardMode('kundali');window.scrollTo({top:0,behavior:'smooth'});}} style={{ flexShrink: 0, background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 24px', cursor:'pointer', borderRadius:'30px', fontFamily: 'var(--font-serif)', fontSize:'14px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow:'0 0 15px rgba(212, 175, 55, 0.5)' }} onMouseOver={e=>{e.currentTarget.style.transform='translateY(-2px)'}} onMouseOut={e=>{e.currentTarget.style.transform='none'}}>
                   <span style={{fontSize: '18px'}}>🌌</span> {(t('revealKundaliTitle', lang) || 'Reveal Kundali')} ➔
                 </button>
               </div>
@@ -2515,7 +2515,7 @@ function App(){
 
   function handleBack(){setScreen('input');history.replaceState({},'',location.pathname)}
 
-  if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily:'serif'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
+  if(err)return<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-app)',fontFamily: 'var(--font-serif)'}}><div style={{background:'var(--bg-card)',borderRadius:12,padding:28,maxWidth:400,border:'1px solid var(--border-light)',textAlign:'center'}}><p style={{fontSize:32,margin:'0 0 10px'}}>⚠️</p><p style={{color:'var(--text-main)',fontSize:14,marginBottom:14}}>{err}</p><button onClick={()=>setErr(null)} style={{padding:'9px 22px',borderRadius:8,border:'none',background:'var(--accent-gold)',color:'#000',cursor:'pointer',fontFamily:'inherit',fontSize:14}}><strong>{t('tryAgain',lang)}</strong></button></div></div>;
   
   if (screen === 'admin' && user?.email?.toLowerCase() === 'srikanthbelwadi@gmail.com') {
      return <SuperAdminDashboard user={user} onBack={() => setScreen('input')} lang={lang} />;
@@ -2554,11 +2554,11 @@ function App(){
 
           {/* Typography */}
           <div style={{display:'flex', flexDirection:'column', justifyContent:'center'}}>
-            <h1 style={{margin:0, fontSize:36, fontWeight:700, fontFamily:'serif', color:'var(--accent-gold)', letterSpacing:'2px', textShadow:'0 2px 4px rgba(0,0,0,0.5)'}}>
+            <h1 style={{margin:0, fontSize:36, fontWeight:700, fontFamily: 'var(--font-serif)', color:'var(--accent-gold)', letterSpacing:'2px', textShadow:'0 2px 4px rgba(0,0,0,0.5)'}}>
               JYOTISH DARSHAN
             </h1>
             <p style={{margin:'4px 0 0 0', fontSize:14, color:'#9ca3af', letterSpacing:'4px', textTransform:'uppercase', fontWeight:500, display:'flex', alignItems:'center', gap:8}}>
-              VEDIC BIRTH CHART <span style={{fontSize:10}}>•</span> <span style={{letterSpacing:'1px', fontFamily:'sans-serif'}}>ज्योतिष दर्शन</span>
+              VEDIC BIRTH CHART <span style={{fontSize:10}}>•</span> <span style={{letterSpacing:'1px', fontFamily: 'var(--font-sans)'}}>ज्योतिष दर्शन</span>
             </p>
           </div>
         </div>

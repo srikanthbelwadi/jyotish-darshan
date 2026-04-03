@@ -21,7 +21,7 @@ export default function PlanetsTab({ kundali }) {
         </div>
         <div>
           <p style={{ margin: 0, fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1 }}>Degree</p>
-          <p style={{ margin: '4px 0 0', fontSize: 15, fontWeight: 600, color: '#1E3A5F', fontFamily: 'monospace' }}>{lagna.degreeFormatted}</p>
+          <p style={{ margin: '4px 0 0', fontSize: 15, fontWeight: 600, color: '#1E3A5F', fontFamily: 'var(--font-mono)' }}>{lagna.degreeFormatted}</p>
         </div>
         <div>
           <p style={{ margin: 0, fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1 }}>Lagna Lord</p>
@@ -59,7 +59,7 @@ export default function PlanetsTab({ kundali }) {
                     <td style={{ padding: '11px 12px', color: '#4B5563' }}>
                       {rashi.name} <span style={{ color: '#9CA3AF', fontSize: 11 }}>({rashi.en})</span>
                     </td>
-                    <td style={{ padding: '11px 12px', fontFamily: 'monospace', color: '#4B5563', fontSize: 12 }}>{p.degreeFormatted}</td>
+                    <td style={{ padding: '11px 12px', fontFamily: 'var(--font-mono)', color: '#4B5563', fontSize: 12 }}>{p.degreeFormatted}</td>
                     <td style={{ padding: '11px 12px', color: '#4B5563' }}>{p.nakshatraName}</td>
                     <td style={{ padding: '11px 12px', textAlign: 'center', color: '#4B5563' }}>{p.pada}</td>
                     <td style={{ padding: '11px 12px', color: '#4B5563', textTransform: 'capitalize' }}>{p.nakshatraLord}</td>

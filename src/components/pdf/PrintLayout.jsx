@@ -353,7 +353,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
     );
   } catch (err) {
     return (
-      <div style={{ position: 'fixed', inset: 0, zIndex: 999999, background: '#fff0f0', color: '#990000', padding: '40px', fontFamily: 'monospace', overflowY: 'auto' }}>
+      <div style={{ position: 'fixed', inset: 0, zIndex: 999999, background: '#fff0f0', color: '#990000', padding: '40px', fontFamily: 'var(--font-mono)', overflowY: 'auto' }}>
         <h2 style={{ fontSize: '24px', marginBottom: '20px', fontWeight: 'bold' }}>React Runtime Crash Captured! 💥</h2>
         <p style={{ fontSize: '16px', fontWeight: 'bold' }}>Error: {String(err)}</p>
         <pre style={{ marginTop: '20px', padding: '20px', background: 'white', border: '1px solid #ffcccc', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>{err.stack}</pre>
@@ -381,7 +381,7 @@ export default class PrintLayout extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 999999, background: '#fee2e2', color: '#991b1b', padding: '40px', fontFamily: 'monospace', overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 999999, background: '#fee2e2', color: '#991b1b', padding: '40px', fontFamily: 'var(--font-mono)', overflowY: 'auto' }}>
           <h1 style={{ fontSize: '40px', marginBottom: '20px' }}>💥 FATAL REACT CRASH CAUGHT IN BOUNDARY!</h1>
           <p style={{ fontSize: '18px', fontWeight: 'bold' }}>The dreaded black screen was ACTUALLY a silent React Exception bubbling up!</p>
           <p style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '20px' }}>👉 PLEASE COPY AND PASTE THIS ENTIRE RED SCREEN BACK TO THE AI:</p>

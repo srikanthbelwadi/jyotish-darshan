@@ -66,12 +66,12 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
          <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Predictions')}</h2>
+        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: 'var(--font-serif)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Predictions')}</h2>
         
         {/* Desktop Buttons */}
         <div className="desktop-timescale-btns" style={{ gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
           {timescales.map(ts => (
-            <button key={ts} onClick={() => { setActiveTime(ts); setIsMinimized(false); }} style={{ background: activeTime === ts ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === ts ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t(ts)}</button>
+            <button key={ts} onClick={() => { setActiveTime(ts); setIsMinimized(false); }} style={{ background: activeTime === ts ? 'var(--accent-gold)' : 'var(--bg-input)', color: activeTime === ts ? 'var(--bg-input)' : 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', borderRadius: '0', fontSize: '14px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', cursor: 'pointer', transition: 'all 0.2s ease', textTransform: 'uppercase' }}>{t(ts)}</button>
           ))}
         </div>
 
@@ -90,8 +90,8 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
           {!user && (
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(10,10,10,0.7)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
               <div style={{ fontSize: '42px', marginBottom: '12px', filter: 'drop-shadow(0 0 10px rgba(255,215,0,0.6))' }}>🔒</div>
-              <h3 style={{ fontFamily: '"Cinzel", serif', margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('Unlock Shastric Oracle')}</h3>
-              <button style={{ padding: '12px 24px', fontSize: '14px', background: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontFamily: '"Cinzel", serif', fontWeight: 'bold', letterSpacing: '1px' }} onClick={onRequireLogin}>
+              <h3 style={{ fontFamily: 'var(--font-serif)', margin: '0 0 16px', color: 'var(--accent-gold)' }}>{t('Unlock Shastric Oracle')}</h3>
+              <button style={{ padding: '12px 24px', fontSize: '14px', background: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-serif)', fontWeight: 'bold', letterSpacing: '1px' }} onClick={onRequireLogin}>
                 {t('Authenticate to Reveal ➔')}
               </button>
             </div>
@@ -99,7 +99,7 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
           {isLoading ? (
              <UniversalLoader />
           ) : error ? (
-             <p style={{ margin: 0, fontSize: '16px', color: 'var(--text-badge-red)', fontFamily: '"Cinzel", serif' }}>⚠️ {error.message}</p>
+             <p style={{ margin: 0, fontSize: '16px', color: 'var(--text-badge-red)', fontFamily: 'var(--font-serif)' }}>⚠️ {error.message}</p>
           ) : (
              <div style={{ position: 'relative', width: '100%', minHeight: '50px' }}>
                {predictionData && (
@@ -124,39 +124,39 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
                )}
                {isMinimized && predictionData ? (
                  <div style={{ padding: '24px', background: 'var(--bg-input)', border: '1px dashed var(--border-light)', borderRadius: '8px', textAlign: 'center', animation: 'fadeIn 0.3s ease' }}>
-                    <p style={{ margin: 0, color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', fontSize: '16px' }}>{t('Oracle Insights Minimized')}</p>
+                    <p style={{ margin: 0, color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)', fontSize: '16px' }}>{t('Oracle Insights Minimized')}</p>
                  </div>
                ) : typeof predictionData === 'string' ? (
-                 <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'serif', fontStyle: 'italic' }}>
+                 <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.6, color: 'var(--text-main)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
                    "{predictionData || t('Awaiting celestial alignment...')}"
                  </p>
                ) : predictionData ? (
                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                    <div style={{ padding: '24px', background: 'var(--bg-input)', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
-                     <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Predictive Trajectory')}</div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{predictionData.period}</p>
+                     <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Predictive Trajectory')}</div>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'var(--font-serif)' }}>{predictionData.period}</p>
                    </div>
                    
                    <div style={{ padding: '24px', background: 'var(--bg-input)', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
-                     <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Astrological Basis')}</div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{predictionData.basis}</p>
+                     <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Astrological Basis')}</div>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'var(--font-serif)' }}>{predictionData.basis}</p>
                    </div>
                    
                    <div style={{ padding: '24px', background: 'var(--bg-input)', borderTop: '4px solid #ffd700', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
-                     <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Prophetic Assertions')}</div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif', fontStyle: 'italic' }}>"{predictionData.assertions}"</p>
+                     <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Prophetic Assertions')}</div>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>"{predictionData.assertions}"</p>
                    </div>
                    
                    <div style={{ padding: '24px', background: 'var(--bg-card)', borderTop: '4px solid var(--accent-gold)', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
-                     <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Lifestyle & Preparedness')}</div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{predictionData.lifestyle}</p>
+                     <div style={{ color: 'var(--accent-gold)', fontSize: '14px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>{t('Lifestyle & Preparedness')}</div>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'var(--font-serif)' }}>{predictionData.lifestyle}</p>
                    </div>
                    
                    <div style={{ padding: '24px', background: 'var(--bg-card)', borderTop: '2px dashed var(--border-light)', boxShadow: '0 4px 15px rgba(0,0,0,0.5)', textAlign: 'center' }}>
-                     <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                     <div style={{ color: 'var(--text-main)', fontSize: '14px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                        <span style={{ fontSize: '18px' }}>🕉️</span> {t('Shastric Mitigation')}
                      </div>
-                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'serif' }}>{predictionData.mitigation}</p>
+                     <p style={{ color: 'var(--text-main)', fontSize: '18px', margin: 0, fontFamily: 'var(--font-serif)' }}>{predictionData.mitigation}</p>
                    </div>
                  </div>
                 ) : (
@@ -166,7 +166,7 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
                        style={{ 
                          padding: '16px 32px', fontSize: '16px', background: 'var(--accent-gold)', 
                          color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', 
-                         fontFamily: '"Cinzel", serif', fontWeight: 'bold', textTransform: 'uppercase',
+                         fontFamily: 'var(--font-serif)', fontWeight: 'bold', textTransform: 'uppercase',
                          boxShadow: '0 4px 15px rgba(212,175,55,0.3)', transition: 'all 0.3s ease'
                        }}
                        onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(212,175,55,0.5)'; }}
