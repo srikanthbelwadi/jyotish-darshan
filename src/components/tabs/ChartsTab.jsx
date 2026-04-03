@@ -47,8 +47,13 @@ export default function ChartsTab({ kundali, chartFormat, onFormatChange, lang }
           title="D1 · Rashi Chart (Lagna Kundali)"
           size={300} lang={lang} />
         <ChartComponent
-          planets={planets.map(p => ({ ...p, rashi: divisionalCharts.D9?.[p.key]?.rashi ?? p.rashi }))}
-          lagnaRashi={lagna.rashi}
+          planets={planets.map(p => {
+             const newRashi = divisionalCharts.D9?.[p.key]?.rashi ?? p.rashi;
+             const d9Lagna = divisionalCharts.D9?.lagna?.rashi ?? lagna.rashi;
+             const newHouse = ((newRashi - d9Lagna + 12) % 12) + 1;
+             return { ...p, rashi: newRashi, house: newHouse };
+          })}
+          lagnaRashi={divisionalCharts.D9?.lagna?.rashi ?? lagna.rashi}
           title="D9 · Navamsa Chart"
           size={300} lang={lang} />
       </div>
@@ -62,10 +67,16 @@ export default function ChartsTab({ kundali, chartFormat, onFormatChange, lang }
       <h4 style={{ fontSize: 13, color: '#6B7280', marginBottom: 12, fontWeight: 600 }}>All Divisional Charts</h4>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
         {Object.keys(VARGA_DIVISORS).map(varga => {
-          const chartPlanets = planets.map(p => ({
-            ...p,
-            rashi: divisionalCharts[varga]?.[p.key]?.rashi ?? p.rashi,
-          }));
+          const vargaLagnaRashi = divisionalCharts[varga]?.lagna?.rashi ?? lagna.rashi;
+          const chartPlanets = planets.map(p => {
+            const newRashi = divisionalCharts[varga]?.[p.key]?.rashi ?? p.rashi;
+            const newHouse = ((newRashi - vargaLagnaRashi + 12) % 12) + 1;
+            return {
+              ...p,
+              rashi: newRashi,
+              house: newHouse
+            };
+          });
           return (
             <div key={varga}
               onClick={() => setExpandedChart(expandedChart === varga ? null : varga)}
@@ -75,7 +86,7 @@ export default function ChartsTab({ kundali, chartFormat, onFormatChange, lang }
               <div style={{ background: 'white', borderRadius: 8, border: `1.5px solid ${expandedChart === varga ? '#7C3AED' : '#E5D5C0'}`, padding: 8, boxShadow: expandedChart === varga ? '0 4px 16px rgba(124,58,237,0.15)' : 'none' }}>
                 <ChartComponent
                   planets={chartPlanets}
-                  lagnaRashi={lagna.rashi}
+                  lagnaRashi={vargaLagnaRashi}
                   size={150} small lang={lang} />
                 <p style={{ margin: '6px 0 0', fontSize: 10, textAlign: 'center', color: '#7C3AED', fontWeight: 700 }}>{varga}</p>
                 <p style={{ margin: '2px 0 0', fontSize: 9, textAlign: 'center', color: '#9CA3AF' }}>{VARGA_DESCRIPTIONS[varga]}</p>
@@ -96,8 +107,13 @@ export default function ChartsTab({ kundali, chartFormat, onFormatChange, lang }
               style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#9CA3AF' }}>×</button>
           </div>
           <ChartComponent
-            planets={planets.map(p => ({ ...p, rashi: divisionalCharts[expandedChart]?.[p.key]?.rashi ?? p.rashi }))}
-            lagnaRashi={lagna.rashi}
+            planets={planets.map(p => {
+               const newRashi = divisionalCharts[expandedChart]?.[p.key]?.rashi ?? p.rashi;
+               const expandLagnaRashi = divisionalCharts[expandedChart]?.lagna?.rashi ?? lagna.rashi;
+               const newHouse = ((newRashi - expandLagnaRashi + 12) % 12) + 1;
+               return { ...p, rashi: newRashi, house: newHouse };
+            })}
+            lagnaRashi={divisionalCharts[expandedChart]?.lagna?.rashi ?? lagna.rashi}
             size={320} lang={lang} />
         </div>
       )}

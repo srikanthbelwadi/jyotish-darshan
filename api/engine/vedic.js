@@ -112,10 +112,12 @@ export function computeDivisionalRashi(lon, divisor) {
   return ((targetSign % 12) + 12) % 12;
 }
 
-export function computeAllDivisionalCharts(planets) {
+export function computeAllDivisionalCharts(planets, lagnaLon) {
   const charts = {};
   for (const [varga, divisor] of Object.entries(VARGA_DIVISORS)) {
-    charts[varga] = {};
+    charts[varga] = {
+      lagna: { rashi: divisor === 1 ? rashiFromLongitude(lagnaLon) : computeDivisionalRashi(lagnaLon, divisor) }
+    };
     for (const planet of planets) {
       charts[varga][planet.key] = {
         rashi: divisor === 1 ? planet.rashi : computeDivisionalRashi(planet.longitude, divisor),
@@ -422,7 +424,7 @@ export function computeKundali(input) {
     p.isVargottama = checkVargottama(p.rashi, d9[p.key]);
   }
 
-  const divisionalCharts = computeAllDivisionalCharts(planets);
+  const divisionalCharts = computeAllDivisionalCharts(planets, lagnaLon);
 
   const moonPlanet = planets.find(p => p.key === 'moon');
   const dasha = computeVimshottariDasha(moonPlanet.longitude, jd);

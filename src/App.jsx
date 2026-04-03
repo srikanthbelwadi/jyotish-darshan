@@ -1330,7 +1330,7 @@ function OverviewTab({K,fmt,lang='en'}){
   const moon=planets.find(p=>p.key==='moon'),sun=planets.find(p=>p.key==='sun');
   const cur=dasha.mahadashas.find(m=>m.isCurrent)||dasha.mahadashas[0];
   const curA=cur?.antars?.find(a=>a.isCurrent)||cur?.antars?.[0];
-  const navP=planets.map(p=>({...p,rashi:(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]??p.rashi}));
+  const navP=planets.map(p=>{const vD=(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((K.divCharts?.D9 || K.divisionalCharts?.D9)?.lagna?.rashi ?? K.lagna.rashi) + 12)%12)+1; return {...p,rashi:nR,house:nH};});
   const C=fmt==='south'?SouthChart:NorthChart;
   const moonNakLore = (NAKSHATRA_LORE[lang] || NAKSHATRA_LORE['en'])[moon.nIdx];
   return(
@@ -1421,12 +1421,12 @@ function ChartsTab({K,fmt,setFmt,lang='en'}){
       </div>
       <div className="responsive-grid-2" style={{marginBottom:20}}>
         <C planets={K.planets} lagnaR={K.lagna.rashi} title={t('ov.rashiChart',lang)||'D1 · Rashi Chart'} size={280} lang={lang}/>
-        <C planets={K.planets.map(p=>({...p,rashi:(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]??p.rashi}))} lagnaR={K.lagna.rashi} title={t('ov.navamsa',lang)||'D9 · Navamsa'} size={280} lang={lang}/>
+        <C planets={K.planets.map(p=>{const vD=(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((K.divCharts?.D9 || K.divisionalCharts?.D9)?.lagna?.rashi ?? K.lagna.rashi) + 12)%12)+1; return {...p,rashi:nR,house:nH};})} lagnaR={(K.divCharts?.D9 || K.divisionalCharts?.D9)?.lagna?.rashi ?? K.lagna.rashi} title={t('ov.navamsa',lang)||'D9 · Navamsa'} size={280} lang={lang}/>
       </div>
       {K.planets.filter(p=>p.vargottama).length>0&&<div style={{background:'rgba(212,175,55,0.05)',borderRadius:8,padding:'8px 12px',marginBottom:16,fontSize:12,color:'var(--accent-gold)'}}>✦ <strong>{t('ch.vargottama',lang)}:</strong> {K.planets.filter(p=>p.vargottama).map(p=>(L_GRAHA[lang]||L_GRAHA.en)[p.key]||p.key).join(', ')}</div>}
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))',gap:10}}>
         {VLIST.map(v=>{
-          const ps=K.planets.map(p=>({...p,rashi:(K.divCharts || K.divisionalCharts)[v]?.[p.key]??p.rashi}));
+          const ps=K.planets.map(p=>{const vD=(K.divCharts || K.divisionalCharts)[v]?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((K.divCharts || K.divisionalCharts)[v]?.lagna?.rashi ?? K.lagna.rashi) + 12)%12)+1; return {...p,rashi:nR,house:nH};});
           return(
             <div key={v} onClick={()=>setExp(exp===v?null:v)} style={{cursor:'pointer'}}
               onMouseEnter={e=>e.currentTarget.style.transform='scale(1.04)'}
@@ -1445,7 +1445,7 @@ function ChartsTab({K,fmt,setFmt,lang='en'}){
           <h3 style={{margin:0,fontSize:15,color:'var(--accent-gold)',fontWeight:700}}>{exp} · {VDESC[exp]}</h3>
           <button onClick={()=>setExp(null)} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
-        <C planets={K.planets.map(p=>({...p,rashi:(K.divCharts || K.divisionalCharts)[exp]?.[p.key]??p.rashi}))} lagnaR={K.lagna.rashi} size={300} lang={lang}/>
+        <C planets={K.planets.map(p=>{const vD=(K.divCharts || K.divisionalCharts)[exp]?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((K.divCharts || K.divisionalCharts)[exp]?.lagna?.rashi ?? K.lagna.rashi) + 12)%12)+1; return {...p,rashi:nR,house:nH};})} lagnaR={(K.divCharts || K.divisionalCharts)[exp]?.lagna?.rashi ?? K.lagna.rashi} size={300} lang={lang}/>
       </div>}
     </div>
   );
@@ -1763,7 +1763,7 @@ async function downloadPDF(K,lang,PK,user){
   const moon=planets.find(p=>p.key==='moon'),sun2=planets.find(p=>p.key==='sun');
   const cur=dasha.mahadashas.find(m=>m.isCurrent)||dasha.mahadashas[0];
   const curA=cur?.antars?.find(a=>a.isCurrent)||cur?.antars?.[0];
-  const d9pl=planets.map(p=>({...p,rashi:(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]??p.rashi}));
+  const d9pl=planets.map(p=>{const vD=(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((K.divCharts?.D9 || K.divisionalCharts?.D9)?.lagna?.rashi ?? K.lagna.rashi) + 12)%12)+1; return {...p,rashi:nR,house:nH};});
   const d1svg=makeSVGChart(planets,lagna.rashi,260,lang);
   const d9svg=makeSVGChart(d9pl,lagna.rashi,260,lang);
   const strong=Object.entries(sb).filter(([,v])=>v?.cls==='Strong').map(([k])=>k);

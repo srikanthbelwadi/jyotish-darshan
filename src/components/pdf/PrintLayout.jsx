@@ -192,7 +192,7 @@ function PrintLayoutInner({ K, partnerKundali, lang = 'en', dicts }) {
            <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: 0 }}>3. Core Vedic Charts</h2>
            <div style={{ display: 'flex', gap: '40px', justifyContent: 'center' }}>
               <DrawChart data={(planets || []).map(p => ({ ...p, rashi: p.rashi }))} title="Rashi Chart (D1)" />
-              <DrawChart data={(planets || []).map(p => ({ ...p, rashi: ((divCharts?.D9 || divisionalCharts?.D9) || divisionalCharts?.D9)?.[p.key] ?? p.rashi }))} title="Navamsa Chart (D9)" />
+              <DrawChart data={(planets || []).map(p => {const vD=((divCharts?.D9 || divisionalCharts?.D9) || divisionalCharts?.D9)?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((divCharts?.D9 || divisionalCharts?.D9)?.lagna?.rashi ?? lagnaRashi) + 12)%12)+1; return { ...p, rashi: nR, house: nH };})} title="Navamsa Chart (D9)" />
            </div>
 
            <h2 style={{ color: '#7C3AED', borderBottom: '2px solid #D4B896', paddingBottom: '10px', marginTop: '40px' }}>4. Vimshottari Dasha Overviews</h2>

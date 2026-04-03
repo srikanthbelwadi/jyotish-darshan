@@ -48,7 +48,7 @@ export const EclipticChart = ({ hue, pillarId, t, K }) => {
          )
        })}
 
-       {NAKSHATRAS.map((nakDefault, i) => {
+       {NAKSHATRAS.map((nakName, i) => {
          const a1 = i * (360/27) * (Math.PI/180);
          const x1 = 250 + 190 * Math.cos(a1), y1 = 250 + 190 * Math.sin(a1);
          const x2 = 250 + 230 * Math.cos(a1), y2 = 250 + 230 * Math.sin(a1);
@@ -61,18 +61,18 @@ export const EclipticChart = ({ hue, pillarId, t, K }) => {
          let rot = aMidDeg;
          if (rot > 90 && rot < 270) rot += 180;
          
-         const nakStr = i18nT(`astro.nakshatras.${i}`, { defaultValue: nakDefault });
+         const nakStr = i18nT(`astro.nakshatras.${i}`, { defaultValue: nakName });
 
          return (
            <g key={`n-${i}`}>
-             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--text-main)" strokeWidth="1" strokeDasharray="2 2" opacity="0.4"/>
-             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="var(--text-muted)" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{typeof nakStr === 'string' ? nakStr.slice(0, 8) : nakDefault}</text>
+             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--text-muted)" strokeWidth="1" opacity="0.3" />
+             <text x={xText} y={yText} transform={`rotate(${rot}, ${xText}, ${yText})`} fill="var(--text-muted)" fontSize="9" fontWeight="bold" textAnchor="middle" dominantBaseline="middle" letterSpacing="0.5">{typeof nakStr === 'string' ? nakStr.slice(0, 8) : nakName.slice(0, 8)}</text>
            </g>
          )
        })}
 
        {(K?.planets || []).map((pl) => {
-          const ang = pl.lon * (Math.PI/180);
+          const ang = pl.longitude * (Math.PI/180);
           const r = 125;
           const isHighlighted = (pl.key === p1Key || pl.key === p2Key);
           const abbr = PLANET_ABBR[pl.key] || pl.key;

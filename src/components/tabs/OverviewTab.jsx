@@ -24,7 +24,8 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
   // Build D9 planets for Navamsa display
   const navamsaPlanets = planets.map(p => ({
     ...p,
-    rashi: kundali.divisionalCharts.D9?.[p.key]?.rashi ?? p.rashi,
+    rashi: kundali.divisionalCharts?.D9?.[p.key]?.rashi ?? kundali.divisionalCharts?.D9?.[p.key] ?? p.rashi,
+          house: (((kundali.divisionalCharts?.D9?.[p.key]?.rashi ?? kundali.divisionalCharts?.D9?.[p.key] ?? p.rashi) - (kundali.divisionalCharts?.D9?.lagna?.rashi ?? kundali.lagna.rashi) + 12) % 12) + 1,
   }));
 
   const ChartComponent = chartFormat === 'south' ? SouthIndianChart : NorthIndianChart;
