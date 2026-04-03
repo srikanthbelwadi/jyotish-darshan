@@ -2356,6 +2356,11 @@ function AppHeader({ user, syncStatus, syncToast, onLoginClick, onLogoutClick, o
             <div style={{minWidth:0}}><h1 className="serif" onClick={() => { if(user?.email === 'srikanthbelwadi@gmail.com' && onTriggerAdmin) onTriggerAdmin(); }} style={{margin:0,fontSize:20,color:'var(--accent-gold)',letterSpacing:2,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap', cursor: user?.email === 'srikanthbelwadi@gmail.com' ? 'pointer' : 'default'}}>Jyotish Darshan</h1><p style={{margin:'2px 0 0',fontSize:10,color:'var(--text-muted)',letterSpacing:3,textTransform:'uppercase',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{t('tagline',lang)}</p></div>
           </div>
           <div className="app-header-right" style={{display:'flex', gap:16, flexShrink:0, alignItems:'center'}}>
+            {user?.email === 'srikanthbelwadi@gmail.com' && (
+              <button type="button" onClick={onTriggerAdmin} style={{background:'#10B981', border:'none', borderRadius:'20px', padding:'6px 16px', color:'#fff', cursor:'pointer', fontWeight:'bold', fontSize:'13px', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s', boxShadow:'0 2px 8px rgba(16,185,129,0.3)'}} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='scale(1)'}>
+                CPO Admin
+              </button>
+            )}
             <button type="button" onClick={onOpenPrefs} style={{background:'transparent', border:'1px solid var(--border-light)', borderRadius:'50%', width:36, height:36, color:'var(--accent-gold)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s', boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='scale(1)'} title="Global Preferences">
               <span style={{fontSize:16}}>⚙️</span>
             </button>
