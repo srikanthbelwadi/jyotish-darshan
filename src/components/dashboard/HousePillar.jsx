@@ -49,7 +49,7 @@ export const HousePillar = ({ pillarId, K, partnerKundali, t, lang, user, onRequ
        </div>
        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
          <button onClick={() => setOpt(null)} style={{ background: 'var(--bg-card)', color: 'var(--accent-gold)', border: '1px solid #ffd700', padding: '8px 16px', cursor: 'pointer', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '14px', fontFamily: '"Cinzel", serif', transition:'all 0.2s', textTransform:'uppercase' }} onMouseOver={e=>{e.currentTarget.style.background='var(--bg-input)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'}}>
-           {t('ig.backToPathways', { defaultValue: '← BACK TO PATHWAYS' })}
+           {t('ig.backToPathways', '← BACK TO PATHWAYS')}
          </button>
          <div style={{ display: 'inline-block', background: 'var(--bg-card)', color: 'var(--accent-gold)', padding: '8px 16px', border: '1px solid #ffd700', fontSize: '14px', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px' }}>{t('Subject:')} {t(opt.label)}</div>
          <h3 style={{ color: 'var(--text-main)', fontSize: '30px', marginTop: 0, marginBottom: '32px', lineHeight: 1.3, fontFamily: '"Cinzel", serif', textShadow: '0 2px 4px var(--bg-surface)' }}>{t(data.title)}</h3>
