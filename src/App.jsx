@@ -1,4 +1,5 @@
 import React from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { DYNAMIC_STRINGS } from './i18n/dynamicTranslations.js';
 import { UI_STRINGS } from './i18n/uiStrings.js';
 import './index.css';
@@ -2767,6 +2768,7 @@ function App(){
         onClose={() => setProfileToDelete(null)}
         type="danger"
       />
+      <Analytics />
     </div>
   );
 }
