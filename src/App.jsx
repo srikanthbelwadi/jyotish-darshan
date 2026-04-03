@@ -658,21 +658,16 @@ export function localizePanchang(pan, lang) {
   const tA=L_TITHI[lang]||L_TITHI.en, vA=L_VARA[lang]||L_VARA.en, pO=L_PAKSHA[lang]||L_PAKSHA.en;
   const yA=L_YOGA_PANCH[lang]||L_YOGA_PANCH.en, kA=L_KARANA[lang]||L_KARANA.en, nA=L_NAKS[lang]||L_NAKS.en;
 
-  const NAK_LIST = ["Aswini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva", "Uttara", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Bhadrapada", "Revati"];
+  const NAK_LIST = ["ashwini", "bharani", "krittika", "rohini", "mrigashira", "ardra", "punarvasu", "pushya", "ashlesha", "magha", "purvaphalguni", "uttaraphalguni", "hasta", "chitra", "swati", "vishakha", "anuradha", "jyeshtha", "mula", "purvaashadha", "uttaraashadha", "shravana", "dhanishta", "shatabhisha", "purvabhadrapada", "uttarabhadrapada", "revati"];
   
   let na = pan.nakshatra;
   if (typeof na === 'number' || (typeof na === 'string' && !isNaN(na) && String(na).trim() !== '')) {
      na = nA[Number(na)] || na;
   } else if (pan.nakIdx != null) { na = nA[pan.nakIdx] || na; }
   else if (na && typeof na === 'string') {
-     for (let i = 0; i < NAK_LIST.length; i++) {
-        if (na.includes(NAK_LIST[i])) { 
-           // Best effort index derivation for exact astrological match without needing normalized fuzzy matching
-           const finalIndex = ["Aswini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"].findIndex(n => n.includes(NAK_LIST[i]));
-           if(finalIndex !== -1) na = nA[finalIndex];
-           break;
-        }
-     }
+     const normalizedNa = na.toLowerCase().replace(/\s+/g, '');
+     const finalIndex = NAK_LIST.findIndex(n => normalizedNa.includes(n) || n.includes(normalizedNa) || (n==='ashwini'&&normalizedNa.includes('aswini')) || (n==='mrigashira'&&normalizedNa.includes('mrigashirsha')));
+     if(finalIndex !== -1) na = nA[finalIndex];
   }
 
   let yo = pan.yoga;
