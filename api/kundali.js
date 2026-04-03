@@ -111,7 +111,7 @@ export default async function handler(req, res) {
         'Ruchaka Yoga (Pancha Mahapurusha)': 'ruchaka',
         'Hamsa Yoga (Pancha Mahapurusha)': 'hamsa',
         'Malavya Yoga (Pancha Mahapurusha)': 'malavya',
-        'Mangal Dosha (Kuja Dosha)': 'mangalDosha',
+        'Mangal Dosha (Kuja Dosha)': 'mangal',
         'Kaal Sarp Dosha': 'kaalSarp'
       };
       payload.yogas = payload.yogas.map(y => ({

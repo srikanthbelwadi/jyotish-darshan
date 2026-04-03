@@ -219,6 +219,7 @@ function t(path, lang, defaultText){
     if (enFallback) return enFallback;
   }
   if (DYNAMIC_STRINGS[lang] && DYNAMIC_STRINGS[lang][path]) return DYNAMIC_STRINGS[lang][path];
+  if (lang !== 'en' && DYNAMIC_STRINGS['en'] && DYNAMIC_STRINGS['en'][path]) return DYNAMIC_STRINGS['en'][path];
   const S=STRINGS[lang]||STRINGS.en;
   if(S[path]!==undefined)return S[path];
   const k=path.split('.');
