@@ -26,7 +26,6 @@ import { usePreferences } from './contexts/PreferencesContext.jsx';
 import UserPreferencesModal from './components/UserPreferencesModal.jsx';
 import { useSync } from './contexts/SyncContext.jsx';
 import UserHub from './components/UserHub.jsx';
-import SuperAdminDashboard from './components/admin/SuperAdminDashboard.jsx';
 import { auth } from './firebase.js';
 
 // ════════════════════════════════════════════════════════════════

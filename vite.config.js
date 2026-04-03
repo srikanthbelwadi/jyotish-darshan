@@ -41,10 +41,10 @@ export default defineConfig({
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-          firebase: ['firebase/app', 'firebase/firestore', 'firebase/auth'],
-          swisseph: ['swisseph-wasm']
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) return 'react';
+          if (id.includes('node_modules/firebase')) return 'firebase';
+          if (id.includes('node_modules/swisseph-wasm')) return 'swisseph';
         }
       }
     }
