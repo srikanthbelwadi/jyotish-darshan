@@ -42,7 +42,7 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
     <div ref={containerRef} style={{ position: 'relative', display: 'inline-block' }}>
       {/* Toast Notification positioned absolutely to visually pop near the hub */}
       {syncToast && (
-        <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '280px', background: 'var(--accent-gold)', color: 'var(--bg-app)', padding: '12px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', boxShadow: '0 4px 15px rgba(255,215,0,0.4)', zIndex: 60, animation: 'fadeIn 0.3s', fontFamily: '"Cinzel", serif', border: '1px solid #fff' }}>
+        <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '280px', background: 'var(--accent-gold)', color: 'var(--bg-app)', padding: '12px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', boxShadow: '0 4px 15px rgba(255,215,0,0.4)', zIndex: 60, animation: 'fadeIn 0.3s', fontFamily: 'var(--font-serif)', border: '1px solid #fff' }}>
           {syncToast}
         </div>
       )}
@@ -57,7 +57,7 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
         onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
       >
         {user ? (
-          <span style={{ color: 'var(--accent-gold)', fontSize: '18px', fontWeight: 'bold', fontFamily: '"Cinzel", serif' }}>
+          <span style={{ color: 'var(--accent-gold)', fontSize: '18px', fontWeight: 'bold', fontFamily: 'var(--font-serif)' }}>
             {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </span>
         ) : (
@@ -78,13 +78,13 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
           <div style={{ padding: '24px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-surface)' }}>
              {user ? (
                <>
-                 <h3 style={{ margin: '0 0 4px 0', color: 'var(--accent-gold)', fontSize: '18px', fontFamily: '"Cinzel", serif', textTransform: 'uppercase' }}>{user.name}</h3>
-                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)' }}>{user.email}</p>
+                 <h3 style={{ margin: '0 0 4px 0', color: 'var(--accent-gold)', fontSize: '18px', fontFamily: 'var(--font-serif)', textTransform: 'uppercase' }}>{user.name}</h3>
+                 <p style={{ margin: 0, fontSize:   16, color: 'var(--text-muted)' }}>{user.email}</p>
                </>
              ) : (
                <>
-                 <h3 style={{ margin: '0 0 4px 0', color: 'var(--text-main)', fontSize: '18px', fontFamily: '"Cinzel", serif', textTransform: 'uppercase' }}>Guest Mode</h3>
-                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)' }}>Not logged in</p>
+                 <h3 style={{ margin: '0 0 4px 0', color: 'var(--text-main)', fontSize: '18px', fontFamily: 'var(--font-serif)', textTransform: 'uppercase' }}>Guest Mode</h3>
+                 <p style={{ margin: 0, fontSize:   16, color: 'var(--text-muted)' }}>Not logged in</p>
                </>
              )}
           </div>
@@ -104,7 +104,7 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
                         onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent-gold)'; e.currentTarget.style.background = 'var(--bg-card)'; }}
                         onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.background = 'var(--bg-input)'; }}
                       >
-                         <span style={{ color: 'var(--text-main)', fontSize: '14px', fontFamily: '"Cinzel", serif', fontWeight: 'bold' }}>{p.name}</span>
+                         <span style={{ color: 'var(--text-main)', fontSize: '14px', fontFamily: 'var(--font-serif)', fontWeight: 'bold' }}>{p.name}</span>
                          <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>➔</span>
                       </button>
                     ))}
@@ -140,21 +140,21 @@ export default function UserHub({ user, syncStatus, syncToast, onLoginClick, onL
                  </div>
                  
                  {user?.email?.toLowerCase() === 'srikanthbelwadi@gmail.com' && (
-                    <button onClick={() => { setIsOpen(false); if(onTriggerAdmin) onTriggerAdmin(); }} style={{ width: '100%', padding: '12px', border: 'none', background: '#10B981', color: '#fff', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: '"Cinzel", serif', letterSpacing: '1px', marginBottom: '12px', boxShadow: '0 4px 15px rgba(16,185,129,0.3)' }} onMouseOver={e => e.currentTarget.style.opacity = '0.8'} onMouseOut={e => e.currentTarget.style.opacity = '1'}>
+                    <button onClick={() => { setIsOpen(false); if(onTriggerAdmin) onTriggerAdmin(); }} style={{ width: '100%', padding: '12px', border: 'none', background: '#10B981', color: '#fff', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'var(--font-serif)', letterSpacing: '1px', marginBottom: '12px', boxShadow: '0 4px 15px rgba(16,185,129,0.3)' }} onMouseOver={e => e.currentTarget.style.opacity = '0.8'} onMouseOut={e => e.currentTarget.style.opacity = '1'}>
                        ★ CPO Admin Console
                     </button>
                  )}
 
-                 <button onClick={() => { setIsOpen(false); onLogoutClick(); }} style={{ width: '100%', padding: '12px', border: '1px solid var(--border-light)', background: 'transparent', color: 'var(--text-muted)', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: '"Cinzel", serif', letterSpacing: '1px' }} onMouseOver={e => { e.currentTarget.style.borderColor = '#EF4444'; e.currentTarget.style.color = '#EF4444'; }} onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                 <button onClick={() => { setIsOpen(false); onLogoutClick(); }} style={{ width: '100%', padding: '12px', border: '1px solid var(--border-light)', background: 'transparent', color: 'var(--text-muted)', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'var(--font-serif)', letterSpacing: '1px' }} onMouseOver={e => { e.currentTarget.style.borderColor = '#EF4444'; e.currentTarget.style.color = '#EF4444'; }} onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
                     Logout
                  </button>
                </>
              ) : (
                <>
-                 <p style={{ color: 'var(--text-main)', fontSize: '13px', lineHeight: 1.6, marginBottom: '24px' }}>
+                 <p style={{ color: 'var(--text-main)', fontSize:   17, lineHeight: 1.6, marginBottom: '24px' }}>
                    Log in to safely backup and access your profiles across all your devices.
                  </p>
-                 <button onClick={() => { setIsOpen(false); onLoginClick(); }} style={{ width: '100%', padding: '12px', border: 'none', background: 'var(--accent-gold)', color: '#000', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: '"Cinzel", serif', letterSpacing: '1px', boxShadow: '0 4px 15px rgba(255,215,0,0.3)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                 <button onClick={() => { setIsOpen(false); onLoginClick(); }} style={{ width: '100%', padding: '12px', border: 'none', background: 'var(--accent-gold)', color: '#000', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'var(--font-serif)', letterSpacing: '1px', boxShadow: '0 4px 15px rgba(255,215,0,0.3)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
                     Login / Register
                  </button>
                </>

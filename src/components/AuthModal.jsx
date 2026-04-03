@@ -50,7 +50,7 @@ export default function AuthModal({ onLogin, onClose, lang, t }) {
           <h2 className="serif" style={{ color: 'var(--accent-gold, #d4af37)', fontSize: 26, margin: '0 0 8px 0', fontWeight: 500 }}>
             Unlock Deep Life Analysis
           </h2>
-          <p style={{ color: 'var(--text-secondary, #aaa)', margin: 0, fontSize: 14 }}>
+          <p style={{ color: 'var(--text-secondary, #aaa)', margin: 0, fontSize:  16 }}>
             Create an account or log in to reveal your 36 personalized Shastric pathways.
           </p>
         </div>
@@ -73,7 +73,7 @@ export default function AuthModal({ onLogin, onClose, lang, t }) {
           </button>
         </div>
 
-        <p style={{ textAlign: 'center', color: 'var(--text-muted, #777)', fontSize: 12, marginTop: 32 }}>
+        <p style={{ textAlign: 'center', color: 'var(--text-muted, #777)', fontSize:   16, marginTop: 32 }}>
           By continuing, you agree to our Terms of Service and Privacy Policy. All readings are generated locally and securely.
         </p>
       </div>

@@ -77,6 +77,50 @@ export default async function handler(req, res) {
 
     const payload = computeKundali(inputParams);
 
+    // Map backend variables to exactly match the minified properties expected by the frontend
+    if (payload.planets) {
+      payload.planets = payload.planets.map(p => ({
+        ...p,
+        nIdx: p.nakshatraIndex,
+        degFmt: p.degreeFormatted,
+        debil: p.isDebilitated,
+        retro: p.isRetrograde,
+        exalted: p.isExalted,
+        combust: p.isCombust,
+        vargottama: p.isVargottama
+      }));
+    }
+
+    if (payload.dasha) {
+      payload.dasha.nakName = payload.dasha.birthNakshatra;
+      payload.dasha.nakLord = payload.dasha.birthNakshatraLord;
+      if (payload.dasha.mahadashas) {
+        payload.dasha.mahadashas = payload.dasha.mahadashas.map(m => ({
+          ...m,
+          antars: m.antardashas
+        }));
+      }
+    }
+
+    if (payload.yogas) {
+      const YOGA_KEYS = {
+        'Gaj Kesari Yoga': 'gajKesari',
+        'Budhaditya Yoga': 'budhaditya',
+        'Chandra-Mangal Yoga': 'chandraMangal',
+        'Sasa Yoga (Pancha Mahapurusha)': 'sasa',
+        'Ruchaka Yoga (Pancha Mahapurusha)': 'ruchaka',
+        'Hamsa Yoga (Pancha Mahapurusha)': 'hamsa',
+        'Malavya Yoga (Pancha Mahapurusha)': 'malavya',
+        'Mangal Dosha (Kuja Dosha)': 'mangal',
+        'Kaal Sarp Dosha': 'kaalSarp'
+      };
+      payload.yogas = payload.yogas.map(y => ({
+        ...y,
+        key: YOGA_KEYS[y.name] || y.name.toLowerCase().replace(/[^a-z]/g, ''),
+        vars: y.vars || {}
+      }));
+    }
+
     // 3. Return the generic JSON output without exposing algorithmic constants
     res.status(200).json(payload);
   } catch (err) {

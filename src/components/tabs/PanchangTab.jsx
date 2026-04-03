@@ -270,7 +270,7 @@ export default function PanchangTab() {
                             {panchang.isAmavasya && <span title="Amavasya" style={{ fontSize: 18 }}>🌑</span>}
                             {panchang.isEkadashi && <span title="Ekadashi" style={{ fontSize: 18 }}>🌿</span>}
                             {panchang.isSankashti && <span title="Sankashti" style={{ fontSize: 18 }}>🐘</span>}
-                            {panchang.festivalId && <span title={t("pc.fest." + panchang.festivalId + ".n", panchang.festivalId)} style={{ fontSize: 18 }}>{panchang.festivalIcon || '🪔'}</span>}
+                            {panchang.festivalId && <span title={t("pc.fest." + panchang.festivalId + ".n", (panchang.festivalName || panchang.festivalId).replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()))} style={{ fontSize: 18 }}>{panchang.festivalIcon || '🪔'}</span>}
                             {birthdays.length > 0 && <span title={`Birthday: ${birthdays.map(b=>b.name).join(', ')}`} style={{ fontSize: 18 }}>🎂</span>}
                             {memorials.length > 0 && <span title={`Varshika Tithi: ${memorials.map(m=>m.name).join(', ')}`} style={{ fontSize: 18 }}>🕊️</span>}
                         </div>
@@ -355,7 +355,7 @@ export default function PanchangTab() {
               
               {selectedDay.panchang.festivalId && (
                 <div style={{ background: 'rgba(212, 140, 50, 0.15)', borderLeft: '3px solid var(--accent-gold)', padding: 10, borderRadius: 4, marginBottom: 10 }}>
-                  <strong style={{ color: 'var(--accent-gold)', display: 'block', wordBreak: 'break-word', overflowWrap: 'break-word', whiteSpace: 'normal' }}>{selectedDay.panchang.festivalIcon || '🪔'} {t("pc.fest." + selectedDay.panchang.festivalId + ".n", selectedDay.panchang.festivalId)}</strong>
+                  <strong style={{ color: 'var(--accent-gold)', display: 'block', wordBreak: 'break-word', overflowWrap: 'break-word', whiteSpace: 'normal' }}>{selectedDay.panchang.festivalIcon || '🪔'} {t("pc.fest." + selectedDay.panchang.festivalId + ".n", (selectedDay.panchang.festivalName || selectedDay.panchang.festivalId).replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()))}</strong>
                   <span style={{ fontSize: 12, color: 'var(--text-muted)', display: 'block', wordBreak: 'break-word', overflowWrap: 'break-word', marginTop: 4 }}>{t("pc.fest." + selectedDay.panchang.festivalId + ".d", "")}</span>
                 </div>
               )}
@@ -400,7 +400,7 @@ export default function PanchangTab() {
               )}
 
               {!selectedDay.panchang.festival && !selectedDay.panchang.isPurnima && !selectedDay.panchang.isAmavasya && !selectedDay.panchang.isEkadashi && !selectedDay.panchang.isSankashti && selectedDay.birthdays.length === 0 && selectedDay.memorials.length === 0 && (
-                <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '0 0 5px 0' }}>{t("pc.noEvents", "No major festivals or personalized events today.")}</p>
+                <p style={{ fontSize:   17, color: 'var(--text-muted)', margin: '0 0 5px 0' }}>{t("pc.noEvents", "No major festivals or personalized events today.")}</p>
               )}
             </div>
 

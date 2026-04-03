@@ -8,6 +8,11 @@
   }
 }
 :root {
+  --font-sans: 'Inter', 'Noto Sans Devanagari', 'Noto Sans Kannada', 'Noto Sans Telugu', 'Noto Sans Tamil', 'Noto Sans Malayalam', 'Noto Sans Bengali', 'Noto Sans Gujarati', sans-serif;
+  --font-heading: 'Cinzel', 'Playfair Display', 'Noto Serif Devanagari', 'Noto Serif Kannada', 'Noto Serif Telugu', 'Noto Serif Tamil', 'Noto Serif Malayalam', 'Noto Serif Bengali', 'Noto Serif Gujarati', serif;
+  --font-serif: 'Playfair Display', 'Noto Serif Devanagari', 'Noto Serif Kannada', 'Noto Serif Telugu', 'Noto Serif Tamil', 'Noto Serif Malayalam', 'Noto Serif Bengali', 'Noto Serif Gujarati', serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
   color-scheme: dark;
   --bg-app: #0a0203;       
   --bg-card: #1a0608;      
@@ -45,7 +50,7 @@ body[data-theme='light'] {
   --bg-card: #ffffff;      
   --bg-input: #f4efdf;     
   --bg-surface: rgba(255, 255, 255, 0.95);
-  --accent-gold: #c28800;  
+  --accent-gold: #b37d00;  
   --accent-gold-dim: rgba(194, 136, 0, 0.15);
   --accent-glow: rgba(194, 136, 0, 0.3);
   --text-main: #2b2b2b;    
@@ -75,7 +80,7 @@ body {
   padding: 0;
   width: 100%;
   overflow-x: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   background: var(--bg-app);
   color: var(--text-main);
   transition: background 0.4s ease, color 0.4s ease;
@@ -95,7 +100,7 @@ body {
 .badge-base {
   padding: 4px 10px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -107,8 +112,11 @@ body {
 .badge-green {  background: var(--bg-badge-green); color: var(--text-badge-green); }
 .badge-neutral { background: var(--bg-badge-neutral); color: var(--text-badge-neutral); }
 
-h1,h2,h3,h4,h5,.serif{
-  font-family: 'Cinzel', 'Playfair Display', serif;
+h1,h2,h3,h4,h5 {
+  font-family: var(--font-heading) !important;
+}
+.serif {
+  font-family: var(--font-serif);
 }
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:var(--accent-gold-dim);border-radius:2px}
@@ -160,8 +168,8 @@ table{border-collapse:collapse}
   color: var(--text-main);
   border-radius: 6px;
   padding: 14px 16px;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: 16px;
   transition: all 0.3s ease;
   outline: none;
 }
@@ -177,11 +185,11 @@ table{border-collapse:collapse}
   color: var(--accent-gold);
   padding: 16px 28px;
   border-radius: 6px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.4s ease;
   position: relative;
@@ -203,9 +211,9 @@ table{border-collapse:collapse}
   color: var(--text-muted);
   padding: 12px 6px;
   margin: 0 16px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 500;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;

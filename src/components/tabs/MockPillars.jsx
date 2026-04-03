@@ -13,9 +13,9 @@ const PremiumPanel = ({ title, subtitle, icon, children }) => (
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
       <span style={{ fontSize: '24px', filter: 'drop-shadow(0 0 8px var(--accent-gold))' }}>{icon}</span>
-      <h2 style={{ margin: 0, fontSize: '20px', fontFamily: 'serif', color: 'var(--accent-gold)' }}>{title}</h2>
+      <h2 style={{ margin: 0, fontSize: '20px', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>{title}</h2>
     </div>
-    <p style={{ margin: '0 0 24px 0', fontSize: '13px', color: 'var(--text-muted)' }}>{subtitle}</p>
+    <p style={{ margin: '0 0 24px 0', fontSize:   17, color: 'var(--text-muted)' }}>{subtitle}</p>
     {children}
   </div>
 );
@@ -62,7 +62,7 @@ export const MockMarriageTab = () => (
               <span style={{background: '#ef4444', width: 8, height: 8, borderRadius: '50%'}}></span>
               Kuja Dosha (Manglik) Detected
             </h4>
-            <p style={{ margin: 0, fontSize: '13px', color: '#fecaca', lineHeight: 1.5 }}>
+            <p style={{ margin: 0, fontSize:   17, color: '#fecaca', lineHeight: 1.5 }}>
               Mars is positioned in the 8th house from the Ascendant. 
               <br/><br/>
               <span style={{ color: '#10b981', fontWeight: 600 }}>Cancellation Active:</span> Jupiter's aspect on Mars neutralizes the severity of this placement according to Parashari principles.
@@ -84,7 +84,7 @@ export const MockCareerTab = () => (
         <h3 style={{ margin: 0, fontSize: '15px' }}>Innate Calling (Amatyakaraka Focus)</h3>
         <span style={{ background: 'var(--accent-gold)', color: '#000', padding: '2px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: 600 }}>Mercury Dominant</span>
       </div>
-      <p style={{ fontSize: '14px', lineHeight: 1.6, color: 'var(--text-main)', marginBottom: '24px' }}>
+      <p style={{ fontSize:  16, lineHeight: 1.6, color: 'var(--text-main)', marginBottom: '24px' }}>
         With Mercury exalted in your D10 (Dasamsa) chart and acting as your Amatyakaraka, your optimal career path lies in high-level communications, technology architecture, or commerce. The alignment suggests sudden elevation in status when working as a consultant or independent advisor rather than in rigid corporate hierarchies.
       </p>
       
@@ -121,7 +121,7 @@ export const MockHealthTab = () => (
       </div>
       <div style={{ flex: 1.5, minWidth: '250px' }}>
         <h3 style={{ margin: '0 0 12px 0', fontSize: '15px' }}>Cosmic Vulnerabilities (6th House)</h3>
-        <p style={{ fontSize: '14px', lineHeight: 1.6, color: 'var(--text-muted)', marginBottom: '16px' }}>
+        <p style={{ fontSize:  16, lineHeight: 1.6, color: 'var(--text-muted)', marginBottom: '16px' }}>
           Saturn's placement in the 6th house suggests a robust immune system that develops over time, but indicates a vulnerability to joint stiffness, bone density issues, or prolonged systemic fatigue if you overwork.
         </p>
         <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '12px', borderRadius: '6px' }}>
@@ -157,7 +157,7 @@ export const MockRemediesTab = () => (
       <div style={{ background: '#000', padding: '20px', borderRadius: '8px', border: '1px solid #333' }}>
         <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'var(--accent-gold)' }}>Prescribed Mantra</h4>
         <div style={{ background: '#111', padding: '16px', borderRadius: '6px', border: '1px solid #222', textAlign: 'center' }}>
-          <div style={{ fontSize: '18px', fontFamily: 'serif', color: '#fff', marginBottom: '8px' }}>ॐ बृं बृहस्पतये नमः</div>
+          <div style={{ fontSize: '18px', fontFamily: 'var(--font-serif)', color: '#fff', marginBottom: '8px' }}>ॐ बृं बृहस्पतये नमः</div>
           <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px' }}>Om Brihm Brihaspataye Namah</div>
           <button style={{ background: 'var(--accent-gold)', color: '#000', border: 'none', padding: '6px 16px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto' }}>
             <span>▶</span> Listen to Pronunciation
@@ -179,10 +179,10 @@ export const MockPurposeTab = () => (
         ☽
       </div>
       
-      <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', color: 'var(--accent-gold)', fontFamily: 'serif' }}>The Moon as Atmakaraka</h3>
+      <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)' }}>The Moon as Atmakaraka</h3>
       <div style={{ fontSize: '13px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '24px' }}>Your Soul's Primary Directive</div>
       
-      <p style={{ fontSize: '15px', lineHeight: 1.7, color: '#d1d5db', maxWidth: '600px', margin: '0 auto 32px auto' }}>
+      <p style={{ fontSize:  17, lineHeight: 1.7, color: '#d1d5db', maxWidth: '600px', margin: '0 auto 32px auto' }}>
         With the Moon as your Atmakaraka (the planet with the highest degree in your chart), your soul's evolutionary purpose in this lifetime revolves around mastering emotional intelligence, nurturing others, and transcending fluctuating desires. Your ultimate tests will come through establishing deep emotional boundaries and finding peace inward, rather than seeking validation from the external world.
       </p>
 

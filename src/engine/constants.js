@@ -149,20 +149,31 @@ export const YOGA_RULES = [
       if (moRashi == null || guRashi == null) return false;
       const diff = Math.abs(moRashi - guRashi);
       const angularDiff = Math.min(diff, 12 - diff);
-      return angularDiff % 3 === 0; // Kendra from moon
+      if (angularDiff % 3 === 0) return { matched: true, vars: { p1: 'moon', p2: 'jupiter', rel: 'kendra' } };
+      return false;
     },
     effect: 'Bestows wisdom, wealth, fame, and long-lasting prosperity. The native commands great respect and possesses a magnetic, charismatic presence.',
     type: 'raja',
   },
   {
     name: 'Budhaditya Yoga',
-    check: (planets) => planets.sun?.rashi === planets.mercury?.rashi,
+    check: (planets) => {
+      if (planets.sun?.rashi != null && planets.sun?.rashi === planets.mercury?.rashi) {
+        return { matched: true, vars: { p1: 'sun', p2: 'mercury', rashi: planets.sun.rashi } };
+      }
+      return false;
+    },
     effect: 'Grants sharp intellect, eloquent speech, and success in academic and administrative pursuits. The native excels in communication, analysis, and persuasion.',
     type: 'raja',
   },
   {
     name: 'Chandra-Mangal Yoga',
-    check: (planets) => planets.moon?.rashi === planets.mars?.rashi,
+    check: (planets) => {
+      if (planets.moon?.rashi != null && planets.moon?.rashi === planets.mars?.rashi) {
+        return { matched: true, vars: { p1: 'moon', p2: 'mars', rashi: planets.moon.rashi } };
+      }
+      return false;
+    },
     effect: 'Confers financial acumen, bold initiative, and commercial success. The native is driven, ambitious, and capable of generating substantial wealth through effort.',
     type: 'dhana',
   },
@@ -175,7 +186,8 @@ export const YOGA_RULES = [
       const isKendra = [1, 4, 7, 10].includes(house);
       const isExalted = saRashi === 6; // Tula
       const isOwn = saRashi === 9 || saRashi === 10; // Makara or Kumbha
-      return isKendra && (isExalted || isOwn);
+      if (isKendra && (isExalted || isOwn)) return { matched: true, vars: { p1: 'saturn', house: house, state: isExalted ? 'exalted' : 'own', rashi: saRashi } };
+      return false;
     },
     effect: 'One of the Pancha Mahapurusha Yogas. Confers authority, discipline, longevity, and material success earned through persistent effort and leadership.',
     type: 'raja',
@@ -189,7 +201,8 @@ export const YOGA_RULES = [
       const isKendra = [1, 4, 7, 10].includes(house);
       const isExalted = maRashi === 9; // Makara
       const isOwn = maRashi === 0 || maRashi === 7; // Mesha or Vrischika
-      return isKendra && (isExalted || isOwn);
+      if (isKendra && (isExalted || isOwn)) return { matched: true, vars: { p1: 'mars', house: house, state: isExalted ? 'exalted' : 'own', rashi: maRashi } };
+      return false;
     },
     effect: 'Blesses the native with exceptional courage, physical strength, military or executive authority. The native possesses commanding leadership qualities.',
     type: 'raja',
@@ -203,7 +216,8 @@ export const YOGA_RULES = [
       const isKendra = [1, 4, 7, 10].includes(house);
       const isExalted = guRashi === 3; // Karka
       const isOwn = guRashi === 8 || guRashi === 11; // Dhanu or Meena
-      return isKendra && (isExalted || isOwn);
+      if (isKendra && (isExalted || isOwn)) return { matched: true, vars: { p1: 'jupiter', house: house, state: isExalted ? 'exalted' : 'own', rashi: guRashi } };
+      return false;
     },
     effect: 'Grants wisdom, spiritual authority, noble character, and philanthropic nature. The native is respected as a teacher, counselor, or spiritual guide.',
     type: 'raja',
@@ -217,7 +231,8 @@ export const YOGA_RULES = [
       const isKendra = [1, 4, 7, 10].includes(house);
       const isExalted = skRashi === 11; // Meena
       const isOwn = skRashi === 1 || skRashi === 6; // Vrishabha or Tula
-      return isKendra && (isExalted || isOwn);
+      if (isKendra && (isExalted || isOwn)) return { matched: true, vars: { p1: 'venus', house: house, state: isExalted ? 'exalted' : 'own', rashi: skRashi } };
+      return false;
     },
     effect: 'Bestows beauty, artistic talent, material luxury, marital happiness, and refined aesthetic sensibilities. The native enjoys abundant comforts and affection.',
     type: 'raja',
@@ -228,7 +243,8 @@ export const YOGA_RULES = [
       const maRashi = planets.mars?.rashi;
       if (maRashi == null) return false;
       const house = ((maRashi - lagna.rashi + 12) % 12) + 1;
-      return [1, 2, 4, 7, 8, 12].includes(house);
+      if ([1, 2, 4, 7, 8, 12].includes(house)) return { matched: true, vars: { p1: 'mars', house, source: 'Lagna' } };
+      return false;
     },
     effect: 'Indicates challenges in marital harmony and relationships. Mangal Shanti Puja and matching with another Manglik native are recommended remedies.',
     type: 'dosha',
@@ -242,11 +258,12 @@ export const YOGA_RULES = [
       const allPlanets = ['sun','moon','mars','mercury','jupiter','venus','saturn'];
       let start = Math.min(rahuLon, ketuLon);
       let end = Math.max(rahuLon, ketuLon);
-      return allPlanets.every(p => {
+      const isKaalSarp = allPlanets.every(p => {
         const lon = planets[p]?.longitude;
         if (lon == null) return false;
         return lon >= start && lon <= end;
       });
+      return isKaalSarp ? { matched: true, vars: {} } : false;
     },
     effect: 'All planets are hemmed between Rahu and Ketu, indicating karmic delays and obstacles. Regular worship of Naga Devatas and Rahu-Ketu Shanti is advised.',
     type: 'dosha',

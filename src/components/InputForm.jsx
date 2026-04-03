@@ -178,7 +178,7 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at center, rgba(124,58,237,0.06) 0%, transparent 70%)' }} />
         <div style={{ fontSize: 48, marginBottom: 8 }}>☽ ✦ ☀</div>
         <h2 style={{ margin: '0 0 8px', fontSize: 26, color: '#1E3A5F', letterSpacing: 0.5 }}>Janma Kundali</h2>
-        <p style={{ margin: 0, color: '#6B7280', fontSize: 14, maxWidth: 460, marginInline: 'auto' }}>
+        <p style={{ margin: 0, color: '#6B7280', fontSize:  16, maxWidth: 460, marginInline: 'auto' }}>
           Enter your birth details to generate a complete, consultation-grade Vedic birth chart rooted in the Lahiri Ayanamsa tradition.
         </p>
       </div>
@@ -189,7 +189,7 @@ export default function InputForm({ onSubmit, lang, onLangChange }) {
           {/* Card header */}
           <div style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)', padding: '22px 28px', color: 'white' }}>
             <h3 style={{ margin: 0, fontSize: 17, fontWeight: 600 }}>Birth Details (जन्म विवरण)</h3>
-            <p style={{ margin: '5px 0 0', fontSize: 12, opacity: 0.8 }}>All 5 fields are required for accurate chart generation</p>
+            <p style={{ margin: '5px 0 0', fontSize:   16, opacity: 0.8 }}>All 5 fields are required for accurate chart generation</p>
           </div>
 
           <form onSubmit={handleSubmit} style={{ padding: '24px 28px' }}>

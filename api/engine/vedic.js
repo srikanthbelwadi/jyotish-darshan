@@ -238,11 +238,18 @@ export function detectYogas(planets, lagna) {
   for (const p of planets) planetMap[p.key] = p;
 
   return YOGA_RULES
-    .filter(rule => {
-      try { return rule.check(planetMap, lagna); }
-      catch { return false; }
+    .map(rule => {
+      try {
+        const result = rule.check(planetMap, lagna);
+        if (result && typeof result === 'object' && result.matched) {
+          return { ...rule, vars: result.vars };
+        } else if (result === true) {
+          return { ...rule };
+        }
+      } catch { return null; }
+      return null;
     })
-    .map(rule => ({ ...rule }));
+    .filter(Boolean);
 }
 
 // ─── Shadbala (Simplified) ────────────────────────────────────────────────────
@@ -403,8 +410,7 @@ export function computeKundali(input) {
   const { sidereal, ayanamsa } = computePlanetPositions(jd);
   checkCombustion(sidereal);
 
-  const ascTropical = computeAscendant(jd, lat, lng);
-  const lagnaLon = ((ascTropical - ayanamsa) % 360 + 360) % 360;
+  const lagnaLon = computeAscendant(jd, lat, lng);
   const lagnaRashi = rashiFromLongitude(lagnaLon);
   const lagna = {
     longitude: lagnaLon,

@@ -195,10 +195,16 @@ export async function generateMuhuratCalendar(sweInstance, eventName, natalData,
         validDays.push({
             date: dStr,
             tithi: TITHIS[tithi - 1] + (tithi <= 15 ? ' (Shukla)' : ' (Krishna)'),
+            tithiIndex: tithi - 1,
+            paksha: tithi <= 15 ? 'Shukla' : 'Krishna',
             yoga,
+            yogaIndex: Math.max(0, yoga - 1),
             nakshatra: NAKSHATRAS[nakshatra],
+            nakshatraIndex: nakshatra,
             sunSign: RASHIS[sunSign],
+            sunSignIndex: sunSign,
             moonSign: RASHIS[moonSign],
+            moonSignIndex: moonSign,
             score
         });
     }
@@ -345,5 +351,5 @@ export async function getAuspiciousWindow(sweInstance, dateStr, eventName, natal
     };
     
     let timeBlockStr = `${format(startT)} - ${format(endT)}`;
-    return { timeBlock: timeBlockStr, lagnaSign: RASHIS[bestCluster[0].lagnaSign] };
+    return { timeBlock: timeBlockStr, lagnaSign: RASHIS[bestCluster[0].lagnaSign], lagnaSignIndex: bestCluster[0].lagnaSign };
 }

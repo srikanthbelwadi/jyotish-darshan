@@ -143,7 +143,7 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
         <h3 className="serif" style={{ margin: 0, fontSize: 20, fontWeight: 400, color: 'var(--accent-gold)', letterSpacing: 1.5 }}>
           {txt('comp.addPartner', 'Add Companion Chart')}
         </h3>
-        <p style={{ margin: '6px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>{txt('formNote', 'Enter the precise birth specifics of the partner to calculate synastry resonances.')}</p>
+        <p style={{ margin: '6px 0 0', fontSize:   17, color: 'var(--text-muted)' }}>{txt('formNote', 'Enter the precise birth specifics of the partner to calculate synastry resonances.')}</p>
       </div>
 
       <form onSubmit={handleSubmit} style={{ padding: '34px' }}>
@@ -172,7 +172,7 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
           </div>
         </div>
         
-        <p style={{ margin: '-10px 0 16px', fontSize: 12, color: 'var(--text-muted)' }}>{txt('inputAccuracy', 'A known time of birth is required for precise astrological accuracy.')}</p>
+        <p style={{ margin: '-10px 0 16px', fontSize:   16, color: 'var(--text-muted)' }}>{txt('inputAccuracy', 'A known time of birth is required for precise astrological accuracy.')}</p>
         
         <div style={{ marginBottom: 20, position: 'relative' }}>
           <label style={LS}>{txt('city', 'City')}</label>
@@ -195,7 +195,7 @@ export default function CompatibilityInputForm({ onGeneratePartner, onCancel, t=
               ))}
             </div>
           )}
-          {form.lat && <p style={{ fontSize: 12, color: '#10B981', marginTop: 6 }}>✓ {form.lat.toFixed(3)}°, {form.lng.toFixed(3)}° · {form.timezone}</p>}
+          {form.lat && <p style={{ fontSize:   16, color: '#10B981', marginTop: 6 }}>✓ {form.lat.toFixed(3)}°, {form.lng.toFixed(3)}° · {form.timezone}</p>}
         </div>
         
         {form.country && <div style={{ marginBottom: 24 }}>

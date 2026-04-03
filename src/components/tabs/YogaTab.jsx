@@ -42,14 +42,14 @@ export default function YogaTab({ kundali, t, lang }) {
           {yoga.type === 'dosha' ? (t('yo.doshaLabel', lang) || 'Dosha') : yoga.type === 'dhana' ? (t('yo.dhanaYoga', lang) || 'Dhana Yoga') : (t('yo.rajaYoga', lang) || 'Raja Yoga')}
         </span>
       </div>
-      <p style={{ margin: '0 0 10px', fontSize: 13, color: 'var(--accent-gold)', fontWeight: 600 }}>
+      <p style={{ margin: '0 0 10px', fontSize:   17, color: 'var(--accent-gold)', fontWeight: 600 }}>
         {t('yo.formedBy', lang) || 'Formed by'}: <span style={{color: '#6B7280', fontWeight: 'normal'}}>{calcStr}</span>
       </p>
-      <p style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.7 }}>{t(`yo.eff.${yoga.key}`, lang)}</p>
+      <p style={{ margin: 0, fontSize:   17, color: '#374151', lineHeight: 1.7 }}>{t(`yo.eff.${yoga.key}`, lang)}</p>
       {yoga.type === 'dosha' && (
         <div style={{ marginTop: 12, padding: 12, background: '#FEF2F2', borderRadius: 6, border: '1px dashed #FCA5A5' }}>
           <strong style={{ color: '#B91C1C', fontSize: 12 }}>{t('yo.remedyLabel', lang) || 'Remedies'}:</strong>
-          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#991B1B', lineHeight: 1.5 }}>
+          <p style={{ margin: '4px 0 0', fontSize:   16, color: '#991B1B', lineHeight: 1.5 }}>
             {t(`yo.rem.${yoga.key}`, lang)}
           </p>
         </div>

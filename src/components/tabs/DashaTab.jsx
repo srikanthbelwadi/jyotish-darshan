@@ -47,7 +47,7 @@ export default function DashaTab({ kundali }) {
             </span>
           ))}
         </div>
-        <p style={{ marginTop: 10, fontSize: 12, color: '#7C3AED', textAlign: 'center' }}>
+        <p style={{ marginTop: 10, fontSize:   16, color: '#7C3AED', textAlign: 'center' }}>
           Current: <strong>{current?.planet}</strong> Mahadasha ({current?.start} – {current?.end}) — gold border
         </p>
       </div>
@@ -71,7 +71,7 @@ export default function DashaTab({ kundali }) {
                     <span style={{ fontSize: 12, color: '#9CA3AF' }}>Mahadasha · {DASHA_PERIODS[maha.planet]} years</span>
                     {isCurrent && <span style={{ fontSize: 10, background: '#F59E0B', color: 'white', padding: '2px 8px', borderRadius: 10, fontWeight: 700 }}>ACTIVE NOW</span>}
                   </div>
-                  <p style={{ margin: '2px 0 0', fontSize: 12, color: '#6B7280' }}>{maha.start} → {maha.end}</p>
+                  <p style={{ margin: '2px 0 0', fontSize:   16, color: '#6B7280' }}>{maha.start} → {maha.end}</p>
                 </div>
                 <span style={{ color: '#9CA3AF', fontSize: 18 }}>{isExpanded ? '▲' : '▼'}</span>
               </div>

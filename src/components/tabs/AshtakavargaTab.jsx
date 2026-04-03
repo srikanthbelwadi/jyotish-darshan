@@ -27,7 +27,7 @@ export default function AshtakavargaTab({ kundali }) {
       <h3 style={{ margin: '0 0 8px', fontSize: 16, color: '#1E3A5F', fontWeight: 700 }}>
         Ashtakavarga — Benefic Point Analysis
       </h3>
-      <p style={{ margin: '0 0 20px', fontSize: 13, color: '#6B7280' }}>
+      <p style={{ margin: '0 0 20px', fontSize:   17, color: '#6B7280' }}>
         Each cell shows the number of benefic points (Bindus) in that Rashi for each planet. Higher points indicate favourable transits through that sign.
       </p>
 
@@ -79,7 +79,7 @@ export default function AshtakavargaTab({ kundali }) {
           <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#7C3AED' }}>
             Sarvashtakavarga (SAV) — Total Benefic Points per Sign
           </h3>
-          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#9CA3AF' }}>Total: {SAV.reduce((a, b) => a + b, 0)} points (Standard = 337)</p>
+          <p style={{ margin: '4px 0 0', fontSize:   16, color: '#9CA3AF' }}>Total: {SAV.reduce((a, b) => a + b, 0)} points (Standard = 337)</p>
         </div>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>

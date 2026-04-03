@@ -1,13 +1,23 @@
 
 export function calculateMatch(k1, k2) {
   const getMoonData = (k) => {
-    const moon = k.planets ? k.planets.find(p => p.key === 'moon') : { rashi: 1, nIdx: 1 };
+    const moon = k.planets ? k.planets.find(p => p.key === 'moon' || p.name === 'Moon' || p.name === 'Chandra') : null;
+    let fallbackRashi = 1;
+    let fallbackNIdx = 1;
+    let fallbackPada = 1;
+
+    if (moon && moon.longitude !== undefined) {
+       fallbackRashi = Math.floor(moon.longitude / 30) % 12;
+       fallbackNIdx = Math.floor(moon.longitude / (360/27)) % 27;
+       fallbackPada = Math.floor((moon.longitude % (360/27)) / (360/108)) + 1;
+    }
+
     return {
       name: k.name || (k.input && k.input.name) || 'User',
       gender: k.input?.gender || 'male',
-      rashi: moon.rashi,
-      nakshatra: moon.nIdx,
-      pada: moon.pada
+      rashi: moon ? (moon.rashi !== undefined ? moon.rashi : fallbackRashi) : fallbackRashi,
+      nakshatra: moon ? (moon.nIdx ?? moon.nakshatraIndex ?? fallbackNIdx) : fallbackNIdx,
+      pada: moon ? (moon.pada ?? fallbackPada) : fallbackPada
     };
   };
 
@@ -43,7 +53,7 @@ export function calculateMatch(k1, k2) {
   // 3. Tara (3 pts)
   const bTara = (girl.nakshatra - boy.nakshatra + 27) % 27;
   const gTara = (boy.nakshatra - girl.nakshatra + 27) % 27;
-  const badTaras = [2, 4, 6, 8]; // measured in 1-9 blocks: 3rd, 5th, 7th are usually malefic
+  const badTaras = [2, 4, 6]; // measured in 0-8 blocks: 3rd (2), 5th (4), 7th (6) are malefic. 9th (8) is Ati Mitra (highly favorable).
   // Using simplified 0-8 scale: 2 (Vipat), 4 (Pratyari), 6 (Vadha) are bad.
   const bTaraGrp = bTara % 9;
   const gTaraGrp = gTara % 9;
@@ -214,22 +224,22 @@ export function calculateMatch(k1, k2) {
   const RASHI_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 
   return {
-    p1: { name: p1.name, rashi: RASHI_NAMES[p1.rashi], nakshatra: NAK_NAMES[p1.nakshatra], isManglik: m1.isManglik },
-    p2: { name: p2.name, rashi: RASHI_NAMES[p2.rashi], nakshatra: NAK_NAMES[p2.nakshatra], isManglik: m2.isManglik },
+    p1: { name: p1.name, rashiIndex: p1.rashi, nakshatraIndex: p1.nakshatra, rashi: RASHI_NAMES[p1.rashi], nakshatra: NAK_NAMES[p1.nakshatra], isManglik: m1.isManglik },
+    p2: { name: p2.name, rashiIndex: p2.rashi, nakshatraIndex: p2.nakshatra, rashi: RASHI_NAMES[p2.rashi], nakshatra: NAK_NAMES[p2.nakshatra], isManglik: m2.isManglik },
     ashtaKuta: {
         totalScore,
         maxScore: 36,
         summary,
         summaryKey,
         elements: [
-          { key: 'varna', name: 'Varna (Work Ethic)', score: varnaScore, max: 1, descKey: varnaScore === 1.0 ? 'varnaHigh' : 'varnaLow', desc: varnaDesc },
-          { key: 'vashya', name: 'Vashya (Attraction)', score: vashyaScore, max: 2, descKey: vashyaScore === 2.0 ? 'vashyaHigh' : 'vashyaLow', desc: vashyaDesc },
-          { key: 'tara', name: 'Tara (Destiny)', score: taraScore, max: 3, descKey: taraScore === 3.0 ? 'taraHigh' : 'taraLow', desc: taraDesc },
-          { key: 'yoni', name: 'Yoni (Intimacy)', score: yoniScore, max: 4, descKey: yoniScore >= 2.0 ? 'yoniHigh' : 'yoniLow', desc: yoniDesc },
-          { key: 'graha', name: 'Graha Maitri (Friendship)', score: grahaScore, max: 5, descKey: grahaScore >= 4.0 ? 'grahaHigh' : 'grahaLow', desc: grahaDesc },
-          { key: 'gana', name: 'Gana (Temperament)', score: ganaScore, max: 6, descKey: ganaScore >= 4.0 ? 'ganaHigh' : 'ganaLow', desc: ganaDesc },
-          { key: 'bhakoot', name: 'Bhakoot (Growth)', score: bhakootScore, max: 7, descKey: bhakootScore === 7.0 ? 'bhakootHigh' : 'bhakootLow', desc: bhakootDesc },
-          { key: 'nadi', name: 'Nadi (Genetics)', score: nadiScore, max: 8, descKey: nadiScore === 8.0 ? 'nadiHigh' : 'nadiLow', desc: nadiDesc },
+          { key: 'varna', name: 'Varna (Work Ethic)', score: varnaScore, max: 1, descKey: varnaScore === 1.0 ? 'varnaHigh' : 'varnaLow', desc: varnaDesc, basis: { bRashi: boy.rashi, gRashi: girl.rashi, bVarna: vB, gVarna: vG } },
+          { key: 'vashya', name: 'Vashya (Attraction)', score: vashyaScore, max: 2, descKey: vashyaScore === 2.0 ? 'vashyaHigh' : 'vashyaLow', desc: vashyaDesc, basis: { bRashi: boy.rashi, gRashi: girl.rashi } },
+          { key: 'tara', name: 'Tara (Destiny)', score: taraScore, max: 3, descKey: taraScore === 3.0 ? 'taraHigh' : 'taraLow', desc: taraDesc, basis: { bNak: boy.nakshatra, gNak: girl.nakshatra, bTaraGrp, gTaraGrp } },
+          { key: 'yoni', name: 'Yoni (Intimacy)', score: yoniScore, max: 4, descKey: yoniScore >= 2.0 ? 'yoniHigh' : 'yoniLow', desc: yoniDesc, basis: { bNak: boy.nakshatra, gNak: girl.nakshatra, bYoniRem: boy.nakshatra % 5, gYoniRem: girl.nakshatra % 5 } },
+          { key: 'graha', name: 'Graha Maitri (Friendship)', score: grahaScore, max: 5, descKey: grahaScore >= 4.0 ? 'grahaHigh' : 'grahaLow', desc: grahaDesc, basis: { bRashi: boy.rashi, gRashi: girl.rashi, bLord, gLord, bIsSat, gIsSat } },
+          { key: 'gana', name: 'Gana (Temperament)', score: ganaScore, max: 6, descKey: ganaScore >= 4.0 ? 'ganaHigh' : 'ganaLow', desc: ganaDesc, basis: { bNak: boy.nakshatra, gNak: girl.nakshatra, bGana, gGana } },
+          { key: 'bhakoot', name: 'Bhakoot (Growth)', score: bhakootScore, max: 7, descKey: bhakootScore === 7.0 ? 'bhakootHigh' : 'bhakootLow', desc: bhakootDesc, basis: { bRashi: boy.rashi, gRashi: girl.rashi, bhakDiff } },
+          { key: 'nadi', name: 'Nadi (Genetics)', score: nadiScore, max: 8, descKey: nadiScore === 8.0 ? 'nadiHigh' : 'nadiLow', desc: nadiDesc, basis: { bNak: boy.nakshatra, gNak: girl.nakshatra, bNadi, gNadi } },
         ]
     },
     mangalDosha: {

@@ -1,4 +1,6 @@
 {
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "functions": {
     "api/**/*.js": {
       "includeFiles": "{public/sweph/**,node_modules/swisseph-wasm/**/*.wasm}"

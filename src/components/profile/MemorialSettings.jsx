@@ -80,7 +80,7 @@ export default function MemorialSettings({ isOpen, onClose }) {
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <div className="lux-card" style={{ width: '100%', maxWidth: 500, animation: 'slideIn 0.3s ease', maxHeight: '90vh', overflowY: 'auto' }}>
         <h2 style={{ margin: '0 0 10px', color: 'var(--accent-gold)', fontSize: 24 }}>{t("pc.mem.title", "Ancestors & Memorials")}</h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 20, lineHeight: 1.5 }}>
+        <p style={{ color: 'var(--text-muted)', fontSize:   17, marginBottom: 20, lineHeight: 1.5 }}>
           {t("pc.mem.desc", "Track the annual ceremonial dates (Varshika Tithi) for departed souls. The Panchang calendar will automatically identify these sacred dates based on the precise Lunar Month and Tithi of their passing.")}
         </p>
         
@@ -89,7 +89,7 @@ export default function MemorialSettings({ isOpen, onClose }) {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 15, marginBottom: 20 }}>
             {souls.length === 0 && !isAdding && (
-              <p style={{ color: 'var(--text-muted)', fontSize: 14, fontStyle: 'italic', textAlign: 'center', padding: '20px 0' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize:  16, fontStyle: 'italic', textAlign: 'center', padding: '20px 0' }}>
                 {t("pc.mem.noDates", "No memorial dates added.")}
               </p>
             )}
@@ -119,7 +119,7 @@ export default function MemorialSettings({ isOpen, onClose }) {
             )}
 
             {souls.length >= 5 && !isAdding && (
-              <p style={{ color: 'var(--text-muted)', fontSize: 12, textAlign: 'center' }}>{t("pc.mem.maxLimit", "Maximum limit of 5 entries reached.")}</p>
+              <p style={{ color: 'var(--text-muted)', fontSize:   16, textAlign: 'center' }}>{t("pc.mem.maxLimit", "Maximum limit of 5 entries reached.")}</p>
             )}
 
             {isAdding && (

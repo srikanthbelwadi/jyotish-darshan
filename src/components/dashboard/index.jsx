@@ -8,7 +8,7 @@ import { UniversalLoader } from './UniversalLoader';
 
 const FullScreenWrapper = ({ title, onBack, children, t, lang }) => (
   <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
-    <button onClick={onBack} style={{ background: 'var(--bg-card)', color: 'var(--accent-gold)', border: '1px solid #ffd700', padding: '12px 28px', cursor: 'pointer', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '16px', fontFamily: '"Cinzel", serif', transition:'all 0.2s', textTransform:'uppercase' }} onMouseOver={e=>{e.currentTarget.style.background='var(--bg-input)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'}}>
+    <button onClick={onBack} style={{ background: 'var(--bg-card)', color: 'var(--accent-gold)', border: '1px solid #ffd700', padding: '12px 28px', cursor: 'pointer', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '16px', fontFamily: 'var(--font-serif)', transition:'all 0.2s', textTransform:'uppercase' }} onMouseOver={e=>{e.currentTarget.style.background='var(--bg-input)'}} onMouseOut={e=>{e.currentTarget.style.background='var(--bg-card)'}}>
       {t('← Return to Main Mandala')}
     </button>
     <div style={{ background: 'var(--bg-card)', border: '2px solid var(--border-light)', padding: '2px' }}>
@@ -43,17 +43,17 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
   }
 
   return (
-    <div id="mock-dashboard-top" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 24px', fontFamily: 'serif', paddingBottom: '140px', background: 'var(--bg-app)', minHeight: '100vh' }}>
+    <div id="mock-dashboard-top" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 24px', fontFamily: 'var(--font-serif)', paddingBottom: '140px', background: 'var(--bg-app)', minHeight: '100vh' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '2px solid var(--border-light)', paddingBottom: '20px', flexWrap: 'wrap', gap: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <h2 style={{ fontSize: '42px', margin: 0, fontFamily: '"Cinzel", serif', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Life Paths')}</h2>
+          <h2 style={{ fontSize: '42px', margin: 0, fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Life Paths')}</h2>
           {partnerKundali && (
             <div style={{ background: 'var(--bg-input)', border: '1px solid var(--accent-gold)', padding: '6px 12px', borderRadius: '4px', color: 'var(--accent-gold)', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span>💞</span> {t('Synastry Active')}
             </div>
           )}
         </div>
-        <button onClick={onOpenJyotishDesk} style={{background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 28px', cursor:'pointer', borderRadius:'4px', fontFamily:'"Cinzel", serif', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow: '0 4px 15px rgba(255,215,0,0.4)'}}>
+        <button onClick={onOpenJyotishDesk} style={{background:'var(--accent-gold)', border:'none', color:'var(--bg-app)', padding:'12px 28px', cursor:'pointer', borderRadius:'4px', fontFamily: 'var(--font-serif)', fontSize:'16px', fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px', transition:'all 0.2s', textTransform:'uppercase', letterSpacing:'1px', whiteSpace:'nowrap', boxShadow: '0 4px 15px rgba(255,215,0,0.4)'}}>
           {t('Reveal Kundali ➔')}
         </button>
       </div>
@@ -63,7 +63,7 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
       <MuhuratPlanner kundali={K} partnerData={partnerKundali} t={t} lang={lang} user={user} onRequireLogin={onRequireLogin} UniversalLoader={UniversalLoader} />
 
       <div style={{ marginBottom: '40px', marginTop: '40px', border: '1px solid var(--accent-gold)', borderRadius: '12px', padding: '30px', background: 'var(--bg-layer-2)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 4px 15px rgba(255,215,0,0.1)' }}>
-          <h3 style={{ margin: '0 0 10px', color: 'var(--accent-gold)', fontSize: '28px', fontFamily: '"Cinzel", serif' }}>🕉️ {t("pc.title", "Personalized Drik Panchang")}</h3>
+          <h3 style={{ margin: '0 0 10px', color: 'var(--accent-gold)', fontSize: '28px', fontFamily: 'var(--font-serif)' }}>🕉️ {t("pc.title", "Personalized Drik Panchang")}</h3>
           <p style={{ margin: '0 0 20px', color: 'var(--text-main)', fontSize: '16px' }}>{t("pc.subtitle", "Track daily Tithi, major festivals, birthdays, and your departed loved ones' Varshika Tithi automatically.")}</p>
           <button 
              onClick={() => { if(!user) { onRequireLogin(); return; } setActiveView('panchang'); }} 
@@ -75,7 +75,7 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
       </div>
 
       <div style={{ marginBottom: '40px', border: '1px solid var(--accent-gold)', borderRadius: '12px', padding: '30px', background: 'var(--bg-layer-2)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 4px 15px rgba(255,215,0,0.1)' }}>
-          <h3 style={{ margin: '0 0 10px', color: 'var(--accent-gold)', fontSize: '28px', fontFamily: '"Cinzel", serif' }}>💞 {t("comp.title", "Companion Compatibility")}</h3>
+          <h3 style={{ margin: '0 0 10px', color: 'var(--accent-gold)', fontSize: '28px', fontFamily: 'var(--font-serif)' }}>💞 {t("comp.title", "Companion Compatibility")}</h3>
           <p style={{ margin: '0 0 20px', color: 'var(--text-main)', fontSize: '16px' }}>{t("comp.subtitle", "Assess celestial resonance, verify Gunas, and uncover deep astrological alignments with your partner.")}</p>
           <button 
              onClick={() => { 
@@ -112,7 +112,7 @@ export const MockDashboard = ({ K, lang, t, user, onRequireLogin, onOpenJyotishD
           >
             <div style={{ position: 'absolute', top: '-10px', right: '-10px', fontSize: '140px', opacity: 0.03, pointerEvents: 'none' }}>{data.icon}</div>
             <div style={{ fontSize: '50px', marginBottom: '20px', filter: 'drop-shadow(0 0 15px rgba(255,215,0,0.3))' }}>{data.icon}</div>
-            <h3 style={{ margin: '0 0 12px 0', fontSize: 'clamp(16px, 5vw, 22px)', color: 'var(--accent-gold)', fontFamily: '"Cinzel", serif', wordBreak: 'break-word' }}>{t(data.title)}</h3>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: 'clamp(16px, 5vw, 22px)', color: 'var(--accent-gold)', fontFamily: 'var(--font-serif)', wordBreak: 'break-word' }}>{t(data.title)}</h3>
           </div>
         ))}
       </div>
