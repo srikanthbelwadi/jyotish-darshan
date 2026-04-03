@@ -419,8 +419,7 @@ export const DYNAMIC_STRINGS = {
     'Add Entry': 'Add Entry',
     'Save': 'Save',
     'Cancel': 'Cancel',
-    'Delete': 'Delete'
-  },
+    'Delete': 'Delete',
     "comp.basis.title": "Astrological Basis",
     "comp.basis.pointScore": "Score Awarded",
     "comp.basis.varnaLvl": "Varna Level",
@@ -431,7 +430,8 @@ export const DYNAMIC_STRINGS = {
     "comp.basis.sat": "Sattvic",
     "comp.basis.nonSat": "Non-Sattvic",
     "comp.basis.gana": "Gana Type",
-    "comp.basis.nadi": "Nadi Domain",
+    "comp.basis.nadi": "Nadi Domain"
+  },
   hi: {
     "10th House Karma": "दसवां घर कर्म",
     "11th House Bonds": "11वें सदन के बांड",
@@ -931,8 +931,7 @@ export const DYNAMIC_STRINGS = {
     'Add Entry': 'Add Entry',
     'Save': 'Save',
     'Cancel': 'Cancel',
-    'Delete': 'Delete'
-  },
+    'Delete': 'Delete',
     "comp.basis.title": "ज्योतिषीय आधार",
     "comp.basis.pointScore": "प्राप्त अंक",
     "comp.basis.varnaLvl": "वर्ण स्तर",
@@ -943,7 +942,8 @@ export const DYNAMIC_STRINGS = {
     "comp.basis.sat": "सात्विक",
     "comp.basis.nonSat": "असात्विक",
     "comp.basis.gana": "गण प्रकार",
-    "comp.basis.nadi": "नाड़ी क्षेत्र",
+    "comp.basis.nadi": "नाड़ी क्षेत्र"
+  },
   kn: {
     "10th House Karma": "10 ನೇ ಮನೆ ಕರ್ಮ",
     "11th House Bonds": "11 ನೇ ಹೌಸ್ ಬಾಂಡ್‌ಗಳು",
@@ -1442,8 +1442,7 @@ export const DYNAMIC_STRINGS = {
     'Add Entry': 'Add Entry',
     'Save': 'Save',
     'Cancel': 'Cancel',
-    'Delete': 'Delete'
-  },
+    'Delete': 'Delete',
     "comp.basis.title": "ಜ್ಯೋತಿಷ್ಯ ಆಧಾರ",
     "comp.basis.pointScore": "ಪಡೆದ ಅಂಕಗಳು",
     "comp.basis.varnaLvl": "ವರ್ಣ ಮಟ್ಟ",
@@ -1454,7 +1453,8 @@ export const DYNAMIC_STRINGS = {
     "comp.basis.sat": "ಸಾತ್ತ್ವಿಕ",
     "comp.basis.nonSat": "ಅಸಾತ್ತ್ವಿಕ",
     "comp.basis.gana": "ಗಣದ ಪ್ರಕಾರ",
-    "comp.basis.nadi": "ನಾಡಿ ಕ್ಷೇತ್ರ",
+    "comp.basis.nadi": "ನಾಡಿ ಕ್ಷೇತ್ರ"
+  },
   te: {
     "10th House Karma": "10వ గృహ కర్మ",
     "11th House Bonds": "11వ గృహ బంధాలు",
@@ -1930,8 +1930,7 @@ export const DYNAMIC_STRINGS = {
     'Add Entry': 'Add Entry',
     'Save': 'Save',
     'Cancel': 'Cancel',
-    'Delete': 'Delete'
-  },
+    'Delete': 'Delete',
     "comp.basis.title": "జ్యోతిష్య ఆధారం",
     "comp.basis.pointScore": "పొందిన పాయింట్లు",
     "comp.basis.varnaLvl": "వర్ణ స్థాయి",
@@ -1942,7 +1941,8 @@ export const DYNAMIC_STRINGS = {
     "comp.basis.sat": "సాత్విక",
     "comp.basis.nonSat": "అసాత్విక",
     "comp.basis.gana": "గణ రకం",
-    "comp.basis.nadi": "నాడి డొమైన్",
+    "comp.basis.nadi": "నాడి డొమైన్"
+  },
   ta: {
     "10th House Karma": "10 வது வீடு கர்மா",
     "11th House Bonds": "11வது வீட்டுப் பத்திரங்கள்",
@@ -3323,8 +3323,7 @@ export const DYNAMIC_STRINGS = {
     'Add Entry': 'Add Entry',
     'Save': 'Save',
     'Cancel': 'Cancel',
-    'Delete': 'Delete'
-  },
+    'Delete': 'Delete',
     "comp.basis.title": "ജ്യോതിഷ അടിസ്ഥാനം",
     "comp.basis.pointScore": "ലഭിച്ച സ്കോർ",
     "comp.basis.varnaLvl": "വർണ്ണ തലം",
@@ -3335,7 +3334,8 @@ export const DYNAMIC_STRINGS = {
     "comp.basis.sat": "സാത്വികം",
     "comp.basis.nonSat": "അസാത്വികം",
     "comp.basis.gana": "ഗണം",
-    "comp.basis.nadi": "നാഡി ഡൊമെയ്ൻ",
+    "comp.basis.nadi": "നാഡി ഡൊമെയ്ൻ"
+  },
   sa: {
     "ig.showPrediction": "भविष्यवाणीं पश्यन्तु",
     "ig.backToPathways": "← पथिभ्यः प्रतिगच्छन्तु",
