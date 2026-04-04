@@ -574,8 +574,8 @@
                         <span style="font-size:0.7em; color:#888;">&nbsp; (UTC ${selectedUtc >= 0 ? '+' : ''}${selectedUtc})</span>
                     </div>
                     <strong>${uiD.ayanamsa||'Ayanamsa'}:</strong> ${data.kundali.ayanamsaDMS}<br>
-                    <strong>${uiD.lagna||'Lagna'}:</strong> <span style="color:#ffaa22">${data.kundali.lagna.rashiName || data.kundali.lagna.rashi}</span> (${data.kundali.lagna.degreeFormatted})<br>
-                    <strong>${uiD.tithi||'Tithi'}:</strong> Tithi ${panchangTithiVal} (${data.panchang?.paksha || ''})<br>
+                    <strong>${uiD.lagna||'Lagna'}:</strong> <span style="color:#ffaa22">${data.localizedRashis?.[data.kundali.lagna.rashi] || data.kundali.lagna.rashiName || data.kundali.lagna.rashi}</span> (${data.kundali.lagna.degreeFormatted})<br>
+                    <strong>${uiD.tithi||'Tithi'}:</strong> ${panchangTithiVal} (${data.panchang?.paksha ? (uiD[data.panchang.paksha.toLowerCase()] || data.panchang.paksha) : ''})<br>
                     <strong>${uiD.vara||'Vara'}:</strong> ${data.vara || ''}<br>
                     <strong>${uiD.nakshatraLabel||'Nakshatra:'}</strong> <span style="color:#aaddaa;">${moonNakshatra}</span>
                     ${moonHtml}

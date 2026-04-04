@@ -46,6 +46,7 @@ export default async function handler(req, res) {
     
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const dayOfWeek = daysOfWeek[d.getDay()];
+    const varaLocal = t("pc." + dayOfWeek.slice(0,3), lang) || dayOfWeek;
 
     const localizedRashis = RASHI_NAMES[lang] || RASHI_NAMES['en'];
     
@@ -65,13 +66,16 @@ export default async function handler(req, res) {
     const ttTrans = TT_STRINGS[lang] || TT_STRINGS['en'];
 
     const uiDict = {
-        ayanamsa: t("ov.ayanamsa", lang) || "Ayanamsa",
-        lagna: t("pl.lagnaLabel", lang) || "Lagna",
-        tithi: t("ov.tithi", lang) || "Tithi",
-        vara: t("ov.vara", lang) || "Vara",
-        nakshatraLabel: t("ov.nakLabel", lang) || "Nakshatra:",
-        sunSign: t("ov.sunSign", lang) || "Sun Sign",
-        moonSign: t("ov.moonSign", lang) || "Moon Sign",
+        ayanamsa: t("comp.ayanamsa", lang) || "Ayanamsa",
+        lagna: t("comp.lagna", lang) || "Lagna",
+        tithi: t("comp.tithi", lang) || "Tithi",
+        vara: t("comp.vara", lang) || "Vara",
+        nakshatraLabel: t("pc.nakshatra", lang) || "Nakshatra:",
+        sunSign: t("pc.sunSign", lang) || "Sun Sign",
+        moonSign: t("pc.moonSign", lang) || "Moon Sign",
+        shukla: t("pc.paksha.Shukla", lang) || "Shukla Paksha",
+        krishna: t("pc.paksha.Krishna", lang) || "Krishna Paksha",
+        pakshaLabel: t("pc.paksha", lang) || "Paksha",
         celestialNorthPole: { hi: "खगोलीय उत्तरी ध्रुव", kn: "ಖಗೋಳ ಉತ್ತರ ಧ್ರುವ", te: "ఖగోళ ఉత్తర ధృవం", ta: "வான்வட துருவம்", mr: "खगोलीय उत्तर ध्रुव", gu: "ખગોળીય ઉત્તર ધ્રુવ", bn: "খগোলিক উত্তর মেরু", ml: "ഖഗോള ഉത്തര ധ്രുവം", sa: "खगोलोत्तरध्रुवः" }[lang] || "Celestial North Pole",
         nakshatras: L_NAKS[lang] || L_NAKS['en'],
         timeTravelLabel: ttTrans.tt,
@@ -86,7 +90,7 @@ export default async function handler(req, res) {
     res.status(200).json({
         kundali,
         panchang,
-        vara: dayOfWeek,
+        vara: varaLocal,
         nakshatras: NAKSHATRAS,
         localizedRashis,
         uiDict
