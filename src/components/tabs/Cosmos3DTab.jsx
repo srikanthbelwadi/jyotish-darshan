@@ -24,7 +24,8 @@ export default function Cosmos3DTab({ kundali, lang }) {
     return (
         <div style={{ 
             width: '100%', 
-            height: 'calc(100vh - 140px)', 
+            height: '92vh',
+            minHeight: '800px',
             background: '#050510', 
             borderRadius: '8px', 
             overflow: 'hidden', 

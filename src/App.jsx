@@ -1326,17 +1326,7 @@ function OverviewTab({K,fmt,lang='en'}){
       <div style={{marginBottom:18}}>
         <Cosmos3DTab kundali={K} lang={lang} />
       </div>
-      <div className="responsive-grid-3" style={{marginBottom:18}}>
-        {[[`${(L_RASHI[lang]||L_RASHI.en)[lagna.rashi]}`,lagna.degFmt,t('ov.lagna',lang),'#7C3AED'],
-          [`${(L_RASHI[lang]||L_RASHI.en)[moon.rashi]}`,`${(L_NAKS[lang]||L_NAKS.en)[moon.nIdx!==undefined?moon.nIdx:(moon.nakshatraIndex!==undefined?moon.nakshatraIndex:(moon.nakshatra?moon.nakshatra-1:0))]||moon.nakshatraName} ${t('pdf.pada',lang)||'Pd'} ${moon.pada}`,t('ov.moon',lang),'#8B5CF6'],
-          [`${(L_RASHI[lang]||L_RASHI.en)[sun.rashi]}`,`${(L_NAKS[lang]||L_NAKS.en)[sun.nIdx!==undefined?sun.nIdx:(sun.nakshatraIndex!==undefined?sun.nakshatraIndex:(sun.nakshatra?sun.nakshatra-1:0))]||sun.nakshatraName} ${t('pdf.pada',lang)||'Pd'} ${sun.pada}`,t('ov.sun',lang),'#D97706']].map(([val,sub,lbl,clr])=>(
-          <Card key={lbl} style={{textAlign:'center',borderTop:`3px solid ${clr}`}}>
-            <p style={{margin:'0 0 3px',fontSize:10,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:1}}>{lbl}</p>
-            <p style={{margin:'0 0 2px',fontSize: 17,fontWeight:700,color:clr}}>{val}</p>
-            <p style={{margin:0,fontSize:11,color:'var(--text-muted)'}}>{sub}</p>
-          </Card>
-        ))}
-      </div>
+      {/* Moon, Sun, Lagna cards removed per user request as details are already in the visualization */}
       
       {moonNakLore && (
         <Card style={{ marginBottom: 18, background: 'linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%)', color: 'white', border: 'none' }}>
