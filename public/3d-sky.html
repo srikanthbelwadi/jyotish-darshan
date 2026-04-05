@@ -6,82 +6,17 @@
     <title>Dynamic Jyotish 3D Sky</title>
     <style>
         body { margin: 0; overflow: hidden; background: #050510; color: #fff; font-family: "Inter", sans-serif; touch-action: auto; height: 100vh; width: 100vw; }
-        
         #app-container { display: flex; width: 100%; height: 100%; flex-direction: column; overflow: hidden; }
-        
-        #canvas-container { width: 100%; flex: 1 1 auto; background: #050510; position: relative; overflow: hidden; }
+        #canvas-container { width: 100%; height: 100%; background: #050510; position: relative; overflow: hidden; }
         canvas { display: block; width: 100%; height: 100%; }
-        
-        #ui-panel { width: 100%; flex: 0 0 auto; display: flex; flex-direction: column; gap: 15px; background: rgba(20,20,25,1); padding: 15px; box-sizing: border-box; border-top: 1px solid rgba(255,255,255,0.1); z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.5); }
-        
-        h2 { margin: 0 0 15px 0; font-size: 1.2rem; color: #f9d77e; text-transform: uppercase; letter-spacing: 1px;}
-        
-        #data-panel { width: 100%; display: flex; flex-direction: column; gap: 15px; background: rgba(255,255,255,0.05); backdrop-filter: blur(4px); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); padding: 15px; box-sizing: border-box; }
-        #ayanamsa-txt { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; font-size: 0.9rem; line-height: 1.4; color: #ccc; }
-        #data-panel ul { width: 100%; list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 15px; align-content: start; }
-        #data-panel li { padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;}
-        
-        .time-machine { width: 100%; height: auto; box-sizing: border-box; }
-        
         #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; color: #f9d77e; z-index: 200; display: none; }
-        
-        /* Mobile Optimizations */
-        @media (max-width: 768px) {
-            #data-panel ul { grid-template-columns: 1fr; }
-            #canvas-container { height: 45vh; }
-            .control-group label { font-size: 0.7rem; margin-bottom: 2px; }
-            .slider-container { margin-top: 10px; padding-top: 10px; }
-            .slider-wrapper { margin-top: 0px; }
-            #slider-val { font-size: 0.8rem; }
-        }
     </style>
 </head>
 <body>
     <div id="loading">Computing Celestial Mechanics...</div>
     <div id="app-container">
         <div id="canvas-container"></div>
-        <div id="ui-panel">
-        
-        <!-- Location and Language handled by React Parent Config -->
-
-        <div id="data-panel">
-            <div id="ayanamsa-txt" style="color: #ccc; margin-bottom: 8px; line-height: 1.4; font-size: 0.75rem; background:rgba(0,0,0,0.4); padding:8px; border-radius:6px; border: 1px solid rgba(255,255,255,0.05);"></div>
-            <ul id="planet-list" style="font-size: 0.8rem;"></ul>
-        </div>
-
-        <div class="time-machine" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:8px; border: 1px solid rgba(255,255,255,0.05); margin-bottom:10px;">
-            <div id="lbl-time-travel" style="font-size:0.65rem; color:#aaa; margin-bottom:8px; letter-spacing:1px; text-transform:uppercase;">Time Travel</div>
-            
-            <div style="display:flex; align-items:center; margin-bottom:6px;">
-                <div id="lbl-year" style="width: 45px; font-size:0.7rem; color:#888;">YEAR</div>
-                <input type="range" id="sYear" min="1900" max="2100" value="1974" style="flex:1; margin:0 10px;">
-                <div id="vYear" style="width: 40px; text-align:right; font-size:0.8rem; color:#f9d77e; font-family:monospace;">1974</div>
-            </div>
-            
-            <div style="display:flex; align-items:center; margin-bottom:6px;">
-                <div id="lbl-month" style="width: 45px; font-size:0.7rem; color:#888;">MONTH</div>
-                <input type="range" id="sMonth" min="1" max="12" value="9" style="flex:1; margin:0 10px;">
-                <div id="vMonth" style="width: 40px; text-align:right; font-size:0.8rem; color:#f9d77e; font-family:monospace;">09</div>
-            </div>
-            
-            <div style="display:flex; align-items:center; margin-bottom:6px;">
-                <div id="lbl-day" style="width: 45px; font-size:0.7rem; color:#888;">DAY</div>
-                <input type="range" id="sDay" min="1" max="31" value="3" style="flex:1; margin:0 10px;">
-                <div id="vDay" style="width: 40px; text-align:right; font-size:0.8rem; color:#f9d77e; font-family:monospace;">03</div>
-            </div>
-            
-            <div style="display:flex; align-items:center;">
-                <div id="lbl-time" style="width: 45px; font-size:0.7rem; color:#888;">TIME</div>
-                <input type="range" id="sTime" min="0" max="1425" step="15" value="1080" style="flex:1; margin:0 10px;">
-                <div id="vTime" style="width: 40px; text-align:right; font-size:0.8rem; color:#f9d77e; font-family:monospace;">18:00</div>
-            </div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button id="btn-birth-time" style="flex:1; padding: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #ccc; border-radius: 4px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase;">Birth Time</button>
-                <button id="btn-now" style="flex:1; padding: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #ccc; border-radius: 4px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase;">Now</button>
-            </div>
-        </div>
     </div>
-</div>
 
 
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
@@ -100,46 +35,7 @@
         // -------------------------------------------------------------
         // STATE AND DOM
         // -------------------------------------------------------------
-        const urlParams = new URLSearchParams(window.location.search);
-        let selectedLat = parseFloat(urlParams.get('lat')) || 12.9716;
-        let selectedLng = parseFloat(urlParams.get('lng')) || 77.5946;
-        let selectedLang = urlParams.get('lang') || 'en';
-        let selectedUtc = parseFloat(urlParams.get('utc')) || 5.5;  
-        
-        // Setup initial date from URL or current date
-        const initDateStr = urlParams.get('date');
-        const initTimeStr = urlParams.get('time');
-        // Initialize sliders based on literal string values to avoid browser TimeZone shifting
-        let initialDateParams = { y: 1974, m: 9, d: 3, h: 18, min: 30 };
-        if (initDateStr && initTimeStr) {
-            const [y, m, day] = initDateStr.split('-');
-            const [h, min] = initTimeStr.split(':');
-            initialDateParams = {
-                y: parseInt(y) || 1974,
-                m: parseInt(m) || 9,
-                d: parseInt(day) || 3,
-                h: parseInt(h) || 18,
-                min: parseInt(min) || 30
-            };
-        }
-        
-        sYear.value = initialDateParams.y;
-        sMonth.value = initialDateParams.m;
-        sDay.value = initialDateParams.d;
-        sTime.value = initialDateParams.h * 60 + initialDateParams.min;
-
-        vYear.innerText = sYear.value;
-        vMonth.innerText = String(sMonth.value).padStart(2, '0');
-        vDay.innerText = String(sDay.value).padStart(2, '0');
-        const initHr = Math.floor(sTime.value / 60);
-        const initMn = sTime.value % 60;
-        vTime.innerText = String(initHr).padStart(2, '0') + ':' + String(initMn).padStart(2, '0');
-
-        const planetList = document.getElementById('planet-list');
-        const ayanamsaTxt = document.getElementById('ayanamsa-txt');
         const loading = document.getElementById('loading');
-
-        let isFetching = false;
         
         // -------------------------------------------------------------
         // THREE.JS SETUP
@@ -507,26 +403,16 @@
             } catch(e) { return 0; }
         }
 
-        async function fetchSkyData() {
-            if (isFetching) return;
-            isFetching = true;
-            loading.style.display = 'block';
-
-            // Fetch params
-            const y = parseInt(sYear.value);
-            const m = parseInt(sMonth.value);
-            const d = parseInt(sDay.value);
-            const totalMins = parseInt(sTime.value);
-            const h = Math.floor(totalMins / 60);
-            const mi = totalMins % 60;
-            const lang = selectedLang;
-            
-            const url = `/api/astrosky?year=${y}&month=${m}&day=${d}&hour=${h}&minute=${mi}&lat=${selectedLat}&lng=${selectedLng}&utcOffset=${selectedUtc}&lang=${lang}`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+        // -------------------------------------------------------------
+        // SCENE UPDATER (CALLED ON MESSAGE)
+        // -------------------------------------------------------------
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'RENDER_SKY') {
+                const data = event.data.payload;
+                if (!data || !data.kundali) return;
                 
+                loading.style.display = 'none';
+
                 // Clear the scene to support dynamic language changes of static elements
                 while(group.children.length > 0){ 
                     group.remove(group.children[0]); 
@@ -540,150 +426,7 @@
                 }
 
                 initOrUpdateMeshes(data.kundali, data.panchang, data.uiDict || {});
-                
-                const tithiName = data.uiDict && data.uiDict.tithi ? data.uiDict.tithi : "Tithi";
-
-                const nt = (data.uiDict && data.uiDict.nakshatras) ? data.uiDict.nakshatras : [];
-                const panchangTithiVal = data.panchang?.tithi || 1;
-                const moonPData = data.kundali.planets.find(p => p.key=='moon');
-                const moonNakshatraIndex = moonPData?.nakshatraIndex !== undefined ? moonPData.nakshatraIndex : (moonPData?.nakshatra ? moonPData.nakshatra - 1 : 0);
-                const moonNakshatra = nt[moonNakshatraIndex] || moonPData?.nakshatraName || '';
-
-                const uiD = data.uiDict || {};
-
-                const monthsArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                
-                // Construct moon widget
-                let moonHtml = '';
-                const moonP = data.kundali.planets.find(p => p.key === 'moon');
-                if (moonP) {
-                    const mnIdx = moonP.nakshatraIndex !== undefined ? moonP.nakshatraIndex : 0;
-                    moonHtml = `<div style="margin-top: 10px; padding: 6px; background: rgba(255,255,255,0.08); border-left: 3px solid #f9d77e; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="width:50px; display:inline-block;"><strong style="color: ${planetColors['moon']}">${moonP.name.split(' ')[0]}</strong></span>
-                        <span style="font-family:monospace; margin-right:5px;">${moonP.degreeFormatted}</span>
-                        <span style="color:#ffffff; font-weight:bold; font-size:0.7rem; text-align:right; flex:1; line-height:1.2;">(${nt[mnIdx] || moonP.nakshatraName})</span>
-                    </div>`;
-                }
-
-                ayanamsaTxt.innerHTML = `
-                    <div style="font-size:1.15em; color:#fff; margin-bottom:6px;">
-                        <strong>${d} ${monthsArr[m-1]} ${y}, ${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}</strong>
-                        <span style="font-size:0.7em; color:#888;">&nbsp; (UTC ${selectedUtc >= 0 ? '+' : ''}${selectedUtc})</span>
-                    </div>
-                    <strong>${uiD.ayanamsa||'Ayanamsa'}:</strong> ${data.kundali.ayanamsaDMS}<br>
-                    <strong>${uiD.lagna||'Lagna'}:</strong> <span style="color:#ffaa22">${data.localizedRashis?.[data.kundali.lagna.rashi] || data.kundali.lagna.rashiName || data.kundali.lagna.rashi}</span> (${data.kundali.lagna.degreeFormatted})<br>
-                    <strong>${uiD.tithi||'Tithi'}:</strong> ${panchangTithiVal} (${data.panchang?.paksha ? (uiD[data.panchang.paksha.toLowerCase()] || data.panchang.paksha) : ''})<br>
-                    <strong>${uiD.vara||'Vara'}:</strong> ${data.vara || ''}<br>
-                    <strong>${uiD.nakshatraLabel||'Nakshatra:'}</strong> <span style="color:#aaddaa;">${moonNakshatra}</span>
-                    ${moonHtml}
-                `;
-                
-                let listHtml = '';
-                data.kundali.planets.forEach(p => {
-                    if (p.key === 'moon') return; // Rendered in Ayanamsa block
-                    
-                    const nIdx = p.nakshatraIndex !== undefined ? p.nakshatraIndex : (p.nakshatra ? p.nakshatra - 1 : 0);
-                    listHtml += `<li style="padding:4px 5px; border-radius:4px; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="width:65px; display:inline-block; flex-shrink:0;"><strong style="color: ${planetColors[p.key]}">${p.name.split(' ')[0]}</strong></span>
-                        <span style="font-family:monospace; margin-right:5px; flex-shrink:0; text-align: left;">${p.degreeFormatted}</span>
-                        <span style="color:#888; font-size:0.7rem; flex:1; text-align:right; line-height:1.1;">(${nt[nIdx] || p.nakshatraName})</span>
-                    </li>`;
-                });
-                planetList.innerHTML = listHtml;
-                
-                // Update translations for Time travel
-                if (uiD.timeTravelLabel) document.getElementById('lbl-time-travel').innerText = uiD.timeTravelLabel;
-                if (uiD.yearLabel) document.getElementById('lbl-year').innerText = uiD.yearLabel;
-                if (uiD.monthLabel) document.getElementById('lbl-month').innerText = uiD.monthLabel;
-                if (uiD.dayLabel) document.getElementById('lbl-day').innerText = uiD.dayLabel;
-                if (uiD.timeLabel) document.getElementById('lbl-time').innerText = uiD.timeLabel;
-                if (uiD.birthTimeLabel) document.getElementById('btn-birth-time').innerText = uiD.birthTimeLabel;
-                if (uiD.nowLabel) document.getElementById('btn-now').innerText = uiD.nowLabel;
-
-            } catch (err) {
-                console.error("Failed to fetch sky data", err);
-            } finally {
-                loading.style.display = 'none';
-                isFetching = false;
             }
-        }
-
-        // -------------------------------------------------------------
-        // EVENT LISTENERS
-        // -------------------------------------------------------------
-        
-        function handleScrub() {
-            // Cap days by month
-            const mxDays = new Date(parseInt(sYear.value), parseInt(sMonth.value), 0).getDate();
-            if (parseInt(sDay.value) > mxDays) sDay.value = mxDays;
-            
-            const totalMins = parseInt(sTime.value);
-            const h = Math.floor(totalMins / 60);
-            const mi = totalMins % 60;
-
-            vYear.innerText = sYear.value;
-            vMonth.innerText = sMonth.value.padStart(2, '0');
-            vDay.innerText = sDay.value.padStart(2, '0');
-            vTime.innerText = String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
-            
-            // Check if exactly Birth Time
-            const isBirth = (
-                parseInt(sYear.value) === initialDateParams.y &&
-                parseInt(sMonth.value) === initialDateParams.m &&
-                parseInt(sDay.value) === initialDateParams.d &&
-                parseInt(sTime.value) === (initialDateParams.h * 60 + initialDateParams.min)
-            );
-            
-            // Check if exactly Now (within 1 minute)
-            const dNow = new Date();
-             const utcMs = dNow.getTime() + (dNow.getTimezoneOffset() * 60000);
-             const targetMs = utcMs + (selectedUtc * 3600000);
-             const targetD = new Date(targetMs);
-            const isNow = (
-                parseInt(sYear.value) === targetD.getFullYear() &&
-                parseInt(sMonth.value) === targetD.getMonth() + 1 &&
-                parseInt(sDay.value) === targetD.getDate() &&
-                Math.abs(parseInt(sTime.value) - (targetD.getHours() * 60 + targetD.getMinutes())) <= 15
-            );
-
-            const btnBirth = document.getElementById('btn-birth-time');
-            const btnNow = document.getElementById('btn-now');
-            
-            btnBirth.style.borderColor = isBirth ? '#ccc' : 'rgba(255,255,255,0.1)';
-            btnBirth.style.color = isBirth ? '#fff' : '#888';
-            btnBirth.style.background = isBirth ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255,255,255,0.05)';
-
-            btnNow.style.borderColor = isNow && !isBirth ? '#ccc' : 'rgba(255,255,255,0.1)';
-            btnNow.style.color = isNow && !isBirth ? '#fff' : '#888';
-            btnNow.style.background = isNow && !isBirth ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255,255,255,0.05)';
-
-            clearTimeout(window.sliderTimeout);
-            window.sliderTimeout = setTimeout(fetchSkyData, 40); // 40ms debounce for buttery smooth scrubbing
-        }
-
-        sYear.addEventListener('input', handleScrub);
-        sMonth.addEventListener('input', handleScrub);
-        sDay.addEventListener('input', handleScrub);
-        sTime.addEventListener('input', handleScrub);
-
-        document.getElementById('btn-birth-time').addEventListener('click', () => {
-             sYear.value = initialDateParams.y;
-             sMonth.value = initialDateParams.m;
-             sDay.value = initialDateParams.d;
-             sTime.value = initialDateParams.h * 60 + initialDateParams.min;
-             handleScrub();
-        });
-
-        document.getElementById('btn-now').addEventListener('click', () => {
-             const d = new Date();
-             const utcMs = d.getTime() + (d.getTimezoneOffset() * 60000);
-             const targetMs = utcMs + (selectedUtc * 3600000);
-             const targetD = new Date(targetMs);
-             sYear.value = targetD.getFullYear();
-             sMonth.value = targetD.getMonth() + 1;
-             sDay.value = targetD.getDate();
-             sTime.value = targetD.getHours() * 60 + targetD.getMinutes();
-             handleScrub();
         });
 
         // -------------------------------------------------------------
@@ -702,7 +445,6 @@
         }
         
         // Initial Kickoff
-        fetchSkyData();
         animate();
     </script>
 </body>
