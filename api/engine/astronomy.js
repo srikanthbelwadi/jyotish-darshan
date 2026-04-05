@@ -63,7 +63,17 @@ export function computePlanetPositions(jd) {
   
   const calc = (bodyId) => {
     const res = swe.calc_ut(jd, bodyId, flags);
-    return { longitude: norm360(res[0]), speed: res[3] || 0 };
+    
+    // Calculate J2000 Equatorial coordinates (RA/Dec) for 3D Sky Dome projection
+    const eqFlags = swe.SEFLG_SWIEPH | 2048 | 32; // EQUATORIAL | J2000
+    const eqRes = swe.calc_ut(jd, bodyId, eqFlags);
+
+    return { 
+      longitude: norm360(res[0]), 
+      speed: res[3] || 0,
+      ra: eqRes[0],          
+      declination: eqRes[1]  
+    };
   };
   
   const ayanamsa = getLahiriAyanamsa(jd);
@@ -79,7 +89,12 @@ export function computePlanetPositions(jd) {
     rahu: calc(swe.SE_TRUE_NODE),
   };
   
-  raw.ketu = { longitude: norm360(raw.rahu.longitude + 180), speed: raw.rahu.speed };
+  raw.ketu = { 
+    longitude: norm360(raw.rahu.longitude + 180), 
+    speed: raw.rahu.speed,
+    ra: norm360(raw.rahu.ra + 180),
+    declination: -raw.rahu.declination
+  };
   
   const sidereal = {};
   for(const [k, v] of Object.entries(raw)){

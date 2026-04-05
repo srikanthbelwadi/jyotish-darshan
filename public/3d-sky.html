@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Jyotish 3D Sky</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #050510; color: #fff; font-family: "Inter", sans-serif; touch-action: auto; height: 100vh; width: 100vw; }
+        #app-container { display: flex; width: 100%; height: 100%; flex-direction: column; overflow: hidden; }
+        #canvas-container { width: 100%; height: 100%; background: #050510; position: relative; overflow: hidden; }
+        canvas { display: block; width: 100%; height: 100%; }
+        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; color: #f9d77e; z-index: 200; display: none; }
+    </style>
+</head>
+<body>
+    <div id="loading">Computing Celestial Mechanics...</div>
+    <div id="app-container">
+        <div id="canvas-container"></div>
+    </div>
+
+
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // -------------------------------------------------------------
+        // STATE AND DOM
+        // -------------------------------------------------------------
+        const loading = document.getElementById('loading');
+        
+        // -------------------------------------------------------------
+        // THREE.JS SETUP
+        // -------------------------------------------------------------
+        const canvasContainer = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050510, 0.015);
+        const camera = new THREE.PerspectiveCamera(50, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
+        camera.position.set(0, 3, 28); // Only slightly tilted from the eye level for better plane orientation
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap at 2 for mobile performance
+        canvasContainer.appendChild(renderer.domElement);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        const radius = 12;
+        const group = new THREE.Group();
+        scene.add(group);
+
+        // Static Elements - Ecliptic Grid and Ring
+        const gridHelper = new THREE.GridHelper(radius * 2.2, 24, 0xffaa00, 0x1a1a2a);
+        gridHelper.material.opacity = 0.4;
+        gridHelper.material.transparent = true;
+        group.add(gridHelper);
+
+        const ringGeo = new THREE.RingGeometry(radius - 0.05, radius + 0.05, 128);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x88ffaa, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = -Math.PI / 2;
+        group.add(ring);
+
+        // Background Stars
+        const starsGeo = new THREE.BufferGeometry();
+        const starsPos = new Float32Array(3000);
+        for(let i=0; i<3000; i++) { starsPos[i] = (Math.random() - 0.5) * 100; }
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+        const starsMat = new THREE.PointsMaterial({color: 0xaaaaaa, size: 0.1});
+        scene.add(new THREE.Points(starsGeo, starsMat));
+
+        // Registry of dynamic meshes we need to move
+        let dynamicMeshes = {
+            planets: {}, // { sun: { sphere, glow, labelText }, ... }
+            lagnaSprite: null,
+            sunHighlightGroup: null,
+            moonHighlightGroup: null
+        };
+
+        let staticBackgroundDrawn = false;
+
+        const planetColors = {
+            sun: '#ffd700', moon: '#ffffff', mars: '#ff4422',
+            mercury: '#22ff22', jupiter: '#ffaa00', venus: '#e0e0ff',
+            saturn: '#4444ff', rahu: '#888888', ketu: '#aa4444'
+        };
+
+        // Text rendering helper
+        function updateSpriteText(sprite, textArray, colorsArray, fontSizes, width=256, height=128) {
+            const canvas = sprite.material.map.image;
+            const context = canvas.getContext('2d');
+            context.clearRect(0,0,width,height);
+            context.textAlign = 'center';
+            let y = 40;
+            for(let i=0; i<textArray.length; i++) {
+                context.fillStyle = colorsArray[i] || '#ffffff';
+                context.font = fontSizes[i] || '24px Arial';
+                context.fillText(textArray[i], width/2, y);
+                y += parseInt(fontSizes[i] ? fontSizes[i].split('px')[0] : 24) + 10;
+            }
+            sprite.material.map.needsUpdate = true;
+        }
+
+        // -------------------------------------------------------------
+        // BACKGROUND BUILDER
+        // -------------------------------------------------------------
+        function buildStaticBackground(nakshatrasData, localizedRashis, uiDict, moonNakIdx) {
+            // Earth at Center & Axis
+            const earthGroup = new THREE.Group();
+            const earthGeo = new THREE.SphereGeometry(0.5, 32, 32); /* Reduced earth size */
+            const earthMat = new THREE.MeshBasicMaterial({ color: 0x002244 });
+            const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+            earthGroup.add(earthMesh);
+            
+            const earthWire = new THREE.Mesh(earthGeo, new THREE.MeshBasicMaterial({ color: 0x0066ff, wireframe: true, transparent: true, opacity: 0.3 }));
+            earthGroup.add(earthWire);
+
+            const axisMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+            const axisGeo = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, -3, 0),
+                new THREE.Vector3(0, 5, 0)
+            ]);
+            earthGroup.add(new THREE.Line(axisGeo, axisMat));
+
+            function makeTextObj(text, color, yOffset, scaleX, scaleY) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 256; canvas.height = 64;
+                context.fillStyle = color;
+                context.font = 'bold 16px Arial';
+                context.textAlign = 'center';
+                context.fillText(text, 128, 40);
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true }));
+                sprite.scale.set(scaleX, scaleY, 1);
+                sprite.position.set(0, yOffset, 0);
+                return sprite;
+            }
+
+            const poleLabel = uiDict ? uiDict.celestialNorthPole : "Celestial North Pole";
+            earthGroup.add(makeTextObj("Geocentric Earth", "#44aaff", -1.2, 2.5, 0.625));
+            earthGroup.add(makeTextObj(`↑ ${poleLabel}`, "#aaaaaa", 5.5, 4.0, 1.0));
+            group.add(earthGroup);
+            // Yoga Taras & Constellations (with Ecliptic Longitude and Latitude)
+            const nt = (uiDict && uiDict.nakshatras) ? uiDict.nakshatras : [];
+            const yogaTaras = [
+                { name: "Dhruva (Polaris)", lon: 60, lat: 66, color: 0xffddaa },
+                { name: `${nt[2]||'Krittika'} (Pleiades)`, lon: 40, lat: 4, color: 0x88bbff },
+                { name: `${nt[3]||'Rohini'} (Aldebaran)`, lon: 45.47, lat: -5.5, color: 0xffaaaa },
+                { name: `${nt[5]||'Ardra'} (Betelgeuse)`, lon: 65, lat: -16, color: 0xff8844 },
+                { name: "Lubdhaka (Sirius)", lon: 80, lat: -39.5, color: 0xaaaaff },
+                { name: `${nt[9]||'Magha'} (Regulus)`, lon: 125.13, lat: 0.5, color: 0xaaaaff },
+                { name: "Saptarishi (Dubhe)", lon: 121, lat: 49, color: 0xddddff },
+                { name: `${nt[14]||'Swati'} (Arcturus)`, lon: 180, lat: 31, color: 0xffcc88 },
+                { name: `${nt[13]||'Chitra'} (Spica)`, lon: 179.99, lat: -2, color: 0xffffff }, 
+                { name: `${nt[17]||'Jyeshtha'} (Antares)`, lon: 225.76, lat: -4.5, color: 0xff6666 },
+                { name: "Abhijit (Vega)", lon: 261, lat: 62, color: 0xbbffff },
+                { name: `${nt[21]||'Shravana'} (Altair)`, lon: 277.77, lat: 29, color: 0xaaffaa }
+            ];
+
+            yogaTaras.forEach(star => {
+                const radLon = THREE.MathUtils.degToRad(star.lon);
+                // Exaggerating the latitude slightly so it looks spherical and separated from the ecliptic ring
+                const radLat = THREE.MathUtils.degToRad(star.lat || 0);
+                const dist = radius + 6 + (Math.abs(star.lat) / 10); 
+                
+                // Real 3D Spherical Coordinate Mapping
+                const starX = dist * Math.cos(radLat) * Math.cos(radLon);
+                const starZ = dist * Math.cos(radLat) * -Math.sin(radLon);
+                const starY = dist * Math.sin(radLat);
+
+                const starGeo = new THREE.SphereGeometry(Math.abs(star.lat) > 40 ? 0.3 : 0.2, 16, 16);
+                const starMat = new THREE.MeshBasicMaterial({ color: star.color });
+                const starMesh = new THREE.Mesh(starGeo, starMat);
+                starMesh.position.set(starX, starY, starZ); 
+                group.add(starMesh);
+
+                const glowGeo = new THREE.SphereGeometry(Math.abs(star.lat) > 40 ? 1.0 : 0.6, 16, 16);
+                const glowMat = new THREE.MeshBasicMaterial({ color: star.color, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+                const glow = new THREE.Mesh(glowGeo, glowMat);
+                glow.position.copy(starMesh.position);
+                group.add(glow);
+
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 512; canvas.height = 128; // Higher resolution for crisp text
+                
+                // Shadow for readability
+                context.shadowColor = "rgba(0, 0, 0, 0.9)";
+                context.shadowBlur = 6;
+                context.shadowOffsetX = 3;
+                context.shadowOffsetY = 3;
+
+                context.fillStyle = '#' + star.color.toString(16).padStart(6, '0');
+                context.font = 'bold 36px Arial';
+                context.textAlign = 'center';
+                context.fillText(star.name, 256, 80);
+                
+                const tex = new THREE.CanvasTexture(canvas);
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
+                sprite.scale.set(6, 1.5, 1);
+                sprite.position.copy(starMesh.position);
+                
+                // Push label significantly clear of the 1.0 radius glow
+                sprite.position.y += Math.sign(star.lat || 1) * 1.8; 
+                group.add(sprite);
+                
+                // Drop a faint line down directly to its exact projection point on the Ecliptic Ring!
+                const eclipticPoint = new THREE.Vector3(radius * Math.cos(radLon), 0, radius * -Math.sin(radLon));
+                const lineMat = new THREE.LineBasicMaterial({ color: star.color, transparent: true, opacity: 0.2 });
+                const lineGeo = new THREE.BufferGeometry().setFromPoints([
+                    eclipticPoint,
+                    starMesh.position
+                ]);
+                group.add(new THREE.Line(lineGeo, lineMat));
+            });
+
+            // Rashis 
+            const rashis = localizedRashis || ['Aries (Mesha)','Taurus (Vrishabha)','Gemini (Mithuna)','Cancer (Karka)','Leo (Simha)','Virgo (Kanya)','Libra (Tula)','Scorpio (Vrishchika)','Sagittarius (Dhanu)','Capricorn (Makara)','Aquarius (Kumbha)','Pisces (Meena)'];
+            for(let i=0; i<12; i++) {
+                const lineMat = new THREE.LineBasicMaterial({ color: 0xd4af37, transparent: true, opacity: 0.6 });
+                const lineGeo = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(radius - 2, 0, 0),
+                    new THREE.Vector3(radius + 4, 0, 0)
+                ]);
+                const line = new THREE.Line(lineGeo, lineMat);
+                line.rotation.y = THREE.MathUtils.degToRad(i * 30);
+                group.add(line);
+
+                const midRad = THREE.MathUtils.degToRad(i * 30 + 15);
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 256; canvas.height = 128;
+                context.fillStyle = 'rgba(255, 100, 100, 0.6)';
+                context.font = 'bold 24px Arial';
+                context.textAlign = 'center';
+                context.fillText(rashis[i], 128, 64);
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true }));
+                sprite.scale.set(5, 2.5, 1);
+                sprite.position.set((radius + 3) * Math.cos(midRad), 0, (radius + 3) * -Math.sin(midRad));
+                group.add(sprite);
+            }
+
+            // Nakshatras
+            for(let i=0; i<27; i++) {
+                const nakDeg = i * (360/27);
+                const isMoonNak = (i === moonNakIdx);
+                const lineMat = new THREE.LineBasicMaterial({ color: isMoonNak ? 0xffffff : 0x88bb88, transparent: true, opacity: isMoonNak ? 1.0 : 0.8 });
+                const lineGeo = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(radius - 0.5, 0, 0),
+                    new THREE.Vector3(radius + 2, 0, 0)
+                ]);
+                const line = new THREE.Line(lineGeo, lineMat);
+                line.rotation.y = THREE.MathUtils.degToRad(nakDeg);
+                group.add(line);
+
+                const midNakRad = THREE.MathUtils.degToRad(nakDeg + (360/27)/2);
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 256; canvas.height = 64;
+                context.fillStyle = isMoonNak ? '#ffffff' : '#aaddaa';
+                context.font = isMoonNak ? 'bold 22px Arial' : '18px Arial';
+                context.textAlign = 'center';
+                context.fillText(nt[i] || nakshatrasData[i].name, 128, 40);
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true }));
+                sprite.scale.set(3, 0.75, 1);
+                sprite.position.set((radius + 1.8) * Math.cos(midNakRad), -0.8, (radius + 1.8) * -Math.sin(midNakRad));
+                group.add(sprite);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // SCENE UPDATER (CALLED ON API RESPONSE)
+        // -------------------------------------------------------------
+        function initOrUpdateMeshes(kundali, panchang, uiDict = {}) {
+            const { planets, lagna } = kundali;
+            const ascL = uiDict.lagna ? uiDict.lagna.toUpperCase() : 'ASCENDANT';
+            
+            const placedDegrees = [];
+            
+            // 1. Planets
+            planets.forEach(p => {
+                const isNode = p.key === 'rahu' || p.key === 'ketu';
+                const rad = THREE.MathUtils.degToRad(p.longitude);
+                const targetPos = new THREE.Vector3(radius * Math.cos(rad), 0, radius * -Math.sin(rad));
+
+                if (!dynamicMeshes.planets[p.key]) {
+                    // Create
+                    const c = parseInt(planetColors[p.key].replace('#','0x'));
+                    const sphere = new THREE.Mesh(new THREE.SphereGeometry(isNode ? 0.3 : 0.5, 32, 32), new THREE.MeshBasicMaterial({ color: c }));
+                    const glow = new THREE.Mesh(new THREE.SphereGeometry(isNode ? 0.5 : 0.8, 32, 32), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending }));
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 512; canvas.height = 256;
+                    const spriteMat = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true });
+                    const sprite = new THREE.Sprite(spriteMat);
+                    sprite.scale.set(6, 3, 1);
+                    
+                    group.add(sphere); group.add(glow); group.add(sprite);
+                    dynamicMeshes.planets[p.key] = { sphere, glow, sprite };
+                }
+
+                // Stagger overlapping labels
+                let labelYOffset = 1.5;
+                for (let prevLon of placedDegrees) {
+                    if (Math.abs(prevLon - p.longitude) < 6 || Math.abs(prevLon - p.longitude) > 354) {
+                        labelYOffset += 1.8;
+                    }
+                }
+                placedDegrees.push(p.longitude);
+
+                // Update Pos
+                const obj = dynamicMeshes.planets[p.key];
+                obj.sphere.position.copy(targetPos);
+                obj.glow.position.copy(targetPos);
+                obj.sprite.position.copy(targetPos);
+                obj.sprite.position.y += labelYOffset;
+                
+                // Update Text
+                updateSpriteText(obj.sprite, [p.name.split(' ')[0], p.degreeFormatted], ['#ffffff', '#aaaaaa'], ['bold 48px Arial', '28px Arial'], 512, 256);
+            });
+
+            // 2. Lagna (Ascendant)
+            const lagnaRad = THREE.MathUtils.degToRad(lagna.longitude);
+            if (!dynamicMeshes.lagnaSprite) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 512; canvas.height = 256;
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true }));
+                sprite.scale.set(6, 3, 1);
+                group.add(sprite);
+                dynamicMeshes.lagnaSprite = sprite;
+            }
+            dynamicMeshes.lagnaSprite.position.set(radius * Math.cos(lagnaRad), 1.5, radius * -Math.sin(lagnaRad));
+            updateSpriteText(dynamicMeshes.lagnaSprite, [ascL, lagna.degreeFormatted], ['#ffaa22', '#ffaa22'], ['bold 48px Arial', '28px Arial'], 512, 256);
+
+            // 3. Sun/Moon Highlight Overlays
+            const sunRashi = planets.find(p => p.key === 'sun').rashi;
+            const moonRashi = planets.find(p => p.key === 'moon').rashi;
+
+            function updateHighlight(key, rashiIndex, color, labelText) {
+                if (!dynamicMeshes[key]) {
+                    const highlightGeo = new THREE.RingGeometry(radius - 0.5, radius + 3.5, 32, 1, 0, THREE.MathUtils.degToRad(30));
+                    const highlightMat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+                    const highlight = new THREE.Mesh(highlightGeo, highlightMat);
+                    highlight.rotation.x = -Math.PI / 2;
+                    const ringContainer = new THREE.Group();
+                    ringContainer.add(highlight);
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 256; canvas.height = 128;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#' + color.toString(16).padStart(6,'0');
+                    ctx.font = 'bold 18px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(labelText, 128, 100);
+                    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true }));
+                    sprite.scale.set(5, 2.5, 1);
+                    ringContainer.add(sprite);
+                    
+                    group.add(ringContainer);
+                    dynamicMeshes[key] = { container: ringContainer, sprite: sprite };
+                }
+                const obj = dynamicMeshes[key];
+                obj.container.rotation.y = THREE.MathUtils.degToRad(rashiIndex * 30);
+                const midRad = THREE.MathUtils.degToRad(15);
+                obj.sprite.position.set((radius + 3) * Math.cos(midRad), 0, (radius + 3) * -Math.sin(midRad));
+            }
+
+            const sunL = uiDict.sunSign ? uiDict.sunSign.toUpperCase() : 'SUN SIGN';
+            const moonL = uiDict.moonSign ? uiDict.moonSign.toUpperCase() : 'MOON SIGN';
+            updateHighlight('sunHighlightGroup', sunRashi, 0xffaa00, sunL);
+            updateHighlight('moonHighlightGroup', moonRashi, 0x88aaff, moonL);
+        }
+
+        // -------------------------------------------------------------
+        // DATA FETCHING & UI UPDATE
+        // -------------------------------------------------------------
+        function getUTCOffsetForTz(tzId) {
+            try {
+                const y = parseInt(sYear.value);
+                const m = Math.max(0, parseInt(sMonth.value) - 1);
+                const d = parseInt(sDay.value);
+                const h = Math.floor(parseInt(sTime.value) / 60);
+                
+                const utcDate = new Date(Date.UTC(y, m, d, h));
+                const formatter = new Intl.DateTimeFormat('en-US', { timeZone: tzId, timeZoneName: 'shortOffset' });
+                const parts = formatter.formatToParts(utcDate);
+                const tzPart = parts.find(p => p.type === 'timeZoneName')?.value || '';
+                if(tzPart === 'GMT' || tzPart === 'UTC') return 0;
+                let offsetStr = tzPart.replace('GMT', '').replace('UTC', '');
+                if(!offsetStr) return 0;
+                const sign = offsetStr[0] === '-' ? -1 : 1;
+                const [hh, mm] = offsetStr.substring(1).split(':').map(Number);
+                return sign * (hh + (mm||0)/60);
+            } catch(e) { return 0; }
+        }
+
+        // -------------------------------------------------------------
+        // SCENE UPDATER (CALLED ON MESSAGE)
+        // -------------------------------------------------------------
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'RENDER_SKY') {
+                const data = event.data.payload;
+                if (!data || !data.kundali) return;
+                
+                loading.style.display = 'none';
+
+                // Clear the scene to support dynamic language changes of static elements
+                while(group.children.length > 0){ 
+                    group.remove(group.children[0]); 
+                }
+                dynamicMeshes = { planets: {} };
+                
+                if (data.nakshatras) {
+                    const moonP = data.kundali.planets.find(p => p.key=='moon');
+                    const mkIdx = moonP?.nakshatraIndex !== undefined ? moonP.nakshatraIndex : (moonP?.nakshatra ? moonP.nakshatra - 1 : 0);
+                    buildStaticBackground(data.nakshatras, data.localizedRashis, data.uiDict || {}, mkIdx);
+                }
+
+                initOrUpdateMeshes(data.kundali, data.panchang, data.uiDict || {});
+            }
+        });
+
+        // -------------------------------------------------------------
+        // RENDER LOOP
+        // -------------------------------------------------------------
+        window.addEventListener('resize', () => {
+            camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+        }, false);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        // Initial Kickoff
+        animate();
+    </script>
+</body>
+</html>

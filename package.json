@@ -23,6 +23,7 @@
     "@iamtraction/google-translate": "^1.1.2",
     "@tanstack/react-query": "^5.96.1",
     "@vercel/analytics": "^2.0.1",
+    "acorn": "^8.16.0",
     "bing-translate-api": "^4.2.0",
     "firebase": "^12.11.0",
     "firebase-admin": "^12.7.0",
@@ -34,7 +35,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^17.0.2",
-    "swisseph-wasm": "^0.0.5"
+    "swisseph-wasm": "^0.0.5",
+    "three": "^0.183.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",

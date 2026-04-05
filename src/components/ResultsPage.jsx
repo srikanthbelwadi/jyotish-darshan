@@ -9,6 +9,7 @@ import YogaTab from './tabs/YogaTab.jsx';
 import ShadbalaTab from './tabs/ShadbalaTab.jsx';
 import AshtakavargaTab from './tabs/AshtakavargaTab.jsx';
 import ExpertReadingTab from './tabs/ExpertReadingTab.jsx';
+import Cosmos3DTab from './tabs/Cosmos3DTab.jsx';
 
 const TABS = [
   { id: 'overview',  label: 'Overview',       icon: '☀' },
@@ -19,6 +20,7 @@ const TABS = [
   { id: 'shadbala',  label: 'Shadbala',        icon: '⚖' },
   { id: 'avarga',    label: 'Ashtakavarga',    icon: '🔢' },
   { id: 'reading',   label: 'Expert Reading',  icon: '📜' },
+  { id: 'cosmos',    label: 'Cosmos 3D',       icon: '🪐' },
 ];
 
 export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDownloadPDF, onSwitchProfile }) {
@@ -179,6 +181,9 @@ export default function ResultsPage({ kundali, onBack, lang, onLangChange, onDow
         </div>
         <div className={tab === 'reading' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
            <ExpertReadingTab kundali={kundali} lang={lang} />
+        </div>
+        <div className={tab === 'cosmos' ? 'desktop-active-tab mobile-show-always' : 'desktop-hidden-tab mobile-show-always'}>
+           <Cosmos3DTab kundali={kundali} lang={lang} />
         </div>
       </div>
 
