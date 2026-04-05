@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getPathwayFacts } from './engine/astrologicalRouter.js';
 
 export const maxDuration = 60; // Max out Vercel Serverless timeout to avoid "Failed to fetch" on slow generations (e.g. Kannada translation reasoning)
 
@@ -29,16 +30,19 @@ export default async function handler(req, res) {
 Context:
 - Activated Path: "${pillarTitle}" (Governing: ${pillarDesc})
 - TARGET UI LANGUAGE CODE: ${lang}
-User's Chart: ${JSON.stringify(kundaliData)}
+${getPathwayFacts(kundaliData, pillarId)}
 
 Task:
 Return a strict JSON object with "summary" and "options".
 
 *** CRITICAL ASTROLOGICAL HONESTY RULE ***
-Do NOT hallucinate planetary positions or assume natural rulerships. You MUST strictly bind your entire analysis to the exact 'house' and 'rashi' index provided in the User's Chart JSON. Mentally construct your logical deductions in English first to ensure mathematical precision, and ONLY THEN translate the final written paragraphs into the target language (${lang}).
+1. You MUST NOT invent, guess, hallucinate, or modify any astrological math, bindu scores, or planetary positions.
+2. You MUST rely EXCLUSIVELY on the 'ASTROLOGICAL FACTS' provided above. Do not search for other metrics.
+3. If citing a bindu SAV score, use the EXACT number provided in the facts above.
+4. Mentally construct your logical deductions in English first to ensure mathematical precision against the Facts, and ONLY THEN translate the final written paragraphs into the target language (${lang}).
 ******************************************
 
-1. "summary": A dense 2-3 sentence paragraph evaluating the user's specific chart regarding this Path. State exactly which houses/planets govern this topic based on Brihat Parashara Hora Shastra, and analyze their strength in the user's D1 matrix.
+1. "summary": A dense 2-3 sentence paragraph evaluating the user's specific chart regarding this Path. State exactly which houses/planets govern this topic based on Brihat Parashara Hora Shastra, and analyze their strength using ONLY the FACTS block.
 2. "options": Exactly 6 deeply analyzed karmic outcomes operating under this specific Pillar right now for the user. For each outcome, provide a definitive future timeframe (in months or years) and break down the analysis into EXACTLY 3 distinct paragraphs, each with an appropriate subheading mapping to these exact concepts:
    - Paragraph 1: The Astrological Basis
    - Paragraph 2: The Prophetic Assertions
@@ -47,7 +51,7 @@ Do NOT hallucinate planetary positions or assume natural rulerships. You MUST st
 CRITICAL: EVERY SINGLE STRING VALUE IN THE JSON (except icons) MUST BE IN THE EXACT LANGUAGE SPECIFIED BY THE TARGET UI LANGUAGE CODE (${lang}).
 
 EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (Translate the text to ${lang}):
-*** NOTE: The astrological facts in this example (e.g., Jupiter in Lagna) are purely illustrative to demonstrate the schema format. DO NOT copy these facts. Use ONLY the data in the provided User Chart. ***
+*** NOTE: The astrological facts in this example (e.g., Jupiter in Lagna) are purely illustrative to demonstrate the schema format. DO NOT copy these facts. Use ONLY the data in the provided ASTROLOGICAL FACTS. ***
 {
   "summary": "Your Dharma (9th house) lord Guru (Jupiter), exalted in your Lagna, firmly anchors your identity in higher purpose and ethical leadership...",
   "options": [

@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getTimescaleFacts } from './engine/astrologicalRouter.js';
 
 export const maxDuration = 60; // Max out Vercel Serverless timeout to avoid "Failed to fetch" on slow generations (e.g. Kannada translation reasoning)
 
@@ -29,17 +30,20 @@ Context:
 - Current Date & Time: ${currentDate}
 - Timescale to Predict: "${timescale}" 
 - TARGET UI LANGUAGE CODE: ${lang}
-User's Real-Time Astrological Chart Data (JSON): ${JSON.stringify(kundaliData)}
+${getTimescaleFacts(kundaliData, timescale)}
 
 Task:
 You must provide a highly specific, immediately actionable forecasting analysis based ONLY on the provided timescale and chart data. 
 
 *** CRITICAL ASTROLOGICAL HONESTY RULE ***
-Do NOT hallucinate planetary positions or assume natural rulerships. You MUST strictly bind your entire analysis to the exact 'house' and 'rashi' index provided in the User's Chart JSON. Mentally construct your logical deductions in English first to ensure mathematical precision, and ONLY THEN translate the final written paragraphs into the target language (${lang}).
+1. You MUST NOT invent, guess, hallucinate, or modify any astrological math, bindu scores, or planetary positions.
+2. You MUST rely EXCLUSIVELY on the 'ASTROLOGICAL FACTS' provided above. Do not search for other metrics.
+3. If citing a bindu SAV score, use the EXACT number provided in the facts above.
+4. Mentally construct your logical deductions in English first to ensure mathematical precision against the Facts, and ONLY THEN translate the final written paragraphs into the target language (${lang}).
 ******************************************
 
 - You MUST write the entire response natively in the requested TARGET UI LANGUAGE CODE. Never output in English unless the code is 'en'.
-- Synthesize active Dashas, current transits (Gochar), and Ashtakavarga bindus. 
+- Synthesize active Dashas, current transits (Gochar), and Ashtakavarga bindus explicitly provided in the Facts. 
 ${partnerData ? `- SYNARSTRY DETECTED: The user is currently tracking a relationship with a partner having Lagna: ${partnerData.lagna?.rashi || 'Unknown'}, Moon: ${partnerData.moon || 'Unknown'}, Nakshatra: ${partnerData.nakshatra || 'Unknown'}. You MUST organically weave relationship dynamics, compatibility frictions, or joint financial/life impacts into the 'assertions' and 'lifestyle' sections based on how their transits align with the primary user.` : ''}
 - DO NOT use introductory phrases like "Based on your chart" or "I predict". Just state the reading immediately.
 
@@ -53,10 +57,10 @@ CRITICAL: Return a strict JSON object with exactly these 5 keys answering these 
 }
 
 *** CANONICAL EXAMPLE ***
-*** NOTE: The astrological facts in this example are purely illustrative to demonstrate the exact desired schema format. DO NOT copy these facts. Use ONLY the data in the provided User Chart. Translate these styles and tones precisely into the Target Language. ***
+*** NOTE: The astrological facts in this example are purely illustrative to demonstrate the exact desired schema format. DO NOT copy these facts. Use ONLY the data in the provided ASTROLOGICAL FACTS. Translate these styles and tones precisely into the Target Language. ***
 {
   "period": "Over the duration of this Masa (Month).",
-  "basis": "Surya and Guru transiting your Lagna in Punarvasu and Ashlesha Nakshatras... Your second Bhava is exceptionally fortified with a robust 49 bindus.",
+  "basis": "Surya and Guru transiting your Lagna in Punarvasu and Ashlesha Nakshatras... Your designated Bhava is exceptionally fortified with a robust [insert exact number from FACTS] bindus.",
   "assertions": "This potent combination indicates an unavoidable period ripe for significant career advancements and financial windfalls. A major structural opportunity in your family legacy will arise.",
   "lifestyle": "Channel your formidable intellectual energy into meticulously planning and executing significant financial negotiations. Do not shy away from demanding higher compensation.",
   "mitigation": "Offer regular prayers to the Sun God (Surya Namaskar) at dawn to sustain this high vitality and burn away any residual career lethargy."
