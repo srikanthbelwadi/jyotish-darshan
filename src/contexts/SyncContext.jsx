@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, getRedirectResult } from 'firebase/auth';
-import { auth, fetchCloudProfiles, syncProfileToCloud } from '../firebase';
+import { auth, db, fetchCloudProfiles, syncProfileToCloud } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 const SyncContext = createContext();
 
@@ -18,6 +19,15 @@ export const SyncProvider = ({ children }) => {
       if (u) {
         setUser(u);
         setSyncStatus('syncing');
+
+        // Sync basic auth info to Firestore so Admin Dashboard can see who owns this data
+        if (db) {
+          setDoc(doc(db, 'users', u.uid), {
+            email: u.email || 'N/A',
+            displayName: u.displayName || 'Jyotish User'
+          }, { merge: true }).catch(err => console.warn('Silently failed auth details sync', err));
+        }
+
         try {
           const cloudProfiles = await fetchCloudProfiles(u.uid);
           const saved = localStorage.getItem('jd_profiles');

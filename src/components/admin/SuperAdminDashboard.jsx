@@ -15,7 +15,7 @@ export default function SuperAdminDashboard({ user, onBack, lang }) {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const q = query(collection(db, 'users'), orderBy('llmTokensRun', 'desc'), limit(50));
+      const q = query(collection(db, 'users'), limit(500));
       const snap = await getDocs(q);
       const data = [];
       let total = 0;
@@ -23,6 +23,13 @@ export default function SuperAdminDashboard({ user, onBack, lang }) {
         const docData = d.data();
         data.push({ id: d.id, ...docData });
         if (docData.llmTokensRun) total += docData.llmTokensRun;
+      });
+      // Sort by tokens first, then lastSynced
+      data.sort((a,b) => {
+        const aT = a.llmTokensRun || 0;
+        const bT = b.llmTokensRun || 0;
+        if (bT !== aT) return bT - aT;
+        return (b.lastSynced || 0) - (a.lastSynced || 0);
       });
       setUsersInfo(data);
       setTotalTokens(total);
@@ -79,7 +86,7 @@ export default function SuperAdminDashboard({ user, onBack, lang }) {
             <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'var(--font-sans)', fontSize: 14 }}>
               <thead>
                 <tr style={{ background: 'var(--bg-dark)', textAlign: 'left', color: 'var(--text-muted)' }}>
-                  <th style={{ padding: 12 }}>User ID</th>
+                  <th style={{ padding: 12 }}>User Info</th>
                   <th style={{ padding: 12 }}>Sync Check</th>
                   <th style={{ padding: 12 }}>Tokens Burned</th>
                   <th style={{ padding: 12 }}>Status</th>
@@ -89,7 +96,10 @@ export default function SuperAdminDashboard({ user, onBack, lang }) {
               <tbody>
                 {usersInfo.map(u => (
                   <tr key={u.id} style={{ borderBottom: '1px solid var(--border-light)', background: u.isBanned ? 'rgba(239, 68, 68, 0.05)' : 'transparent' }}>
-                    <td style={{ padding: 12, fontFamily: 'var(--font-mono)' }}>{u.id}</td>
+                    <td style={{ padding: 12 }}>
+                      <div style={{ fontWeight: 'bold' }}>{u.displayName || 'Jyotish User'}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{u.email || u.id}</div>
+                    </td>
                     <td style={{ padding: 12 }}>{u.lastSynced ? new Date(u.lastSynced).toLocaleString() : 'N/A'}</td>
                     <td style={{ padding: 12, color: 'var(--accent-gold)', fontWeight: 'bold' }}>{u.llmTokensRun?.toLocaleString() || 0}</td>
                     <td style={{ padding: 12 }}>
