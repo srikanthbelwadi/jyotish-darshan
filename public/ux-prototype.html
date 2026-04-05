@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UX Mobile Prototype</title>
+    <!-- Load React, ReactDOM, and Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #110906;
+            --bg-card: #2c1a16;
+            --text-main: #f0e6d2;
+            --accent-gold: #d48c32;
+        }
+        body {
+            margin: 0; padding: 0; font-family: sans-serif;
+            background: var(--bg-body); color: var(--text-main);
+            overflow: hidden; /* Prevent body scroll to emphasize sheet interaction */
+        }
+        .app-container {
+            height: 100vh; display: flex; flex-direction: column;
+            padding: 20px; box-sizing: border-box;
+        }
+        .header { text-align: center; color: var(--accent-gold); margin-bottom: 30px; }
+        
+        .mock-mandala {
+            background: var(--bg-card); height: 200px;
+            border-radius: 50%; width: 200px; margin: 0 auto 30px auto;
+            border: 2px dashed var(--accent-gold);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .action-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+        button.primary-btn {
+            background: var(--accent-gold); color: #000;
+            border: none; padding: 15px; border-radius: 8px;
+            font-weight: bold; font-size: 16px; cursor: pointer;
+        }
+
+        /* BOTTOM SHEET STYLES */
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #1e110c; border-top-left-radius: 20px; border-top-right-radius: 20px;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 1000;
+            border: 1px solid var(--accent-gold); border-bottom: none;
+            display: flex; flex-direction: column;
+        }
+        
+        .sheet-state-hidden { transform: translateY(100%); }
+        .sheet-state-peek { transform: translateY(calc(100% - 90px)); }
+        .sheet-state-full { transform: translateY(5%); height: 95%; }
+
+        .sheet-header {
+            padding: 10px; cursor: pointer; text-align: center;
+            display: flex; flex-direction: column; align-items: center;
+            border-bottom: 1px solid rgba(212, 140, 50, 0.2);
+        }
+        
+        .drag-handle {
+            width: 50px; height: 5px; background: rgba(255,255,255,0.3);
+            border-radius: 10px; margin-bottom: 10px;
+        }
+
+        .peek-content {
+            display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 15px; box-sizing: border-box;
+        }
+
+        .close-btn {
+            background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 15px;
+        }
+
+        .sheet-scroll-area {
+            flex-grow: 1; overflow-y: auto; padding: 20px;
+        }
+        
+        .mock-paragraph {
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px; line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const BottomSheet = ({ isOpen, activeModule, onClose }) => {
+            // states: 'HIDDEN', 'PEEK', 'FULL'
+            const [sheetState, setSheetState] = useState('HIDDEN');
+
+            // Toggle logic
+            useEffect(() => {
+                if (isOpen) setSheetState('FULL');
+                else setSheetState('HIDDEN');
+            }, [isOpen]);
+
+            const handleHeaderClick = () => {
+                if (sheetState === 'FULL') setSheetState('PEEK');
+                else if (sheetState === 'PEEK') setSheetState('FULL');
+            };
+
+            const getPeekTitle = () => {
+                if (activeModule === 'muhurat') return "📅 Favorable Window Found!";
+                if (activeModule === 'pathway') return "🔮 Viewing: 10th House Karma";
+                return "Results";
+            };
+
+            return (
+                <div className={`bottom-sheet sheet-state-${sheetState.toLowerCase()}`}>
+                    {/* The Header acts as the toggle for Peek <-> Full */}
+                    <div className="sheet-header" onClick={handleHeaderClick}>
+                        <div className="drag-handle"></div>
+                        <div className="peek-content">
+                            <strong>{getPeekTitle()}</strong>
+                            
+                            {sheetState === 'PEEK' && <span style={{fontSize: 20}}>⌃</span>}
+                            {sheetState === 'FULL' && (
+                                <button className="close-btn" onClick={(e) => { e.stopPropagation(); onClose(); }}>Close ✕</button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Scrollable Content Area */}
+                    <div className="sheet-scroll-area">
+                        <h2 style={{color: 'var(--accent-gold)'}}>
+                            {activeModule === 'muhurat' ? "Muhurat Engine Results" : "36-Life Path Oracle"}
+                        </h2>
+                        
+                        <div className="mock-paragraph">
+                            <strong>14 April, 1974 - 10:30 AM</strong><br/><br/>
+                            This is an immense amount of heavily generated astrological content. In the 'FULL' state, the user can infinitely scroll through this information comfortably. 
+                        </div>
+                        
+                        <div className="mock-paragraph">
+                            If they want to look back at the main background grid (e.g., to pick a different date or pillar), they simply tap the top header bar to drop this panel into the "Peek" state. 
+                        </div>
+
+                        <div className="mock-paragraph" style={{height: 300}}>
+                            [ Long scrolling section modeling complex Ashta Kuta matrices... ]
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [activeModule, setActiveModule] = useState(null);
+
+            const triggerModule = (moduleName) => {
+                setActiveModule(moduleName);
+            };
+
+            return (
+                <div className="app-container">
+                    <h1 className="header">Main Dashboard</h1>
+                    
+                    <div className="mock-mandala">
+                        <span>Background Mandala UI</span>
+                    </div>
+
+                    <div className="action-grid">
+                        <button className="primary-btn" onClick={() => triggerModule('pathway')}>
+                            View 36-Path Prediction
+                        </button>
+                        <button className="primary-btn" onClick={() => triggerModule('muhurat')}>
+                            Calculate Muhurat
+                        </button>
+                    </div>
+
+                    <p style={{marginTop: 40, opacity: 0.6, textAlign: 'center'}}>
+                        Notice how the background content is preserved and you don't lose your scroll context when opening the heavy prediction cards!
+                    </p>
+
+                    <BottomSheet 
+                        isOpen={activeModule !== null} 
+                        activeModule={activeModule}
+                        onClose={() => setActiveModule(null)}
+                    />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

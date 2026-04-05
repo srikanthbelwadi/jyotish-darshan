@@ -1,6 +1,7 @@
 import SouthIndianChart from '../charts/SouthIndianChart.jsx';
 import NorthIndianChart from '../charts/NorthIndianChart.jsx';
 import { RASHIS, PLANET_COLORS } from '../../engine/constants.js';
+import Cosmos3DTab from './Cosmos3DTab.jsx';
 
 import { NAKSHATRA_LORE } from '../../data/nakshatra_lore.js';
 import { DYNAMIC_STRINGS } from '../../i18n/dynamicTranslations.js';
@@ -35,15 +36,9 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
 
   return (
     <div style={{ animation: 'slideIn 0.25s ease' }}>
-      {/* Birth Summary Removed (Shown in Header) */}
-      {/* Charts Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
-        <div>
-          <ChartComponent planets={planets} lagnaRashi={lagna.rashi} title="Rashi Chart (D1 · Lagna Kundali)" lang={lang} />
-        </div>
-        <div>
-          <ChartComponent planets={navamsaPlanets} lagnaRashi={lagna.rashi} title="Navamsa Chart (D9)" lang={lang} />
-        </div>
+      {/* 3D Cosmos Chart (Replaced Rashi/Navamsa per user request) */}
+      <div style={{ marginBottom: 20 }}>
+          <Cosmos3DTab kundali={kundali} lang={lang} />
       </div>
 
       {/* Key Stats */}

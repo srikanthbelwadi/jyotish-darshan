@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geocentric Dome Prototype</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; color: #fff; font-family: sans-serif; }
+        #canvas-container { width: 100vw; height: 100vh; position: relative; }
+        #overlay {
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+            pointer-events: auto; z-index: 10;
+        }
+        select, input, button { margin-top: 5px; background: #222; color: #fff; border: 1px solid #444; padding: 5px; }
+    </style>
+</head>
+<body>
+    <div id="overlay">
+        <h3>Geocentric Dome Prototype</h3>
+        <p style="font-size: 0.8rem; color: #aaa; max-width: 300px; margin-bottom: 5px;">
+            Astronomical accuracy: Planets plotted natively inside true J2000 Zodiac constellations.
+        </p>
+        <p style="font-size: 0.85rem; color: #00ffaa; font-weight: bold; margin-top: 0;">
+            Navigation: Drag to Look Around.
+        </p>
+        
+        <div style="margin-top: 15px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 4px;">
+            <label for="timeSlider" style="display: block; text-align: center; margin-bottom: 8px; font-size: 0.9rem;">
+                <span id="timeVal">Current Time</span>
+            </label>
+            <input type="range" id="timeSlider" min="-12" max="12" step="0.25" value="0" style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #aaa; margin-top: 5px;">
+                <span>-12 hrs</span>
+                <span>+12 hrs</span>
+            </div>
+        </div>
+
+        <div id="status" style="margin-top: 10px; font-size: 0.75rem;">Loading data...</div>
+    </div>
+    
+    <div id="canvas-container"></div>
+
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        const R = 800; // Radius of Celestial Sphere
+        
+        // Setup ThreeJS
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1a365d); // Gorgeous twilight light-blue sky
+        
+        // Optimal wide angle (115) to comfortably see North Pole + Horizon + Zenith without severe breakage
+        const camera = new THREE.PerspectiveCamera(115, window.innerWidth/window.innerHeight, 0.1, R * 3);
+        
+        // PERFECT PANORAMIC ORIGIN PIVOT
+        camera.position.set(0, -0.05, 0.08);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 0, 0);
+        controls.enablePan = false;
+        controls.enableZoom = false;
+        controls.enableDamping = true;
+        
+        // ONLY HORIZONTAL CONTROL ALLOWED:
+        // By locking min and max polar angles precisely together, we instantly disable vertical drag!
+        // At pitch Math.PI/2 + 0.9 (approx +51.5 degrees), the horizon sits perfectly within
+        // the bottom 5-10% of the 115-degree vertical FOV window. 
+        controls.minPolarAngle = Math.PI / 2 + 0.9;
+        controls.maxPolarAngle = Math.PI / 2 + 0.9;
+
+        // --- REALISTIC CURVED HORIZON & TREES ---
+        // Programmatically generate a beautiful silhouetted pine tree / mountain line
+        function createTreeTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 2048; canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            
+            // Atmospheric horizon fog effect (fade to black)
+            const grd = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grd.addColorStop(0, "rgba(0, 0, 0, 0)"); // clear sky above
+            grd.addColorStop(0.3, "rgba(2, 2, 2, 0.8)"); // slight atmospheric haze near black
+            grd.addColorStop(1, "rgba(0, 0, 0, 1)"); // solid pitch black ground
+            
+            ctx.fillStyle = grd;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw rugged trees (visible pure black silhouette)
+            ctx.fillStyle = '#000000'; 
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            let lastH = 150;
+            for (let x = 0; x <= canvas.width + 10; x += 4) {
+                let h = 150 + Math.random() * 50; // default shrub line
+                // Mountain peaks or tall tree clusters
+                if (Math.random() < 0.05) {
+                    h += 80 + Math.random() * 100;
+                    // Sharp pine needles
+                    ctx.lineTo(x, canvas.height - h);
+                    ctx.lineTo(x + 2, canvas.height - h + 30);
+                    continue;
+                }
+                // Smoothing
+                h = (h + lastH) / 2;
+                lastH = h;
+                
+                // Add jagged micro-variance mimicking leaves/branches
+                h += Math.sin(x * 0.5) * 15;
+                ctx.lineTo(x, canvas.height - h);
+            }
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.closePath();
+            ctx.fill();
+            
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.repeat.set(5, 1); // Repeat around the cylinder 5 times
+            tex.anisotropy = 4;
+            return tex;
+        }
+
+        // Use a wide Cylinder resting exactly at the horizon line so the tree silhouettes push up into the view
+        const treeTex = createTreeTexture();
+        const treeGeo = new THREE.CylinderGeometry(R * 0.8, R * 0.8, R * 0.3, 64, 1, true); // height ~240
+        const treeMat = new THREE.MeshBasicMaterial({ map: treeTex, transparent: true, side: THREE.DoubleSide });
+        const treeMesh = new THREE.Mesh(treeGeo, treeMat);
+        
+        // Because the camera pitch is locked perfectly horizontally, we just slide the cylinder up or down
+        // so the top of the trees (the jagged black line) lines up perfectly with the "NORTH" text at the bottom 5%
+        treeMesh.position.y = -30; 
+        scene.add(treeMesh);
+        
+        // Solid black floor plate just in case any pixels slip past the cylinder base
+        const floorGeo = new THREE.CircleGeometry(R * 0.8, 64);
+        const floorMat = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
+        const floorPlane = new THREE.Mesh(floorGeo, floorMat);
+        floorPlane.rotation.x = -Math.PI / 2;
+        floorPlane.position.y = -100;
+        scene.add(floorPlane);
+        
+        // Add Compass Markers (Simple text sprite via canvas hack)
+        function createTextSprite(text, color, scaleFactor = 1) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = color;
+            ctx.font = 'bold 36px "Inter", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Add a subtle shadow to make text pop against stars
+            ctx.shadowColor = 'rgba(0,0,0,0.8)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            ctx.fillText(text, 128, 32);
+            const tex = new THREE.CanvasTexture(canvas);
+            const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+            const sprite = new THREE.Sprite(mat);
+            // maintain 4:1 aspect ratio since canvas is 256x64
+            sprite.scale.set(40 * 4 * scaleFactor, 40 * scaleFactor, 1);
+            return sprite;
+        }
+        
+        // -Z is North, +Z is South, +X is East, -X is West in default orientation
+        const span = R * 0.75;
+        const markerY = -15; // Physically anchor the markers deeply near the ground so they rest at the very bottom edge of the screen
+        const sN = createTextSprite('NORTH', '#ff6666', 1.5); sN.position.set(0, markerY, -span); scene.add(sN);
+        const sS = createTextSprite('SOUTH', '#8888ff', 1.5); sS.position.set(0, markerY, span); scene.add(sS);
+        const sE = createTextSprite('EAST', '#88ff88', 1.5); sE.position.set(span, markerY, 0); scene.add(sE);
+        const sW = createTextSprite('WEST', '#ffff88', 1.5); sW.position.set(-span, markerY, 0); scene.add(sW);
+
+        // The Celestial Sphere groups (Nested for clean Euler isolated rotations)
+        const localSky = new THREE.Group();
+        const equatorialSphere = new THREE.Group();
+        localSky.add(equatorialSphere);
+        scene.add(localSky);
+
+        // Helper: Convert RA/Dec to XYZ
+        // RA=0, Dec=0 -> X=R, Y=0, Z=0
+        // Dec=90 -> Y=R (North Celestial Pole)
+        function radecToVector(ra_deg, dec_deg, radius) {
+            const ra = (ra_deg * Math.PI) / 180;
+            const dec = (dec_deg * Math.PI) / 180;
+            return new THREE.Vector3(
+                radius * Math.cos(dec) * Math.cos(ra),
+                radius * Math.sin(dec),
+                -radius * Math.cos(dec) * Math.sin(ra)
+            );
+        }
+
+        let baseLST = 0; // Store the initial API LST
+
+        async function init() {
+            try {
+                // 1. Fetch Zodiac Line Segments
+                const zRes = await fetch('/zodiac_lines.json');
+                const zData = await zRes.json();
+                
+                // Extremely bright lines and stars for maximum readability against black space
+                const lineMat = new THREE.LineBasicMaterial({ color: 0x44bbff, transparent: true, opacity: 0.9, linewidth: 2 });
+                const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 4.5, sizeAttenuation: false });
+                
+                zData.features.forEach(feat => {
+                    const coords = feat.geometry.coordinates; // MultiLineString
+                    coords.forEach(segment => {
+                        const points = [];
+                        segment.forEach(pt => {
+                            // GeoJSON lists [Longitude (RA), Latitude (Dec)]
+                            const v = radecToVector(pt[0], pt[1], R);
+                            points.push(v);
+                        });
+                        const geo = new THREE.BufferGeometry().setFromPoints(points);
+                        const line = new THREE.Line(geo, lineMat);
+                        equatorialSphere.add(line);
+                        
+                        const pts = new THREE.Points(geo, starMat);
+                        equatorialSphere.add(pts);
+                    });
+                    
+                    // Add a label for the constellation itself in the middle of its first segment
+                    if(coords[0] && coords[0][0]) {
+                        const pt = coords[0][0];
+                        const v = radecToVector(pt[0], pt[1], R * 0.98);
+                        const cLabel = createTextSprite(feat.id, '#aaddff', 1.5);
+                        cLabel.position.copy(v);
+                        equatorialSphere.add(cLabel);
+                    }
+                });
+
+                // 2. Fetch Planet Coordinates & LST from ASTROSKY
+                const params = new URLSearchParams(window.location.search);
+                if(!params.has('lat')) params.set('lat', '12.9716');
+                if(!params.has('lng')) params.set('lng', '77.5946');
+                
+                const response = await fetch('/api/astrosky?' + params.toString());
+                const data = await response.json();
+                
+                // 3. Orient the Celestial Sphere
+                baseLST = data.kundali.lstDegrees;
+                const Lat_deg = data.kundali.input.lat;
+                
+                // Tilt the Polar Axis (Y) to match the observer's latitude above the Northern horizon (-Z).
+                // If Lat = 90 (North Pole), tilt = 0.
+                // If Lat = 0 (Equator), tilt = 90 (Pole rests on horizon).
+                localSky.rotation.x = -(90 - Lat_deg) * (Math.PI / 180);
+                
+                // Spin the sky based on Local Sidereal Time
+                equatorialSphere.rotation.y = -(baseLST * Math.PI / 180);
+                
+                // 4. Plot Planets
+                const planetColors = {
+                    sun: 0xffdd00, moon: 0xffffff, mars: 0xff4422,
+                    mercury: 0x44ff44, jupiter: 0xffaa00, venus: 0xffffbb,
+                    saturn: 0x6688ff, rahu: 0x999999, ketu: 0xbb5555
+                };
+                
+                data.kundali.planets.forEach(p => {
+                    const v = radecToVector(p.ra, p.declination, R * 0.92);
+                    
+                    // CRITICAL FIX: To prevent massive elongation and stretching at the 
+                    // edges of the 115-degree ultra-wide rectilinear screen format, 
+                    // we must render planets as 2D Sprites. 
+                    // Sprites mathematically face the camera flatly at all times, 
+                    // guaranteeing they remain beautifully spherical perfect circles!
+                    
+                    // Generate a perfect bright circle 
+                    const pColor = planetColors[p.key] || 0xffffff;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 64; canvas.height = 64;
+                    const ctx = canvas.getContext('2d');
+                    ctx.beginPath();
+                    ctx.arc(32, 32, 28, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = '#' + pColor.toString(16).padStart(6, '0');
+                    ctx.fill();
+                    
+                    const pTex = new THREE.CanvasTexture(canvas);
+                    const pMat = new THREE.SpriteMaterial({ map: pTex });
+                    const pSprite = new THREE.Sprite(pMat);
+                    
+                    // Calculate visual volume size (Sun and Moon visibly naturally larger)
+                    const baseSize = 45;
+                    pSprite.scale.set(baseSize, baseSize, 1);
+                    if (p.key === 'sun' || p.key === 'moon') {
+                        pSprite.scale.set(baseSize * 1.5, baseSize * 1.5, 1);
+                    }
+                    
+                    pSprite.position.copy(v);
+                    equatorialSphere.add(pSprite);
+                    
+                    // Name Label slightly offset properly
+                    const lbl = createTextSprite(p.name.split(' ')[0], '#ffffff', 1.2);
+                    lbl.position.copy(v);
+                    lbl.position.y += 35; // offset outside sphere
+                    equatorialSphere.add(lbl);
+                });
+
+                document.getElementById('status').innerText = `LST: ${baseLST.toFixed(1)}° | Lat: ${Lat_deg}°`;
+                
+                // Hook up time slider events
+                document.getElementById('timeSlider').addEventListener('input', (e) => {
+                    const hrsOffset = parseFloat(e.target.value);
+                    const offsetDeg = hrsOffset * 15.0; // 15 degrees per sidereal hour
+                    equatorialSphere.rotation.y = -((baseLST + offsetDeg) * Math.PI / 180);
+                    
+                    let sign = hrsOffset >= 0 ? '+' : '';
+                    document.getElementById('timeVal').innerText = `Current Time ${sign}${hrsOffset} hrs`;
+                });
+                
+                // Animate
+                renderLoop();
+
+            } catch(e) {
+                document.getElementById('status').innerText = 'Error: ' + e.message;
+                console.error(e);
+            }
+        }
+
+        function renderLoop() {
+            requestAnimationFrame(renderLoop);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        init();
+    </script>
+</body>
+</html>

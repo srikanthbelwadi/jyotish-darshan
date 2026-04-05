@@ -59,6 +59,8 @@ export function buildPlanetArray(sidereal, lagnaRashi) {
       key,
       name: PLANET_NAMES[key] || key,
       longitude: lon,
+      ra: data.ra,
+      declination: data.declination,
       rashi,
       degreeInSign: degInSign,
       degreeFormatted: formatDegree(lon),
@@ -466,6 +468,7 @@ export function computeKundali(input) {
     sunrise,
     sunset,
     lst: `${String(lstHours).padStart(2,'0')}h ${String(lstMinutes).padStart(2,'0')}m`,
+    lstDegrees: LST,
   };
 }
 
