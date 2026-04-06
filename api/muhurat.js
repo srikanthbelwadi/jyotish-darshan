@@ -39,7 +39,7 @@ Rules:
 7. Keep the tone profoundly cinematic, respectful, and traditional. Do not mention "Swiss Ephemeris" or "software".
 8. Format the output with bolding for emphasis (e.g., **Rohini Nakshatra**).
 9. CRITICAL MANDATE: Output your completely finalized response exclusively in ISO-language code: ${lang}. Do not write in English unless the language code is 'en'.
-10. **SOCIETAL LOGIC RULE**: Adhere to the provided SOCIOLOGICAL CONTEXT. If the seeker is elderly or a child, structurally adjust your explanation. For instance, explaining child-related naming ceremonies (Namakarana) to elderly users must be framed as "hosting or initiating the event for descendants" rather than them participating personally.
+10. **SOCIETAL LOGIC RULE**: Adhere to the provided SOCIOLOGICAL CONTEXT. [AGE RESTRICTION RULE]: If the seeker is under 18 or unknown, YOU MUST strictly avoid mature adult themes (career, profound romance, real estate, complex finance) and predict age-appropriate dynamics (schooling, parental bonding, childhood health, sibling dynamics). If the seeker is elderly, structurally adjust your explanation. For instance, explaining child-related naming ceremonies (Namakarana) to elderly users must be framed as "hosting or initiating the event for descendants" rather than them participating personally.
 `
     });
 

@@ -62,8 +62,8 @@ CRITICAL: Return a strict JSON object with exactly these 5 keys answering these 
 {
   "period": "State the exact future timeframe of the forecast (e.g., 'Over the next 28 days' or 'For the remainder of 2026').",
   "basis": "Explain the exact astrological mathematical basis for making your assertions (e.g. transits, dasha, bindus).",
-  "assertions": "Provide deeply personalized, unflinching predictions and assert what specific events/shifts will occur.",
-  "lifestyle": "Give highly practical, worldly suggestions and actions the user should take to prepare.",
+  "assertions": "Provide deeply personalized, unflinching predictions. [AGE RESTRICTION RULE]: If the Seeker Age is under 18 or unknown, YOU MUST ONLY PREDICT childhood/schooling/familial/health events. DO NOT predict adult career, complex finances, or mature relationship issues. Make it relevant to their exact age.",
+  "lifestyle": "Give highly practical suggestions and actions. [AGE RESTRICTION RULE]: This must be strictly calibrated to the Seeker Age.",
   "mitigation": "Provide a strict, specific Shastric parihara/remedy to make things go more favorably."
 }
 
