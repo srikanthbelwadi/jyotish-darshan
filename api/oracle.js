@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getTimescaleFacts, synthesizeDemographics } from './engine/astrologicalRouter.js';
-import { verifyToken, trackLLMTokens } from './engine/firebaseAdmin.js';
+import { verifyToken } from './engine/firebaseAdmin.js';
 
 export const maxDuration = 60; // Max out Vercel Serverless timeout to avoid "Failed to fetch" on slow generations (e.g. Kannada translation reasoning)
 
@@ -96,11 +96,8 @@ CRITICAL: Return a strict JSON object with exactly these 5 keys answering these 
 
     // Sync tokens back to Firebase CPO Console
     const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
-    if (tokenCount > 0 && uid) {
-      await trackLLMTokens(uid, tokenCount);
-    }
 
-    return res.status(200).json({ prediction: parsedPrediction });
+    return res.status(200).json({ prediction: parsedPrediction, tokenCount });
 
   } catch (error) {
     console.error('Oracle Node Generation Error:', error);

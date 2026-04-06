@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { db } from '../../firebase';
+import { doc, setDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { PILLAR_DATA } from '../../data/pillarData';
 import { EclipticChart } from './EclipticVisualizer';
 import { UniversalLoader } from './UniversalLoader';
@@ -8,7 +10,7 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
   const data = PILLAR_DATA[targetPillar];
   const hue = [...targetPillar].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
 
-  const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\\s+/g, '_') || 'default';
+  const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\s+/g, '_') || 'default';
 
   const [isRevealed, setIsRevealed] = React.useState(false);
 
@@ -19,6 +21,27 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
       if (user) {
          try { token = await user.getIdToken(); } catch(e) {}
       }
+      
+      const pillarMeta = { title: data.title, desc: data.desc };
+      const profileK = {
+        input: K.input,
+        lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
+        planets: K.planets.map(p => ({
+          id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
+        })),
+        dasha: K.dasha ? { 
+          maha: K.dasha.current?.planet || 'Unknown', 
+          antar: (K.dasha.current?.antars && K.dasha.current.antars.find(a => a.isCurrent)?.planet) || 'Unknown'
+        } : null,
+        panchanga: K.panchanga ? {
+          tithi: K.panchanga.tithi?.name,
+          karana: K.panchanga.karana?.name,
+          yoga: K.panchanga.yoga?.name,
+          nakshatra: K.panchanga.nakshatra?.name
+        } : null,
+        ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
+      };
+
       const res = await fetch('/api/pathway', {
         method: 'POST',
         headers: { 
@@ -28,27 +51,10 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
         body: JSON.stringify({
           currentDate: new Date().toString(),
           pillarId: targetPillar,
-          pillarTitle: data.title,
-          pillarDesc: data.desc,
-          lang: lang,
-          kundaliData: {
-            input: K.input,
-            lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
-            planets: K.planets.map(p => ({
-              id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
-            })),
-            dasha: K.dasha ? { 
-              maha: K.dasha.current?.planet || 'Unknown', 
-              antar: (K.dasha.current?.antars && K.dasha.current.antars.find(a => a.isCurrent)?.planet) || 'Unknown'
-            } : null,
-            panchanga: K.panchanga ? {
-              tithi: K.panchanga.tithi?.name,
-              karana: K.panchanga.karana?.name,
-              yoga: K.panchanga.yoga?.name,
-              nakshatra: K.panchanga.nakshatra?.name
-            } : null,
-            ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
-          },
+          pillarTitle: pillarMeta.title,
+          pillarDesc: pillarMeta.desc,
+          kundaliData: profileK,
+          lang,
           partnerData: partnerKundali ? {
              lagna: { rashi: partnerKundali.lagna?.rashi },
              moon: partnerKundali.planets.find(p => p.key === 'moon')?.rashi,

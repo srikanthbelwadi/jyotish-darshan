@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { db } from '../../firebase';
+import { doc, setDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { useSync } from '../../contexts/SyncContext.jsx';
 import { L_NAKS, L_RASHI } from '../../App.jsx';
 
@@ -156,6 +158,16 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
         body: JSON.stringify(payload)
       });
       const data = await res.json();
+      
+      // Native Frontend CPO Sync Bypass Loop
+      if (data.tokenCount && user) {
+         try {
+           setDoc(doc(db, 'users', user.uid), {
+             llmTokensRun: increment(data.tokenCount),
+             lastActivity: serverTimestamp()
+           }, { merge: true });
+         } catch(e) {}
+      }
       
       setAiAnalysis(prev => ({
          ...prev, 

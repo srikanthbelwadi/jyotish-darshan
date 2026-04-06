@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getPathwayFacts, synthesizeDemographics } from './engine/astrologicalRouter.js';
-import { verifyToken, trackLLMTokens } from './engine/firebaseAdmin.js';
+import { verifyToken } from './engine/firebaseAdmin.js';
 
 export const maxDuration = 60; // Max out Vercel Serverless timeout to avoid "Failed to fetch" on slow generations (e.g. Kannada translation reasoning)
 
@@ -100,13 +100,10 @@ EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (Translate the text to ${lang}):
       return res.status(500).json({ error: 'Failed to synthesize pathway. The Oracle returned a malformed vision.' });
     }
 
-    // Sync tokens back to Firebase CPO Console
+    // Pass tokens back
     const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
-    if (tokenCount > 0 && uid) {
-      await trackLLMTokens(uid, tokenCount);
-    }
 
-    return res.status(200).json(parsed);
+    return res.status(200).json({ ...parsed, tokenCount });
 
   } catch (error) {
     console.error('Pathway Node Generation Error:', error);

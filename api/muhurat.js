@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { synthesizeDemographics } from './engine/astrologicalRouter.js';
-import { verifyToken, trackLLMTokens } from './engine/firebaseAdmin.js';
+import { verifyToken } from './engine/firebaseAdmin.js';
 
 export const maxDuration = 60; // Prevent Vercel Timeout
 
@@ -70,13 +70,10 @@ Write a 3-sentence explanation of why this cosmic shield protects the event.
        output = output.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim();
     }
 
-    // Sync tokens back to Firebase CPO Console
+    // Pass tokens back
     const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
-    if (tokenCount > 0 && uid) {
-      await trackLLMTokens(uid, tokenCount);
-    }
 
-    res.status(200).json({ explanation: output });
+    res.status(200).json({ explanation: output, tokenCount });
     
   } catch (error) {
     console.error("Muhurat LLM failed:", error);

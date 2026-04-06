@@ -1,12 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { db } from '../../firebase';
+import { doc, setDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { UniversalLoader } from './UniversalLoader';
 
 export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, user, onRequireLogin }) => {
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
   const [isMinimized, setIsMinimized] = useState(false);
 
-  const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\\s+/g, '_') || 'default';
+  const profileId = K?.input?.id || K?.input?.name?.toLowerCase().replace(/\s+/g, '_') || 'default';
+
+  const profileK = {
+    input: K.input,
+    lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
+    planets: K.planets.map(p => ({
+      id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
+    })),
+    dasha: K.dasha ? { 
+      maha: K.dasha.current?.planet || 'Unknown', 
+      antar: (K.dasha.current?.antars && K.dasha.current.antars.find(a => a.isCurrent)?.planet) || 'Unknown'
+    } : null,
+    panchanga: K.panchanga ? {
+      tithi: K.panchanga.tithi?.name,
+      karana: K.panchanga.karana?.name,
+      yoga: K.panchanga.yoga?.name,
+      nakshatra: K.panchanga.nakshatra?.name
+    } : null,
+    ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
+  };
 
   const { data: predictionData, isLoading, error, refetch } = useQuery({
     queryKey: ['oracle', activeTime, profileId, lang],
@@ -25,24 +46,7 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
           currentDate: new Date().toString(),
           timescale: activeTime,
           lang: lang,
-          kundaliData: {
-             input: K.input,
-             lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
-             planets: K.planets.map(p => ({
-               id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
-             })),
-             dasha: K.dasha ? { 
-               maha: K.dasha.current?.planet || 'Unknown', 
-               antar: (K.dasha.current?.antars && K.dasha.current.antars.find(a => a.isCurrent)?.planet) || 'Unknown'
-             } : null,
-             panchanga: K.panchanga ? {
-               tithi: K.panchanga.tithi?.name,
-               karana: K.panchanga.karana?.name,
-               yoga: K.panchanga.yoga?.name,
-               nakshatra: K.panchanga.nakshatra?.name
-             } : null,
-             ashtakavarga: K.ashtakavarga ? { SAV: K.ashtakavarga.SAV } : null
-          },
+          kundaliData: profileK,
           partnerData: partnerKundali ? {
              lagna: { rashi: partnerKundali.lagna?.rashi },
              moon: partnerKundali.planets.find(p => p.key === 'moon')?.rashi,
