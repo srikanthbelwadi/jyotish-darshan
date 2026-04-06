@@ -87,6 +87,6 @@ CRITICAL: Return a strict JSON object with exactly these 5 keys answering these 
 
   } catch (error) {
     console.error('Oracle Node Generation Error:', error);
-    return res.status(500).json({ error: 'Failed to consult the Oracle due to a cosmic disruption.' });
+    return res.status(500).json({ error: 'Failed to consult the Oracle due to a cosmic disruption.', detailed: error.message, stack: error.stack });
   }
 }
