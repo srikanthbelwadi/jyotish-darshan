@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getTimescaleFacts, synthesizeDemographics } from './engine/astrologicalRouter.js';
+import { verifyToken, trackLLMTokens } from './engine/firebaseAdmin.js';
 
 export const maxDuration = 60; // Max out Vercel Serverless timeout to avoid "Failed to fetch" on slow generations (e.g. Kannada translation reasoning)
 
@@ -9,6 +10,13 @@ export default async function handler(req, res) {
   }
 
   try {
+    let uid = null;
+    try {
+      uid = await verifyToken(req);
+    } catch(err) {
+      return res.status(401).json({ error: err.message });
+    }
+
     const { timescale, kundaliData, partnerData, currentDate, lang = 'en' } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
@@ -84,6 +92,12 @@ CRITICAL: Return a strict JSON object with exactly these 5 keys answering these 
       } catch (e) {
         console.error("Failed to parse oracle json", e);
       }
+    }
+
+    // Sync tokens back to Firebase CPO Console
+    const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    if (tokenCount > 0 && uid) {
+      await trackLLMTokens(uid, tokenCount);
     }
 
     return res.status(200).json({ prediction: parsedPrediction });

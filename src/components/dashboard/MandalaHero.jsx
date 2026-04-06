@@ -11,9 +11,16 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
   const { data: predictionData, isLoading, error, refetch } = useQuery({
     queryKey: ['oracle', activeTime, profileId, lang],
     queryFn: async () => {
+      let token = '';
+      if (user) {
+         try { token = await user.getIdToken(); } catch(e) {}
+      }
       const res = await fetch('/api/oracle', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+           'Content-Type': 'application/json',
+           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           currentDate: new Date().toString(),
           timescale: activeTime,

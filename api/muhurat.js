@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { synthesizeDemographics } from './engine/astrologicalRouter.js';
+import { verifyToken, trackLLMTokens } from './engine/firebaseAdmin.js';
 
 export const maxDuration = 60; // Prevent Vercel Timeout
 
@@ -8,14 +9,20 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  if (!process.env.GEMINI_API_KEY) {
-    return res.status(500).json({ error: 'LLM configuration missing.' });
-  }
-
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  
   try {
-    const { event, kundali, partner, transit, lang } = req.body;
+    let uid = null;
+    try {
+      uid = await verifyToken(req);
+    } catch(err) {
+      return res.status(401).json({ error: err.message });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ error: 'LLM configuration missing.' });
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const { event, kundali, partner, transit, lang = 'en' } = req.body;
     
     // We strictly formulate the model to act as a classical Astrologer
     const model = genAI.getGenerativeModel({
@@ -31,7 +38,7 @@ Rules:
 6. DO NOT hallucinate planetary data. Only use the data provided in the prompt.
 7. Keep the tone profoundly cinematic, respectful, and traditional. Do not mention "Swiss Ephemeris" or "software".
 8. Format the output with bolding for emphasis (e.g., **Rohini Nakshatra**).
-9. CRITICAL MANDATE: Output your completely finalized response exclusively in ISO-language code: ${lang || 'en'}. Do not write in English unless the language code is 'en'.
+9. CRITICAL MANDATE: Output your completely finalized response exclusively in ISO-language code: ${lang}. Do not write in English unless the language code is 'en'.
 10. **SOCIETAL LOGIC RULE**: Adhere to the provided SOCIOLOGICAL CONTEXT. If the seeker is elderly or a child, structurally adjust your explanation. For instance, explaining child-related naming ceremonies (Namakarana) to elderly users must be framed as "hosting or initiating the event for descendants" rather than them participating personally.
 `
     });
@@ -56,9 +63,20 @@ Write a 3-sentence explanation of why this cosmic shield protects the event.
     `;
 
     const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    let output = result.response.text();
+    
+    // Failsafe strip markdown formatting
+    if (output.startsWith('```')) {
+       output = output.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim();
+    }
 
-    res.status(200).json({ explanation: text });
+    // Sync tokens back to Firebase CPO Console
+    const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    if (tokenCount > 0 && uid) {
+      await trackLLMTokens(uid, tokenCount);
+    }
+
+    res.status(200).json({ explanation: output });
     
   } catch (error) {
     console.error("Muhurat LLM failed:", error);

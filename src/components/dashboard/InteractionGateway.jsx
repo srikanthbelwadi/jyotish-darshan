@@ -15,9 +15,16 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
   const { data: pathwayData, isLoading, error, refetch } = useQuery({
     queryKey: ['pathway', profileId, targetPillar, lang],
     queryFn: async () => {
+      let token = '';
+      if (user) {
+         try { token = await user.getIdToken(); } catch(e) {}
+      }
       const res = await fetch('/api/pathway', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+           'Content-Type': 'application/json',
+           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           currentDate: new Date().toString(),
           pillarId: targetPillar,

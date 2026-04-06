@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getPathwayFacts, synthesizeDemographics } from './engine/astrologicalRouter.js';
+import { verifyToken, trackLLMTokens } from './engine/firebaseAdmin.js';
 
 export const maxDuration = 60; // Max out Vercel Serverless timeout to avoid "Failed to fetch" on slow generations (e.g. Kannada translation reasoning)
 
@@ -9,6 +10,13 @@ export default async function handler(req, res) {
   }
 
   try {
+    let uid = null;
+    try {
+      uid = await verifyToken(req);
+    } catch(err) {
+      return res.status(401).json({ error: err.message });
+    }
+
     const { pillarId, pillarTitle, pillarDesc, kundaliData, lang = 'en' } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
@@ -90,6 +98,12 @@ EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (Translate the text to ${lang}):
     } catch (parseError) {
       console.error('Failed to parse JSON directly. Raw output:', responseText);
       return res.status(500).json({ error: 'Failed to synthesize pathway. The Oracle returned a malformed vision.' });
+    }
+
+    // Sync tokens back to Firebase CPO Console
+    const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    if (tokenCount > 0 && uid) {
+      await trackLLMTokens(uid, tokenCount);
     }
 
     return res.status(200).json(parsed);

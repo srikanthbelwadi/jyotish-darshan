@@ -1,15 +1,9 @@
 import { getAuth } from 'firebase-admin/auth';
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { initializeAstroEngine } from './engine/swissephLoader.js';
 import { calculateMatch } from './engine/matchmaking.js';
+import { initFirebaseAdmin } from './engine/firebaseAdmin.js';
 
-if (!getApps().length) {
-  try {
-    const sa = process.env.FIREBASE_SERVICE_ACCOUNT;
-    if (sa) initializeApp({ credential: cert(JSON.parse(sa)) });
-    else initializeApp();
-  } catch(e) {}
-}
+initFirebaseAdmin();
 
 export const maxDuration = 30;
 

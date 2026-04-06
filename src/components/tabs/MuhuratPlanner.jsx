@@ -142,9 +142,17 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
          }
       };
 
+      let token = '';
+      if (user) {
+         try { token = await user.getIdToken(); } catch(e) {}
+      }
+
       const res = await fetch('/api/muhurat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+           'Content-Type': 'application/json',
+           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify(payload)
       });
       const data = await res.json();

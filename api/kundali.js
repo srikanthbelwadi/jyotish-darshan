@@ -1,23 +1,9 @@
 import { getAuth } from 'firebase-admin/auth';
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { initializeAstroEngine } from './engine/swissephLoader.js';
 import { computeKundali } from './engine/vedic.js';
+import { initFirebaseAdmin } from './engine/firebaseAdmin.js';
 
-// Initialize Firebase Admin (Only initialize once in serverless)
-// Note: Requires GOOGLE_APPLICATION_CREDENTIALS or FIREBASE_SERVICE_ACCOUNT in ENV
-if (!getApps().length) {
-  try {
-    const serviceAccountStr = process.env.FIREBASE_SERVICE_ACCOUNT;
-    if (serviceAccountStr) {
-      initializeApp({
-        credential: cert(JSON.parse(serviceAccountStr))
-      });
-    } else {
-       console.warn("FIREBASE_SERVICE_ACCOUNT not set. Auth verification will fail or bypass depending on phase.");
-       initializeApp(); // fallback to default env
-    }
-  } catch(e) { console.error("Firebase Admin Init Error:", e); }
-}
+initFirebaseAdmin();
 
 export const maxDuration = 30; // seconds
 
