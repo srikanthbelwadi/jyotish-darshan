@@ -71,7 +71,13 @@ Write a 3-sentence explanation of why this cosmic shield protects the event.
     }
 
     // Pass tokens back
-    const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    let tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    if (tokenCount === 0) {
+        // Fallback approximate pricing if Gemini SDK drops usageMetadata
+        const inputLen = systemPrompt ? systemPrompt.length : 1000;
+        const outputLen = output ? output.length : 500;
+        tokenCount = Math.ceil(inputLen / 3.5) + Math.ceil(outputLen / 3.5);
+    }
 
     res.status(200).json({ explanation: output, tokenCount });
     

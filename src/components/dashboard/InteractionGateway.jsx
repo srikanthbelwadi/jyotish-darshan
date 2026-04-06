@@ -19,7 +19,7 @@ export default function InteractionGateway({ targetPillar, onSelect, K, partnerK
     queryFn: async () => {
       let token = '';
       if (user) {
-         try { token = await user.getIdToken(); } catch(e) {}
+         try { token = await user.getIdToken(); } catch(e) { console.error("CPO TELEMETRY ERROR:", e); }
       }
       
       const pillarMeta = { title: data.title, desc: data.desc };

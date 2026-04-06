@@ -95,7 +95,13 @@ CRITICAL: Return a strict JSON object with exactly these 5 keys answering these 
     }
 
     // Sync tokens back to Firebase CPO Console
-    const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    let tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    if (tokenCount === 0) {
+        // Fallback approximate pricing if Gemini SDK drops usageMetadata
+        const inputLen = systemPrompt ? systemPrompt.length : 1000;
+        const outputLen = parsedPrediction ? JSON.stringify(parsedPrediction).length : 500;
+        tokenCount = Math.ceil(inputLen / 3.5) + Math.ceil(outputLen / 3.5);
+    }
 
     return res.status(200).json({ prediction: parsedPrediction, tokenCount });
 

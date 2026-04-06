@@ -34,7 +34,7 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
     queryFn: async () => {
       let token = '';
       if (user) {
-         try { token = await user.getIdToken(); } catch(e) {}
+         try { token = await user.getIdToken(); } catch(e) { console.error("CPO TELEMETRY ERROR:", e); }
       }
       const res = await fetch('/api/oracle', {
         method: 'POST',

@@ -101,7 +101,13 @@ EXPECTED JSON SCHEMA WITH CANONICAL EXAMPLES (Translate the text to ${lang}):
     }
 
     // Pass tokens back
-    const tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    let tokenCount = result.response?.usageMetadata?.totalTokenCount || 0;
+    if (tokenCount === 0) {
+        // Fallback approximate pricing if Gemini SDK drops usageMetadata
+        const inputLen = systemPrompt ? systemPrompt.length : 1000;
+        const outputLen = parsed ? JSON.stringify(parsed).length : 500;
+        tokenCount = Math.ceil(inputLen / 3.5) + Math.ceil(outputLen / 3.5);
+    }
 
     return res.status(200).json({ ...parsed, tokenCount });
 

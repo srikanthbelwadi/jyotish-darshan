@@ -146,7 +146,7 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
 
       let token = '';
       if (user) {
-         try { token = await user.getIdToken(); } catch(e) {}
+         try { token = await user.getIdToken(); } catch(e) { console.error("CPO TELEMETRY ERROR:", e); }
       }
 
       const res = await fetch('/api/muhurat', {
@@ -161,12 +161,14 @@ export default function MuhuratPlanner({ kundali, partnerData, t, lang, user, on
       
       // Native Frontend CPO Sync Bypass Loop
       if (data.tokenCount && user) {
+         console.log("CPO TELEMETRY FIRING:", data.tokenCount);
+         console.log("CPO TELEMETRY FIRING:", data.tokenCount);
          try {
            setDoc(doc(db, 'users', user.uid), {
              llmTokensRun: increment(data.tokenCount),
              lastActivity: serverTimestamp()
            }, { merge: true });
-         } catch(e) {}
+         } catch(e) { console.error("CPO TELEMETRY ERROR:", e); }
       }
       
       setAiAnalysis(prev => ({
