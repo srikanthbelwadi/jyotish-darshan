@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { synthesizeDemographics } from './engine/astrologicalRouter.js';
 
 export const maxDuration = 60; // Prevent Vercel Timeout
 
@@ -31,6 +32,7 @@ Rules:
 7. Keep the tone profoundly cinematic, respectful, and traditional. Do not mention "Swiss Ephemeris" or "software".
 8. Format the output with bolding for emphasis (e.g., **Rohini Nakshatra**).
 9. CRITICAL MANDATE: Output your completely finalized response exclusively in ISO-language code: ${lang || 'en'}. Do not write in English unless the language code is 'en'.
+10. **SOCIETAL LOGIC RULE**: Adhere to the provided SOCIOLOGICAL CONTEXT. If the seeker is elderly or a child, structurally adjust your explanation. For instance, explaining child-related naming ceremonies (Namakarana) to elderly users must be framed as "hosting or initiating the event for descendants" rather than them participating personally.
 `
     });
 
@@ -40,6 +42,8 @@ Event: ${event}
 
 
 
+${synthesizeDemographics({ input: kundali }, req.headers)}
+
 Calculated Transit Alignment:
 Transit Date: ${transit.date}
 Recommended Time Window: ${transit.goodHours}
@@ -47,7 +51,7 @@ Ruling Nakshatra: Nakshatra Index ${transit.nakshatra}
 Running Tithi: Tithi Index ${transit.tithi}
 Rising Ascendant (Lagna) Sign: Sign Index ${transit.lagnaSign}
 
-The engine has already mathematically vetted this time as perfectly auspicious according to Tara Bala and Chandra Bala syncs. 
+The engine has already mathematically vettes this time as perfectly auspicious according to Tara Bala and Chandra Bala syncs. 
 Write a 3-sentence explanation of why this cosmic shield protects the event.
     `;
 

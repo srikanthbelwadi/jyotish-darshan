@@ -130,3 +130,31 @@ Active Antardasha: ${kundaliData.dasha?.antar || 'Unknown'}`;
   facts += `\n===========================================`;
   return facts;
 }
+
+export function synthesizeDemographics(kundaliData, reqHeaders = {}) {
+  let context = `\n=== SOCIOLOGICAL CONTEXT ===\n`;
+  
+  if (kundaliData?.input?.year && kundaliData?.input?.month && kundaliData?.input?.day) {
+    const dob = new Date(kundaliData.input.year, kundaliData.input.month - 1, kundaliData.input.day);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    context += `Seeker Age: ${age} years old\n`;
+  } else {
+    context += `Seeker Age: Unknown\n`;
+  }
+
+  if (kundaliData?.input?.gender) {
+    context += `Seeker Gender: ${kundaliData.input.gender}\n`;
+  }
+
+  const city = reqHeaders['x-vercel-ip-city'] || 'Unknown';
+  const country = reqHeaders['x-vercel-ip-country'] || 'Unknown';
+  context += `Current Location: ${city}, ${country}\n`;
+
+  context += `=============================\n`;
+  return context;
+}

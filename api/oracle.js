@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { getTimescaleFacts } from './engine/astrologicalRouter.js';
+import { getTimescaleFacts, synthesizeDemographics } from './engine/astrologicalRouter.js';
 
 export const maxDuration = 60; // Max out Vercel Serverless timeout to avoid "Failed to fetch" on slow generations (e.g. Kannada translation reasoning)
 
@@ -30,6 +30,7 @@ Context:
 - Current Date & Time: ${currentDate}
 - Timescale to Predict: "${timescale}" 
 - TARGET UI LANGUAGE CODE: ${lang}
+${synthesizeDemographics(kundaliData, req.headers)}
 ${getTimescaleFacts(kundaliData, timescale)}
 
 Task:
@@ -44,7 +45,8 @@ You must provide a highly specific, immediately actionable forecasting analysis 
 
 - You MUST write the entire response natively in the requested TARGET UI LANGUAGE CODE. Never output in English unless the code is 'en'.
 - Synthesize active Dashas, current transits (Gochar), and Ashtakavarga bindus explicitly provided in the Facts. 
-${partnerData ? `- SYNARSTRY DETECTED: The user is currently tracking a relationship with a partner having Lagna: ${partnerData.lagna?.rashi || 'Unknown'}, Moon: ${partnerData.moon || 'Unknown'}, Nakshatra: ${partnerData.nakshatra || 'Unknown'}. You MUST organically weave relationship dynamics, compatibility frictions, or joint financial/life impacts into the 'assertions' and 'lifestyle' sections based on how their transits align with the primary user.` : ''}
+${partnerData ? `- SYNARSTRY DETECTED: The user is currently tracking a relationship with a partner having Lagna: ${partnerData.lagna?.rashi || 'Unknown'}, Moon: ${partnerData.moon || 'Unknown'}, Nakshatra: ${partnerData.nakshatra || 'Unknown'}. You MUST organically weave relationship dynamics, compatibility frictions, or joint financial/life impacts into the 'assertions' and 'lifestyle' sections based on how their transits align with the primary user.
+- **MATCHMAKING LOGIC RULE**: If you detect a significant age gap in the SOCIOLOGICAL CONTEXT, you MUST acknowledge the inherent generational/maturity dynamic. Furthermore, if interpreting charts for an age below 18, explicitly REJECT any romantic intimacy or mature adult synastry concepts, and instead reframe the relationship as platonic guardianship, peer-to-peer friendship, or familial karmic bonds.` : ''}
 - DO NOT use introductory phrases like "Based on your chart" or "I predict". Just state the reading immediately.
 
 CRITICAL: Return a strict JSON object with exactly these 5 keys answering these questions thoroughly:

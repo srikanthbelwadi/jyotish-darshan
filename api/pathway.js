@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { getPathwayFacts } from './engine/astrologicalRouter.js';
+import { getPathwayFacts, synthesizeDemographics } from './engine/astrologicalRouter.js';
 
 export const maxDuration = 60; // Max out Vercel Serverless timeout to avoid "Failed to fetch" on slow generations (e.g. Kannada translation reasoning)
 
@@ -30,6 +30,7 @@ export default async function handler(req, res) {
 Context:
 - Activated Path: "${pillarTitle}" (Governing: ${pillarDesc})
 - TARGET UI LANGUAGE CODE: ${lang}
+${synthesizeDemographics(kundaliData, req.headers)}
 ${getPathwayFacts(kundaliData, pillarId)}
 
 Task:
@@ -40,6 +41,7 @@ Return a strict JSON object with "summary" and "options".
 2. You MUST rely EXCLUSIVELY on the 'ASTROLOGICAL FACTS' provided above. Do not search for other metrics.
 3. If citing a bindu SAV score, use the EXACT number provided in the facts above.
 4. Mentally construct your logical deductions in English first to ensure mathematical precision against the Facts, and ONLY THEN translate the final written paragraphs into the target language (${lang}).
+5. **CONTEXTUAL RELEVANCE RULE:** You MUST heavily restrict your hypothetical karmic pathways geographically if the SOCIOLOGICAL CONTEXT provides a fixed user location, and strictly bind predictions to their physical Age bracket. Explicitly BAN proposing retirement scenarios to youths, or high school progression to grown adults.
 ******************************************
 
 1. "summary": A dense 2-3 sentence paragraph evaluating the user's specific chart regarding this Path. State exactly which houses/planets govern this topic based on Brihat Parashara Hora Shastra, and analyze their strength using ONLY the FACTS block.

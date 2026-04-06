@@ -19,6 +19,7 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
           timescale: activeTime,
           lang: lang,
           kundaliData: {
+             input: K.input,
              lagna: { rashi: K.lagna?.rashi, deg: K.lagna?.degFmt },
              planets: K.planets.map(p => ({
                id: p.key, sign: p.rashi, house: p.house, nak: p.nakshatraName
