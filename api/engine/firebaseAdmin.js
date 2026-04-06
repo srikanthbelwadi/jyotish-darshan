@@ -37,7 +37,7 @@ export async function verifyToken(req) {
     const decodedToken = await getAuth().verifyIdToken(token);
     return decodedToken.uid;
   } catch (error) {
-    throw new Error('Forbidden: Auth Verification Failed');
+    throw new Error('Forbidden: Auth Verification Failed: ' + error.message);
   }
 }
 
