@@ -1,4 +1,5 @@
 import { getAuth } from 'firebase-admin/auth';
+import { getApps } from 'firebase-admin/app';
 import { initializeAstroEngine } from './engine/swissephLoader.js';
 import { computeKundali } from './engine/vedic.js';
 import { initFirebaseAdmin } from './engine/firebaseAdmin.js';

@@ -1,4 +1,5 @@
 import { getAuth } from 'firebase-admin/auth';
+import { getApps } from 'firebase-admin/app';
 import { initializeAstroEngine } from './engine/swissephLoader.js';
 import { calculateMatch } from './engine/matchmaking.js';
 import { initFirebaseAdmin } from './engine/firebaseAdmin.js';
