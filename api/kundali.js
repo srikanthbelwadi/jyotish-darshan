@@ -122,6 +122,7 @@ export default async function handler(req, res) {
     }
 
     // 3. Return the generic JSON output without exposing algorithmic constants
+    payload.input = inputParams;
     res.status(200).json(payload);
   } catch (err) {
     console.error('Kundali generation failed:', err);
