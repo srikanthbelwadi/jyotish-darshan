@@ -414,8 +414,8 @@ const Planets = ({ planets, lst, obsLat, safeT }) => {
     <group>
       {planets.map((p, index) => {
         if (!p) return null;
-        const identifier = (p.id || p.name || 'Unknown').trim();
-        // Backend passes strings like "Shukra (Venus)". We must extract just the first word for color mapping.
+        const identifier = (p.key || p.id || p.name || 'Unknown').trim();
+        // Backend passes strings like "Shukra (Venus)" or language strings. We must extract just the first word for color mapping.
         const cleanNamePiece = identifier.split(/[ \()]/)[0];
         const cleanName = cleanNamePiece.toLowerCase();
         
