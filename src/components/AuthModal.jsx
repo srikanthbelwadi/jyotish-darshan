@@ -8,7 +8,7 @@ export default function AuthModal({ onLogin, onClose, lang, t }) {
     setLoading(true);
     try {
       await signInWithGooglePopup();
-       // Flow is handed to browser redirect. No further execution here.
+      if (onLogin) onLogin(); // Close modal upon successful popup resolution!
     } catch (error) {
       console.error("Google Sign-In Error:", error);
       alert("Authentication failed: " + error.message);

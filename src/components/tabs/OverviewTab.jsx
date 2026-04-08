@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import SouthIndianChart from '../charts/SouthIndianChart.jsx';
 import NorthIndianChart from '../charts/NorthIndianChart.jsx';
 import { RASHIS, PLANET_COLORS } from '../../engine/constants.js';
 import Cosmos3DTab from './Cosmos3DTab.jsx';
+import { CelestialDomeViewer } from '../dashboard/CelestialDomeViewer.jsx';
 
 import { NAKSHATRA_LORE } from '../../data/nakshatra_lore.js';
 import { DYNAMIC_STRINGS } from '../../i18n/dynamicTranslations.js';
@@ -13,6 +15,7 @@ const Card = ({ children, style }) => (
 );
 
 export default function OverviewTab({ kundali, chartFormat, lang }) {
+  const [showDome, setShowDome] = useState(false);
   const t = (key) => (DYNAMIC_STRINGS[lang] || DYNAMIC_STRINGS.en)[key] || DYNAMIC_STRINGS.en[key] || key;
   const { lagna, planets, dasha, panchang, sunrise, sunset, lst, ayanamsa, ayanamsaDMS } = kundali;
   const moonPlanet = planets.find(p => p.key === 'moon');
@@ -64,6 +67,23 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
           </p>
           <p style={{ margin: 0, fontSize:   16, color: '#6B7280' }}>{sunPlanet.nakshatraName} · Pada {sunPlanet.pada}</p>
         </Card>
+      </div>
+
+      {/* Launch Planetarium Button */}
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+        <button 
+          onClick={() => setShowDome(true)}
+          style={{
+            background: 'var(--bg-input, transparent)', color: 'var(--accent-gold, #D97706)', border: '1px solid var(--accent-gold, #D97706)',
+            padding: '12px 24px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-serif, serif)',
+            textTransform: 'uppercase', fontSize: '14px', fontWeight: 'bold', letterSpacing: '1px',
+            transition: 'all 0.3s ease', boxShadow: '0 4px 14px rgba(212,175,55,0.15)'
+          }}
+          onMouseOver={e => { e.target.style.background = 'var(--accent-gold, #D97706)'; e.target.style.color = '#fff'; }}
+          onMouseOut={e => { e.target.style.background = 'var(--bg-input, transparent)'; e.target.style.color = 'var(--accent-gold, #D97706)'; }}
+        >
+          ✧ {t('launch vedic planetarium')} 
+        </button>
       </div>
 
       {/* Nakshatra Deep Dive */}
@@ -123,6 +143,8 @@ export default function OverviewTab({ kundali, chartFormat, lang }) {
           {t('ov.janmaNak')}: <strong style={{ color: '#7C3AED' }}>{dasha.birthNakshatra}</strong> · {t('pl.lord')}: <strong style={{ color: '#7C3AED', textTransform: 'capitalize' }}>{dasha.birthNakshatraLord}</strong>
         </div>
       </Card>
+
+      {showDome && <CelestialDomeViewer K={kundali} onClose={() => setShowDome(false)} lang={lang} t={t} />}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult, signInWithRedirect } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { getAnalytics, logEvent } from "firebase/analytics";
@@ -108,7 +108,13 @@ export const signInWithGooglePopup = () => {
     if (!auth) {
         return Promise.reject(new Error("Firebase is not configured locally or in Vercel. Please add VITE_FIREBASE_API_KEY environment variables."));
     }
-    return signInWithRedirect(auth, googleProvider);
+    return signInWithPopup(auth, googleProvider).catch((error) => {
+        if (error.code === 'auth/popup-blocked') {
+            console.warn('Popup blocked, falling back to redirect...');
+            return signInWithRedirect(auth, googleProvider);
+        }
+        throw error;
+    });
 };
 
 export const callOracle = async (data) => {

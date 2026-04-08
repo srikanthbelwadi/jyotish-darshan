@@ -10,6 +10,7 @@ import './index.css';
 import CompatibilityMatch from './components/CompatibilityMatch.jsx';
 import CompatibilityInputForm from './components/CompatibilityInputForm.jsx';
 import { NAKSHATRA_LORE } from './data/nakshatra_lore.js';
+import { CelestialDomeViewer } from './components/dashboard/CelestialDomeViewer.jsx';
 import AuthModal from './components/AuthModal.jsx';
 import SuperAdminDashboard from './components/admin/SuperAdminDashboard.jsx';
 import { MockDashboard } from './components/dashboard';
@@ -1312,6 +1313,7 @@ function Card({children,style={},left}){
 
 
 function OverviewTab({K,fmt,lang='en'}){
+  const [showDome, setShowDome] = React.useState(false);
   const{lagna,planets,dasha,panchang,sunrise,sunset,lst,ayanamsaDMS}=K;
   const lpan=localizePanchang(panchang,lang);
   const moon=planets.find(p=>p.key==='moon'),sun=planets.find(p=>p.key==='sun');
@@ -1319,7 +1321,8 @@ function OverviewTab({K,fmt,lang='en'}){
   const curA=cur?.antars?.find(a=>a.isCurrent)||cur?.antars?.[0];
   const navP=planets.map(p=>{const vD=(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((K.divCharts?.D9 || K.divisionalCharts?.D9)?.lagna?.rashi ?? K.lagna.rashi) + 12)%12)+1; return {...p,rashi:nR,house:nH};});
   const C=fmt==='south'?SouthChart:NorthChart;
-  const moonNakLore = (NAKSHATRA_LORE[lang] || NAKSHATRA_LORE['en'])[moon.nIdx];
+  const mIdx = moon?.nIdx ?? moon?.nakshatraIndex;
+  const moonNakLore = mIdx != null ? (NAKSHATRA_LORE[lang] || NAKSHATRA_LORE['en'])[String(mIdx)] : null;
   return(
     <div style={{animation:'slideIn 0.2s ease'}}>
       {/* Janma Vivaranam removed per user request */}
@@ -1328,6 +1331,22 @@ function OverviewTab({K,fmt,lang='en'}){
       </div>
       {/* Moon, Sun, Lagna cards removed per user request as details are already in the visualization */}
       
+      {/* Launch Planetarium Button */}
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+        <button 
+          onClick={() => setShowDome(true)}
+          style={{
+            background: 'var(--bg-input, transparent)', color: 'var(--accent-gold, #D97706)', border: '1px solid var(--accent-gold, #D97706)',
+            padding: '12px 24px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-serif, serif)',
+            textTransform: 'uppercase', fontSize: '14px', fontWeight: 'bold', letterSpacing: '1px',
+            transition: 'all 0.3s ease', boxShadow: '0 4px 14px rgba(212,175,55,0.15)'
+          }}
+          onMouseOver={e => { e.target.style.background = 'var(--accent-gold, #D97706)'; e.target.style.color = '#fff'; }}
+          onMouseOut={e => { e.target.style.background = 'var(--bg-input, transparent)'; e.target.style.color = 'var(--accent-gold, #D97706)'; }}
+        >
+          ✧ {t('launch vedic planetarium', lang) || 'Launch Vedic Planetarium'}
+        </button>
+      </div>
       {moonNakLore && (
         <Card style={{ marginBottom: 18, background: 'linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%)', color: 'white', border: 'none' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
@@ -1378,6 +1397,8 @@ function OverviewTab({K,fmt,lang='en'}){
           ))}
         </div>
       </Card>
+      
+      {showDome && <CelestialDomeViewer K={K} onClose={() => setShowDome(false)} lang={lang} t={(key) => t(key, lang, key)} />}
     </div>
   );
 }
@@ -2372,11 +2393,11 @@ function App(){
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const[kundali,setKundali]=React.useState(null);
   const[err,setErr]=React.useState(null);
-  const { user, syncStatus, syncToast, forceSync, deleteProfile, saveProfile, logoutUser } = useSync();
-  
+  const { user, authInitialized, syncStatus, syncToast, forceSync, deleteProfile, saveProfile, logoutUser } = useSync();
   const [engineReady, setEngineReady] = React.useState(false);
   const [loadMsg, setLoadMsg] = React.useState('Synthesizing Ephemeris data...');
   const [loadPct, setLoadPct] = React.useState(0);
+  const [isAutoResuming, setIsAutoResuming] = React.useState(() => !!(typeof sessionStorage !== 'undefined' && sessionStorage.getItem('pendingKundaliFetch')));
 
 
   React.useEffect(() => {
@@ -2395,11 +2416,18 @@ function App(){
         try {
           const inp = JSON.parse(pending);
           handleSubmit(inp);
-        } catch(e) {}
+        } catch(e) {
+          setIsAutoResuming(false);
+        }
       }
     }
-  }, [user]);
-
+    if (authInitialized && !user && isAutoResuming && !showAuthModal) {
+      // Auth completed after a reload, but no user logged in. Clear auto-resume blocker.
+      // We DO NOT wipe sessionStorage here, because Firebase occasionally fires null 
+      // immediately before processing a generic redirect result.
+      setIsAutoResuming(false);
+    }
+  }, [user, authInitialized, isAutoResuming, showAuthModal]);
 
   const hasAutoLoaded = React.useRef(false);
 
@@ -2411,7 +2439,9 @@ function App(){
         try {
           const inp = JSON.parse(pending);
           handleSubmit(inp);
-        } catch(e) {}
+        } catch(e) {
+          setIsAutoResuming(false);
+        }
       } else if (!hasAutoLoaded.current && !kundali && screen === 'input') {
           hasAutoLoaded.current = true;
           try {
@@ -2435,16 +2465,15 @@ function App(){
       const p=new URLSearchParams(location.search);
       const k=p.get('k');
       if(k){try{const d=JSON.parse(decodeURIComponent(atob(k)));handleSubmit({year:d.y,month:d.mo,day:d.d,hour:d.h,minute:d.mi,utcOffset:d.ut,lat:d.la,lng:d.ln,city:d.ci,country:d.co,timezone:d.tz,gender:d.ge,dob:`${d.y}-${String(d.mo).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`,tob:`${String(d.h).padStart(2,'0')}:${String(d.mi).padStart(2,'0')}`})}catch(e){console.warn('Invalid share link')}}
-      else {
-        // Explicitly bypassing forced hydration on load.
-        setErr(null);
-      }
+      
+      // Global Failsafe to prevent deadlocks
+      setTimeout(() => {
+        if(mounted) setIsAutoResuming(false);
+      }, 10000);
     }, 100);
    
     return () => { mounted = false; };
   },[]);
-
-  const [isAutoResuming, setIsAutoResuming] = React.useState(() => !!(typeof sessionStorage !== 'undefined' && sessionStorage.getItem('pendingKundaliFetch')));
 
   async function handleSubmit(inp){
     setErr(null);

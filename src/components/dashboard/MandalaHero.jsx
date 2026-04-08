@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { db } from '../../firebase';
 import { doc, setDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { UniversalLoader } from './UniversalLoader';
+import { CelestialDomeViewer } from './CelestialDomeViewer';
 
 export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKundali, user, onRequireLogin }) => {
   const timescales = ['Today', 'This Lunar Phase', 'This Masa (Month)', 'This Samvatsara (Year)', 'Mahadasha'];
@@ -78,7 +79,9 @@ export const MandalaHero = ({ activeTime, setActiveTime, K, t, lang, partnerKund
          <div style={{ width: '200px', height: '200px', border: '10px double var(--border-light)', borderRadius: '50%', animation: 'spin 60s reverse infinite' }}></div>
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: '0 0 16px 0', fontFamily: 'var(--font-serif)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Predictions')}</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '38px', color: 'var(--accent-gold)', margin: 0, fontFamily: 'var(--font-serif)', textShadow: '0 2px 4px var(--bg-surface)' }}>{t('Predictions')}</h2>
+        </div>
         
         {/* Desktop Buttons */}
         <div className="desktop-timescale-btns" style={{ gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>

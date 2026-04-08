@@ -9,6 +9,7 @@ export const useSync = () => useContext(SyncContext);
 
 export const SyncProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [authInitialized, setAuthInitialized] = useState(false);
   const [syncStatus, setSyncStatus] = useState('offline');
   const [syncToast, setSyncToast] = useState(null);
   const [syncRequestedProfile, setSyncRequestedProfile] = useState(null);
@@ -81,6 +82,7 @@ export const SyncProvider = ({ children }) => {
         setUser(null);
         setSyncStatus('offline');
       }
+      setAuthInitialized(true);
     });
     return () => unsub();
   }, []);
@@ -165,6 +167,7 @@ export const SyncProvider = ({ children }) => {
   const value = {
     user,
     setUser,
+    authInitialized,
     syncStatus,
     syncToast,
     syncRequestedProfile,
