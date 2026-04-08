@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PLANET_COLORS } from '../../engine/constants.js';
 
-export default function Cosmos3DTab({ kundali, lang }) {
+export default function Cosmos3DTab({ kundali, lang, onSkyUpdate }) {
     if (!kundali) return null;
     
     // Fallbacks
@@ -38,6 +38,9 @@ export default function Cosmos3DTab({ kundali, lang }) {
                 const res = await fetch(`/api/astrosky?year=${scrubDate.y}&month=${scrubDate.m}&day=${scrubDate.d}&hour=${scrubDate.h}&minute=${scrubDate.min}&lat=${qLat}&lng=${qLng}&utcOffset=${qUtc}&lang=${lang}`);
                 const data = await res.json();
                 setSkyData(data);
+                if (onSkyUpdate && data.kundali) {
+                    onSkyUpdate(data.kundali);
+                }
                 
                 // Blast the fresh geometry down into the visualizer!
                 if (iframeRef.current && iframeRef.current.contentWindow) {

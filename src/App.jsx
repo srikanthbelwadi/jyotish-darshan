@@ -1314,12 +1314,17 @@ function Card({children,style={},left}){
 
 function OverviewTab({K,fmt,lang='en'}){
   const [showDome, setShowDome] = React.useState(false);
-  const{lagna,planets,dasha,panchang,sunrise,sunset,lst,ayanamsaDMS}=K;
+  const [liveK, setLiveK] = React.useState(K);
+
+  // Keep liveK synced completely if the root K changes (like picking a different birth profile)
+  React.useEffect(() => { setLiveK(K); }, [K]);
+
+  const{lagna,planets,dasha,panchang,sunrise,sunset,lst,ayanamsaDMS}=liveK;
   const lpan=localizePanchang(panchang,lang);
   const moon=planets.find(p=>p.key==='moon'),sun=planets.find(p=>p.key==='sun');
   const cur=dasha.mahadashas.find(m=>m.isCurrent)||dasha.mahadashas[0];
   const curA=cur?.antars?.find(a=>a.isCurrent)||cur?.antars?.[0];
-  const navP=planets.map(p=>{const vD=(K.divCharts?.D9 || K.divisionalCharts?.D9)?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((K.divCharts?.D9 || K.divisionalCharts?.D9)?.lagna?.rashi ?? K.lagna.rashi) + 12)%12)+1; return {...p,rashi:nR,house:nH};});
+  const navP=planets.map(p=>{const vD=(liveK.divCharts?.D9 || liveK.divisionalCharts?.D9)?.[p.key]; const nR=vD?.rashi??vD??p.rashi; const nH=((nR - ((liveK.divCharts?.D9 || liveK.divisionalCharts?.D9)?.lagna?.rashi ?? liveK.lagna.rashi) + 12)%12)+1; return {...p,rashi:nR,house:nH};});
   const C=fmt==='south'?SouthChart:NorthChart;
   const mIdx = moon?.nIdx ?? moon?.nakshatraIndex;
   const moonNakLore = mIdx != null ? (NAKSHATRA_LORE[lang] || NAKSHATRA_LORE['en'])[String(mIdx)] : null;
@@ -1327,7 +1332,7 @@ function OverviewTab({K,fmt,lang='en'}){
     <div style={{animation:'slideIn 0.2s ease'}}>
       {/* Janma Vivaranam removed per user request */}
       <div style={{marginBottom:18}}>
-        <Cosmos3DTab kundali={K} lang={lang} />
+        <Cosmos3DTab kundali={K} lang={lang} onSkyUpdate={(updatedSkyK) => setLiveK(updatedSkyK)} />
       </div>
       {/* Moon, Sun, Lagna cards removed per user request as details are already in the visualization */}
       
@@ -1388,7 +1393,7 @@ function OverviewTab({K,fmt,lang='en'}){
         <div className="responsive-grid-3" style={{gap:12}}>
           {[{lbl:t('ov.maha',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[cur?.planet]||cur?.planet,period:`${cur?.start||(cur?.startDate?String(cur.startDate).substring(0,10):'—')} ~ ${cur?.end||(cur?.endDate?String(cur.endDate).substring(0,10):'—')}`,bg:'var(--bg-badge-purple)',clr:'var(--text-badge-purple)'},
             {lbl:t('ov.antar',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[curA?.planet]||curA?.planet,period:`${curA?.start||(curA?.startDate?String(curA.startDate).substring(0,10):'—')} ~ ${curA?.end||(curA?.endDate?String(curA.endDate).substring(0,10):'—')}`,bg:'var(--bg-badge-orange)',clr:'var(--text-badge-orange)'},
-            {lbl:t('ov.birth',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[dasha.nakLord]||dasha.nakLord||'—',period:`${t('ov.nakshatra',lang)}: ${(L_NAKS[lang]||L_NAKS.en)[K.planets.find(p=>p.key==='moon')?.nIdx]||dasha.nakName||'—'}`,bg:'var(--bg-badge-green)',clr:'var(--text-badge-green)'}].map(({lbl,p,period,bg,clr})=>(
+            {lbl:t('ov.birth',lang),p:(L_GRAHA[lang]||L_GRAHA.en)[dasha.nakLord]||dasha.nakLord||'—',period:`${t('ov.nakshatra',lang)}: ${(L_NAKS[lang]||L_NAKS.en)[liveK.planets.find(p=>p.key==='moon')?.nIdx]||dasha.nakName||'—'}`,bg:'var(--bg-badge-green)',clr:'var(--text-badge-green)'}].map(({lbl,p,period,bg,clr})=>(
             <div key={lbl} style={{background:bg,borderRadius:10,padding:12,textAlign:'center'}}>
               <p style={{margin:'0 0 3px',fontSize:10,color:clr,textTransform:'uppercase',letterSpacing:1,fontWeight:600}}>{lbl}</p>
               <p style={{margin:'0 0 3px',fontSize:18,fontWeight:700,color:'var(--text-main)',textTransform:'capitalize'}}>{p||'—'}</p>
@@ -1398,7 +1403,7 @@ function OverviewTab({K,fmt,lang='en'}){
         </div>
       </Card>
       
-      {showDome && <CelestialDomeViewer K={K} onClose={() => setShowDome(false)} lang={lang} t={(key) => t(key, lang, key)} />}
+      {showDome && <CelestialDomeViewer K={liveK} onClose={() => setShowDome(false)} lang={lang} t={(key) => t(key, lang, key)} />}
     </div>
   );
 }
