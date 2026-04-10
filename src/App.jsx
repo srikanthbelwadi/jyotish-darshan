@@ -1336,21 +1336,54 @@ function OverviewTab({K,fmt,lang='en'}){
       </div>
       {/* Moon, Sun, Lagna cards removed per user request as details are already in the visualization */}
       
-      {/* Launch Planetarium Button */}
-      <div style={{ textAlign: 'center', marginBottom: 20 }}>
-        <button 
+      {/* Expanded Planetarium Portal */}
+      <div style={{ marginBottom: 24, padding: '0 4px' }}>
+        <div 
           onClick={() => setShowDome(true)}
           style={{
-            background: 'var(--bg-input, transparent)', color: 'var(--accent-gold, #D97706)', border: '1px solid var(--accent-gold, #D97706)',
-            padding: '12px 24px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-serif, serif)',
-            textTransform: 'uppercase', fontSize: '14px', fontWeight: 'bold', letterSpacing: '1px',
-            transition: 'all 0.3s ease', boxShadow: '0 4px 14px rgba(212,175,55,0.15)'
+            background: 'linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(30,58,138,0.85) 100%)',
+            border: '1px solid rgba(212,175,55,0.4)',
+            borderRadius: '8px', padding: '16px 24px', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.2)', transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+            overflow: 'hidden', position: 'relative'
           }}
-          onMouseOver={e => { e.target.style.background = 'var(--accent-gold, #D97706)'; e.target.style.color = '#fff'; }}
-          onMouseOut={e => { e.target.style.background = 'var(--bg-input, transparent)'; e.target.style.color = 'var(--accent-gold, #D97706)'; }}
+          onMouseOver={e => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 12px 40px rgba(212,175,55,0.25)';
+            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.8)';
+          }}
+          onMouseOut={e => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)';
+            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)';
+          }}
         >
-          ✧ {t('launch vedic planetarium', lang) || 'Launch Vedic Planetarium'}
-        </button>
+          {/* Subtle animated background overlay */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(circle at 80% 20%, rgba(212,175,55,0.1), transparent 60%)', pointerEvents: 'none' }}></div>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 1 }}>
+            <div style={{ 
+              width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(212,175,55,0.15)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(212,175,55,0.3)',
+              boxShadow: '0 0 15px rgba(212,175,55,0.2)'
+            }}>
+              <span style={{ fontSize: '20px' }}>🌌</span>
+            </div>
+            <div>
+              <h3 style={{ margin: '0 0 4px 0', color: 'var(--accent-gold)', fontSize: '15px', fontFamily: 'var(--font-serif)', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                {t('launch vedic planetarium', lang) || 'Launch Vedic Planetarium'}
+              </h3>
+              <p style={{ margin: 0, color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>
+                {t('topocentric projection', lang) || 'Interactive 3D Celestial Engine'}
+              </p>
+            </div>
+          </div>
+          
+          <div style={{ color: 'var(--accent-gold)', fontSize: '20px', position: 'relative', zIndex: 1, opacity: 0.8 }}>
+            ➜
+          </div>
+        </div>
       </div>
       {moonNakLore && (
         <Card style={{ marginBottom: 18, background: 'linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%)', color: 'white', border: 'none' }}>
@@ -1975,7 +2008,7 @@ function ResultsPage({K,onBack,lang,onSwitchProfile,user,onRequireLogin,onForceS
   }, [menuRef]);
   const[partnerKundali, setPartnerKundali]=React.useState(null);
   const[showPartnerForm, setShowPartnerForm]=React.useState(false);
-  const[isSynastryExpanded, setIsSynastryExpanded]=React.useState(true);
+  const[isSynastryExpanded, setIsSynastryExpanded]=React.useState(false);
 
   React.useEffect(() => {
     async function load() {
