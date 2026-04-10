@@ -592,12 +592,12 @@ export const CelestialDomeViewer = ({ K, lang, t, onClose }) => {
          {/* Pan controls: User can stay centrally or zoom massive distances like Snowglobe scale */}
          <OrbitControls 
             enableZoom={true} 
-            zoomSpeed={4}
+            zoomSpeed={0.8}
             enablePan={true}
             panSpeed={2}
             minDistance={5}
             maxDistance={R * 8} // Incredible zoom range out into deep space
-            rotateSpeed={-0.35} 
+            rotateSpeed={0.6} 
          />
       </Canvas>
     </div>
